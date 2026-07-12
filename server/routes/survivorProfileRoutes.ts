@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { db } from '../db';
 import { users, powerPointGifts, userPersonas } from '@shared/schema';
 import { and, desc, eq, sql } from 'drizzle-orm';
+import { getUserId } from '../lib/authUtils';
 
 function slugify(s: string): string {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'survivor';
@@ -59,7 +60,7 @@ export function registerSurvivorProfileRoutes(app: Express, isAuthenticated: any
   // Set or update my public slug
   app.post('/api/survivors/me/slug', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub as string;
+      const userId = getUserId(req)!;
       const parsed = slugSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ error: 'Slug must be 3-40 chars, lowercase, a-z 0-9 - only' });
       const slug = slugify(parsed.data.slug);
@@ -79,7 +80,7 @@ export function registerSurvivorProfileRoutes(app: Express, isAuthenticated: any
 
   // Auto-claim a slug on first visit to profile setup
   app.post('/api/survivors/me/auto-slug', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = getUserId(req)!;
     const [u] = await db.select({ slug: users.publicSlug, first: users.firstName, last: users.lastName })
       .from(users).where(eq(users.id, userId)).limit(1);
     if (u?.slug) return res.json({ slug: u.slug });

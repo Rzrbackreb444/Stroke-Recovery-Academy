@@ -18,6 +18,7 @@ import {
   STUDIO_TIERS,
 } from "@shared/studioTiers";
 import { getActiveStudioSub } from "./sasquatchStudioRoutes";
+import { getUserId } from "../lib/authUtils";
 
 // -------- helpers --------
 function safeFilename(s: string): string {
@@ -136,7 +137,7 @@ export function registerAlbumBuilderRoutes(
     "/api/albums",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const rows = await db
         .select()
         .from(survivorAlbums)
@@ -174,7 +175,7 @@ export function registerAlbumBuilderRoutes(
     "/api/albums/:id",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Bad id" });
       const [album] = await db
@@ -242,7 +243,7 @@ export function registerAlbumBuilderRoutes(
     "/api/albums",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const parsed = createAlbumSchema.safeParse(req.body || {});
       if (!parsed.success) {
         return res
@@ -283,7 +284,7 @@ export function registerAlbumBuilderRoutes(
     "/api/albums/:id",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Bad id" });
       const parsed = updateAlbumSchema.safeParse(req.body || {});
@@ -360,7 +361,7 @@ export function registerAlbumBuilderRoutes(
     "/api/albums/:id",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Bad id" });
       const result = await db
@@ -382,7 +383,7 @@ export function registerAlbumBuilderRoutes(
     isAuthenticated,
     coverUpload.single("cover"),
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Bad id" });
       const file = req.file as Express.Multer.File | undefined;
@@ -413,7 +414,7 @@ export function registerAlbumBuilderRoutes(
     isAuthenticated,
     audioUpload.single("audio"),
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Bad id" });
       const [album] = await db
@@ -477,7 +478,7 @@ export function registerAlbumBuilderRoutes(
     "/api/albums/:id/tracks",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Bad id" });
       const parsed = addTrackSchema.safeParse(req.body || {});
@@ -558,7 +559,7 @@ export function registerAlbumBuilderRoutes(
     "/api/albums/:id/tracks/:trackId",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = Number(req.params.id);
       const trackId = Number(req.params.trackId);
       if (!Number.isFinite(id) || !Number.isFinite(trackId)) {
@@ -588,7 +589,7 @@ export function registerAlbumBuilderRoutes(
     "/api/albums/:id/reorder",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Bad id" });
       const parsed = reorderSchema.safeParse(req.body || {});
@@ -646,7 +647,7 @@ export function registerAlbumBuilderRoutes(
     "/api/albums/:id/download.zip",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Bad id" });
       const [album] = await db
@@ -727,7 +728,7 @@ export function registerAlbumBuilderRoutes(
     "/api/albums/:id/distribution.json",
     isAuthenticated,
     async (req: any, res: Response) => {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Bad id" });
       const ctx = await resolveUserFeatures(userId, res);

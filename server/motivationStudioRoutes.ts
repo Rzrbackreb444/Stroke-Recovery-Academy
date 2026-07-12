@@ -3,6 +3,7 @@ import { eq, and, desc, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "./db";
 import { isAuthenticated } from "./replitAuth";
+import { getUserId } from "./lib/authUtils";
 import {
   motivationUsage,
   motivationArtifacts,
@@ -192,7 +193,7 @@ export function registerMotivationRoutes(app: Express) {
   // ── Usage / status ──────────────────────────────────────────────────
   app.get("/api/motivation/usage", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const [usage, premium, ttsReady] = await Promise.all([
         getOrCreateUsage(userId),
         isPremiumUser(userId),
@@ -214,7 +215,7 @@ export function registerMotivationRoutes(app: Express) {
 
   // ── Anthem Maker ────────────────────────────────────────────────────
   app.post("/api/motivation/anthem/generate", isAuthenticated, async (req: any, res: Response) => {
-    const userId = req.user.claims.sub;
+    const userId = getUserId(req)!;
     const parsed = anthemSchema.safeParse(req.body ?? {});
     if (!parsed.success) {
       return res.status(400).json({ error: "bad_input", message: parsed.error.issues[0]?.message ?? "Invalid input" });
@@ -265,7 +266,7 @@ export function registerMotivationRoutes(app: Express) {
 
   // ── Vision Card ─────────────────────────────────────────────────────
   app.post("/api/motivation/vision-card/generate", isAuthenticated, async (req: any, res: Response) => {
-    const userId = req.user.claims.sub;
+    const userId = getUserId(req)!;
     const parsed = visionSchema.safeParse(req.body ?? {});
     if (!parsed.success) {
       return res.status(400).json({ error: "bad_input", message: parsed.error.issues[0]?.message ?? "Invalid input" });
@@ -365,7 +366,7 @@ export function registerMotivationRoutes(app: Express) {
   // ── List user's recent artifacts ────────────────────────────────────
   app.get("/api/motivation/artifacts", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const rows = await db
         .select()
         .from(motivationArtifacts)

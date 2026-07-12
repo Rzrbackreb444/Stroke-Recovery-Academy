@@ -5,11 +5,12 @@
 import type { Express } from "express";
 import { db } from "../db";
 import { sql } from "drizzle-orm";
+import { getUserId } from "../lib/authUtils";
 
 export function registerRecommendationRoutes(app: Express, isAuthenticated: any) {
   app.get("/api/recommendations/next-courses", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req)!;
       const parsed = parseInt(String(req.query.limit ?? "4"), 10);
       const limit = Math.max(1, Math.min(Number.isFinite(parsed) && parsed > 0 ? parsed : 4, 10));
 

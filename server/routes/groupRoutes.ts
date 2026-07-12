@@ -6,6 +6,7 @@ import { db } from "../db";
 import { groups, groupMembers, groupPosts, users, type Group } from "@shared/schema";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { transcribeVideo } from "../videoTranscription";
+import { getUserId } from "../lib/authUtils";
 
 const CRISIS = [
   /\bkill (my|her|his|them)self\b/i, /\bsuicid(e|al)\b/i,
@@ -114,7 +115,7 @@ export function registerGroupRoutes(app: Express, isAuthenticated: any, uploadsD
   // Create a group
   app.post("/api/groups", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req)!;
       const name = String(req.body?.name || "").trim().slice(0, 120);
       const description = String(req.body?.description || "").trim().slice(0, 2000);
       const type = String(req.body?.type || "general").trim().slice(0, 20);
@@ -156,7 +157,7 @@ export function registerGroupRoutes(app: Express, isAuthenticated: any, uploadsD
   // Join / Leave
   app.post("/api/groups/:id/join", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req)!;
       const gid = parseInt(req.params.id, 10);
       if (!Number.isFinite(gid)) return res.status(400).json({ error: "Invalid id" });
       const g = (await db.select().from(groups).where(eq(groups.id, gid)).limit(1))[0];
@@ -178,7 +179,7 @@ export function registerGroupRoutes(app: Express, isAuthenticated: any, uploadsD
 
   app.post("/api/groups/:id/leave", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req)!;
       const gid = parseInt(req.params.id, 10);
       if (!Number.isFinite(gid)) return res.status(400).json({ error: "Invalid id" });
       const g = (await db.select().from(groups).where(eq(groups.id, gid)).limit(1))[0];
@@ -233,7 +234,7 @@ export function registerGroupRoutes(app: Express, isAuthenticated: any, uploadsD
 
   app.post("/api/groups/:id/posts", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req)!;
       const gid = parseInt(req.params.id, 10);
       if (!Number.isFinite(gid)) return res.status(400).json({ error: "Invalid id" });
 
@@ -262,7 +263,7 @@ export function registerGroupRoutes(app: Express, isAuthenticated: any, uploadsD
     upload.single("audio"),
     async (req: any, res) => {
       try {
-        const uid = req.user.claims.sub;
+        const uid = getUserId(req)!;
         const gid = parseInt(req.params.id, 10);
         if (!Number.isFinite(gid)) return res.status(400).json({ error: "Invalid id" });
         if (!req.file) return res.status(400).json({ error: "audio file required" });

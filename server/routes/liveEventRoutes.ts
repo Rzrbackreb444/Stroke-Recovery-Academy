@@ -6,6 +6,7 @@ import { z } from "zod";
 import { db } from "../db";
 import { videoSessions, videoSessionParticipants, users } from "@shared/schema";
 import { and, asc, desc, eq, gt, sql } from "drizzle-orm";
+import { getUserId } from "../lib/authUtils";
 
 const createSchema = z.object({
   title: z.string().min(3).max(160),
@@ -53,7 +54,7 @@ export function registerLiveEventRoutes(app: Express, isAuthenticated: any) {
   // Whether the current user is eligible to host a circle
   app.get("/api/circles/can-host", isAuthenticated, async (req: any, res) => {
     try {
-      const ok = await isHostOrAdmin(req.user.claims.sub);
+      const ok = await isHostOrAdmin(getUserId(req)!);
       res.json({ canHost: ok });
     } catch {
       res.json({ canHost: false });
@@ -94,7 +95,7 @@ export function registerLiveEventRoutes(app: Express, isAuthenticated: any) {
   app.get("/api/circles/:id", isAuthenticated, async (req: any, res) => {
     try {
       const id = parseInt(req.params.id, 10);
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req)!;
       const [event] = await db.select().from(videoSessions).where(eq(videoSessions.id, id)).limit(1);
       if (!event) return res.status(404).json({ error: "Not found" });
       const [host] = await db.select({
@@ -117,7 +118,7 @@ export function registerLiveEventRoutes(app: Express, isAuthenticated: any) {
   // Create — therapists & admins only
   app.post("/api/circles", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req)!;
       if (!(await isHostOrAdmin(uid))) {
         return res.status(403).json({ error: "Only verified therapists or admins can host circles" });
       }
@@ -170,7 +171,7 @@ export function registerLiveEventRoutes(app: Express, isAuthenticated: any) {
   app.post("/api/circles/:id/rsvp", isAuthenticated, async (req: any, res) => {
     try {
       const id = parseInt(req.params.id, 10);
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req)!;
       const [event] = await db.select().from(videoSessions).where(eq(videoSessions.id, id)).limit(1);
       if (!event) return res.status(404).json({ error: "Not found" });
       if (event.status === "ended" || event.status === "cancelled") {
@@ -230,7 +231,7 @@ export function registerLiveEventRoutes(app: Express, isAuthenticated: any) {
   app.post("/api/circles/:id/cancel", isAuthenticated, async (req: any, res) => {
     try {
       const id = parseInt(req.params.id, 10);
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req)!;
       const [event] = await db.select().from(videoSessions).where(eq(videoSessions.id, id)).limit(1);
       if (!event) return res.status(404).json({ error: "Not found" });
       const [u] = await db.select({ role: users.role }).from(users).where(eq(users.id, uid)).limit(1);

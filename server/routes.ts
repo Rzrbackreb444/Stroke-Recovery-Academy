@@ -1077,7 +1077,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
     if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
     const url = `/uploads/${req.file.filename}`;
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       await storage.createOrUpdateUserSettings(userId, { avatarUrl: url });
       res.json({ url });
     } catch (error) {
@@ -1089,7 +1089,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   // client never sits in an error state while the user is browsing logged-out.
   app.get('/api/user/settings', async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      const userId = req.user?.claims?.sub || req.user?.id;
       if (!userId) {
         return res.json({});
       }
@@ -1104,7 +1104,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   // PUT /api/user/settings
   app.put('/api/user/settings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { username, displayName, avatarUrl, bio, bannerUrl } = req.body;
       const settings = await storage.createOrUpdateUserSettings(userId, { username, displayName, avatarUrl, bannerUrl, bio } as any);
       res.json(settings);
@@ -1152,7 +1152,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   // POST /api/live/events
   app.post('/api/live/events', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { title, description, streamUrl, scheduledAt, coverImageUrl } = req.body;
       const { pool: dbPool } = await import('./db');
       await dbPool.query(`
@@ -1602,7 +1602,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
     try {
       const { pool: dbPool } = await import('./db');
       const result = await dbPool.query(
-        `SELECT * FROM platform_feedback ORDER BY created_at DESC`
+        `SELECT id, name, email, question_or_feedback, helpful_feature, biggest_problem, how_they_found_us, hear_about_us, created_at FROM platform_feedback ORDER BY created_at DESC`
       );
       res.json(result.rows);
     } catch (error) {
@@ -1643,8 +1643,8 @@ Last updated: ${new Date().toISOString().split('T')[0]}
       const ALLOWED = new Set(['new', 'triaged', 'in_progress', 'resolved', 'wont_fix']);
       const { pool: dbPool } = await import('./db');
       const result = status && ALLOWED.has(status)
-        ? await dbPool.query(`SELECT * FROM feedback_items WHERE status = $1 ORDER BY created_at DESC LIMIT 500`, [status])
-        : await dbPool.query(`SELECT * FROM feedback_items ORDER BY created_at DESC LIMIT 500`);
+        ? await dbPool.query(`SELECT id, user_id, route, kind, body, severity, status, contact_email, user_agent, created_at, updated_at FROM feedback_items WHERE status = $1 ORDER BY created_at DESC LIMIT 500`, [status])
+        : await dbPool.query(`SELECT id, user_id, route, kind, body, severity, status, contact_email, user_agent, created_at, updated_at FROM feedback_items ORDER BY created_at DESC LIMIT 500`);
       res.json(result.rows);
     } catch (error) {
       console.error('Feedback items fetch error:', error);
@@ -1923,7 +1923,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
       const slugSafe = String(d.slug).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 200);
 
       const [row] = await dbInst.insert(blogPosts).values({
-        authorId: req.user.claims.sub,
+        authorId: getUserId(req)!,
         slug: `${slugSafe}-${Date.now().toString(36)}`,
         title: String(d.title).slice(0, 200),
         excerpt: String(d.excerpt || '').slice(0, 500),
@@ -2305,7 +2305,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
 
   app.post('/api/checkout', isAuthenticated, paymentCheckoutRateLimit, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -2340,7 +2340,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
 
   app.get('/api/subscription', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
       if (!user?.stripeSubscriptionId) {
         return res.json({ subscription: null });
@@ -2356,7 +2356,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
 
   app.post('/api/customer-portal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
       if (!user?.stripeCustomerId) {
         return res.status(400).json({ message: "No Stripe customer found" });
@@ -2381,7 +2381,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Create Connect account and get onboarding link
   app.post('/api/stripe/connect/onboard', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -2400,7 +2400,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Get Connect account status
   app.get('/api/stripe/connect/status', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const status = await stripeService.getConnectAccountStatus(userId);
       res.json(status);
     } catch (error: any) {
@@ -2412,7 +2412,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Get Connect dashboard login link
   app.get('/api/stripe/connect/login', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const url = await stripeService.createConnectLoginLink(userId);
       res.json({ url });
     } catch (error: any) {
@@ -2424,7 +2424,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Get creator earnings
   app.get('/api/creator/earnings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const data = await stripeService.getCreatorEarnings(userId);
       res.json(data);
     } catch (error: any) {
@@ -2436,7 +2436,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Get creator payouts
   app.get('/api/creator/payouts', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const payouts = await stripeService.getCreatorPayouts(userId);
       res.json(payouts);
     } catch (error: any) {
@@ -2448,7 +2448,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Request payout transfer
   app.post('/api/creator/payouts/transfer', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { earningIds } = req.body;
       
       if (!earningIds?.length) {
@@ -2504,7 +2504,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
 
   app.post('/api/forum/threads', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { categoryId, title, content } = req.body;
 
       // P2-01: crisis detection on the original post too
@@ -2542,7 +2542,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
 
   app.post('/api/forum/posts', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { threadId, content, parentId } = req.body;
 
       // P2-01: crisis detection
@@ -2587,7 +2587,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Update a post (author or moderator)
   app.patch('/api/forum/posts/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const postId = parseInt(req.params.id);
       const { content } = req.body;
       
@@ -2612,7 +2612,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Delete a post (author or moderator)
   app.delete('/api/forum/posts/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const postId = parseInt(req.params.id);
       
       const post = await storage.getForumPost(postId);
@@ -2636,7 +2636,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // React to a post
   app.post('/api/forum/posts/:id/react', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const postId = parseInt(req.params.id);
       const { reactionType = 'like' } = req.body;
       
@@ -2663,7 +2663,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Moderation: Lock/unlock thread
   app.patch('/api/forum/threads/:id/moderate', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
       
       if (!['moderator', 'admin'].includes(user?.role || '')) {
@@ -2682,7 +2682,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   // Delete thread (moderator only)
   app.delete('/api/forum/threads/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
       
       if (!['moderator', 'admin'].includes(user?.role || '')) {
@@ -3825,7 +3825,7 @@ DO NOT include any text - the title will be added separately.`;
   // Get all book images for user
   app.get('/api/book/images', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.id;
+      const userId = getUserId(req)!;
       const images = await db.select().from(bookImageAssets).where(eq(bookImageAssets.ownerId, userId)).orderBy(desc(bookImageAssets.createdAt));
       res.json(images);
     } catch (error) {
@@ -3862,7 +3862,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
 
       // Save to database
       const [image] = await db.insert(bookImageAssets).values({
-        ownerId: req.user.id,
+        ownerId: getUserId(req)!,
         name: `Generated: ${prompt.substring(0, 50)}`,
         origin: 'generated',
         purpose: purpose || 'illustration',
@@ -3890,7 +3890,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
     const { name, imageData, purpose, chapterIndex } = req.body;
     try {
       const [image] = await db.insert(bookImageAssets).values({
-        ownerId: req.user.id,
+        ownerId: getUserId(req)!,
         name: name || 'Uploaded Image',
         origin: 'uploaded',
         purpose: purpose || 'illustration',
@@ -3910,7 +3910,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
     const { id } = req.params;
     try {
       const image = await db.select().from(bookImageAssets).where(eq(bookImageAssets.id, parseInt(id))).limit(1);
-      if (!image.length || image[0].ownerId !== req.user.id) {
+      if (!image.length || image[0].ownerId !== getUserId(req)!) {
         return res.status(404).json({ message: 'Image not found' });
       }
       
@@ -3931,7 +3931,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
   app.delete('/api/book/images/:id', isAuthenticated, async (req: any, res) => {
     const { id } = req.params;
     try {
-      await db.delete(bookImageAssets).where(and(eq(bookImageAssets.id, parseInt(id)), eq(bookImageAssets.ownerId, req.user.id)));
+      await db.delete(bookImageAssets).where(and(eq(bookImageAssets.id, parseInt(id)), eq(bookImageAssets.ownerId, getUserId(req)!)));
       res.json({ success: true });
     } catch (error) {
       console.error("Error deleting image:", error);
@@ -3954,7 +3954,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
         ...(name && { name }),
         ...(purpose && { purpose }),
         updatedAt: new Date(),
-      }).where(and(eq(bookImageAssets.id, parseInt(id)), eq(bookImageAssets.ownerId, req.user.id))).returning();
+      }).where(and(eq(bookImageAssets.id, parseInt(id)), eq(bookImageAssets.ownerId, getUserId(req)!))).returning();
       res.json({ success: true, image: updated });
     } catch (error) {
       console.error("Error updating image:", error);
@@ -3969,7 +3969,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
   // Create new book project
   app.post('/api/book-projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4002,7 +4002,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
   // Book Studio tier / quota info
   app.get('/api/book-studio/tier-info', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4036,7 +4036,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
   // List user's book projects
   app.get('/api/book-projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4056,7 +4056,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
   // Get single book project with sections
   app.get('/api/book-projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4089,7 +4089,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
   // Update book project (including autosave support)
   app.patch('/api/book-projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4137,7 +4137,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
   // Delete book project
   app.delete('/api/book-projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4166,7 +4166,7 @@ Clean composition, artistic, evocative. No text or words in the image.`;
   // Extract facts and update accumulated knowledge after each conversation
   app.post('/api/book-projects/:id/learn', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4296,7 +4296,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Get accumulated knowledge for a project
   app.get('/api/book-projects/:id/knowledge', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4504,7 +4504,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Create new workflow (authenticated)
   app.post('/api/workflows', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) return res.status(401).json({ message: 'Unauthorized' });
 
       const slug = req.body.title.toLowerCase()
@@ -4528,7 +4528,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Get user's owned/purchased workflows
   app.get('/api/workflows/my-workflows', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) return res.status(401).json({ message: 'Unauthorized' });
 
       // Get user's owned workflows
@@ -4556,7 +4556,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Add section/chapter to book project
   app.post('/api/book-projects/:id/sections', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4602,7 +4602,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Update section
   app.patch('/api/book-projects/:id/sections/:sectionId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4653,7 +4653,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Delete section
   app.delete('/api/book-projects/:id/sections/:sectionId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4695,7 +4695,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Reorder sections
   app.put('/api/book-projects/:id/sections/reorder', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4744,7 +4744,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Add image placement
   app.post('/api/book-projects/:id/image-placements', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4778,7 +4778,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Update image placement
   app.patch('/api/book-projects/:id/image-placements/:placementId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4826,7 +4826,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Delete image placement
   app.delete('/api/book-projects/:id/image-placements/:placementId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4864,7 +4864,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Get user's author profiles
   app.get('/api/author-profiles', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4884,7 +4884,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Create author profile
   app.post('/api/author-profiles', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -4914,7 +4914,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Update author profile
   app.patch('/api/author-profiles/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -5012,7 +5012,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
   // Analyze manuscript for publication readiness
   app.post('/api/book-projects/:id/analyze', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = getUserId(req)!;
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -6114,7 +6114,7 @@ ${analysisPrompts[analysisType || 'full']}`;
       const [note] = await db.insert(projectNotes).values({
         projectId: parseInt(projectId),
         chapterId: chapterId ? parseInt(chapterId) : null,
-        userId: req.user.id,
+        userId: getUserId(req)!,
         noteType: noteType || 'general',
         content,
         priority: priority || 'normal',
@@ -6212,7 +6212,7 @@ ${analysisPrompts[analysisType || 'full']}`;
       
       const [doctrine] = await db.insert(doctrineOutlines).values({
         projectId: parseInt(projectId),
-        userId: req.user.id,
+        userId: getUserId(req)!,
         title: title || 'Book Outline',
         description,
         isEnabled: true
@@ -6354,7 +6354,7 @@ Provide specific, actionable feedback with examples.`;
       const creditCost = 10;
       
       // Check and deduct credits
-      const hasCredits = await creditService.hasEnoughCredits(req.user.id, creditCost);
+      const hasCredits = await creditService.hasEnoughCredits(getUserId(req)!, creditCost);
       if (!hasCredits) {
         return res.status(402).json({ message: "Insufficient credits", required: creditCost });
       }
@@ -6392,7 +6392,7 @@ Provide your feedback as JSON:
 }`;
 
       const result = await generateCoachResponse(prompt, []);
-      await creditService.deductCredits(req.user.id, creditCost, 'Developmental edit', 'developmental_edit', { contentLength: content.length });
+      await creditService.deductCredits(getUserId(req)!, creditCost, 'Developmental edit', 'developmental_edit', { contentLength: content.length });
       
       try {
         const jsonMatch = result.response.match(/\{[\s\S]*\}/);
@@ -6416,7 +6416,7 @@ Provide your feedback as JSON:
       const { content, style } = req.body;
       const creditCost = 7;
       
-      const hasCredits = await creditService.hasEnoughCredits(req.user.id, creditCost);
+      const hasCredits = await creditService.hasEnoughCredits(getUserId(req)!, creditCost);
       if (!hasCredits) {
         return res.status(402).json({ message: "Insufficient credits", required: creditCost });
       }
@@ -6447,7 +6447,7 @@ Respond with JSON:
 }`;
 
       const result = await generateCoachResponse(prompt, []);
-      await creditService.deductCredits(req.user.id, creditCost, 'Line edit', 'line_edit', { contentLength: content.length });
+      await creditService.deductCredits(getUserId(req)!, creditCost, 'Line edit', 'line_edit', { contentLength: content.length });
       
       try {
         const jsonMatch = result.response.match(/\{[\s\S]*\}/);
@@ -6471,7 +6471,7 @@ Respond with JSON:
       const { content, styleGuide } = req.body;
       const creditCost = 5;
       
-      const hasCredits = await creditService.hasEnoughCredits(req.user.id, creditCost);
+      const hasCredits = await creditService.hasEnoughCredits(getUserId(req)!, creditCost);
       if (!hasCredits) {
         return res.status(402).json({ message: "Insufficient credits", required: creditCost });
       }
@@ -6503,7 +6503,7 @@ Respond with JSON:
 }`;
 
       const result = await generateCoachResponse(prompt, []);
-      await creditService.deductCredits(req.user.id, creditCost, 'Copy edit', 'copy_edit', { contentLength: content.length });
+      await creditService.deductCredits(getUserId(req)!, creditCost, 'Copy edit', 'copy_edit', { contentLength: content.length });
       
       try {
         const jsonMatch = result.response.match(/\{[\s\S]*\}/);
@@ -6527,7 +6527,7 @@ Respond with JSON:
       const { content } = req.body;
       const creditCost = 3;
       
-      const hasCredits = await creditService.hasEnoughCredits(req.user.id, creditCost);
+      const hasCredits = await creditService.hasEnoughCredits(getUserId(req)!, creditCost);
       if (!hasCredits) {
         return res.status(402).json({ message: "Insufficient credits", required: creditCost });
       }
@@ -6553,7 +6553,7 @@ Respond with JSON:
 }`;
 
       const result = await generateCoachResponse(prompt, []);
-      await creditService.deductCredits(req.user.id, creditCost, 'Proofreading', 'proofread', { contentLength: content.length });
+      await creditService.deductCredits(getUserId(req)!, creditCost, 'Proofreading', 'proofread', { contentLength: content.length });
       
       try {
         const jsonMatch = result.response.match(/\{[\s\S]*\}/);
@@ -6581,7 +6581,7 @@ Respond with JSON:
       const { topic, depth, focusAreas } = req.body;
       const creditCost = depth === 'deep' ? 15 : 7;
       
-      const hasCredits = await creditService.hasEnoughCredits(req.user.id, creditCost);
+      const hasCredits = await creditService.hasEnoughCredits(getUserId(req)!, creditCost);
       if (!hasCredits) {
         return res.status(402).json({ message: "Insufficient credits", required: creditCost });
       }
@@ -6612,7 +6612,7 @@ Respond with JSON:
 }`;
 
       const result = await generateCoachResponse(prompt, []);
-      await creditService.deductCredits(req.user.id, creditCost, 'Research assistant', 'research', { topic, depth });
+      await creditService.deductCredits(getUserId(req)!, creditCost, 'Research assistant', 'research', { topic, depth });
       
       try {
         const jsonMatch = result.response.match(/\{[\s\S]*\}/);
@@ -6636,7 +6636,7 @@ Respond with JSON:
       const { sources, style } = req.body;
       const creditCost = 5;
       
-      const hasCredits = await creditService.hasEnoughCredits(req.user.id, creditCost);
+      const hasCredits = await creditService.hasEnoughCredits(getUserId(req)!, creditCost);
       if (!hasCredits) {
         return res.status(402).json({ message: "Insufficient credits", required: creditCost });
       }
@@ -6663,7 +6663,7 @@ Respond with JSON:
 }`;
 
       const result = await generateCoachResponse(prompt, []);
-      await creditService.deductCredits(req.user.id, creditCost, 'Citation generation', 'citations', { style: citationStyle, sourceCount: sources.length });
+      await creditService.deductCredits(getUserId(req)!, creditCost, 'Citation generation', 'citations', { style: citationStyle, sourceCount: sources.length });
       
       try {
         const jsonMatch = result.response.match(/\{[\s\S]*\}/);
@@ -6687,7 +6687,7 @@ Respond with JSON:
       const { content, genre, focusAreas } = req.body;
       const creditCost = 3;
       
-      const hasCredits = await creditService.hasEnoughCredits(req.user.id, creditCost);
+      const hasCredits = await creditService.hasEnoughCredits(getUserId(req)!, creditCost);
       if (!hasCredits) {
         return res.status(402).json({ message: "Insufficient credits", required: creditCost });
       }
@@ -6719,7 +6719,7 @@ Provide suggestions as JSON:
 }`;
 
       const result = await generateCoachResponse(prompt, []);
-      await creditService.deductCredits(req.user.id, creditCost, 'Writing coach feedback', 'writing_coach', { contentLength: content.length });
+      await creditService.deductCredits(getUserId(req)!, creditCost, 'Writing coach feedback', 'writing_coach', { contentLength: content.length });
       
       try {
         const jsonMatch = result.response.match(/\{[\s\S]*\}/);
@@ -7372,7 +7372,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   // Get music projects for user
   app.get('/api/music/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { musicProjects } = await import("@shared/schema");
       const rows = await db.select().from(musicProjects)
         .where(eq(musicProjects.userId, userId))
@@ -7387,7 +7387,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   // Create music project
   app.post('/api/music/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { musicProjects } = await import("@shared/schema");
       const [row] = await db.insert(musicProjects).values({
         userId,
@@ -7412,7 +7412,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   // Update music project
   app.patch('/api/music/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       const { musicProjects } = await import("@shared/schema");
       const [existing] = await db.select().from(musicProjects).where(eq(musicProjects.id, id));
@@ -7432,7 +7432,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   // Publish / unpublish music project
   app.post('/api/music/projects/:id/publish', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       const { musicProjects } = await import("@shared/schema");
       const [existing] = await db.select().from(musicProjects).where(eq(musicProjects.id, id));
@@ -7453,7 +7453,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   // ============================================================================
   app.get('/api/my-courses', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { courses } = await import("@shared/schema");
       const rows = await db.select().from(courses)
         .where(eq(courses.instructorId, userId))
@@ -7467,7 +7467,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.get('/api/my-courses/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       const { courses, courseModules, courseLessons } = await import("@shared/schema");
       const [course] = await db.select().from(courses).where(eq(courses.id, id));
@@ -7620,7 +7620,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.post('/api/my-courses', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const course = await saveCourseTree(userId, req.body);
       res.json(course);
     } catch (error) {
@@ -7631,7 +7631,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.patch('/api/my-courses/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       const course = await saveCourseTree(userId, req.body, id);
       res.json(course);
@@ -7644,7 +7644,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.post('/api/my-courses/:id/publish', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       const { courses } = await import("@shared/schema");
       const [existing] = await db.select().from(courses).where(eq(courses.id, id));
@@ -7662,7 +7662,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.delete('/api/my-courses/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       const { courses } = await import("@shared/schema");
       const [existing] = await db.select().from(courses).where(eq(courses.id, id));
@@ -7680,7 +7680,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   // ============================================================================
   app.get('/api/video/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { videoProjects } = await import("@shared/schema");
       const rows = await db.select().from(videoProjects)
         .where(eq(videoProjects.userId, userId))
@@ -7694,7 +7694,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.post('/api/video/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { videoProjects } = await import("@shared/schema");
       const [row] = await db.insert(videoProjects).values({
         userId,
@@ -7718,7 +7718,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.patch('/api/video/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       const { videoProjects } = await import("@shared/schema");
       const [existing] = await db.select().from(videoProjects).where(eq(videoProjects.id, id));
@@ -7737,7 +7737,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.post('/api/video/projects/:id/publish', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       const { videoProjects } = await import("@shared/schema");
       const [existing] = await db.select().from(videoProjects).where(eq(videoProjects.id, id));
@@ -7755,7 +7755,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.delete('/api/video/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       const { videoProjects } = await import("@shared/schema");
       const [existing] = await db.select().from(videoProjects).where(eq(videoProjects.id, id));
@@ -7773,7 +7773,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
   // ============================================================================
   app.get('/api/image/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { imageProjects } = await import("@shared/schema");
       const rows = await db.select().from(imageProjects)
         .where(eq(imageProjects.userId, userId))
@@ -7787,7 +7787,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.post('/api/image/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { imageProjects } = await import("@shared/schema");
       if (!req.body.imageUrl) return res.status(400).json({ message: "imageUrl required" });
       const [row] = await db.insert(imageProjects).values({
@@ -7812,7 +7812,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.patch('/api/image/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       const { imageProjects } = await import("@shared/schema");
       const [existing] = await db.select().from(imageProjects).where(eq(imageProjects.id, id));
@@ -7831,7 +7831,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.post('/api/image/projects/:id/publish', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       const { imageProjects } = await import("@shared/schema");
       const [existing] = await db.select().from(imageProjects).where(eq(imageProjects.id, id));
@@ -7849,7 +7849,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
 
   app.delete('/api/image/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       const { imageProjects } = await import("@shared/schema");
       const [existing] = await db.select().from(imageProjects).where(eq(imageProjects.id, id));
@@ -8213,7 +8213,7 @@ Respond in JSON format:
   // Revenue Pulse - Real-time market analytics for Intelligence HUD
   app.get('/api/book-studio/revenue-pulse', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      const userId = getUserId(req)!;
       
       // Fetch real earnings data
       const earnings = await db.select()
@@ -8409,7 +8409,7 @@ Respond in JSON format:
   // Entity Sync - Cross-studio entity sharing via Author Brain
   app.get('/api/book-studio/entities', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      const userId = getUserId(req)!;
       const { projectId, type } = req.query;
       
       // Fetch entities from book projects and related data
@@ -8960,7 +8960,7 @@ Respond in JSON format:
   // Get white label configuration
   app.get('/api/white-label/config', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.id;
+      const userId = getUserId(req)!;
       const config = await storage.getWhiteLabelConfig(userId);
       
       if (!config) {
@@ -8989,7 +8989,7 @@ Respond in JSON format:
   // Save white label configuration
   app.post('/api/white-label/config', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.id;
+      const userId = getUserId(req)!;
       const {
         brandName,
         logoUrl,
@@ -9067,7 +9067,7 @@ Respond in JSON format:
       const verified = domain.includes('.');
       
       if (verified) {
-        await storage.updateWhiteLabelDomainStatus(req.user.id, domain, true);
+        await storage.updateWhiteLabelDomainStatus(getUserId(req)!, domain, true);
       }
 
       res.json({
@@ -9127,7 +9127,7 @@ Respond in JSON format:
     try {
       const { apiProvider, endpoint, tokensUsed, costUsd } = req.body;
       
-      const config = await storage.getWhiteLabelConfig(req.user.id);
+      const config = await storage.getWhiteLabelConfig(getUserId(req)!);
       if (!config) {
         return res.status(404).json({ message: "White label config not found" });
       }
@@ -9150,7 +9150,7 @@ Respond in JSON format:
   // Get API usage stats
   app.get('/api/white-label/usage-stats', isAuthenticated, async (req: any, res) => {
     try {
-      const config = await storage.getWhiteLabelConfig(req.user.id);
+      const config = await storage.getWhiteLabelConfig(getUserId(req)!);
       if (!config) {
         return res.json({ usage: [] });
       }
@@ -9613,7 +9613,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       let coachPersona: { name: string; creed: string; archetypeKey: string } | null = null;
 
       if (req.user?.claims?.sub) {
-        const userId = req.user.claims.sub;
+        const userId = getUserId(req)!;
         try {
           // Fetch user's recovery context for personalized coaching, including
           // today's Never Zero reps + audit so Sasquatch references the actual
@@ -9828,7 +9828,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Get comprehensive dashboard data
   app.get('/api/recovery/dashboard', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const enrollment = await storage.getUserEnrollment(userId);
       const streak = await storage.getUserStreak(userId);
       const todayCheckin = await storage.getDailyCheckin(userId, new Date());
@@ -9921,7 +9921,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Get user enrollment
   app.get('/api/recovery/enrollment', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const enrollment = await storage.getUserEnrollment(userId);
       res.json(enrollment || null);
     } catch (error) {
@@ -9933,7 +9933,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Create enrollment (from builder)
   app.post('/api/recovery/enrollment', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { programId } = req.body;
       
       const existing = await storage.getUserEnrollment(userId);
@@ -9958,7 +9958,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Get user streak
   app.get('/api/recovery/streak', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const streak = await storage.getUserStreak(userId);
       res.json(streak || { currentStreak: 0, longestStreak: 0, totalActiveDays: 0 });
     } catch (error) {
@@ -9970,7 +9970,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Get today's check-in
   app.get('/api/recovery/checkin/today', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const checkin = await storage.getDailyCheckin(userId, new Date());
       res.json(checkin || null);
     } catch (error) {
@@ -9982,7 +9982,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Create daily check-in
   app.post('/api/recovery/checkin', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { moodScore, energyScore, painScore, effortScore, winsToday, challengesToday, gratitude } = req.body;
       
       const existing = await storage.getDailyCheckin(userId, new Date());
@@ -10055,7 +10055,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Get user habits
   app.get('/api/recovery/habits', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const habits = await storage.getUserHabits(userId);
       res.json(habits);
     } catch (error) {
@@ -10078,7 +10078,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Add new habit
   app.post('/api/recovery/habits', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { habitId, customName, targetDays = 66 } = req.body;
       
       if (!habitId) {
@@ -10117,7 +10117,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Brain Gym — log a completed game (gives streak credit, no-op for guests)
   app.post('/api/recovery/brain-gym/complete', async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      const userId = req.user?.claims?.sub || req.user?.id;
       if (!userId) {
         return res.json({ ok: true, guest: true });
       }
@@ -10192,7 +10192,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Brain Gym — personal stats (lifetime totals + per-game breakdown)
   app.get('/api/recovery/brain-gym/stats', async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      const userId = req.user?.claims?.sub || req.user?.id;
       if (!userId) {
         return res.json({ totalSolved: 0, byGame: {}, fastestSec: null });
       }
@@ -10267,7 +10267,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       // Keep only one fastest entry per user
       const seen = new Set<string>();
       const top = [] as Array<{ rank: number; name: string; durationSec: number; hintsUsed: number; isYou: boolean }>;
-      const me = req.user?.claims?.sub;
+      const me = req.user?.claims?.sub || req.user?.id;
       for (const r of rows) {
         if (seen.has(r.userId)) continue;
         seen.add(r.userId);
@@ -10402,7 +10402,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
 
   // Local admin guard kept as an alias for legacy call sites — delegates to
   // the canonical `requireAdmin` middleware so we have one source of truth.
-  const requireAdminLocal = requireAdmin;
+  // requireAdmin removed — use requireAdmin directly for consistency
 
   function spotlightMonthKey(date = new Date()): string {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
@@ -10420,7 +10420,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // GET my opt-in status
   app.get('/api/recovery/spotlight/me', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
       res.json({
         optedIn: !!user?.spotlightOptedIn,
@@ -10436,7 +10436,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // PUT my opt-in status (must consent if opting in)
   app.put('/api/recovery/spotlight/me', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const optedIn = Boolean(req.body?.optedIn);
       const consent = Boolean(req.body?.consent);
       if (optedIn && !consent) {
@@ -10522,7 +10522,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
 
   // ── Admin: spotlight pipeline ──────────────────────────────────────────────
   // GET pending picks (current month, status pending or approved-not-published)
-  app.get('/api/admin/spotlight/pending', isAuthenticated, requireAdminLocal, async (_req, res) => {
+  app.get('/api/admin/spotlight/pending', isAuthenticated, requireAdmin, async (_req, res) => {
     try {
       const { db: dbInst } = await import('./db');
       const { spotlights } = await import('../shared/schema');
@@ -10542,7 +10542,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
 
   // POST select-monthly: weighted-random pick from opted-in + consented users
   // (paid subscribers count 3x; users already picked this month are excluded)
-  app.post('/api/admin/spotlight/select-monthly', isAuthenticated, requireAdminLocal, async (_req, res) => {
+  app.post('/api/admin/spotlight/select-monthly', isAuthenticated, requireAdmin, async (_req, res) => {
     try {
       const { db: dbInst } = await import('./db');
       const { users: usersTable, spotlights } = await import('../shared/schema');
@@ -10614,7 +10614,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   });
 
   // POST approve & publish a pick (with editorial fields)
-  app.post('/api/admin/spotlight/:id/approve', isAuthenticated, requireAdminLocal, async (req: any, res) => {
+  app.post('/api/admin/spotlight/:id/approve', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ message: 'Invalid id' });
@@ -10646,7 +10646,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   });
 
   // POST reject a pick
-  app.post('/api/admin/spotlight/:id/reject', isAuthenticated, requireAdminLocal, async (req: any, res) => {
+  app.post('/api/admin/spotlight/:id/reject', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ message: 'Invalid id' });
@@ -10667,7 +10667,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   });
 
   // Send the monthly Spotlight newsletter to all confirmed subscribers
-  app.post('/api/admin/spotlight/broadcast', isAuthenticated, requireAdminLocal, async (_req, res) => {
+  app.post('/api/admin/spotlight/broadcast', isAuthenticated, requireAdmin, async (_req, res) => {
     try {
       const { db: dbInst } = await import('./db');
       const { spotlights, newsletterSubscribers } = await import('../shared/schema');
@@ -10751,7 +10751,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // GET /api/recovery/me/state — aggregated personal dashboard state
   app.get('/api/recovery/me/state', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { db: dbInst } = await import('./db');
       const { sasquatchAssessments, survivorGoals, survivorPlans } = await import('../shared/schema');
       const { eq, desc } = await import('drizzle-orm');
@@ -10802,7 +10802,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // GET /api/recovery/routine/today — load or create today's routine entry
   app.get('/api/recovery/routine/today', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const today = new Date().toISOString().slice(0, 10);
       const row = await db.execute(
         sql`SELECT * FROM routine_completions WHERE user_id = ${userId} AND date = ${today} LIMIT 1`
@@ -10837,7 +10837,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // PUT /api/recovery/routine/today — upsert today's routine
   app.put('/api/recovery/routine/today', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const today = new Date().toISOString().slice(0, 10);
       const { level, completedTasks, notes } = req.body || {};
       const lvl = typeof level === 'number' ? Math.max(0, Math.min(4, level)) : 2;
@@ -10865,7 +10865,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // input to the Bonfire walkthrough.
   app.get('/api/recovery/today/recommendation', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const today = new Date().toISOString().slice(0, 10);
 
       // ── Read survivor profile so we can personalize. Optional: a brand-new
@@ -11108,7 +11108,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // Idempotent upsert keyed by (user_id, date, task_id).
   app.post('/api/recovery/today/feedback', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const today = new Date().toISOString().slice(0, 10);
       const { taskId, level, reaction, date } = req.body || {};
       const validReactions = new Set(['good', 'hard', 'too_hard', 'skipped']);
@@ -11160,7 +11160,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // POST /api/recovery/assessment — save a new Sasquatch Scale snapshot
   app.post('/api/recovery/assessment', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { physical, cognitive, speech, emotional, memory, notes } = req.body || {};
       const scores = { physical, cognitive, speech, emotional, memory };
       for (const [k, v] of Object.entries(scores)) {
@@ -11184,7 +11184,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // POST /api/recovery/goals — replace user's goal set with provided list
   app.post('/api/recovery/goals', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const goals = Array.isArray(req.body?.goals) ? req.body.goals : [];
       if (goals.length === 0 || goals.length > 10) {
         return res.status(400).json({ message: 'Provide 1–10 goals' });
@@ -11220,7 +11220,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   // POST /api/recovery/plan/generate — call Gemini, store + return structured plan
   app.post('/api/recovery/plan/generate', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { db: dbInst } = await import('./db');
       const { sasquatchAssessments, survivorGoals, survivorPlans } = await import('../shared/schema');
       const { eq, desc } = await import('drizzle-orm');
@@ -11519,7 +11519,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // POST /api/recovery/exercise-logs — log a completed set
   app.post('/api/recovery/exercise-logs', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { db: dbInst } = await import('./db');
       const { recoveryExerciseLogs, insertRecoveryExerciseLogSchema } = await import('../shared/schema');
       const data = insertRecoveryExerciseLogSchema.parse({ ...req.body, userId });
@@ -11535,7 +11535,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // GET /api/recovery/exercise-logs/recent — last N days for current user
   app.get('/api/recovery/exercise-logs/recent', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const days = Math.min(Math.max(parseInt(String(req.query.days || '7')) || 7, 1), 90);
       const { db: dbInst } = await import('./db');
       const { recoveryExerciseLogs, recoveryExercises } = await import('../shared/schema');
@@ -11580,7 +11580,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Get user milestones
   app.get('/api/recovery/milestones', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const milestones = await storage.getUserMilestones(userId);
       const allMilestones = await storage.getRecoveryMilestones();
       res.json({ earned: milestones, available: allMilestones });
@@ -11593,7 +11593,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Draft Your Legend - Export journal to Google Docs
   app.post('/api/recovery/export-legend', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
       const days = parseInt(req.body.days) || 30;
       
@@ -11658,7 +11658,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Get user's publishing projects
   app.get('/api/publishing/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projects = await storage.getPublishingProjects(userId);
       res.json(projects);
     } catch (error) {
@@ -11670,7 +11670,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Create new publishing project
   app.post('/api/publishing/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { title, subtitle, description, genre, targetAudience } = req.body;
       
       if (!title) {
@@ -11698,7 +11698,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Get single publishing project
   app.get('/api/publishing/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = parseInt(req.params.id);
       
       const project = await storage.getPublishingProject(projectId);
@@ -11721,7 +11721,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Update publishing project
   app.patch('/api/publishing/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = parseInt(req.params.id);
       
       const project = await storage.getPublishingProject(projectId);
@@ -11758,7 +11758,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Delete publishing project
   app.delete('/api/publishing/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = parseInt(req.params.id);
       
       const project = await storage.getPublishingProject(projectId);
@@ -11851,7 +11851,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Recovery enrollment endpoint
   app.post('/api/recovery/enrollment', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { strokeDate, strokeType, affectedSide, mobilityLevel, handFunction, speechAbility, goals, dailyTime } = req.body;
       
       // 1. Update or create user profile
@@ -11937,7 +11937,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Get user's earned achievements
   app.get('/api/achievements', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const achievements = await storage.getUserAchievements(userId);
       res.json(achievements);
     } catch (error) {
@@ -11960,7 +11960,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Check and award streak-based milestones
   app.get('/api/achievements/check-streaks', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const streak = await storage.getUserStreak(userId);
       const currentStreak = streak?.currentStreak || 0;
       const awarded = await storage.checkAndAwardStreakMilestones(userId, currentStreak);
@@ -11974,7 +11974,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Claim a milestone achievement
   app.post('/api/achievements/:milestoneId/claim', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const milestoneId = parseInt(req.params.milestoneId);
       const { notes } = req.body;
       
@@ -12002,7 +12002,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Get achievement stats for report card
   app.get('/api/achievements/stats', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const achievements = await storage.getUserAchievements(userId);
       const streak = await storage.getUserStreak(userId);
       const milestones = await storage.getAvailableMilestones();
@@ -12053,7 +12053,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Get user's current pod
   app.get('/api/user/pod', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const pod = await storage.getUserPod(userId);
       if (!pod) {
         return res.json(null);
@@ -12109,7 +12109,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Create a new pod
   app.post('/api/pods', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { name, description, focusArea, meetingSchedule, isPrivate, maxMembers } = req.body;
       
       if (!name) {
@@ -12140,7 +12140,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Join a pod
   app.post('/api/pods/:id/join', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const podId = parseInt(req.params.id);
       
       // Check if pod exists and has space
@@ -12170,7 +12170,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Leave a pod
   app.post('/api/pods/:id/leave', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const podId = parseInt(req.params.id);
       
       await storage.leavePod(userId, podId);
@@ -12184,7 +12184,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Reminders
   app.get('/api/reminders', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const reminders = await storage.getUserReminders(userId);
       res.json(reminders);
     } catch (error) {
@@ -12194,7 +12194,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/reminders', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const reminder = await storage.createReminder({ ...req.body, userId });
       res.json(reminder);
     } catch (error) {
@@ -12223,7 +12223,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Stand Goals
   app.get('/api/wellness/stand-goal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const goal = await storage.getUserStandGoal(userId);
       const count = await storage.getTodayStandCount(userId);
       res.json({ goal, todayCount: count });
@@ -12234,7 +12234,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/wellness/stand-goal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const goal = await storage.createOrUpdateStandGoal(userId, req.body);
       res.json(goal);
     } catch (error) {
@@ -12244,7 +12244,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/wellness/stand-log', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const log = await storage.logStand(userId, req.body.duration);
       res.json(log);
     } catch (error) {
@@ -12255,7 +12255,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Hydration Goals
   app.get('/api/wellness/hydration-goal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const goal = await storage.getUserHydrationGoal(userId);
       const amount = await storage.getTodayHydration(userId);
       res.json({ goal, todayAmount: amount });
@@ -12266,7 +12266,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/wellness/hydration-goal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const goal = await storage.createOrUpdateHydrationGoal(userId, req.body);
       res.json(goal);
     } catch (error) {
@@ -12276,7 +12276,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/wellness/hydration-log', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const log = await storage.logHydration(userId, req.body.amount);
       res.json(log);
     } catch (error) {
@@ -12287,7 +12287,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   // Exercise Goals
   app.get('/api/wellness/exercise-goal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const goal = await storage.getUserExerciseGoal(userId);
       const duration = await storage.getTodayExercise(userId);
       res.json({ goal, todayDuration: duration });
@@ -12298,7 +12298,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/wellness/exercise-goal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const goal = await storage.createOrUpdateExerciseGoal(userId, req.body);
       res.json(goal);
     } catch (error) {
@@ -12308,7 +12308,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/wellness/exercise-log', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const log = await storage.logExercise(userId, req.body.type, req.body.duration, req.body.intensity);
       res.json(log);
     } catch (error) {
@@ -12347,7 +12347,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     try {
       const { recoveryStripeService } = await import('./recoveryStripeService');
       const { creatorId, amount, storyId } = req.body;
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
 
       let stripeCustomerId = user?.stripeCustomerId || '';
@@ -12382,7 +12382,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
       if (!validTiers.includes(tier)) {
         return res.status(400).json({ message: `Invalid tier. Must be one of: ${validTiers.join(', ')}` });
       }
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
       const baseUrl = process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : '';
       
@@ -12405,7 +12405,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     try {
       const { recoveryStripeService } = await import('./recoveryStripeService');
       const { coachingType } = req.body;
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
       
       const session = await recoveryStripeService.createCoachingCheckout(
@@ -12541,7 +12541,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
       }
       
       const stripe = getRecoveryStripeClient();
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
       
       const sessionParams: any = {
@@ -12589,7 +12589,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.get('/api/recovery/flicker-log', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const entries = await storage.getFlickerLogs(userId);
       res.json(entries);
     } catch (error) {
@@ -12599,7 +12599,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/flicker-log', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const entry = await storage.createFlickerLog(userId, req.body);
       res.json(entry);
     } catch (error) {
@@ -12613,7 +12613,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.get('/api/recovery/medical-log', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const data = await storage.getMedicalLogs(userId);
       res.json(data);
     } catch (error) {
@@ -12623,7 +12623,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/medications', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const medication = await storage.createMedication(userId, req.body);
       res.json(medication);
     } catch (error) {
@@ -12633,7 +12633,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/appointments', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const appointment = await storage.createAppointment(userId, req.body);
       res.json(appointment);
     } catch (error) {
@@ -12643,7 +12643,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/vitals', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const vitals = await storage.logVitals(userId, req.body);
       res.json(vitals);
     } catch (error) {
@@ -12657,7 +12657,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.get('/api/recovery/compass', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const data = await storage.getCompassData(userId);
       res.json(data);
     } catch (error) {
@@ -12667,7 +12667,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/compass', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const entry = await storage.updateCompassPillar(userId, req.body);
       res.json(entry);
     } catch (error) {
@@ -12681,7 +12681,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.get('/api/recovery/legend', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const legend = await storage.getLegend(userId);
       res.json(legend);
     } catch (error) {
@@ -12691,7 +12691,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/legend', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const legend = await storage.saveLegend(userId, req.body);
       res.json(legend);
     } catch (error) {
@@ -12792,7 +12792,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.get('/api/recovery/my-book', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const bookProject = await storage.getRecoveryBook(userId);
       res.json(bookProject);
     } catch (error) {
@@ -12802,7 +12802,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/my-book', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const bookProject = await storage.saveRecoveryBook(userId, req.body);
       res.json(bookProject);
     } catch (error) {
@@ -12812,7 +12812,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/my-book/chapter', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { chapterId, title, content } = req.body;
       const chapter = await storage.saveRecoveryChapter(userId, chapterId, title, content);
       res.json(chapter);
@@ -12827,7 +12827,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.get('/api/recovery/never-zero', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const data = await storage.getNeverZeroData(userId);
       res.json(data);
     } catch (error) {
@@ -12838,7 +12838,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/never-zero', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const log = await storage.logNeverZero(userId, req.body);
       res.json(log);
     } catch (error) {
@@ -12887,7 +12887,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.get('/api/recovery/never-zero/audit', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const audits = await storage.getNeverZeroAudits(userId, 30);
       res.json({ audits });
     } catch (error) {
@@ -12898,7 +12898,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
 
   app.post('/api/recovery/never-zero/report', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const force = req.body?.force === true;
       const data = await storage.getNeverZeroData(userId);
       const allLogs = (data?.logs ?? []) as Array<{ id: number; action: string; notes?: string | null; reps?: number; difficulty?: string; created_at: string }>;
@@ -13340,7 +13340,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/settings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const settings = await storage.getUserSettings(userId);
       res.json(settings || {});
     } catch (error) {
@@ -13351,7 +13351,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/settings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const settings = await storage.createOrUpdateUserSettings(userId, req.body);
       res.json(settings);
     } catch (error) {
@@ -13362,7 +13362,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/settings/username', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { username } = req.body;
       
       if (!username || username.length < 3) {
@@ -13433,7 +13433,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/activity', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { content, postType, visibility, podId, media } = req.body;
       
       const post = await storage.createActivityPost({
@@ -13463,7 +13463,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.delete('/api/activity/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const post = await storage.getActivityPost(parseInt(req.params.id));
       if (!post || post.authorId !== userId) {
         return res.status(403).json({ message: "Not authorized" });
@@ -13477,7 +13477,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/activity/:id/react', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { reactionType } = req.body;
       const result = await storage.toggleActivityReaction(parseInt(req.params.id), userId, reactionType || 'like');
       res.json(result);
@@ -13488,7 +13488,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/activity/:id/comment', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { content, parentId } = req.body;
       const comment = await storage.createActivityComment({
         postId: parseInt(req.params.id),
@@ -13508,7 +13508,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/therapist/profile', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const profile = await storage.getTherapistProfile(userId);
       res.json(profile || null);
     } catch (error) {
@@ -13518,7 +13518,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/therapist/profile', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const existing = await storage.getTherapistProfile(userId);
       if (existing) {
         const profile = await storage.updateTherapistProfile(userId, req.body);
@@ -13545,7 +13545,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/therapist/patients', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const assignments = await storage.getPatientAssignments(userId);
       res.json(assignments);
     } catch (error) {
@@ -13555,7 +13555,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/patient/therapist', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const assignment = await storage.getTherapistForPatient(userId);
       res.json(assignment || null);
     } catch (error) {
@@ -13565,7 +13565,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/therapist/assign', isAuthenticated, async (req: any, res) => {
     try {
-      const therapistId = req.user.claims.sub;
+      const therapistId = getUserId(req)!;
       const { patientId, goals, sessionFrequency } = req.body;
       const assignment = await storage.createPatientAssignment({
         therapistId,
@@ -13581,7 +13581,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/therapy/sessions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { assignmentId } = req.query;
       const sessions = await storage.getTherapySessions(
         assignmentId ? parseInt(assignmentId) : undefined,
@@ -13595,7 +13595,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/therapy/sessions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const session = await storage.createTherapySession({
         ...req.body,
         therapistId: userId,
@@ -13608,7 +13608,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/patient/prescriptions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const prescriptions = await storage.getExercisePrescriptions(userId);
       res.json(prescriptions);
     } catch (error) {
@@ -13618,7 +13618,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/therapist/prescribe', isAuthenticated, async (req: any, res) => {
     try {
-      const therapistId = req.user.claims.sub;
+      const therapistId = getUserId(req)!;
       const prescription = await storage.createExercisePrescription({
         ...req.body,
         therapistId,
@@ -13660,7 +13660,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/exercises/session', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const session = await storage.recordExerciseSession({
         userId,
         ...req.body,
@@ -13685,7 +13685,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/exercises/sessions/user', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { exerciseId } = req.query;
       const sessions = await storage.getExerciseSessions(userId, exerciseId ? parseInt(exerciseId) : undefined);
       res.json(sessions);
@@ -13696,7 +13696,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/exercises/scores', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const scores = await storage.getUserExerciseScores(userId);
       res.json(scores);
     } catch (error) {
@@ -13730,7 +13730,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/conversations', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const conversations = await storage.getConversations(userId);
       res.json(conversations);
     } catch (error) {
@@ -13740,7 +13740,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/conversations', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { participantIds, type, name } = req.body;
       const conversation = await storage.createConversation(
         { createdById: userId, type: type || 'direct', name },
@@ -13754,14 +13754,23 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/conversations/:id/messages', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
+      const conversationId = parseInt(req.params.id);
+      // Verify caller is a participant before exposing messages
+      const { db: dbInst } = await import('./db');
+      const { conversationParticipants } = await import('../shared/schema');
+      const { eq } = await import('drizzle-orm');
+      const [participant] = await dbInst.select().from(conversationParticipants)
+        .where(eq(conversationParticipants.conversationId, conversationId))
+        .where(eq(conversationParticipants.userId, userId)).limit(1);
+      if (!participant) return res.status(404).json({ message: "Not found" });
       const { limit, offset } = req.query;
       const messages = await storage.getConversationMessages(
-        parseInt(req.params.id),
+        conversationId,
         limit ? parseInt(limit) : 50,
         offset ? parseInt(offset) : 0
       );
-      await storage.markMessagesAsRead(parseInt(req.params.id), userId);
+      await storage.markMessagesAsRead(conversationId, userId);
       res.json(messages);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch messages" });
@@ -13770,9 +13779,18 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/conversations/:id/messages', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
+      const conversationId = parseInt(req.params.id);
+      // Verify caller is a participant before allowing write
+      const { db: dbInst } = await import('./db');
+      const { conversationParticipants } = await import('../shared/schema');
+      const { eq } = await import('drizzle-orm');
+      const [participant] = await dbInst.select().from(conversationParticipants)
+        .where(eq(conversationParticipants.conversationId, conversationId))
+        .where(eq(conversationParticipants.userId, userId)).limit(1);
+      if (!participant) return res.status(404).json({ message: "Not found" });
       const message = await storage.sendDirectMessage({
-        conversationId: parseInt(req.params.id),
+        conversationId,
         senderId: userId,
         ...req.body,
       });
@@ -13788,7 +13806,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/video-sessions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { status } = req.query;
       const sessions = await storage.getVideoSessions(userId, status as string);
       res.json(sessions);
@@ -13799,7 +13817,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/video-sessions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const session = await storage.createVideoSession({
         hostId: userId,
         ...req.body,
@@ -13825,7 +13843,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/vitals', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const vitals = await storage.getVitals(userId);
       res.json(vitals);
     } catch (error) {
@@ -13835,7 +13853,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/vitals', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const vital = await storage.createVital({ userId, ...req.body });
       res.json(vital);
     } catch (error) {
@@ -13849,7 +13867,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/wearables/connections', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const connections = await storage.getWearableConnections(userId);
       res.json(connections);
     } catch (error) {
@@ -13859,7 +13877,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/wearables/connect', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { provider } = req.body;
       const connection = await storage.createWearableConnection({
         userId,
@@ -13895,7 +13913,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/wearables/metrics', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const metrics = await storage.getWearableMetrics(userId);
       res.json(metrics);
     } catch (error) {
@@ -13905,7 +13923,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/wearables/today', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const today = await storage.getWearableTodayStats(userId);
       res.json(today);
     } catch (error) {
@@ -13919,7 +13937,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/social/followers', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const followers = await storage.getFollowers(userId);
       res.json(followers);
     } catch (error) {
@@ -13929,7 +13947,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/social/following', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const following = await storage.getFollowing(userId);
       res.json(following);
     } catch (error) {
@@ -13939,7 +13957,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/social/follow/:userId', isAuthenticated, async (req: any, res) => {
     try {
-      const followerId = req.user.claims.sub;
+      const followerId = getUserId(req)!;
       const followingId = req.params.userId;
       await storage.followUser(followerId, followingId);
       res.json({ success: true });
@@ -13950,7 +13968,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.delete('/api/social/follow/:userId', isAuthenticated, async (req: any, res) => {
     try {
-      const followerId = req.user.claims.sub;
+      const followerId = getUserId(req)!;
       const followingId = req.params.userId;
       await storage.unfollowUser(followerId, followingId);
       res.json({ success: true });
@@ -13975,7 +13993,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/messages/conversations', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const conversations = await storage.getConversations(userId);
       res.json(conversations);
     } catch (error) {
@@ -13985,7 +14003,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/messages/conversations', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { participantIds } = req.body;
       const conversation = await storage.createConversation(userId, participantIds);
       res.json(conversation);
@@ -13996,7 +14014,17 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/messages/conversations/:id/messages', isAuthenticated, async (req: any, res) => {
     try {
+      const userId = getUserId(req)!;
       const conversationId = parseInt(req.params.id);
+      const { db: dbInst } = await import('./db');
+      const { conversationParticipants } = await import('../shared/schema');
+      const { eq, and } = await import('drizzle-orm');
+      const [participant] = await dbInst.select().from(conversationParticipants)
+        .where(and(
+          eq(conversationParticipants.conversationId, conversationId),
+          eq(conversationParticipants.userId, userId)
+        )).limit(1);
+      if (!participant) return res.status(404).json({ message: "Not found" });
       const messages = await storage.getMessages(conversationId);
       res.json(messages);
     } catch (error) {
@@ -14006,8 +14034,17 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/messages/conversations/:id/messages', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const conversationId = parseInt(req.params.id);
+      const { db: dbInst } = await import('./db');
+      const { conversationParticipants } = await import('../shared/schema');
+      const { eq, and } = await import('drizzle-orm');
+      const [participant] = await dbInst.select().from(conversationParticipants)
+        .where(and(
+          eq(conversationParticipants.conversationId, conversationId),
+          eq(conversationParticipants.userId, userId)
+        )).limit(1);
+      if (!participant) return res.status(404).json({ message: "Not found" });
       const { content } = req.body;
       const message = await storage.createMessage({ conversationId, senderId: userId, content });
       res.json(message);
@@ -14022,7 +14059,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/video/sessions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const sessions = await storage.getVideoSessions(userId);
       res.json(sessions);
     } catch (error) {
@@ -14032,7 +14069,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/video/sessions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const session = await storage.createVideoSession({ hostId: userId, ...req.body });
       res.json(session);
     } catch (error) {
@@ -14042,7 +14079,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/video/sessions/:id/join', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const sessionId = parseInt(req.params.id);
       await storage.joinVideoSession(sessionId, userId);
       res.json({ success: true });
@@ -14076,7 +14113,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/therapist-marketplace/my-products', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const products = await storage.getTherapistProducts(userId);
       res.json(products);
     } catch (error) {
@@ -14086,7 +14123,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/therapist-marketplace/products', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const product = await storage.createTherapistProduct({ therapistId: userId, ...req.body });
       res.json(product);
     } catch (error) {
@@ -14096,7 +14133,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/therapist-marketplace/earnings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const earnings = await storage.getTherapistEarnings(userId);
       res.json(earnings);
     } catch (error) {
@@ -14106,7 +14143,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/therapist-marketplace/products/:id/purchase', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const productId = parseInt(req.params.id);
       const checkoutUrl = await storage.purchaseTherapistProduct(userId, productId);
       res.json({ checkoutUrl });
@@ -14130,7 +14167,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/admin/plans', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const plan = await storage.createRecoveryPlan({ createdBy: userId, ...req.body });
       res.json(plan);
     } catch (error) {
@@ -14256,7 +14293,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // GET /api/subscription/current - Get user's current subscription
   app.get('/api/subscription/current', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const subscription = await getUserSubscription(userId);
       res.json({ success: true, subscription });
     } catch (error) {
@@ -14268,7 +14305,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // GET /api/subscription/feature/:feature - Check feature access
   app.get('/api/subscription/feature/:feature', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const feature = req.params.feature;
       const hasAccess = await hasFeatureAccess(userId, feature);
       const tier = await getUserTier(userId);
@@ -14298,7 +14335,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // GET /api/rate-limits/status - Get user's rate limit status
   app.get('/api/rate-limits/status', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const status = await getRateLimitStatus(userId);
       res.json({ success: true, ...status });
     } catch (error) {
@@ -14310,7 +14347,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // GET /api/rate-limits/ai-generation - Check AI generation limit
   app.get('/api/rate-limits/ai-generation', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const result = await checkAiGenerationLimit(userId);
       res.json({ success: true, ...result });
     } catch (error) {
@@ -14322,7 +14359,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // GET /api/rate-limits/export - Check export limit
   app.get('/api/rate-limits/export', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const result = await checkExportLimit(userId);
       res.json({ success: true, ...result });
     } catch (error) {
@@ -14476,7 +14513,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 
   app.get('/api/blog/me', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const posts = await storage.getUserBlogPosts(userId);
       res.json(posts);
     } catch (error) {
@@ -14499,7 +14536,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 
   app.post('/api/blog', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const post = await storage.createBlogPost({ ...req.body, authorId: userId });
       res.json(post);
     } catch (error) {
@@ -14509,7 +14546,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 
   app.patch('/api/blog/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const postId = parseInt(req.params.id);
       const existing = await storage.getBlogPost(postId);
       if (!existing || existing.authorId !== userId) {
@@ -14524,7 +14561,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 
   app.post('/api/blog/:id/publish', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const postId = parseInt(req.params.id);
       const existing = await storage.getBlogPost(postId);
       if (!existing || existing.authorId !== userId) {
@@ -14539,7 +14576,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 
   app.delete('/api/blog/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const postId = parseInt(req.params.id);
       const existing = await storage.getBlogPost(postId);
       if (!existing || existing.authorId !== userId) {
@@ -14554,7 +14591,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 
   app.post('/api/blog/:id/react', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const postId = parseInt(req.params.id);
       const { reactionType } = req.body;
       const result = await storage.toggleBlogReaction(postId, userId, reactionType || 'like');
@@ -14576,7 +14613,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 
   app.post('/api/blog/:id/comments', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const postId = parseInt(req.params.id);
       const comment = await storage.createBlogComment({
         postId,
@@ -14666,7 +14703,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // POST /api/blog/:id/links/internal - Add internal links to post
   app.post('/api/blog/:id/links/internal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const postId = parseInt(req.params.id);
       const existing = await storage.getBlogPost(postId);
       if (!existing || existing.authorId !== userId) {
@@ -14692,7 +14729,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // POST /api/blog/:id/links/external - Add external links to post
   app.post('/api/blog/:id/links/external', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const postId = parseInt(req.params.id);
       const existing = await storage.getBlogPost(postId);
       if (!existing || existing.authorId !== userId) {
@@ -14761,7 +14798,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // POST /api/blog/:id/eeat - Update E-E-A-T signals
   app.post('/api/blog/:id/eeat', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const postId = parseInt(req.params.id);
       const existing = await storage.getBlogPost(postId);
       if (!existing || existing.authorId !== userId) {
@@ -14798,7 +14835,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // POST /api/blog/:id/meta - Update meta tags with validation
   app.post('/api/blog/:id/meta', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const postId = parseInt(req.params.id);
       const existing = await storage.getBlogPost(postId);
       if (!existing || existing.authorId !== userId) {
@@ -14917,7 +14954,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Get author's listings
   app.get('/api/marketplace/my-books', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const listings = await storage.getAuthorListings(authorId);
       res.json(listings);
     } catch (error) {
@@ -14929,7 +14966,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Create marketplace listing from publishing project
   app.post('/api/marketplace/publish', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const { projectId, title, subtitle, description, coverImageUrl, genre, tags, editions } = req.body;
 
       if (!projectId || !title || !description || !genre) {
@@ -14977,7 +15014,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Update marketplace listing
   app.patch('/api/marketplace/books/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const listingId = parseInt(req.params.id);
       
       const existing = await storage.getMarketplaceListing(listingId);
@@ -14996,7 +15033,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Add/update book edition
   app.post('/api/marketplace/books/:id/editions', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const listingId = parseInt(req.params.id);
       
       const listing = await storage.getMarketplaceListing(listingId);
@@ -15065,9 +15102,9 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Create checkout session for book purchase
   app.post('/api/marketplace/checkout', isAuthenticated, async (req: any, res) => {
     try {
-      const customerId = req.user.claims.sub;
-      const customerEmail = req.user.claims.email;
-      const customerName = req.user.claims.name || 'Customer';
+      const customerId = getUserId(req)!;
+      const customerEmail = getUserEmail(req) || '';
+      const customerName = (req.user?.claims?.name || req.user?.name || 'Customer');
       const { items, shippingAddress } = req.body;
 
       if (!items || items.length === 0) {
@@ -15222,7 +15259,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Get order by Stripe session ID (for success redirect)
   app.get('/api/marketplace/orders/session/:sessionId', isAuthenticated, async (req: any, res) => {
     try {
-      const customerId = req.user.claims.sub;
+      const customerId = getUserId(req)!;
       const sessionId = req.params.sessionId;
       
       const order = await storage.getBookOrderBySessionId(sessionId);
@@ -15253,7 +15290,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Get order details with full tracking info
   app.get('/api/marketplace/orders/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const customerId = req.user.claims.sub;
+      const customerId = getUserId(req)!;
       const orderId = parseInt(req.params.id);
       
       const order = await storage.getBookOrder(orderId);
@@ -15345,7 +15382,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // ───────────────────────────────────────────────────────────────────────
   app.get('/api/book/entitlement', isAuthenticated, async (req: any, res) => {
     try {
-      const customerId = req.user.claims.sub;
+      const customerId = getUserId(req)!;
       const orders = await storage.getCustomerOrders(customerId);
       const paidStatuses = new Set(['paid', 'processing', 'shipped', 'delivered']);
       // newest first
@@ -15388,7 +15425,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
 
   app.get('/api/book/chapter/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const customerId = req.user.claims.sub;
+      const customerId = getUserId(req)!;
       const { storage: st } = await import('./storage');
       const orders = await st.getCustomerOrders(customerId);
       const paid = new Set(['paid', 'processing', 'shipped', 'delivered']);
@@ -15414,7 +15451,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   app.get('/api/marketplace/orders/:orderId/items/:itemId/download',
     isAuthenticated, async (req: any, res) => {
     try {
-      const customerId = req.user.claims.sub;
+      const customerId = getUserId(req)!;
       const orderId = parseInt(req.params.orderId);
       const itemId = parseInt(req.params.itemId);
 
@@ -15466,7 +15503,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Get customer's orders
   app.get('/api/marketplace/my-orders', isAuthenticated, async (req: any, res) => {
     try {
-      const customerId = req.user.claims.sub;
+      const customerId = getUserId(req)!;
       const orders = await storage.getCustomerOrders(customerId);
       res.json(orders);
     } catch (error) {
@@ -15478,7 +15515,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Author dashboard - earnings
   app.get('/api/marketplace/author/earnings', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const earnings = await storage.getAuthorEarnings(authorId);
       const totals = await storage.getAuthorEarningsSummary(authorId);
       res.json({ earnings, totals });
@@ -15491,7 +15528,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Author dashboard - sales analytics
   app.get('/api/marketplace/author/analytics', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const analytics = await storage.getAuthorAnalytics(authorId);
       res.json(analytics);
     } catch (error) {
@@ -15503,7 +15540,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Submit book review
   app.post('/api/marketplace/books/:id/reviews', isAuthenticated, async (req: any, res) => {
     try {
-      const reviewerId = req.user.claims.sub;
+      const reviewerId = getUserId(req)!;
       const listingId = parseInt(req.params.id);
       const { rating, title, content, orderId } = req.body;
 
@@ -15583,7 +15620,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Get all book websites for current user
   app.get('/api/book-websites', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const websites = await bookWebsiteService.getMyBookWebsites(authorId);
       res.json(websites);
     } catch (error) {
@@ -15610,7 +15647,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Create new book website
   app.post('/api/book-websites', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const { title, subtitle, authorName, slug, theme, coverImageUrl, description, genre } = req.body;
 
       if (!title || !authorName || !slug) {
@@ -15639,7 +15676,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Create website from marketplace listing
   app.post('/api/book-websites/from-listing/:listingId', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const listingId = parseInt(req.params.listingId);
 
       const website = await bookWebsiteService.createWebsiteFromListing(listingId, authorId);
@@ -15653,7 +15690,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Update book website
   app.patch('/api/book-websites/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const websiteId = parseInt(req.params.id);
 
       const updated = await bookWebsiteService.updateBookWebsite(websiteId, authorId, req.body);
@@ -15667,7 +15704,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Publish book website
   app.post('/api/book-websites/:id/publish', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const websiteId = parseInt(req.params.id);
 
       const result = await bookWebsiteService.publishBookWebsite(websiteId, authorId);
@@ -15681,7 +15718,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Unpublish book website
   app.post('/api/book-websites/:id/unpublish', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const websiteId = parseInt(req.params.id);
 
       const result = await bookWebsiteService.unpublishBookWebsite(websiteId, authorId);
@@ -15695,7 +15732,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Delete book website
   app.delete('/api/book-websites/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const websiteId = parseInt(req.params.id);
 
       const deleted = await bookWebsiteService.deleteBookWebsite(websiteId, authorId);
@@ -15709,7 +15746,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Get website analytics
   app.get('/api/book-websites/:id/analytics', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const websiteId = parseInt(req.params.id);
 
       const analytics = await bookWebsiteService.getWebsiteAnalytics(websiteId, authorId);
@@ -15723,7 +15760,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Get website leads
   app.get('/api/book-websites/:id/leads', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const websiteId = parseInt(req.params.id);
 
       const leads = await bookWebsiteService.getWebsiteLeads(websiteId, authorId);
@@ -15737,7 +15774,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Generate AI content for website
   app.post('/api/book-websites/:id/generate', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const websiteId = parseInt(req.params.id);
       const { contentType } = req.body;
 
@@ -15756,7 +15793,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Update website page
   app.patch('/api/book-websites/:websiteId/pages/:pageId', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const websiteId = parseInt(req.params.websiteId);
       const pageId = parseInt(req.params.pageId);
 
@@ -15771,7 +15808,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Create new page
   app.post('/api/book-websites/:id/pages', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const websiteId = parseInt(req.params.id);
       const { slug, title, content, sortOrder } = req.body;
 
@@ -15790,7 +15827,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Delete page
   app.delete('/api/book-websites/:websiteId/pages/:pageId', isAuthenticated, async (req: any, res) => {
     try {
-      const authorId = req.user.claims.sub;
+      const authorId = getUserId(req)!;
       const websiteId = parseInt(req.params.websiteId);
       const pageId = parseInt(req.params.pageId);
 
@@ -15923,7 +15960,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Create a book product (printable)
   app.post('/api/lulu/create-printable', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { title, interiorSourceUrl, coverSourceUrl, podPackageId, externalId } = req.body;
 
       if (!title || !interiorSourceUrl || !coverSourceUrl || !podPackageId) {
@@ -15957,7 +15994,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Create a print order
   app.post('/api/lulu/create-order', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const userEmail = req.user.claims.email || '';
       const { lineItems, shippingAddress, shippingLevel, externalId } = req.body;
 
@@ -16036,7 +16073,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Unified content generation endpoint
   app.post('/api/ai/generate', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { prompt, systemPrompt, taskType, maxTokens, temperature, jsonMode } = req.body;
 
       if (!prompt || !taskType) {
@@ -16063,7 +16100,7 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
   // Streaming content generation with Server-Sent Events
   app.post('/api/ai/generate-stream', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { prompt, systemPrompt, taskType, maxTokens, temperature } = req.body;
 
       if (!prompt || !taskType) {
@@ -16130,7 +16167,7 @@ High quality, suitable for print publication, no text or words in the image.`;
   // AI Image Analysis endpoint - analyzes images for placement, captions, alt text
   app.post('/api/ai/analyze-image', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { imageUrl, imageBase64, bookContext, chapterTitles } = req.body;
 
       if (!imageUrl && !imageBase64) {
@@ -16225,7 +16262,7 @@ Respond in JSON format:
   // Book outline generation
   app.post('/api/ai/book/outline', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { title, genre, description, chapterCount } = req.body;
 
       if (!title || !genre || !description) {
@@ -16243,7 +16280,7 @@ Respond in JSON format:
   // Book chapter generation
   app.post('/api/ai/book/chapter', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { bookTitle, chapterNumber, chapterTitle, outline, previousContext, targetWords } = req.body;
 
       if (!bookTitle || !chapterNumber || !chapterTitle || !outline) {
@@ -16269,7 +16306,7 @@ Respond in JSON format:
   // Content refinement
   app.post('/api/ai/book/refine', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { content, instructions } = req.body;
 
       if (!content || !instructions) {
@@ -16287,7 +16324,7 @@ Respond in JSON format:
   // Book blurb generation
   app.post('/api/ai/marketing/blurb', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { title, genre, synopsis, targetAudience } = req.body;
 
       if (!title || !genre || !synopsis || !targetAudience) {
@@ -16305,7 +16342,7 @@ Respond in JSON format:
   // Social media posts generation
   app.post('/api/ai/marketing/social', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { bookTitle, blurb, platforms } = req.body;
 
       if (!bookTitle || !blurb || !platforms || !Array.isArray(platforms)) {
@@ -16323,7 +16360,7 @@ Respond in JSON format:
   // Screenplay treatment generation
   app.post('/api/ai/screenplay/treatment', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { title, logline, genre, targetLength } = req.body;
 
       if (!title || !logline || !genre || !targetLength) {
@@ -16341,7 +16378,7 @@ Respond in JSON format:
   // Screenplay scene generation
   app.post('/api/ai/screenplay/scene', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { context, sceneDescription, characters } = req.body;
 
       if (!context || !sceneDescription || !characters || !Array.isArray(characters)) {
@@ -16359,7 +16396,7 @@ Respond in JSON format:
   // Course curriculum generation
   app.post('/api/ai/course/curriculum', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { courseName, description, targetAudience, duration } = req.body;
 
       if (!courseName || !description || !targetAudience || !duration) {
@@ -16377,7 +16414,7 @@ Respond in JSON format:
   // Course lesson generation
   app.post('/api/ai/course/lesson', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { moduleName, lessonTitle, learningObjectives, duration } = req.body;
 
       if (!moduleName || !lessonTitle || !learningObjectives || !Array.isArray(learningObjectives) || !duration) {
@@ -16395,7 +16432,7 @@ Respond in JSON format:
   // Research synthesis
   app.post('/api/ai/research/synthesize', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { topic, sources, outputFormat } = req.body;
 
       if (!topic || !sources || !Array.isArray(sources) || !outputFormat) {
@@ -16417,7 +16454,7 @@ Respond in JSON format:
   // AI usage statistics
   app.get('/api/ai/usage', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const days = parseInt(req.query.days as string) || 30;
 
       const stats = await getUsageStats(userId, days);
@@ -16431,7 +16468,7 @@ Respond in JSON format:
   // AI Quick Actions for Editor (expand, rewrite, continue)
   app.post('/api/ai/quick-action', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { action, text, projectId } = req.body;
 
       if (!action || !text) {
@@ -16470,7 +16507,7 @@ Respond in JSON format:
   // AI Inline Actions for Mobile Studio
   app.post('/api/ai/inline-action', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { action, text, context } = req.body;
 
       if (!action || !text) {
@@ -16529,7 +16566,7 @@ Context:
   // AI Tone Revision - rewrite text in a specific tone/style
   app.post('/api/ai/tone-rewrite', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { text, tone } = req.body;
 
       if (!text || !tone) {
@@ -16568,7 +16605,7 @@ Context:
   // AI Chat for Book Writing
   app.post('/api/ai/chat', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { message, projectId, context, manuscriptContent, conversationHistory } = req.body;
 
       if (!message) {
@@ -16641,7 +16678,7 @@ Tone: Professional, encouraging, specific. Like a trusted editor who genuinely w
   // Generate complete children's story with pages
   app.post('/api/books/childrens/generate-story', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       
       // Validate request body with Zod
       const parseResult = generateChildStoryRequestSchema.safeParse(req.body);
@@ -16758,7 +16795,7 @@ Generate the complete story with all ${pageCount} pages.`;
   // Generate consistent character illustration prompt
   app.post('/api/books/childrens/character-prompt', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { character, illustrationStyle } = req.body;
 
       if (!character || !illustrationStyle) {
@@ -16854,7 +16891,7 @@ OUTPUT FORMAT: Return valid JSON:
   // Generate page illustration prompt
   app.post('/api/books/childrens/page-illustration', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { spread, characters, illustrationStyle, projectColorPalette } = req.body;
 
       if (!spread || !illustrationStyle) {
@@ -16934,7 +16971,7 @@ OUTPUT FORMAT: Return valid JSON:
   // Convert prose to rhyming text
   app.post('/api/books/childrens/rhyme-convert', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       
       // Validate request body with Zod
       const parseResult = rhymeConvertRequestSchema.safeParse(req.body);
@@ -17197,7 +17234,7 @@ Return the rhyming version only, no explanation.`;
   // Create a new workflow
   app.post('/api/workflows', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { workflowType, sourceType, sourceId, customName } = req.body;
       
       if (!workflowType || !sourceType || !sourceId) {
@@ -17290,7 +17327,7 @@ Return the rhyming version only, no explanation.`;
   // Get user's voice clones
   app.get('/api/voices', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const userVoices = await db.select().from(voiceClones).where(eq(voiceClones.ownerId, userId));
       res.json({ voices: userVoices });
     } catch (error: any) {
@@ -17302,7 +17339,7 @@ Return the rhyming version only, no explanation.`;
   // Create a new voice clone
   app.post('/api/voices', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { name, description, voiceType, gender, ageRange, accent, sourceAudioUrl, styleSettings } = req.body;
       
       if (!name || !voiceType) {
@@ -17345,7 +17382,7 @@ Return the rhyming version only, no explanation.`;
   // Get user's DJ presets
   app.get('/api/dj/presets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const userPresets = await db.select().from(djPresets).where(eq(djPresets.creatorId, userId));
       res.json({ presets: userPresets });
     } catch (error: any) {
@@ -17357,7 +17394,7 @@ Return the rhyming version only, no explanation.`;
   // Save a DJ preset
   app.post('/api/dj/presets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { name, category, settings, isPublic } = req.body;
       
       if (!name || !category || !settings) {
@@ -17395,7 +17432,7 @@ Return the rhyming version only, no explanation.`;
   // Get user's audiobook projects
   app.get('/api/audiobooks', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const userAudiobooks = await db.select().from(audiobookProjects).where(eq(audiobookProjects.creatorId, userId));
       res.json({ audiobooks: userAudiobooks });
     } catch (error: any) {
@@ -17407,7 +17444,7 @@ Return the rhyming version only, no explanation.`;
   // Create audiobook from manuscript
   app.post('/api/audiobooks', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { title, author, sourceProjectId, narratorVoiceId, masteringPreset } = req.body;
       
       if (!title) {
@@ -17446,7 +17483,7 @@ Return the rhyming version only, no explanation.`;
   // Generate audio for a single audiobook chapter
   app.post('/api/audiobooks/:id/chapters/:chapterId/generate', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { id, chapterId } = req.params;
       const { text, voiceId, speakingRate } = req.body;
       
@@ -17500,7 +17537,7 @@ Return the rhyming version only, no explanation.`;
   // Batch generate all chapters for an audiobook
   app.post('/api/audiobooks/:id/generate-all', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { id } = req.params;
       const { chapters, voiceId, speakingRate } = req.body;
       
@@ -17768,7 +17805,7 @@ Return the rhyming version only, no explanation.`;
   // Get user's media projects
   app.get('/api/media/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projects = await db.select().from(mediaProjects).where(eq(mediaProjects.ownerId, userId));
       res.json({ projects });
     } catch (error: any) {
@@ -17780,7 +17817,7 @@ Return the rhyming version only, no explanation.`;
   // Create media project
   app.post('/api/media/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { name, mode, projectData, width, height, duration } = req.body;
       
       if (!name) {
@@ -17808,7 +17845,7 @@ Return the rhyming version only, no explanation.`;
   // Update media project
   app.patch('/api/media/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { id } = req.params;
       const { name, projectData, thumbnailUrl, status, width, height, duration } = req.body;
 
@@ -17848,7 +17885,7 @@ Return the rhyming version only, no explanation.`;
   // Upload media asset
   app.post('/api/media/assets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { name, type, url, thumbnailUrl, duration, width, height, fileSize, mimeType, metadata, projectId } = req.body;
       
       if (!name || !type || !url) {
@@ -17880,7 +17917,7 @@ Return the rhyming version only, no explanation.`;
   // Get user's media assets
   app.get('/api/media/assets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const assets = await db.select().from(mediaAssets).where(eq(mediaAssets.ownerId, userId));
       res.json({ assets });
     } catch (error: any) {
@@ -17894,7 +17931,7 @@ Return the rhyming version only, no explanation.`;
   // Get all user content across studios for import picker
   app.get('/api/studio/library', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { type } = req.query; // audio, image, video, text
       
       // Get media assets
@@ -17930,7 +17967,7 @@ Return the rhyming version only, no explanation.`;
   // Import asset from one studio to another (creates a link/reference)
   app.post('/api/studio/import', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { sourceType, sourceId, targetProject, targetType, name } = req.body;
       
       if (!sourceType || !sourceId) {
@@ -17993,7 +18030,7 @@ Return the rhyming version only, no explanation.`;
   // Author Profiles CRUD
   app.get('/api/author-profiles', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const profiles = await db.select().from(authorProfiles).where(eq(authorProfiles.userId, userId));
       res.json(profiles);
     } catch (error: any) {
@@ -18004,7 +18041,7 @@ Return the rhyming version only, no explanation.`;
 
   app.post('/api/author-profiles', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const validated = insertAuthorProfileSchema.parse({ ...req.body, userId });
       
       // If this is set as default, unset other defaults first
@@ -18024,7 +18061,7 @@ Return the rhyming version only, no explanation.`;
 
   app.patch('/api/author-profiles/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const profileId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(authorProfiles)
@@ -18058,7 +18095,7 @@ Return the rhyming version only, no explanation.`;
 
   app.delete('/api/author-profiles/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const profileId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(authorProfiles)
@@ -18077,7 +18114,7 @@ Return the rhyming version only, no explanation.`;
 
   app.post('/api/author-profiles/:id/set-default', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const profileId = parseInt(req.params.id);
       
       // Unset all defaults for this user
@@ -18104,7 +18141,7 @@ Return the rhyming version only, no explanation.`;
   // Publishing Presets CRUD
   app.get('/api/publishing-presets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const presets = await db.select().from(publishingPresets).where(eq(publishingPresets.userId, userId));
       res.json(presets);
     } catch (error: any) {
@@ -18115,7 +18152,7 @@ Return the rhyming version only, no explanation.`;
 
   app.post('/api/publishing-presets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const validated = insertPublishingPresetSchema.parse({ ...req.body, userId });
       
       if (validated.isDefault) {
@@ -18134,7 +18171,7 @@ Return the rhyming version only, no explanation.`;
 
   app.patch('/api/publishing-presets/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const presetId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(publishingPresets)
@@ -18156,7 +18193,7 @@ Return the rhyming version only, no explanation.`;
 
   app.delete('/api/publishing-presets/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const presetId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(publishingPresets)
@@ -18176,7 +18213,7 @@ Return the rhyming version only, no explanation.`;
   // Course Presets CRUD
   app.get('/api/course-presets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const presets = await db.select().from(coursePresets).where(eq(coursePresets.userId, userId));
       res.json(presets);
     } catch (error: any) {
@@ -18187,7 +18224,7 @@ Return the rhyming version only, no explanation.`;
 
   app.post('/api/course-presets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const validated = insertCoursePresetSchema.parse({ ...req.body, userId });
       
       if (validated.isDefault) {
@@ -18206,7 +18243,7 @@ Return the rhyming version only, no explanation.`;
 
   app.patch('/api/course-presets/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const presetId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(coursePresets)
@@ -18228,7 +18265,7 @@ Return the rhyming version only, no explanation.`;
 
   app.delete('/api/course-presets/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const presetId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(coursePresets)
@@ -18248,7 +18285,7 @@ Return the rhyming version only, no explanation.`;
   // Inspiration Library CRUD
   app.get('/api/inspiration', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const items = await db.select().from(inspirationLibrary).where(eq(inspirationLibrary.userId, userId));
       res.json(items);
     } catch (error: any) {
@@ -18259,7 +18296,7 @@ Return the rhyming version only, no explanation.`;
 
   app.post('/api/inspiration', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const validated = insertInspirationLibrarySchema.parse({ ...req.body, userId });
       const [item] = await db.insert(inspirationLibrary).values(validated).returning();
       res.json(item);
@@ -18271,7 +18308,7 @@ Return the rhyming version only, no explanation.`;
 
   app.delete('/api/inspiration/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const itemId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(inspirationLibrary)
@@ -18291,7 +18328,7 @@ Return the rhyming version only, no explanation.`;
   // Saved Cover Designs CRUD
   app.get('/api/saved-covers', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const covers = await db.select().from(savedCoverDesigns).where(eq(savedCoverDesigns.userId, userId));
       res.json(covers);
     } catch (error: any) {
@@ -18302,7 +18339,7 @@ Return the rhyming version only, no explanation.`;
 
   app.post('/api/saved-covers', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const validated = insertSavedCoverDesignSchema.parse({ ...req.body, userId });
       const [cover] = await db.insert(savedCoverDesigns).values(validated).returning();
       res.json(cover);
@@ -18314,7 +18351,7 @@ Return the rhyming version only, no explanation.`;
 
   app.patch('/api/saved-covers/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const coverId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(savedCoverDesigns)
@@ -18336,7 +18373,7 @@ Return the rhyming version only, no explanation.`;
 
   app.delete('/api/saved-covers/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const coverId = parseInt(req.params.id);
       
       const [existing] = await db.select().from(savedCoverDesigns)
@@ -18356,7 +18393,7 @@ Return the rhyming version only, no explanation.`;
   // Book to Course Conversion API
   app.post('/api/course/from-book', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { bookTitle, chapters, authorProfile, coursePreset, generateQuizzes, generateVideos } = req.body;
       
       if (!bookTitle || !chapters || !chapters.length) {
@@ -18441,7 +18478,7 @@ Return the rhyming version only, no explanation.`;
   // Get conversations for a studio
   app.get('/api/conversations/:studio', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { studio } = req.params;
       
       const sessions = await db.select()
@@ -18479,7 +18516,7 @@ Return the rhyming version only, no explanation.`;
   // Send a message in a conversation
   app.post('/api/conversations/message', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { sessionId, studio, projectId, systemPrompt, content } = req.body;
       
       let currentSessionId = sessionId;
@@ -18553,7 +18590,7 @@ Return the rhyming version only, no explanation.`;
 
   app.post('/api/quick-create', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { actionId, input } = req.body;
       
       let results: any[] = [];
@@ -18823,7 +18860,7 @@ Create 6 viral clip concepts:
 
   app.post('/api/manuscript-to-soundtrack', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { title, manuscript, chapters, genre, mood } = req.body;
       
       if (!manuscript && !chapters) {
@@ -18918,7 +18955,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.get('/api/assets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { type, studio } = req.query;
       
       let query = db.select().from(assetRegistry).where(eq(assetRegistry.userId, userId));
@@ -18943,7 +18980,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/assets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const validated = insertAssetRegistrySchema.parse({ ...req.body, userId });
       
       const [asset] = await db.insert(assetRegistry).values(validated).returning();
@@ -18961,7 +18998,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Get affiliate stats for current user
   app.get('/api/affiliate/stats', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       
       // Get user's affiliate info
       const [userInfo] = await db.select()
@@ -19042,7 +19079,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Apply watermark to content
   app.post('/api/watermark', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { contentType, contentId, watermarkStyle } = req.body;
       
       // Get user info for watermark
@@ -19132,7 +19169,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.get('/api/credits/balance', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const balance = await creditService.getBalance(userId);
       res.json(balance);
     } catch (error: any) {
@@ -19143,7 +19180,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.get('/api/credits/transactions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const limit = parseInt(req.query.limit as string) || 50;
       const transactions = await creditService.getTransactionHistory(userId, limit);
       res.json(transactions);
@@ -19155,7 +19192,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.get('/api/credits/usage', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const usage = await creditService.getDailyUsageStats(userId);
       res.json(usage);
     } catch (error: any) {
@@ -19166,7 +19203,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/credits/check', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { amount } = req.body;
       const canAfford = await creditService.hasEnoughCredits(userId, amount);
       const balance = await creditService.getBalance(userId);
@@ -19184,7 +19221,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Provably fair slot machine with 92% RTP (8% house edge)
   app.post('/api/games/slot-spin', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { bet } = req.body;
       
       if (!bet || bet < 1 || bet > 1000) {
@@ -19252,7 +19289,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Daily free spin - one free spin per day
   app.post('/api/games/daily-spin', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       
       // Check if already spun today (using usage events)
       const today = new Date().toISOString().split('T')[0];
@@ -19314,7 +19351,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Staring contest - webcam-based game
   app.post('/api/games/staring-contest/start', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { bet } = req.body;
       
       if (bet && bet > 0) {
@@ -19342,7 +19379,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/games/staring-contest/result', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { sessionId, playerBlinkTime, sasquatchBlinkTime, bet } = req.body;
       
       const playerWon = playerBlinkTime > sasquatchBlinkTime;
@@ -19372,7 +19409,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Roulette game
   app.post('/api/games/roulette-spin', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { bets } = req.body;
       
       if (!bets || !Array.isArray(bets) || bets.length === 0) {
@@ -19451,7 +19488,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/games/blackjack-deal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { bet } = req.body;
       
       if (!bet || bet < 1) return res.status(400).json({ message: "Invalid bet" });
@@ -19487,7 +19524,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/games/blackjack-action', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { action, playerHand, dealerHand, bet } = req.body;
 
       const deck = createDeck();
@@ -19550,7 +19587,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Texas Hold'em
   app.post('/api/games/holdem-start', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { buyIn } = req.body;
       
       if (!buyIn || buyIn < 50) return res.status(400).json({ message: "Minimum buy-in is 50" });
@@ -19590,7 +19627,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/games/holdem-action', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { action, amount, gameState } = req.body;
       let { players, communityCards, pot, currentBet, gamePhase } = gameState;
 
@@ -19676,7 +19713,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Sasquatch Bingo
   app.post('/api/games/bingo-card', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { bet } = req.body;
       
       if (bet && bet > 0) {
@@ -19713,7 +19750,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Wilderness Survival - Outlast the Sasquatch
   app.post('/api/games/survival-start', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { bet } = req.body;
       
       if (bet && bet > 0) {
@@ -19741,7 +19778,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/games/survival-action', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { action, gameState, bet } = req.body;
       let { health, warmth, hunger, day, inventory, sasquatchDistance, events } = gameState;
 
@@ -19840,7 +19877,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Bingo Start - with credit deduction
   app.post('/api/games/bingo-start', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { bet } = req.body;
       
       if (bet && bet > 0) {
@@ -19859,7 +19896,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Bingo Win
   app.post('/api/games/bingo-win', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { bet, pattern, multiplier } = req.body;
       const winAmount = (bet || 10) * multiplier;
       
@@ -19874,7 +19911,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Powerball Play
   app.post('/api/games/powerball-play', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { bet, numbers, powerball } = req.body;
       
       if (bet && bet > 0) {
@@ -19893,7 +19930,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Powerball Win
   app.post('/api/games/powerball-win', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { bet, winAmount } = req.body;
       
       if (winAmount > 0) {
@@ -19909,7 +19946,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Scratch-Off Buy
   app.post('/api/games/scratch-buy', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { cardType, cost } = req.body;
       
       if (cost && cost > 0) {
@@ -19928,7 +19965,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Scratch-Off Win
   app.post('/api/games/scratch-win', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { winAmount } = req.body;
       
       if (winAmount > 0) {
@@ -19944,7 +19981,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // Prize entitlements management
   app.get('/api/games/prizes', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const prizes = await db.select()
         .from(prizeEntitlements)
         .where(eq(prizeEntitlements.userId, userId))
@@ -19960,7 +19997,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/games/prizes/redeem', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { prizeId } = req.body;
       
       const [prize] = await db.select()
@@ -20031,7 +20068,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.post('/api/jobs', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { type, data, metadata } = req.body;
       const job = jobQueue.createJob(type, userId, data, metadata);
       res.json(job);
@@ -20043,7 +20080,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.get('/api/jobs', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const limit = parseInt(req.query.limit as string) || 50;
       const jobs = jobQueue.getUserJobs(userId, limit);
       res.json(jobs);
@@ -20127,7 +20164,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.get('/api/analytics/credits', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const days = parseInt(req.query.days as string) || 30;
       
       const endDate = new Date();
@@ -20171,7 +20208,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   app.get('/api/analytics/usage', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const days = parseInt(req.query.days as string) || 30;
       
       const endDate = new Date();
@@ -20331,7 +20368,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/marketplace/listings - Create new listing
   app.post('/api/marketplace/listings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const validatedData = insertMarketplaceListingSchema.parse({
         ...req.body,
         authorId: userId,
@@ -20354,7 +20391,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/marketplace/listings/:id - Update own listing
   app.patch('/api/marketplace/listings/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const listingId = parseInt(req.params.id);
       if (isNaN(listingId)) {
         return res.status(400).json({ message: "Invalid listing ID" });
@@ -20393,7 +20430,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/marketplace/listings/:id - Delete own listing
   app.delete('/api/marketplace/listings/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const listingId = parseInt(req.params.id);
       if (isNaN(listingId)) {
         return res.status(400).json({ message: "Invalid listing ID" });
@@ -20425,7 +20462,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/marketplace/my-listings - Get current user's listings
   app.get('/api/marketplace/my-listings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
 
       const listings = await db.select()
         .from(marketplaceListings)
@@ -20446,7 +20483,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/marketplace/purchases - Get user's purchases
   app.get('/api/marketplace/purchases', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
 
       const orders = await db.select()
         .from(bookOrders)
@@ -20487,7 +20524,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // service which uses dynamic price_data (no pre-existing Stripe Price IDs needed).
   app.post('/api/marketplace/checkout', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { items } = req.body;
       if (!Array.isArray(items) || items.length === 0 || !items[0]?.editionId) {
         return res.status(400).json({ message: "Invalid cart items" });
@@ -20565,7 +20602,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/marketplace/checkout/credits - Buy credits
   app.post('/api/marketplace/checkout/credits', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { creditPackageId, amount } = req.body;
 
       if (!amount || amount <= 0) {
@@ -20681,7 +20718,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/marketplace/listings/:id/reviews - Add review (verified purchase only)
   app.post('/api/marketplace/listings/:id/reviews', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const listingId = parseInt(req.params.id);
 
       if (isNaN(listingId)) {
@@ -20769,7 +20806,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/marketplace/earnings - Get creator earnings summary
   app.get('/api/marketplace/earnings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
 
       const earnings = await db.select()
         .from(authorEarnings)
@@ -20820,7 +20857,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/marketplace/payouts - Get payout history
   app.get('/api/marketplace/payouts', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
 
       const payouts = await db.select()
         .from(creatorPayouts)
@@ -20858,7 +20895,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/affiliate/code - Get or create user's referral code
   app.get('/api/affiliate/code', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
 
       // Check for existing referral code
       let [existingCode] = await db.select()
@@ -20907,7 +20944,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/affiliate/stats - Get referral statistics
   app.get('/api/affiliate/stats', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
 
       // Get user's referral code
       const [referralCode] = await db.select()
@@ -21049,7 +21086,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/moderation/report - Submit a content report
   app.post('/api/moderation/report', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const validation = insertContentReportSchema.safeParse(req.body);
       
       if (!validation.success) {
@@ -21130,7 +21167,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/moderation/reports/:id - Update report status (admin only)
   app.patch('/api/moderation/reports/:id', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const reportId = parseInt(req.params.id);
       const { status } = req.body;
 
@@ -21163,7 +21200,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/moderation/listings/:id/status - Update listing moderation status (admin only)
   app.patch('/api/moderation/listings/:id/status', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const listingId = parseInt(req.params.id);
       const { moderationStatus, moderationNotes } = req.body;
 
@@ -21538,7 +21575,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     try {
       const { creatorId } = req.params;
       const { tierId } = req.body;
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
 
       // Placeholder for Stripe subscription creation
       res.json({
@@ -21606,7 +21643,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     try {
       const { id } = req.params;
       const { content } = req.body;
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
 
       if (!content || typeof content !== 'string' || content.trim().length === 0) {
         return res.status(400).json({ message: "Message content required" });
@@ -21638,7 +21675,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     try {
       const { projectId } = req.params;
       const { email, role } = req.body;
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
 
       if (!email || typeof email !== 'string' || !email.includes('@')) {
         return res.status(400).json({ message: "Valid email address required" });
@@ -21688,7 +21725,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/author-brain/projects - Create project context
   app.post('/api/author-brain/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { projectName, projectType, globalTone } = req.body;
       
       if (!projectName || !projectType) {
@@ -21713,7 +21750,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/author-brain/projects - List user's project contexts
   app.get('/api/author-brain/projects', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { getProjectContexts } = await import('./authorBrainService');
       const projects = await getProjectContexts(userId);
       res.json(projects);
@@ -21726,7 +21763,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/author-brain/projects/:id - Get single project context
   app.get('/api/author-brain/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = req.params.id;
       const { getProjectContext } = await import('./authorBrainService');
       const project = await getProjectContext(projectId, userId);
@@ -21745,7 +21782,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/author-brain/projects/:id - Update project context
   app.patch('/api/author-brain/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = req.params.id;
       const { projectName, globalTone } = req.body;
       
@@ -21762,7 +21799,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/author-brain/projects/:id - Delete project context
   app.delete('/api/author-brain/projects/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = req.params.id;
       
       const { deleteProjectContext } = await import('./authorBrainService');
@@ -21961,7 +21998,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/doc-hub/sources - Save parsed document source
   app.post('/api/doc-hub/sources', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { originalFilename, mimeType, parsedContent, parsedMetadata, wordCount } = req.body;
 
       if (!originalFilename || !parsedContent) {
@@ -21989,7 +22026,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/doc-hub/sources - List user's document sources
   app.get('/api/doc-hub/sources', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { docSources } = await import('../shared/schema');
       
       const sources = await db.select().from(docSources)
@@ -22006,7 +22043,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/doc-hub/sources/:id - Delete document source
   app.delete('/api/doc-hub/sources/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const sourceId = parseInt(req.params.id);
       const { docSources } = await import('../shared/schema');
       
@@ -22023,7 +22060,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/doc-hub/sources/:id - Get single document content
   app.get('/api/doc-hub/sources/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const sourceId = parseInt(req.params.id);
       const { docSources } = await import('../shared/schema');
       
@@ -22044,7 +22081,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/doc-hub/sources/:id - Rename/update document source
   app.patch('/api/doc-hub/sources/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const sourceId = parseInt(req.params.id);
       const { originalFilename, status } = req.body;
       const { docSources } = await import('../shared/schema');
@@ -22072,7 +22109,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/doc-hub/search - Full-text search across documents
   app.get('/api/doc-hub/search', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { q } = req.query;
       
       if (!q || typeof q !== 'string') {
@@ -22116,7 +22153,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/doc-hub/snippets - Save content snippet
   app.post('/api/doc-hub/snippets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { label, content, tags, category, sourceId } = req.body;
 
       if (!label || !content) {
@@ -22144,7 +22181,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/doc-hub/snippets - List user's snippets
   app.get('/api/doc-hub/snippets', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { docSnippets } = await import('../shared/schema');
       
       const snippets = await db.select().from(docSnippets)
@@ -22161,7 +22198,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/doc-hub/snippets/:id - Delete snippet
   app.delete('/api/doc-hub/snippets/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const snippetId = parseInt(req.params.id);
       const { docSnippets } = await import('../shared/schema');
       
@@ -22178,7 +22215,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/doc-hub/merge - Create merge session
   app.post('/api/doc-hub/merge', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { title, description, sourceIds, sectionOrder, mergedContent } = req.body;
 
       if (!title) {
@@ -22206,7 +22243,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/doc-hub/merge - List user's merge sessions
   app.get('/api/doc-hub/merge', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { docMergeSessions } = await import('../shared/schema');
       
       const sessions = await db.select().from(docMergeSessions)
@@ -22223,7 +22260,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/doc-hub/merge/:id - Update merge session
   app.patch('/api/doc-hub/merge/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const sessionId = parseInt(req.params.id);
       const { title, description, sourceIds, sectionOrder, mergedContent, status } = req.body;
       const { docMergeSessions } = await import('../shared/schema');
@@ -22344,7 +22381,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   app.post('/api/admin/users/:id/credits', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const targetUserId = req.params.id;
-      const adminId = req.user.claims.sub;
+      const adminId = getUserId(req)!;
       const { amount, reason } = req.body;
       
       if (!amount || typeof amount !== 'number' || amount <= 0) {
@@ -22379,7 +22416,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   app.post('/api/admin/users/:id/unlimited', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const targetUserId = req.params.id;
-      const adminId = req.user.claims.sub;
+      const adminId = getUserId(req)!;
       const { creditWallets } = await import('../shared/schema');
       
       const user = await storage.getUser(targetUserId);
@@ -22434,7 +22471,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   app.post('/api/admin/users/:id/role', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
       const targetUserId = req.params.id;
-      const adminId = req.user.claims.sub;
+      const adminId = getUserId(req)!;
       const { role } = req.body;
       
       if (!role || !['member', 'admin'].includes(role)) {
@@ -22718,7 +22755,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/user/subscription - Get current user's subscription status
   app.get('/api/user/subscription', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { userSubscriptions, subscriptionTiers, creditWallets } = await import('../shared/schema');
       
       const [subscription] = await db.select()
@@ -22777,7 +22814,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/podcasts - List user's podcasts
   app.get('/api/podcasts', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const userPodcasts = await storage.getPodcasts(userId);
       res.json(userPodcasts);
     } catch (error) {
@@ -22789,7 +22826,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/podcasts - Create podcast
   app.post('/api/podcasts', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const validatedData = insertPodcastSchema.parse({ ...req.body, userId });
       const podcast = await storage.createPodcast(validatedData);
       res.status(201).json(podcast);
@@ -22802,7 +22839,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/podcasts/:id - Get single podcast
   app.get('/api/podcasts/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const podcastId = parseInt(req.params.id);
       const podcast = await storage.getPodcast(podcastId);
       
@@ -22824,7 +22861,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/podcasts/:id - Update podcast
   app.patch('/api/podcasts/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const podcastId = parseInt(req.params.id);
       const podcast = await storage.getPodcast(podcastId);
       
@@ -22847,7 +22884,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/podcasts/:id - Delete podcast
   app.delete('/api/podcasts/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const podcastId = parseInt(req.params.id);
       const podcast = await storage.getPodcast(podcastId);
       
@@ -22870,7 +22907,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/podcasts/:id/episodes - List episodes
   app.get('/api/podcasts/:id/episodes', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const podcastId = parseInt(req.params.id);
       const podcast = await storage.getPodcast(podcastId);
       
@@ -22893,7 +22930,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/podcasts/:id/episodes - Create episode
   app.post('/api/podcasts/:id/episodes', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const podcastId = parseInt(req.params.id);
       const podcast = await storage.getPodcast(podcastId);
       
@@ -22917,7 +22954,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/podcasts/:id/episodes/:episodeId - Get single episode
   app.get('/api/podcasts/:id/episodes/:episodeId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const podcastId = parseInt(req.params.id);
       const episodeId = parseInt(req.params.episodeId);
       const podcast = await storage.getPodcast(podcastId);
@@ -22941,7 +22978,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/podcasts/:id/episodes/:episodeId - Update episode
   app.patch('/api/podcasts/:id/episodes/:episodeId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const podcastId = parseInt(req.params.id);
       const episodeId = parseInt(req.params.episodeId);
       const podcast = await storage.getPodcast(podcastId);
@@ -22966,7 +23003,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/podcasts/:id/episodes/:episodeId - Delete episode
   app.delete('/api/podcasts/:id/episodes/:episodeId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const podcastId = parseInt(req.params.id);
       const episodeId = parseInt(req.params.episodeId);
       const podcast = await storage.getPodcast(podcastId);
@@ -22991,7 +23028,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/podcasts/:id/episodes/:episodeId/transcribe - AI Transcription
   app.post('/api/podcasts/:id/episodes/:episodeId/transcribe', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const podcastId = parseInt(req.params.id);
       const episodeId = parseInt(req.params.episodeId);
       const podcast = await storage.getPodcast(podcastId);
@@ -23026,7 +23063,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/podcasts/:id/episodes/:episodeId/publish - Publish episode
   app.post('/api/podcasts/:id/episodes/:episodeId/publish', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const podcastId = parseInt(req.params.id);
       const episodeId = parseInt(req.params.episodeId);
       const podcast = await storage.getPodcast(podcastId);
@@ -23077,7 +23114,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/research/query - Search with caching (1 credit per fresh query)
   app.get('/api/research/query', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { q, market, num, skipCache } = req.query;
 
       if (!q || typeof q !== 'string') {
@@ -23170,7 +23207,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/research/insights - AI-analyze search results (1 credit)
   app.post('/api/research/insights', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { results, query, context, queryId } = req.body;
 
       if (!results || !Array.isArray(results) || results.length === 0) {
@@ -23228,7 +23265,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/research/history - Get user's research history (free)
   app.get('/api/research/history', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { limit } = req.query;
 
       const history = await getResearchHistory(
@@ -23253,7 +23290,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/vault/entries - List entries with category/tag filters
   app.get('/api/vault/entries', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { category, tag, status, limit: limitParam, offset: offsetParam } = req.query;
 
       let query = db.select().from(vaultEntries).where(eq(vaultEntries.userId, userId));
@@ -23295,7 +23332,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/vault/entries - Create entry
   app.post('/api/vault/entries', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const validationResult = insertVaultEntrySchema.safeParse({ ...req.body, userId });
 
       if (!validationResult.success) {
@@ -23319,7 +23356,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/vault/entries/:id - Get single entry
   app.get('/api/vault/entries/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const entryId = parseInt(req.params.id);
 
       const [entry] = await db.select()
@@ -23340,7 +23377,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/vault/entries/:id - Update entry
   app.patch('/api/vault/entries/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const entryId = parseInt(req.params.id);
 
       const [existing] = await db.select()
@@ -23380,7 +23417,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/vault/entries/:id - Delete entry
   app.delete('/api/vault/entries/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const entryId = parseInt(req.params.id);
 
       const [existing] = await db.select()
@@ -23404,7 +23441,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/vault/folders - List folders
   app.get('/api/vault/folders', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { parentId, category } = req.query;
 
       const conditions: any[] = [eq(vaultFolders.userId, userId)];
@@ -23435,7 +23472,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/vault/folders - Create folder
   app.post('/api/vault/folders', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const validationResult = insertVaultFolderSchema.safeParse({ ...req.body, userId });
 
       if (!validationResult.success) {
@@ -23459,7 +23496,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/vault/folders/:id - Update folder
   app.patch('/api/vault/folders/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const folderId = parseInt(req.params.id);
 
       const [existing] = await db.select()
@@ -23495,7 +23532,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/vault/folders/:id - Delete folder
   app.delete('/api/vault/folders/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const folderId = parseInt(req.params.id);
 
       const [existing] = await db.select()
@@ -23519,7 +23556,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/vault/entries/:id/save-to-folder - Add entry to folder
   app.post('/api/vault/entries/:id/save-to-folder', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const entryId = parseInt(req.params.id);
       const { folderId } = req.body;
 
@@ -23572,7 +23609,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/production/batches - Create batch job (check credits first)
   app.post('/api/production/batches', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const validationResult = insertProductionBatchSchema.safeParse({ ...req.body, userId });
 
       if (!validationResult.success) {
@@ -23623,7 +23660,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/production/batches - List user's batches
   app.get('/api/production/batches', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { status, batchType, limit: limitParam, offset: offsetParam } = req.query;
 
       const conditions: any[] = [eq(productionBatches.userId, userId)];
@@ -23656,7 +23693,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/production/batches/:id - Get batch with items
   app.get('/api/production/batches/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const batchId = parseInt(req.params.id);
 
       const [batch] = await db.select()
@@ -23685,7 +23722,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/production/batches/:id/cancel - Cancel batch
   app.post('/api/production/batches/:id/cancel', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const batchId = parseInt(req.params.id);
 
       const [batch] = await db.select()
@@ -23722,7 +23759,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/production/batches/:id/download - Download all outputs
   app.get('/api/production/batches/:id/download', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const batchId = parseInt(req.params.id);
 
       const [batch] = await db.select()
@@ -23768,7 +23805,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/life-story - Get user's life stories
   app.get('/api/life-story', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const stories = await db.select()
         .from(lifeStories)
         .where(eq(lifeStories.userId, userId))
@@ -23783,7 +23820,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/life-story - Create new life story
   app.post('/api/life-story', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const validatedData = insertLifeStorySchema.parse({ ...req.body, userId });
       const [story] = await db.insert(lifeStories).values(validatedData).returning();
       res.status(201).json(story);
@@ -23796,7 +23833,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/life-story/:id - Get specific story
   app.get('/api/life-story/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const storyId = parseInt(req.params.id);
       const [story] = await db.select()
         .from(lifeStories)
@@ -23814,7 +23851,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/life-story/:id - Update story
   app.patch('/api/life-story/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const storyId = parseInt(req.params.id);
       const [existing] = await db.select()
         .from(lifeStories)
@@ -23836,7 +23873,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/life-story/:id/milestones - Add milestone
   app.post('/api/life-story/:id/milestones', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const storyId = parseInt(req.params.id);
       const { milestone } = req.body;
       if (!milestone) {
@@ -23864,7 +23901,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/life-story/:id/generate-chapter - AI generate chapter
   app.post('/api/life-story/:id/generate-chapter', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const storyId = parseInt(req.params.id);
       const { chapterTitle, chapterContext } = req.body;
       const [story] = await db.select()
@@ -23903,7 +23940,7 @@ Write an engaging, emotionally resonant chapter of about 1000 words that capture
   // GET /api/screenplay - List projects
   app.get('/api/screenplay', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projects = await db.select()
         .from(screenplayProjects)
         .where(eq(screenplayProjects.userId, userId))
@@ -23918,7 +23955,7 @@ Write an engaging, emotionally resonant chapter of about 1000 words that capture
   // POST /api/screenplay - Create project
   app.post('/api/screenplay', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const validatedData = insertScreenplayProjectSchema.parse({ ...req.body, userId });
       const [project] = await db.insert(screenplayProjects).values(validatedData).returning();
       res.status(201).json(project);
@@ -23931,7 +23968,7 @@ Write an engaging, emotionally resonant chapter of about 1000 words that capture
   // GET /api/screenplay/:id - Get project
   app.get('/api/screenplay/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = parseInt(req.params.id);
       const [project] = await db.select()
         .from(screenplayProjects)
@@ -23949,7 +23986,7 @@ Write an engaging, emotionally resonant chapter of about 1000 words that capture
   // PATCH /api/screenplay/:id - Update project
   app.patch('/api/screenplay/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = parseInt(req.params.id);
       const [existing] = await db.select()
         .from(screenplayProjects)
@@ -23971,7 +24008,7 @@ Write an engaging, emotionally resonant chapter of about 1000 words that capture
   // POST /api/screenplay/:id/generate-logline - AI logline
   app.post('/api/screenplay/:id/generate-logline', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = parseInt(req.params.id);
       const [project] = await db.select()
         .from(screenplayProjects)
@@ -24001,7 +24038,7 @@ Create a single-sentence logline (25-40 words) that captures the protagonist, co
   // POST /api/screenplay/:id/generate-beats - AI beat sheet
   app.post('/api/screenplay/:id/generate-beats', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = parseInt(req.params.id);
       const [project] = await db.select()
         .from(screenplayProjects)
@@ -24055,7 +24092,7 @@ For each beat, provide: {"beat": "name", "description": "what happens", "timing"
   // POST /api/screenplay/:id/generate-dialogue - AI dialogue
   app.post('/api/screenplay/:id/generate-dialogue', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = parseInt(req.params.id);
       const { sceneDescription, characters: sceneCharacters } = req.body;
       const [project] = await db.select()
@@ -24089,7 +24126,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // POST /api/screenplay/:id/voice-readthrough - Generate voice read-through
   app.post('/api/screenplay/:id/voice-readthrough', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = parseInt(req.params.id);
       const { sceneId, characters, speed } = req.body;
 
@@ -24133,7 +24170,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // POST /api/screenplay/:id/storyboard - Generate storyboard
   app.post('/api/screenplay/:id/storyboard', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = parseInt(req.params.id);
       const { sceneId, artStyle, framesPerScene, scenes } = req.body;
 
@@ -24207,7 +24244,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // POST /api/screenplay/:id/export - Export screenplay
   app.post('/api/screenplay/:id/export', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = parseInt(req.params.id);
       const { format, options } = req.body;
 
@@ -24273,7 +24310,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // GET /api/screenplay/:id/text - Get script as plain text
   app.get('/api/screenplay/:id/text', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = parseInt(req.params.id);
 
       const [project] = await db.select()
@@ -24305,7 +24342,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // POST /api/movie/from-script - Create movie project from screenplay
   app.post('/api/movie/from-script', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const { screenplayProjectId, title, scenes, characters, dialogue, settings } = req.body;
 
       const [movieProject] = await db.insert(mediaProjects).values({
@@ -24342,7 +24379,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // GET /api/music-sandbox - List projects
   app.get('/api/music-sandbox', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projects = await db.select()
         .from(musicSandboxProjects)
         .where(eq(musicSandboxProjects.userId, userId))
@@ -24357,7 +24394,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // POST /api/music-sandbox - Create project
   app.post('/api/music-sandbox', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const validatedData = insertMusicSandboxProjectSchema.parse({ ...req.body, userId });
       const [project] = await db.insert(musicSandboxProjects).values(validatedData).returning();
       res.status(201).json(project);
@@ -24370,7 +24407,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // GET /api/music-sandbox/:id - Get project
   app.get('/api/music-sandbox/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = parseInt(req.params.id);
       const [project] = await db.select()
         .from(musicSandboxProjects)
@@ -24388,7 +24425,7 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
   // PATCH /api/music-sandbox/:id - Update project
   app.patch('/api/music-sandbox/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const projectId = parseInt(req.params.id);
       const [existing] = await db.select()
         .from(musicSandboxProjects)
@@ -24964,7 +25001,7 @@ Format as structured JSON with clear sections.`;
 
   app.post('/api/push/subscribe', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      const userId = getUserId(req)!;
       const { endpoint, p256dh, auth, userAgent } = req.body;
       if (!endpoint || !p256dh || !auth) return res.status(400).json({ message: 'Invalid subscription data' });
 
@@ -24982,7 +25019,7 @@ Format as structured JSON with clear sections.`;
 
   app.delete('/api/push/unsubscribe', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      const userId = getUserId(req)!;
       const { endpoint } = req.body;
       await db.execute(sql`DELETE FROM push_subscriptions WHERE user_id = ${userId} AND endpoint = ${endpoint}`);
       res.json({ success: true });
@@ -24993,7 +25030,7 @@ Format as structured JSON with clear sections.`;
 
   app.get('/api/push/status', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      const userId = getUserId(req)!;
       const subs = await db.execute(sql`SELECT id, created_at, last_used FROM push_subscriptions WHERE user_id = ${userId}`);
       res.json({ subscribed: subs.rows.length > 0, count: subs.rows.length });
     } catch {
@@ -25003,7 +25040,7 @@ Format as structured JSON with clear sections.`;
 
   app.post('/api/push/test', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      const userId = getUserId(req)!;
       const { sendPushToUser } = await import('./pushNotificationService');
       await sendPushToUser(userId, {
         title: "Sasquatch Coach is watching, Warrior.",
@@ -25024,8 +25061,8 @@ Format as structured JSON with clear sections.`;
 
   app.get('/api/medications', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
-      const meds = await db.execute(sql`SELECT * FROM medications WHERE user_id = ${userId} AND is_active = true ORDER BY name ASC`);
+      const userId = getUserId(req)!;
+      const meds = await db.execute(sql`SELECT id, name, dosage, frequency, purpose, prescribed_by, start_date, end_date, side_effects, notes, is_active, reminder_times, created_at FROM medications WHERE user_id = ${userId} AND is_active = true ORDER BY name ASC`);
       res.json(meds.rows);
     } catch (err: any) {
       res.status(500).json({ message: 'Failed to fetch medications' });
@@ -25034,14 +25071,14 @@ Format as structured JSON with clear sections.`;
 
   app.post('/api/medications', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      const userId = getUserId(req)!;
       const { name, dosage, frequency, purpose, prescribedBy, startDate, notes, reminderTimes } = req.body;
       if (!name || !dosage || !frequency) return res.status(400).json({ message: 'Name, dosage, and frequency required' });
 
       const result = await db.execute(sql`
         INSERT INTO medications (user_id, name, dosage, frequency, purpose, prescribed_by, start_date, notes, reminder_times)
         VALUES (${userId}, ${name}, ${dosage}, ${frequency}, ${purpose || null}, ${prescribedBy || null}, ${startDate ? new Date(startDate) : null}, ${notes || null}, ${reminderTimes || []})
-        RETURNING *
+        RETURNING id, name, dosage, frequency, purpose, prescribed_by, start_date, end_date, side_effects, notes, is_active, reminder_times, created_at
       `);
       res.json(result.rows[0]);
     } catch (err: any) {
@@ -25052,7 +25089,7 @@ Format as structured JSON with clear sections.`;
 
   app.put('/api/medications/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      const userId = getUserId(req)!;
       const { id } = req.params;
       const { name, dosage, frequency, purpose, prescribedBy, notes, reminderTimes, isActive } = req.body;
       await db.execute(sql`
@@ -25075,7 +25112,7 @@ Format as structured JSON with clear sections.`;
 
   app.delete('/api/medications/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      const userId = getUserId(req)!;
       const { id } = req.params;
       await db.execute(sql`UPDATE medications SET is_active = false WHERE id = ${parseInt(id)} AND user_id = ${userId}`);
       res.json({ success: true });
@@ -25088,10 +25125,16 @@ Format as structured JSON with clear sections.`;
     try {
       const userId = req.user?.claims?.sub;
       const { id } = req.params;
+      const medId = parseInt(id);
+      // Verify caller owns the medication before logging
+      const [owner] = await db.execute(sql`
+        SELECT id FROM medications WHERE id = ${medId} AND user_id = ${userId} AND is_active = true
+      `);
+      if (!owner) return res.status(404).json({ message: 'Not found' });
       const { skipped, skipReason, notes } = req.body;
       await db.execute(sql`
         INSERT INTO medication_logs (medication_id, user_id, taken_at, skipped, skip_reason, notes)
-        VALUES (${parseInt(id)}, ${userId}, NOW(), ${!!skipped}, ${skipReason || null}, ${notes || null})
+        VALUES (${medId}, ${userId}, NOW(), ${!!skipped}, ${skipReason || null}, ${notes || null})
       `);
       res.json({ success: true });
     } catch (err: any) {
@@ -25105,9 +25148,9 @@ Format as structured JSON with clear sections.`;
 
   app.get('/api/appointments', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      const userId = getUserId(req)!;
       const appts = await db.execute(sql`
-        SELECT * FROM appointments 
+        SELECT id, user_id, title, provider_name, provider_type, location, appointment_date, duration, notes, prep_notes, status, created_at FROM appointments
         WHERE user_id = ${userId} AND status != 'cancelled'
         ORDER BY appointment_date ASC
       `);
@@ -25119,7 +25162,7 @@ Format as structured JSON with clear sections.`;
 
   app.post('/api/appointments', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      const userId = getUserId(req)!;
       const { title, providerName, providerType, location, appointmentDate, duration, notes, prepNotes } = req.body;
       if (!title || !providerName || !appointmentDate) return res.status(400).json({ message: 'Title, provider, and date required' });
 
@@ -25137,7 +25180,7 @@ Format as structured JSON with clear sections.`;
 
   app.put('/api/appointments/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      const userId = getUserId(req)!;
       const { id } = req.params;
       const { title, providerName, providerType, location, appointmentDate, notes, prepNotes, followUpNotes, status } = req.body;
       await db.execute(sql`
@@ -25161,7 +25204,7 @@ Format as structured JSON with clear sections.`;
 
   app.delete('/api/appointments/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      const userId = getUserId(req)!;
       const { id } = req.params;
       await db.execute(sql`UPDATE appointments SET status = 'cancelled' WHERE id = ${parseInt(id)} AND user_id = ${userId}`);
       res.json({ success: true });
