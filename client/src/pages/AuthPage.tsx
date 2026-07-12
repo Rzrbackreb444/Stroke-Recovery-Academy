@@ -33,6 +33,24 @@ export default function AuthPage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [mode, setMode] = useState<AuthMode>("otp");
+
+  // Show error toast when landing with ?error= (e.g. failed Google OAuth)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const err = params.get("error");
+    if (err) {
+      const messages: Record<string, string> = {
+        google_token: "Google sign-in failed. Try email instead.",
+        google: "Google sign-in failed. Try email instead.",
+        oauth: "Sign-in failed. Try another method.",
+      };
+      toast({
+        title: "Sign-in failed",
+        description: messages[err] || "Something went wrong. Try again.",
+        variant: "destructive",
+      });
+    }
+  }, []);
   const [showPassword, setShowPassword] = useState(false);
 
   const [email, setEmail] = useState("");

@@ -2203,6 +2203,9 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   });
 
   // OAuth redirect routes (configured when provider credentials are set)
+  // Alias: old /sign-in path → canonical login page
+  app.get('/sign-in', (req, res) => res.redirect(301, '/recovery/login'));
+
   app.get('/api/auth/google', (req, res, next) => {
     if (!process.env.GOOGLE_CLIENT_ID) {
       return res.status(503).json({ message: "Google authentication not configured" });
@@ -2211,13 +2214,13 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
   });
 
   app.get('/api/auth/google/callback', (req, res, next) => {
-    passport.authenticate('google', { failureRedirect: '/sign-in' }, (err: any, user: any) => {
+    passport.authenticate('google', { failureRedirect: '/recovery/login?error=google' }, (err: any, user: any) => {
       if (err || !user) {
-        return res.redirect('/sign-in');
+        return res.redirect('/recovery/login?error=google');
       }
       req.logIn(user, (loginErr) => {
         if (loginErr) {
-          return res.redirect('/sign-in');
+          return res.redirect('/recovery/login?error=google');
         }
         const returnTo = (req.session as any)?.returnTo || '/recovery/dashboard';
         delete (req.session as any).returnTo;
