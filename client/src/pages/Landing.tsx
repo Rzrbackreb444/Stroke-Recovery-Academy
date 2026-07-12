@@ -14,7 +14,7 @@ import RecoverySEO, {
   STROKE_CONDITION_SCHEMA,
 } from "@/components/RecoverySEO";
 import Footer from "@/components/Footer";
-import nickHeroPhoto from "@assets/2018_1783859240948.png";
+import nickHeroPhoto from "@assets/2018_1783859467739.png";
 import nickPortrait from "@assets/Untitled_design_1781030529179.png";
 import manifestoStairs from "@assets/manifesto-stairs.png";
 import cleanUi from "@assets/home-clean-ui.png";
