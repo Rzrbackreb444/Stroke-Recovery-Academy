@@ -14,7 +14,7 @@ import RecoverySEO, {
   STROKE_CONDITION_SCHEMA,
 } from "@/components/RecoverySEO";
 import Footer from "@/components/Footer";
-import nickHeroPhoto from "@assets/Untitled_design_1783859796086.png";
+import nickHeroPhoto from "@assets/2018_1783860042019.png";
 import nickPortrait from "@assets/Untitled_design_1781030529179.png";
 import manifestoStairs from "@assets/manifesto-stairs.png";
 import cleanUi from "@assets/home-clean-ui.png";
@@ -50,30 +50,35 @@ function Hero() {
               </span>
             </div>
 
+            <p
+              className="text-2xl sm:text-3xl font-bold text-white leading-snug mb-5 hero-description"
+              data-testid="text-hero-subtitle"
+            >
+              December 3, 2018. Hoyer lift.<br />
+              50 staples. Paralyzed on one side.
+            </p>
+
             <h1
-              className="font-display text-5xl sm:text-6xl lg:text-7xl text-white leading-[0.92] tracking-tight mb-8 hero-description"
+              className="font-display text-5xl sm:text-6xl lg:text-7xl text-white leading-[0.92] tracking-tight mb-8"
               data-testid="text-hero-main"
             >
               From <span className="text-gold">0%</span><br />
-              to <span className="text-gold">90%</span><br />
-              Recovery.
+              to <span className="text-gold">90%</span>.<br />
+              7 years of reps.
             </h1>
 
-            <p className="text-xl text-white/70 mb-4 leading-relaxed" data-testid="text-hero-subtitle">
-              December 3, 2018. Hoyer lift. 50 staples. Complete paralysis on one side. Doctors with no promises.
-            </p>
-            <p className="text-lg text-white/50 mb-10 leading-relaxed">
-              Today Nick Kremers types with both hands, runs a thriving platform, and has reached 90,000+ survivors worldwide — using techniques that don't exist in any medical textbook. This is the Sasquatch Method.
+            <p className="text-lg text-white/50 mb-8 leading-relaxed">
+              Nick Kremers built the system that didn't exist — from a Hoyer lift to 90% recovery, across 90,000+ survivors worldwide. This is the Sasquatch Method.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-14">
+            <div className="flex flex-col sm:flex-row gap-4 mb-5">
               <Button
                 size="lg"
                 onClick={goToOnboarding}
                 className="bg-gold text-black text-base font-bold px-10 h-14 shadow-lg shadow-gold/20"
                 data-testid="button-start-recovery-hero"
               >
-                Find My Recovery Plan <ArrowRight className="ml-2 h-5 w-5" />
+                Start Free <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
               <Button
                 size="lg"
@@ -85,6 +90,8 @@ function Hero() {
                 Watch Nick's Story
               </Button>
             </div>
+
+            <p className="text-sm text-white/35 mb-10">Join 50,000+ survivors rebuilding daily — free to start.</p>
 
             <div className="grid grid-cols-4 gap-4 border-t border-white/10 pt-8">
               {stats.map((stat) => (
@@ -158,6 +165,7 @@ function Method() {
     {
       code: "S.A.S.C.H.",
       label: "The Daily Formula",
+      payoff: "Run this every day. No exceptions.",
       color: "bg-gold",
       textColor: "text-black",
       borderColor: "border-gold/30",
@@ -173,6 +181,7 @@ function Method() {
     {
       code: "S.O.S.",
       label: "The Panic Reset",
+      payoff: "Pull this out on the dark days.",
       color: "bg-red-600",
       textColor: "text-white",
       borderColor: "border-red-500/30",
@@ -186,6 +195,7 @@ function Method() {
     {
       code: "C.O.M.P.A.S.S.",
       label: "The Navigation System",
+      payoff: "For when you don't know which direction you're heading.",
       color: "bg-neutral-900",
       textColor: "text-white",
       borderColor: "border-white/10",
@@ -221,6 +231,7 @@ function Method() {
               <div className={`${sys.color} ${sys.textColor} px-7 py-5`}>
                 <div className="font-display text-3xl tracking-wider mb-1">{sys.code}</div>
                 <div className={`text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded inline-block ${sys.tagBg}`}>{sys.label}</div>
+                <p className={`text-sm mt-3 font-medium opacity-80`}>{sys.payoff}</p>
               </div>
               <div className="px-7 py-6 space-y-4">
                 {sys.letters.map((item, i) => (
@@ -301,12 +312,28 @@ function Proof() {
               </div>
             </div>
           </div>
-          <div className="relative aspect-video bg-white/5 rounded-2xl overflow-hidden border border-white/10 shadow-2xl" aria-hidden="true">
-            <img src={manifestoStairs} alt="" className="w-full h-full object-cover opacity-60" />
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-              <div className="w-20 h-20 rounded-full bg-gold/90 flex items-center justify-center">
-                <Play className="w-8 h-8 text-black fill-black ml-1" />
+          <div className="space-y-5">
+            <div className="relative aspect-video bg-white/5 rounded-2xl overflow-hidden border border-white/10 shadow-2xl" aria-hidden="true">
+              <img src={manifestoStairs} alt="" className="w-full h-full object-cover opacity-60" />
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                <div className="w-20 h-20 rounded-full bg-gold/90 flex items-center justify-center">
+                  <Play className="w-8 h-8 text-black fill-black ml-1" />
+                </div>
               </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { quote: "I was told I'd plateau at 18 months. That was 3 years ago. I'm still gaining.", name: "Maria T.", detail: "Ischemic stroke, age 52" },
+                { quote: "The S.O.S. protocol got me through the worst day of my recovery. Still use it.", name: "Dave R.", detail: "Hemorrhagic stroke, age 44" },
+              ].map((t, i) => (
+                <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-5">
+                  <p className="text-white/80 text-sm leading-relaxed mb-4">"{t.quote}"</p>
+                  <div>
+                    <p className="text-white font-semibold text-sm">{t.name}</p>
+                    <p className="text-white/40 text-xs">{t.detail}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
