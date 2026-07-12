@@ -15,11 +15,23 @@ export default function RecoveryLogin() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
-  // Detect ?tab= param
+  // Detect ?tab= and ?error= params
   const params = new URLSearchParams(window.location.search);
   const initialTab = (params.get("tab") === "signup" ? "signup" : "signin") as Tab;
 
   const [tab, setTab] = useState<Tab>(initialTab);
+
+  // Show error toast on OAuth failure (e.g. ?error=google from callback)
+  useEffect(() => {
+    const err = params.get("error");
+    if (err) {
+      toast({
+        title: "Sign-in failed",
+        description: err === "google" ? "Google sign-in failed. Try email below." : "Something went wrong. Try again.",
+        variant: "destructive",
+      });
+    }
+  }, []);
   const [showPw, setShowPw] = useState(false);
   const [otpEmail, setOtpEmail] = useState("");
 

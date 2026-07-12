@@ -680,6 +680,7 @@ function Router() {
       <Route path="/recovery/resources" component={RecoveryResources} />
       <Route path="/recovery/center-finder" component={RecoveryCenterFinder} />
       <Route path="/recovery/login" component={RecoveryLogin} />
+      <Route path="/sign-in">{() => { window.location.replace("/recovery/login"); return null; }}</Route>
       <Route path="/recovery/onboarding" component={RecoveryOnboarding} />
       <Route path="/recovery/me" component={RecoveryMe} />
       <Route path="/recovery/routine" component={DailyRoutine} />
