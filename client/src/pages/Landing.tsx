@@ -14,7 +14,7 @@ import RecoverySEO, {
   STROKE_CONDITION_SCHEMA,
 } from "@/components/RecoverySEO";
 import Footer from "@/components/Footer";
-import nickHeroPhoto from "@assets/IMG_0548_1776442127593.jpeg";
+import nickHeroPhoto from "@assets/2018_1783859240948.png";
 import nickPortrait from "@assets/Untitled_design_1781030529179.png";
 import manifestoStairs from "@assets/manifesto-stairs.png";
 import cleanUi from "@assets/home-clean-ui.png";
@@ -96,17 +96,27 @@ function Hero() {
             </div>
           </div>
 
-          {/* Right — Sasquatch canonical art */}
-          <div className="relative hidden lg:flex items-end justify-center" style={{ minHeight: "620px" }}>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0D0D0D] via-transparent to-transparent z-10 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0D0D0D] to-transparent z-10 pointer-events-none" />
+          {/* Right — Before/after photo */}
+          <div className="relative hidden lg:block">
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] via-[#0D0D0D]/10 to-transparent z-10 rounded-2xl pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0D0D0D] via-transparent to-transparent z-10 rounded-2xl pointer-events-none" />
             <img
-              src={sasquatchCanonical}
-              alt="The Stroked-Out Sasquatch — Nick Kremers' recovery identity"
-              className="w-full h-full object-contain object-bottom mix-blend-lighten"
-              style={{ maxHeight: "640px" }}
-              data-testid="img-sasquatch-hero"
+              src={nickHeroPhoto}
+              alt="Nick Kremers — 2018 after stroke vs. 2027 after recovery"
+              className="w-full rounded-2xl object-cover"
+              style={{ maxHeight: "620px" }}
+              data-testid="img-nick-hero"
             />
+            <div className="absolute bottom-6 left-6 right-6 z-20">
+              <div className="bg-black/70 backdrop-blur-sm border border-gold/30 rounded-xl p-4">
+                <p className="text-gold text-xs font-semibold uppercase tracking-wider mb-1">
+                  Nick Kremers — Founder
+                </p>
+                <p className="text-white text-sm font-medium leading-snug">
+                  "If the Sasquatch can do it — so can you."
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
