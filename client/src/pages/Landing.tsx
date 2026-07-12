@@ -14,7 +14,7 @@ import RecoverySEO, {
   STROKE_CONDITION_SCHEMA,
 } from "@/components/RecoverySEO";
 import Footer from "@/components/Footer";
-import heroWarrior from "@assets/hero-warrior-training.png";
+import nickHeroPhoto from "@assets/IMG_0548_1776442127593.jpeg";
 import nickPortrait from "@assets/Untitled_design_1781030529179.png";
 import manifestoStairs from "@assets/manifesto-stairs.png";
 import cleanUi from "@assets/home-clean-ui.png";
@@ -26,78 +26,105 @@ const goToOnboarding = () => {
 };
 
 function Hero() {
+  const stats = [
+    { value: "50", label: "Staples in his skull" },
+    { value: "0%", label: "Starting function" },
+    { value: "90%", label: "Recovery achieved" },
+    { value: "7", label: "Years of proof" },
+  ];
   return (
-    <section className="relative bg-black overflow-hidden">
-      <div className="absolute inset-0">
-        <img src={heroWarrior} alt="" aria-hidden="true" className="w-full h-full object-cover opacity-35" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-black/40" />
+    <section className="relative min-h-screen w-full flex items-center justify-center bg-[#0D0D0D] overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/2 right-0 w-[700px] h-[700px] bg-gold/4 rounded-full blur-3xl" />
       </div>
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-28">
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 w-full">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-8">
-              <span className="flex h-2 w-2 rounded-full bg-gold" />
-              <span className="text-xs font-semibold uppercase tracking-wider text-white/70">By Nick Kremers — 7-year survivor</span>
+
+          {/* Left — Copy */}
+          <div>
+            <div className="flex items-center gap-2 mb-6">
+              <Flame className="h-5 w-5 text-gold" />
+              <span className="text-gold text-sm font-semibold uppercase tracking-widest">
+                The Stroked-Out Sasquatch
+              </span>
             </div>
-            <h1 className="font-display text-white text-6xl md:text-7xl lg:text-8xl leading-[0.9] mb-8">
-              From <span className="text-gold">0%</span> to <span className="text-gold">90%</span> recovery.
+
+            <h1
+              className="font-display text-5xl sm:text-6xl lg:text-7xl text-white leading-[0.92] tracking-tight mb-8 hero-description"
+              data-testid="text-hero-main"
+            >
+              From <span className="text-gold">0%</span><br />
+              to <span className="text-gold">90%</span><br />
+              Recovery.
             </h1>
-            <p className="hero-description text-xl text-white/70 mb-10 leading-relaxed max-w-xl">
-              The medical system stabilizes you. We help you rebuild — with a clear plan, daily reps, and people who keep showing up. At your pace, whether you're six weeks out or six years in.
+
+            <p className="text-xl text-white/70 mb-4 leading-relaxed" data-testid="text-hero-subtitle">
+              December 3, 2018. Hoyer lift. 50 staples. Complete paralysis on one side. Doctors with no promises.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <p className="text-lg text-white/50 mb-10 leading-relaxed">
+              Today Nick Kremers types with both hands, runs a thriving platform, and has reached 90,000+ survivors worldwide — using techniques that don't exist in any medical textbook. This is the Sasquatch Method.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 mb-14">
               <Button
                 size="lg"
                 onClick={goToOnboarding}
-                className="bg-gold text-black h-14 px-8 text-base rounded-md w-full sm:w-auto font-semibold"
+                className="bg-gold text-black text-base font-bold px-10 h-14 shadow-lg shadow-gold/20"
                 data-testid="button-start-recovery-hero"
               >
-                Start your recovery <ArrowRight className="ml-2 h-5 w-5" />
+                Find My Recovery Plan <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
               <Button
                 size="lg"
                 variant="outline"
+                className="border-white/20 text-white text-base font-semibold px-10 h-14 bg-white/5"
                 onClick={() => document.getElementById("proof")?.scrollIntoView({ behavior: "smooth" })}
-                className="h-14 px-8 text-base rounded-md w-full sm:w-auto border-white/20 bg-white/5 text-white backdrop-blur"
                 data-testid="button-see-story"
               >
-                See his story <ArrowRight className="ml-2 h-4 w-4" />
+                Watch Nick's Story
               </Button>
             </div>
-            <div className="mt-12 flex items-center gap-4 text-sm text-white/50 font-medium">
-              <div className="flex -space-x-2" aria-hidden="true">
-                {[1, 2, 3, 4].map((i) => <div key={i} className="w-8 h-8 rounded-full border-2 border-black bg-white/20" />)}
-              </div>
-              <p>Join 50,000+ survivors rebuilding their lives</p>
+
+            <div className="grid grid-cols-4 gap-4 border-t border-white/10 pt-8">
+              {stats.map((stat) => (
+                <div key={stat.label} className="text-center">
+                  <p className="font-display text-2xl sm:text-3xl text-white">{stat.value}</p>
+                  <p className="text-xs text-white/40 mt-1 leading-tight">{stat.label}</p>
+                </div>
+              ))}
             </div>
           </div>
 
+          {/* Right — Nick's photo */}
           <div className="relative hidden lg:block">
-            <div className="rounded-2xl bg-white/95 backdrop-blur-md p-6 shadow-2xl border border-white/40 max-w-sm ml-auto">
-              <div className="flex items-center justify-between gap-2 mb-4">
-                <div className="font-semibold text-neutral-900">Today's Protocol</div>
-                <span className="text-xs font-bold text-gold-ink bg-gold/10 px-2 py-1 rounded">3/5 done</span>
-              </div>
-              <div className="space-y-3">
-                {[
-                  { t: "Mirror Therapy (15m)", done: true },
-                  { t: "Sit-to-Stand Drills (20 reps)", done: false },
-                  { t: "Mental Rehearsal (10m)", done: false },
-                ].map((row, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    {row.done
-                      ? <CheckCircle2 className="text-gold w-5 h-5 shrink-0" />
-                      : <div className="w-5 h-5 rounded-full border-2 border-neutral-300 shrink-0" />}
-                    <span className={`text-sm font-medium ${row.done ? "text-neutral-400 line-through" : "text-neutral-800"}`}>{row.t}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-5 pt-4 border-t border-neutral-100 flex items-center gap-2 text-xs text-neutral-500">
-                <Flame className="w-4 h-4 text-gold" /> 412-day streak — heart's still thumpin'
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] via-[#0D0D0D]/10 to-transparent z-10 rounded-2xl pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0D0D0D] via-transparent to-transparent z-10 rounded-2xl pointer-events-none" />
+            <img
+              src={nickHeroPhoto}
+              alt="Nick Kremers — stroke survivor and founder of Stroke Recovery Academy"
+              className="w-full rounded-2xl object-cover object-top"
+              style={{ maxHeight: "620px" }}
+              data-testid="img-nick-hero"
+            />
+            <div className="absolute bottom-6 left-6 right-6 z-20">
+              <div className="bg-black/70 backdrop-blur-sm border border-gold/30 rounded-xl p-4">
+                <p className="text-gold text-xs font-semibold uppercase tracking-wider mb-1">
+                  Nick Kremers — Founder
+                </p>
+                <p className="text-white text-sm font-medium leading-snug">
+                  "If the Sasquatch can do it — so can you."
+                </p>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce pointer-events-none">
+        <svg className="w-6 h-6 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
       </div>
     </section>
   );
