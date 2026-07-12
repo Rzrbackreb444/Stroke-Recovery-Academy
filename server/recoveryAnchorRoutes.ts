@@ -4,6 +4,7 @@ import { z } from "zod";
 import crypto from "crypto";
 import { db } from "./db";
 import { isAuthenticated } from "./replitAuth";
+import { getUserId } from "./lib/authUtils";
 import { publicRateLimit } from "./middleware/publicRateLimit";
 import {
   motivationUsage,
@@ -164,7 +165,7 @@ export function registerRecoveryAnchorRoutes(app: Express) {
   // ── Free preview (no quota charge) ─────────────────────────────────
   app.post("/api/recovery/anchor/audit", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const parsed = inputSchema.safeParse(req.body ?? {});
       if (!parsed.success) {
         return res.status(400).json({ error: "bad_input", message: parsed.error.issues[0]?.message ?? "Invalid input" });
@@ -180,7 +181,7 @@ export function registerRecoveryAnchorRoutes(app: Express) {
 
   // ── Paid render (charges anchorRenderCount, persists, voices) ──────
   app.post("/api/recovery/anchor/render", isAuthenticated, async (req: any, res: Response) => {
-    const userId = req.user.claims.sub;
+    const userId = getUserId(req)!;
     const parsed = inputSchema.safeParse(req.body ?? {});
     if (!parsed.success) {
       return res.status(400).json({ error: "bad_input", message: parsed.error.issues[0]?.message ?? "Invalid input" });
@@ -264,7 +265,7 @@ export function registerRecoveryAnchorRoutes(app: Express) {
   // ── Retention signal (data flywheel) ───────────────────────────────
   app.post("/api/recovery/anchor/:id/check-in", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "bad_id" });
       const parsed = checkInSchema.safeParse(req.body ?? {});
@@ -295,7 +296,7 @@ export function registerRecoveryAnchorRoutes(app: Express) {
   // ── Today's anchor + streak (daily-habit surface) ──────────────────
   app.get("/api/recovery/anchor/today", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const today = todayStr();
       const yesterday = yesterdayStr();
 
@@ -366,7 +367,7 @@ export function registerRecoveryAnchorRoutes(app: Express) {
   // ── List user's anchors ────────────────────────────────────────────
   app.get("/api/recovery/anchor/list", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const rows = await db
         .select()
         .from(recoveryAnchors)
@@ -382,7 +383,7 @@ export function registerRecoveryAnchorRoutes(app: Express) {
   // ── Set as today's anchor (without re-rendering) ───────────────────
   app.post("/api/recovery/anchor/:id/set-today", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "bad_id" });
 
@@ -404,7 +405,7 @@ export function registerRecoveryAnchorRoutes(app: Express) {
   // ── Toggle public share (consent-gated) ────────────────────────────
   app.post("/api/recovery/anchor/:id/share", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "bad_id" });
 
@@ -477,7 +478,7 @@ export function registerRecoveryAnchorRoutes(app: Express) {
   // ── Usage status (extends motivation usage with anchor counter) ────
   app.get("/api/recovery/anchor/usage", isAuthenticated, async (req: any, res: Response) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const [usage, premium] = await Promise.all([ensureUsage(userId), isPremium(userId)]);
       return res.json({
         month: usage.month,

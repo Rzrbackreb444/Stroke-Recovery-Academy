@@ -2511,7 +2511,7 @@ export class DatabaseStorage implements IStorage {
   async getWhiteLabelConfig(userId: string): Promise<any | undefined> {
     try {
       const result = await db.execute(sql`
-        SELECT * FROM white_label_configs WHERE user_id = ${userId} LIMIT 1
+        SELECT id, user_id, brand_name, logo_url, favicon_url, primary_color, accent_color, background_color, custom_domain, openai_api_key, anthropic_api_key, gemini_api_key, grok_api_key, perplexity_api_key, stability_api_key, remove_bg_api_key, hide_kreaite_branding, custom_footer_text, custom_terms_url, custom_privacy_url, creator_revenue_share, platform_revenue_share, domain_verified, created_at, updated_at FROM white_label_configs WHERE user_id = ${userId} LIMIT 1
       `);
       return result.rows?.[0];
     } catch (error) {

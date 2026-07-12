@@ -9,6 +9,7 @@ import {
 } from '@shared/schema';
 import { and, asc, eq, ne } from 'drizzle-orm';
 import { requireAdmin } from '../middleware/requireAdmin';
+import { getUserId } from '../lib/authUtils';
 
 const DEFAULT_CATEGORIES: Array<{ slug: string; name: string; icon: string; color: string; sortOrder: number }> = [
   { slug: 'physical',           name: 'Physical',            icon: 'Activity',     color: '#C9941A', sortOrder: 10 },
@@ -126,7 +127,7 @@ export function registerCourseStudioExtrasRoutes(app: Express, isAuthenticated: 
   // GET taxonomy (tags + prereqs) for an instructor-owned course
   app.get('/api/my-courses/:id/taxonomy', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       const [c] = await db.select().from(courses).where(eq(courses.id, id));
       if (!c || c.instructorId !== userId) return res.status(404).json({ error: 'Not found' });
@@ -145,7 +146,7 @@ export function registerCourseStudioExtrasRoutes(app: Express, isAuthenticated: 
   // PUT taxonomy — replace-all semantics
   app.put('/api/my-courses/:id/taxonomy', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       const [c] = await db.select().from(courses).where(eq(courses.id, id));
       if (!c || c.instructorId !== userId) return res.status(404).json({ error: 'Not found' });

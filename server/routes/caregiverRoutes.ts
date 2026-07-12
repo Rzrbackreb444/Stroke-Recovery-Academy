@@ -9,6 +9,7 @@ import {
 import { sql, eq, and, or, desc } from 'drizzle-orm';
 import { z } from 'zod';
 import crypto from 'crypto';
+import { getUserId } from '../lib/authUtils';
 
 const INVITE_TTL_DAYS = 14;
 
@@ -25,7 +26,7 @@ export function registerCaregiverRoutes(app: Express, isAuthenticated: any) {
   // List caregiver-side and survivor-side links for the signed-in user.
   app.get('/api/caregivers/links', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub as string;
+      const userId = getUserId(req)!;
 
       // Self-heal: any caregiver unlock that failed to mirror at purchase time
       // (DB blip, transient error) gets re-mirrored next time the survivor pulls
@@ -76,7 +77,7 @@ export function registerCaregiverRoutes(app: Express, isAuthenticated: any) {
   // Caregiver invites a survivor by email. If the email matches an existing
   // user we prelink to their account; otherwise the link is held until accept.
   app.post('/api/caregivers/invite', isAuthenticated, async (req: any, res) => {
-    const caregiverId = req.user.claims.sub as string;
+    const caregiverId = getUserId(req)!;
     const parsed = inviteSchema.safeParse(req.body ?? {});
     if (!parsed.success) {
       return res.status(400).json({ error: 'Invalid invite', issues: parsed.error.issues });
@@ -140,7 +141,7 @@ export function registerCaregiverRoutes(app: Express, isAuthenticated: any) {
   // Survivor accepts an invite via token. Sets survivorId on the link and flips
   // status to active. Token is single-use (cleared on success).
   app.post('/api/caregivers/accept/:token', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = getUserId(req)!;
     const token = String(req.params.token || '');
     if (!token) return res.status(400).json({ error: 'Missing token' });
 
@@ -197,7 +198,7 @@ export function registerCaregiverRoutes(app: Express, isAuthenticated: any) {
   // Either side can revoke an active link. Revokes future mirroring; existing
   // mirrored unlocks remain (the survivor keeps what was already gifted).
   app.post('/api/caregivers/:id/revoke', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = getUserId(req)!;
     const linkId = parseInt(req.params.id, 10);
     if (!Number.isFinite(linkId)) return res.status(400).json({ error: 'Invalid id' });
 
@@ -224,7 +225,7 @@ export function registerCaregiverRoutes(app: Express, isAuthenticated: any) {
   // Exposed as a route so courseUnlockRoutes can hand off post-unlock; also called
   // directly in this file after accept.
   app.post('/api/caregivers/mirror-unlock', isAuthenticated, async (req: any, res) => {
-    const caregiverId = req.user.claims.sub as string;
+    const caregiverId = getUserId(req)!;
     const courseId = parseInt(req.body?.courseId, 10);
     if (!Number.isFinite(courseId)) return res.status(400).json({ error: 'Invalid courseId' });
     try {

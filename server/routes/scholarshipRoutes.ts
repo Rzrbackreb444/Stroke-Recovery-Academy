@@ -13,6 +13,7 @@ import {
 import { sql, eq, and, desc } from 'drizzle-orm';
 import { addCredits } from '../creditService';
 import { getRecoveryStripeClient } from '../recoveryStripeClient';
+import { getUserId } from '../lib/authUtils';
 import { z } from 'zod';
 
 const POINT_VALUE_CENTS = 4;
@@ -73,7 +74,7 @@ export function registerScholarshipRoutes(app: Express, isAuthenticated: any) {
   // Authed: my eligibility — last grant date, cooldown remaining, open request status.
   app.get('/api/scholarship/me', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub as string;
+      const userId = getUserId(req)!;
       const grants = await db.select().from(scholarshipGrants)
         .where(eq(scholarshipGrants.userId, userId))
         .orderBy(desc(scholarshipGrants.grantedAt))
@@ -108,7 +109,7 @@ export function registerScholarshipRoutes(app: Express, isAuthenticated: any) {
   // Authed: request a scholarship. Auto-grants if fund has balance + survivor eligible
   // + a suitable course exists. Otherwise creates a pending request for admin review.
   app.post('/api/scholarship/request', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = getUserId(req)!;
     const parsed = requestSchema.safeParse(req.body ?? {});
     if (!parsed.success) {
       return res.status(400).json({ error: 'Invalid request', issues: parsed.error.issues });
@@ -355,7 +356,7 @@ export function registerScholarshipRoutes(app: Express, isAuthenticated: any) {
   // Contribute Power Points (or cash equivalent) to the fund. Authed donors are
   // tracked; anonymous donations require donorEmail for receipts.
   app.post('/api/scholarship/contribute', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = getUserId(req)!;
     const parsed = contributeSchema.safeParse(req.body ?? {});
     if (!parsed.success) {
       return res.status(400).json({ error: 'Invalid contribution', issues: parsed.error.issues });

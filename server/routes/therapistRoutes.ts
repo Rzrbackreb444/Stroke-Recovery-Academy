@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { db } from '../db';
 import { therapistApplications, therapistProfiles, users } from '@shared/schema';
 import { and, desc, eq } from 'drizzle-orm';
+import { requireAdmin } from '../middleware/requireAdmin';
 
 // Day → ISO weekday (0=Sun..6=Sat used by JS Date.getDay())
 const DAY_KEYS = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'] as const;
@@ -67,16 +68,11 @@ const applySchema = z.object({
   documentUrl: z.string().url().optional(),
 });
 
-async function isAdmin(userId: string): Promise<boolean> {
-  const [u] = await db.select({ role: users.role }).from(users).where(eq(users.id, userId)).limit(1);
-  return u?.role === 'admin' || u?.role === 'owner';
-}
-
 export function registerTherapistRoutes(app: Express, isAuthenticated: any) {
   // Apply to be a verified therapist
   app.post('/api/therapists/apply', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub as string;
+      const userId = getUserId(req)!;
       const parsed = applySchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ error: 'Invalid', details: parsed.error.format() });
 
@@ -99,7 +95,7 @@ export function registerTherapistRoutes(app: Express, isAuthenticated: any) {
 
   // My latest application status
   app.get('/api/therapists/my-application', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
+    const userId = (req.user?.claims?.sub || req.user?.id) as string;
     const [app] = await db.select().from(therapistApplications)
       .where(eq(therapistApplications.userId, userId))
       .orderBy(desc(therapistApplications.createdAt))
@@ -108,12 +104,24 @@ export function registerTherapistRoutes(app: Express, isAuthenticated: any) {
   });
 
   // Admin: list applications
-  app.get('/api/admin/therapist-applications', isAuthenticated, async (req: any, res) => {
-    const userId = req.user.claims.sub as string;
-    if (!(await isAdmin(userId))) return res.status(403).json({ error: 'Admin only' });
+  app.get('/api/admin/therapist-applications', isAuthenticated, requireAdmin, async (req: any, res) => {
     const status = (req.query.status as string) || 'pending';
     const apps = await db.select({
-      app: therapistApplications,
+      id: therapistApplications.id,
+      userId: therapistApplications.userId,
+      status: therapistApplications.status,
+      fullName: therapistApplications.fullName,
+      title: therapistApplications.title,
+      licenseNumber: therapistApplications.licenseNumber,
+      licenseState: therapistApplications.licenseState,
+      yearsExperience: therapistApplications.yearsExperience,
+      specialties: therapistApplications.specialties,
+      bio: therapistApplications.bio,
+      portfolioUrl: therapistApplications.portfolioUrl,
+      documentUrl: therapistApplications.documentUrl,
+      createdAt: therapistApplications.createdAt,
+      reviewedAt: therapistApplications.reviewedAt,
+      reviewerNotes: therapistApplications.reviewerNotes,
       email: users.email,
       firstName: users.firstName,
       lastName: users.lastName,
@@ -128,9 +136,8 @@ export function registerTherapistRoutes(app: Express, isAuthenticated: any) {
   });
 
   // Admin: approve
-  app.post('/api/admin/therapist-applications/:id/approve', isAuthenticated, async (req: any, res) => {
-    const reviewerId = req.user.claims.sub as string;
-    if (!(await isAdmin(reviewerId))) return res.status(403).json({ error: 'Admin only' });
+  app.post('/api/admin/therapist-applications/:id/approve', isAuthenticated, requireAdmin, async (req: any, res) => {
+    const reviewerId = getUserId(req)!;
     const id = parseInt(req.params.id, 10);
     const notes = (req.body?.notes as string) || null;
 
@@ -153,9 +160,8 @@ export function registerTherapistRoutes(app: Express, isAuthenticated: any) {
   });
 
   // Admin: reject
-  app.post('/api/admin/therapist-applications/:id/reject', isAuthenticated, async (req: any, res) => {
-    const reviewerId = req.user.claims.sub as string;
-    if (!(await isAdmin(reviewerId))) return res.status(403).json({ error: 'Admin only' });
+  app.post('/api/admin/therapist-applications/:id/reject', isAuthenticated, requireAdmin, async (req: any, res) => {
+    const reviewerId = getUserId(req)!;
     const id = parseInt(req.params.id, 10);
     const notes = (req.body?.notes as string) || null;
     await db.update(therapistApplications).set({
@@ -204,7 +210,7 @@ export function registerTherapistRoutes(app: Express, isAuthenticated: any) {
   // P3-01 — Therapist edits their own open hours
   app.put('/api/therapists/me/hours', isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub as string;
+      const uid = getUserId(req)!;
       const [u] = await db.select({ isVerifiedTherapist: users.isVerifiedTherapist })
         .from(users).where(eq(users.id, uid)).limit(1);
       if (!u?.isVerifiedTherapist) return res.status(403).json({ error: 'Verified therapists only' });

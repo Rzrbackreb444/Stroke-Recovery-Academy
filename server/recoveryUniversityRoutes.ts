@@ -10,6 +10,7 @@ import {
 } from "@shared/schema";
 import { eq, and, asc, desc, inArray } from "drizzle-orm";
 import { isAuthenticated } from "./replitAuth";
+import { getUserId } from "./lib/authUtils";
 import { RECOVERY_UNIVERSITY_CURRICULUM, type SeedLesson } from "./data/recoveryUniversityCurriculum";
 import { loadPersonaFor } from "./personaRoutes";
 
@@ -55,7 +56,7 @@ async function loadLessonOrDeny(
     res.status(400).json({ error: "Invalid chapter" });
     return null;
   }
-  const userId = req.user.claims.sub;
+  const userId = getUserId(req)!;
   const [user] = await db.select().from(users).where(eq(users.id, userId));
   const userTier = getRecoveryTier((user as any)?.subscriptionTier);
 
@@ -163,7 +164,7 @@ export function registerRecoveryUniversityRoutes(app: Express): void {
       const gate = await loadLessonOrDeny(req, res, chapter);
       if (!gate) return;
       const { lesson, userTier } = gate;
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
 
       const [progress] = await db
         .select()
@@ -188,7 +189,7 @@ export function registerRecoveryUniversityRoutes(app: Express): void {
       const chapter = parseInt(req.params.chapter, 10);
       const gate = await loadLessonOrDeny(req, res, chapter);
       if (!gate) return;
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
 
       const [existing] = await db
         .select()
@@ -218,7 +219,7 @@ export function registerRecoveryUniversityRoutes(app: Express): void {
       const chapter = parseInt(req.params.chapter, 10);
       const gate = await loadLessonOrDeny(req, res, chapter);
       if (!gate) return;
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const now = new Date();
 
       const [existing] = await db
@@ -324,7 +325,7 @@ export function registerRecoveryUniversityRoutes(app: Express): void {
       const gate = await loadLessonOrDeny(req, res, chapter);
       if (!gate) return;
       const { lesson } = gate;
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
 
       const questions = await db
         .select()
@@ -476,7 +477,7 @@ export function registerRecoveryUniversityRoutes(app: Express): void {
   // Get user's full progress across all chapters + earned certs
   app.get("/api/recovery/university/progress", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const progress = await db
         .select()
         .from(recoveryUniversityLessonProgress)
@@ -499,7 +500,7 @@ export function registerRecoveryUniversityRoutes(app: Express): void {
       if (!Number.isFinite(partNumber) || partNumber < 1 || partNumber > 7) {
         return res.status(400).json({ error: "Invalid part" });
       }
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req)!;
       const [user] = await db.select().from(users).where(eq(users.id, userId));
 
       const required = chaptersInPart(partNumber);

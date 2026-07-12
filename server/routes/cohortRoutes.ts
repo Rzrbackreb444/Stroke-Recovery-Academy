@@ -6,6 +6,7 @@ import { db } from "../db";
 import { courseCohorts, cohortMembers, cohortPosts, courses, users } from "@shared/schema";
 import { and, desc, eq, gte, sql } from "drizzle-orm";
 import { transcribeVideo } from "../videoTranscription";
+import { getUserId } from "../lib/authUtils";
 
 const CRISIS = [
   /\bkill (my|her|his|them)self\b/i, /\bsuicid(e|al)\b/i,
@@ -121,7 +122,7 @@ export function registerCohortRoutes(app: Express, isAuthenticated: any, uploads
   // Join — only members can post. Joining is open to any authenticated user.
   app.post("/api/cohorts/:id/join", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Invalid id" });
       const c = (await db.select().from(courseCohorts).where(eq(courseCohorts.id, id)).limit(1))[0];
@@ -143,7 +144,7 @@ export function registerCohortRoutes(app: Express, isAuthenticated: any, uploads
 
   app.post("/api/cohorts/:id/leave", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Invalid id" });
       await db.transaction(async (tx) => {
@@ -189,7 +190,7 @@ export function registerCohortRoutes(app: Express, isAuthenticated: any, uploads
 
   app.post("/api/cohorts/:id/posts", isAuthenticated, async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Invalid id" });
       const m = await db.select().from(cohortMembers)
@@ -209,7 +210,7 @@ export function registerCohortRoutes(app: Express, isAuthenticated: any, uploads
 
   app.post("/api/cohorts/:id/posts/voice", isAuthenticated, upload.single("audio"), async (req: any, res) => {
     try {
-      const uid = req.user.claims.sub;
+      const uid = getUserId(req)!;
       const id = parseInt(req.params.id, 10);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "Invalid id" });
       if (!req.file) return res.status(400).json({ error: "audio file required" });
