@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, ChevronLeft, Loader2 } from "lucide-react";
+import { SiGoogle } from "react-icons/si";
 
 type Tab = "signin" | "signup" | "otp";
 
@@ -168,6 +169,26 @@ export default function RecoveryLogin() {
                 </button>
               ))}
             </div>
+          )}
+
+          {/* ── GOOGLE ─────────────────────────────────────────────────────── */}
+          {tab !== "otp" && (
+            <>
+              <a
+                href="/api/auth/google"
+                className="flex items-center justify-center gap-3 w-full py-2.5 rounded-md text-sm font-semibold transition-opacity hover:opacity-90"
+                style={{ background: "#fff", color: "#1a1a1a", border: "1px solid #ddd" }}
+                data-testid="button-google-signin"
+              >
+                <SiGoogle className="w-4 h-4" style={{ color: "#4285F4" }} />
+                Continue with Google
+              </a>
+              <div className="relative flex items-center gap-3 my-4">
+                <div className="flex-1 h-px" style={{ background: "#333" }} />
+                <span className="text-xs" style={{ color: "#555" }}>or continue with email</span>
+                <div className="flex-1 h-px" style={{ background: "#333" }} />
+              </div>
+            </>
           )}
 
           {/* ── SIGN IN ────────────────────────────────────────────────────── */}
