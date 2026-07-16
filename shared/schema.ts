@@ -1269,6 +1269,48 @@ export const insertRecoveryBlogPostSchema = createInsertSchema(recoveryBlogPosts
 export type InsertRecoveryBlogPost = typeof insertRecoveryBlogPostSchema._type;
 export type RecoveryBlogPost = typeof recoveryBlogPosts.$inferSelect;
 
+// ── Sasquatch Spark: subscriber content revenue engine ──────────────────────
+// Reusable manuscript excerpts the Gemini generator draws from.
+export const sparkSourceAtoms = pgTable("spark_source_atoms", {
+  id: serial("id").primaryKey(),
+  content: text("content").notNull(),
+  kind: text("kind").notNull().default("insight"), // insight | quote | exercise | mindset | story
+  tags: text("tags").array().default([]),
+  usedCount: integer("used_count").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+export const insertSparkSourceAtomSchema = createInsertSchema(sparkSourceAtoms).omit({ id: true, createdAt: true, usedCount: true });
+export type InsertSparkSourceAtom = z.infer<typeof insertSparkSourceAtomSchema>;
+export type SparkSourceAtom = typeof sparkSourceAtoms.$inferSelect;
+
+// A Spark: dual-path content (public teaser + gated full body).
+export const sparks = pgTable("sparks", {
+  id: serial("id").primaryKey(),
+  slug: text("slug").notNull().unique(),
+  title: text("title").notNull(),
+  subject: text("subject").notNull().default(""),        // email subject line
+  teaser: text("teaser").notNull(),                       // public preview
+  body: text("body").notNull(),                           // full subscriber content
+  category: text("category").notNull().default("motivation"), // motivation | exercise | mindset | science
+  tags: text("tags").array().default([]),
+  heroImageUrl: text("hero_image_url"),
+  audioUrl: text("audio_url"),
+  requiredTier: text("required_tier").notNull().default("warrior"), // explorer | warrior | champion | platinum
+  status: text("status").notNull().default("draft"),     // draft | approved | published
+  teaserViews: integer("teaser_views").notNull().default(0),
+  ctaClicks: integer("cta_clicks").notNull().default(0),
+  emailSentAt: timestamp("email_sent_at"),
+  publishedAt: timestamp("published_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+export const insertSparkSchema = createInsertSchema(sparks).omit({
+  id: true, createdAt: true, updatedAt: true, teaserViews: true, ctaClicks: true,
+  emailSentAt: true, publishedAt: true,
+});
+export type InsertSpark = z.infer<typeof insertSparkSchema>;
+export type Spark = typeof sparks.$inferSelect;
+
 // Newsletter Subscribers
 export const newsletterSubscribers = pgTable("newsletter_subscribers", {
   id: serial("id").primaryKey(),
