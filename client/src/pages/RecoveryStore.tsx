@@ -15,6 +15,7 @@ import {
   Dumbbell,
   Footprints,
   Hand,
+  Utensils,
   ShoppingCart,
   CheckCircle,
   Shield,
@@ -34,6 +35,7 @@ const CATEGORIES = [
   { id: "strength", name: "Strength Training", icon: Dumbbell },
   { id: "mobility", name: "Mobility & Drop Foot", icon: Footprints },
   { id: "therapy", name: "Therapy Tools", icon: Hand },
+  { id: "adaptive", name: "Adaptive Aids", icon: Utensils },
   { id: "brain", name: "Brain Games & Books", icon: Brain },
 ];
 
