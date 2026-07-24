@@ -132,6 +132,27 @@ export const POST_REHAB_DURATION = makeBlogPost({
         'The single highest-leverage thing you can do today is start a daily routine and do not miss a day. The Daily Routine in the Sasquatch Method is calibrated to your current ability and escalates as you improve. It is the operating system that closes the gap between "what therapy taught me" and "what I do every day."',
       ],
     },
+    {
+      h2: 'The insurance cliff — and what happens after',
+      paragraphs: [
+        'Most survivors hit a wall around month three to six: insurance stops covering inpatient therapy, outpatient sessions drop from daily to twice a week, and the message — delivered implicitly or explicitly — is that the window has closed. It has not.',
+        'What the insurance cliff actually marks is the transition from supervised recovery to self-directed recovery. The survivors who do best in the chronic phase are the ones who understand this distinction early. They build a home routine during the supervised phase so that when the support stops, the practice continues. The daily routine does not wait for a therapist to supervise it.',
+        'Nick did formal therapy three times a week until month eight. After that, he trained at home every day for six years. That second phase — the unsupervised, daily, chronic-phase training — is where the 90% recovery actually happened. Not in the hospital.',
+      ],
+      bullets: [
+        'Inpatient rehab typically ends at month 1–3',
+        'Outpatient coverage often runs to month 6',
+        'Chronic-phase gains (month 6 onward) require self-directed daily training',
+        'Build the home routine during supervised therapy — do not start from scratch after',
+      ],
+    },
+    {
+      h2: 'Severity and what changes the math',
+      paragraphs: [
+        'The timeline differs substantially by stroke severity, but the key driver is the same at every severity level: daily reps. A mild stroke survivor doing zero daily training will plateau at a worse outcome than a moderate stroke survivor doing a structured daily routine. Severity sets the ceiling; daily practice determines where you end up relative to that ceiling.',
+        'Location matters too. Strokes in the brainstem and cerebellum often produce more balance and coordination issues than limb weakness. Strokes in speech-dominant hemisphere produce aphasia as the primary deficit. The location shapes which rehab tools matter most — but the principle of daily, progressive, task-specific practice applies everywhere.',
+      ],
+    },
   ],
   faqs: [
     { q: 'Is stroke recovery really lifelong?', a: 'Yes. Functional improvements are documented at 5+ years post-stroke in survivors who continue daily training. The brain retains plasticity for life — the rate slows but the capacity remains.' },
@@ -195,6 +216,29 @@ export const POST_FULL_RECOVERY = makeBlogPost({
       h2: 'The realistic plan',
       paragraphs: [
         'Stop asking "will I fully recover" and start asking "what is the next 1% of recovery I can earn this week." That is the question that produces results. Daily routine. Weekly progress check. Monthly stretch goal. Yearly milestone. That is how you stack 7 years of compounding gains.',
+      ],
+    },
+    {
+      h2: 'What Nick\'s 90% actually looks like',
+      paragraphs: [
+        'Nick Kremers had a hemorrhagic stroke at 35. Complete left hemiparesis — the left arm, hand, and leg did not move voluntarily at all for the first six weeks. He had aphasia for two months. He could not walk without a walker for four months.',
+        'Seven years later, he runs on trails. He lifts weights four days a week. He types with both hands. He writes books, runs a business, coaches other survivors. He calls himself 90% recovered — not 100% — because there are still residual symptoms: extra fatigue on high-cognitive-load days, slight balance differences on uneven terrain in the dark, occasional word-finding pauses under stress.',
+        'That remaining 10% is what he trains for. It is smaller every year. The question "will I fully recover" stopped being useful around year two. The question "what can I do today to keep improving" has never stopped being useful.',
+      ],
+    },
+    {
+      h2: 'The variables you can and cannot control',
+      paragraphs: [
+        'Uncontrollable: stroke severity, stroke location, age, time to treatment, genetic factors. These set the landscape of your recovery — the terrain you are working with.',
+        'Controllable: daily reps, sleep quality, depression treatment, diet, strength training alongside neurological training, social connection, stress management, and whether you keep going in year 3 and year 5 when everyone around you has stopped expecting progress.',
+        'The evidence is consistent: controllable factors account for the majority of the variance in long-term outcomes for moderate strokes. You cannot change what happened. You can substantially change where you end up.',
+      ],
+      bullets: [
+        'Stroke severity: uncontrollable — sets the ceiling',
+        'Daily practice intensity: controllable — determines where you end up below the ceiling',
+        'Depression treatment: controllable — undertreated depression is one of the biggest outcome predictors',
+        'Sleep apnea treatment: controllable — undiagnosed in 60%+ of survivors',
+        'Years of continued training: controllable — the most underestimated factor at the 5-year mark',
       ],
     },
   ],
@@ -274,6 +318,21 @@ export const POST_SECOND_STROKE_SIGNS = makeBlogPost({
       paragraphs: [
         'About 25% of all strokes are recurrent strokes. The 90 days after a first stroke are the highest-risk window. Compliance with antiplatelet therapy, blood pressure control, statins (when prescribed), and atrial fibrillation anticoagulation is the single biggest factor in preventing recurrence.',
         'Lifestyle factors stack on top: blood pressure under 130/80, no smoking, daily movement, Mediterranean-style eating, and treatment of sleep apnea cut recurrence risk substantially. The Sasquatch Method covers all of these in the daily routine.',
+      ],
+    },
+    {
+      h2: 'How to prepare your household before an emergency happens',
+      paragraphs: [
+        'The worst time to make a plan is when the emergency is happening. Stroke decisions are made in seconds under extreme stress. A prepared household makes better decisions — and potentially saves a life.',
+        'Post the BE-FAST signs on the refrigerator or in a visible location. Every person in the house should be able to recite the symptoms and the correct first response (call 911, note the time, do not drive). Keep a printed medication list in the house and in your wallet. Know the fastest route to the nearest stroke center — not just any ER, but a certified stroke center where tPA and thrombectomy are available 24 hours a day.',
+        'If you have a Medic Alert bracelet or device, wear it consistently. Falls during a second stroke event can make it impossible to call for help yourself. One-touch 911 devices and medical alert pendants are not overcautious — they are stroke-smart.',
+      ],
+      bullets: [
+        'Post BE-FAST visibly in the home — refrigerator, bathroom mirror',
+        'Print your medication list and keep a copy in your wallet',
+        'Identify the nearest certified stroke center (not just any ER)',
+        'Program 911 as a one-touch call on every phone in the house',
+        'Consider a medical alert device if you live alone or have unsteady gait',
       ],
     },
   ],
@@ -421,6 +480,36 @@ export const POST_TIA_VS_STROKE = makeBlogPost({
         'Survivors of TIA who follow the protocol have outcomes nearly indistinguishable from people who never had one. Survivors who dismiss the warning have outcomes that are dramatically worse.',
       ],
     },
+    {
+      h2: 'What I wish I\'d understood about TIA warning signs before my stroke',
+      paragraphs: [
+        'My stroke came out of nowhere, or so I thought. At 35, with no obvious risk factors beyond a job that ran on caffeine and adrenaline, the idea of a "mini-stroke warning" was not on my radar. But looking back at my history, there had been brief episodes — a few minutes of unusual heaviness on my left side, a moment of speech that felt strange, a visual disturbance I chalked up to dehydration. I dismissed all of them.',
+        'I am not saying I had TIAs before my stroke. I don\'t know that. But the point is that I had been taught — like most people — to think of stroke as a dramatic, obvious, unmistakable event. So anything subtle got categorized as "not that." That mental model is dangerous.',
+        'The research consistently shows that survivors who receive rapid workup and treatment after TIA have significantly better outcomes than those who wait. The FASTER trial showed that dual antiplatelet therapy started within 24 hours of a TIA reduced subsequent stroke risk by about 25% compared to aspirin alone. The window is real. The treatment works. But only if you actually go to the ER.',
+      ],
+    },
+    {
+      h2: 'ABCD2 score — what it means for your risk',
+      paragraphs: [
+        'The ABCD2 score is a clinical tool that predicts your near-term stroke risk after a TIA. Knowing your score helps you understand why your care team is or is not admitting you to the hospital.',
+      ],
+      table: {
+        caption: 'ABCD2 risk score components',
+        headers: ['Factor', 'Score', 'Detail'],
+        rows: [
+          ['Age ≥60', '1 point', 'Older age increases risk'],
+          ['BP ≥140/90 at presentation', '1 point', 'Elevated BP at time of TIA'],
+          ['Clinical: unilateral weakness', '2 points', 'Weakness on one side'],
+          ['Clinical: speech disturbance without weakness', '1 point', 'Dysarthria or aphasia'],
+          ['Duration ≥60 min', '2 points', 'Longer = higher risk'],
+          ['Duration 10–59 min', '1 point', 'Shorter still significant'],
+          ['Diabetes present', '1 point', 'Metabolic risk factor'],
+        ],
+      },
+      paragraphs: [
+        'Total score: 0–3 is low risk (2-day stroke risk ~1%), 4–5 is moderate (~4%), 6–7 is high (~8%). Many centers admit moderate and high-risk patients for 23-hour observation and initiate dual antiplatelet therapy regardless of score. Ask your team where you fall and what the plan is.',
+      ],
+    },
   ],
   faqs: [
     { q: 'Can a TIA cause permanent damage?', a: 'By definition no — if it caused permanent damage on imaging, it is reclassified as a stroke. But repeated TIAs can cause cumulative cognitive effects, and many "TIAs" turn out to be small strokes on MRI.' },
@@ -487,6 +576,30 @@ export const POST_ISCHEMIC_VS_HEMORRHAGIC = makeBlogPost({
         'Ischemic prevention: BP control, lipid management, antiplatelet therapy, anticoagulation if AFib, smoking cessation, diabetes control. Hemorrhagic prevention: aggressive BP control above all, avoiding heavy alcohol, treatment of any known vascular malformation, careful management of anticoagulation if absolutely required.',
         'Blood pressure control is the single most important factor for both. For hemorrhagic survivors, the BP target is often tighter (<130/80 or even lower).',
       ],
+    },
+    {
+      h2: 'What the type of stroke means for your recovery trajectory',
+      paragraphs: [
+        'My stroke was ischemic — a clot, likely cardioembolic, left side of the brain. That meant the left hemisphere deficits most people think of with stroke: right-sided weakness, language involvement, and the reading and word-finding difficulties that took me nearly two years to fully clear.',
+        'Hemorrhagic survivors I know from the community often describe a different initial trajectory: a more severe early period, particularly around the first 30 days, followed by a recovery arc that can be remarkably steep once the blood is reabsorbed and edema clears. The brain injury mechanism is different but the rehabilitation science is essentially the same: neuroplasticity, task-specific practice, daily repetition.',
+        'What changes based on type: the medications you are on (antiplatelets vs. no antiplatelets), the blood pressure targets your neurologist sets, and the secondary prevention strategy. What does not change: the work ethic required and the framework that moves recovery forward.',
+      ],
+    },
+    {
+      h2: 'Key differences at a glance',
+      table: {
+        caption: 'Ischemic vs hemorrhagic stroke comparison',
+        headers: ['Factor', 'Ischemic (~87%)', 'Hemorrhagic (~13%)'],
+        rows: [
+          ['Primary cause', 'Clot blocks blood flow', 'Blood vessel ruptures'],
+          ['Acute treatment', 'tPA, thrombectomy', 'No tPA — BP control, surgery if needed'],
+          ['Prevention drugs', 'Antiplatelets/anticoagulants', 'Avoid anticoagulants if possible'],
+          ['BP target', '<130/80 typical', 'Often tighter; discuss with neurologist'],
+          ['30-day mortality', '~10–15%', '~30–40%'],
+          ['Long-term recovery potential', 'Good with rehab', 'Can be excellent — steep curve after acute phase'],
+          ['Recurrence risk', 'Significant; managed with meds', 'Driven by BP control and vascular factors'],
+        ],
+      },
     },
   ],
   faqs: [
@@ -558,6 +671,28 @@ export const POST_DRIVING_AFTER_STROKE = makeBlogPost({
       paragraphs: [
         'Do not drive if you have: visual field loss in one or both eyes (homonymous hemianopia), seizures within the past 6–12 months, significant cognitive impairment, severe spatial neglect, severe arm or leg weakness affecting control, or anti-seizure or sedating medications that warn against driving.',
         'When in doubt, get the formal evaluation. The hardest conversation in recovery is the one where a family member tells a survivor it is not safe yet. The formal evaluation moves it from a family argument to a professional recommendation.',
+      ],
+    },
+    {
+      h2: 'My experience returning to driving at year three',
+      paragraphs: [
+        'I did not drive for nearly three years. That was partly my neurologist\'s recommendation, partly the fact that I had significant left-side weakness and reaction time deficits that I knew made me unsafe, and partly that I was not ready emotionally — the accident that might have happened had I driven sooner is the one I didn\'t have.',
+        'When I finally did a formal driving evaluation at year two and a half, I failed the first one. Not on the road — I never got to the road. I failed the cognitive screening on reaction time. My evaluator was honest: my processing speed on the right-side visual field was too slow for safe highway driving. She said come back in six months and work on it specifically.',
+        'I came back at month seven. I passed. I drove home from the evaluation myself — first time driving in 31 months. I sat in the parking lot for five minutes before I turned the key. The drive was slow and deliberate and the most significant thing I did in my entire recovery. Not because driving is important — it is — but because it was the first time since the stroke that I felt like myself.',
+        'The protocol that helped: sustained attention tasks (I used apps that require rapid response to visual targets), expanded visual field scanning exercises from my optometrist, and the cognitive work I had been doing for two years. It built incrementally. There was no shortcut.',
+      ],
+    },
+    {
+      h2: 'State-by-state reporting requirements',
+      paragraphs: [
+        'Reporting requirements vary significantly by state. Some states mandate physician reporting of medical conditions that may impair driving. Others rely on self-reporting. Some require medical clearance before reinstating driving privileges; others do not.',
+      ],
+      bullets: [
+        'California, Delaware, Nevada, Oregon, Pennsylvania: mandatory physician reporting of certain medical conditions including stroke',
+        'Most other states: self-reporting required — you are legally required to report even if the state does not send you a notice',
+        'Check your state DMV website specifically — rules change and a blog post cannot substitute for the current official requirement',
+        'International: rules vary significantly — consult your national licensing authority',
+        'Non-disclosure: if you drive without disclosure and have an accident, your insurance may deny coverage retroactively',
       ],
     },
   ],
@@ -639,6 +774,23 @@ export const POST_BEST_FOODS = makeBlogPost({
         'Survivors who pair this with the Sasquatch Daily Routine (movement + mind + meals) see the steepest improvements in BP, cognitive scores, and energy levels in the first 90 days.',
       ],
     },
+    {
+      h2: 'What Nick eats — a survivor\'s actual daily approach',
+      paragraphs: [
+        'I am not a dietitian. I am a person who had a stroke at 35 and spent seven years optimizing for brain health and physical recovery. Here is what actually stuck after trying basically everything.',
+        'Breakfast: two eggs, half an avocado, a handful of blueberries, black coffee. Lunch: a large salad with olive oil and lemon, canned sardines or salmon two days a week, grilled chicken the others. Dinner: vegetables are half the plate, always. Brown rice or lentils for carbohydrates. Olive oil as the primary fat. Dinner is the smallest meal — my energy management is much better when I eat more earlier.',
+        'What I stopped: all sugary drinks in month two. Ultra-processed snacks by month four. Alcohol by month six (I was a social drinker — stopping was not easy and was worth it). I do not count calories. I count colors on my plate.',
+        'What I added that surprised me: a handful of walnuts every morning for omega-3s, green tea in the afternoon instead of a second coffee, and a magnesium glycinate supplement at night (my sleep improved measurably within two weeks). None of these are magic. All of them are additive.',
+      ],
+    },
+    {
+      h2: 'Dysphagia, appetite changes, and eating after stroke',
+      paragraphs: [
+        'One topic most food guides skip: eating mechanics after stroke. Up to 50% of stroke survivors have some degree of dysphagia (swallowing difficulty) in the acute phase. Even survivors who recover swallowing function often have reduced appetite, changed taste, or difficulty with food preparation due to hemiparesis.',
+        'If swallowing is a concern, work with a speech-language pathologist before changing diet texture. Choking risk is real and can be life-threatening. Many of the foods on the 12-food list can be pureed or soft-modified — sardines, salmon, avocado, berries, and oatmeal all work. Ask your SLP about IDDSI levels if you need a formal texture framework.',
+        'For survivors managing food preparation with one functional arm: adaptive cutting boards, rocker knives, and one-handed jar openers make a real difference. The Recovery Store has a curated list of adaptive kitchen tools.',
+      ],
+    },
   ],
   faqs: [
     { q: 'What is the single best food for stroke recovery?', a: 'No single food does it. The pattern matters more than any one item. That said, fatty fish 2–3 times per week has the most consistent evidence for vascular and cognitive benefit.' },
@@ -714,6 +866,29 @@ export const POST_FATIGUE = makeBlogPost({
         'The Sasquatch Daily Routine is built around energy management. Each level is calibrated to the survivor\'s current capacity. The routine starts small, scales gradually, and explicitly includes rest. Survivors report better fatigue scores within 2–3 weeks of starting because the routine breaks the boom-bust cycle.',
       ],
     },
+    {
+      h2: 'The energy envelope: how to stop boom-bust cycles',
+      paragraphs: [
+        'The boom-bust cycle is the single most common fatigue management mistake among stroke survivors. A good day arrives — energy is higher than usual — and the survivor does three times their normal activity to "make up" for the bad days. The next two to three days are crashes. Then another good day triggers another overdoing episode.',
+        'The energy envelope concept, borrowed from chronic fatigue research, is simple: stay within your daily energy budget even on good days. If your sustainable daily output is 60% capacity, spending a good day at 90% capacity does not bank energy — it borrows from tomorrow and the day after.',
+        'In practice: on good days, do your normal routine and stop. Save the extra capacity for rest. Over weeks, the envelope gradually expands as your baseline improves. This is slower and less satisfying than trying to sprint on good days, and it is the only strategy that reliably expands capacity over time.',
+      ],
+      bullets: [
+        'Track your energy on a 1–10 scale every morning for two weeks',
+        'Identify your average sustainable level — that is your envelope',
+        'On good days: do your normal routine and rest, do not exceed your envelope',
+        'Plan demanding tasks for your peak hours (usually morning)',
+        'Schedule mandatory rest before you feel exhausted, not after',
+      ],
+    },
+    {
+      h2: 'Nick\'s experience with post-stroke fatigue',
+      paragraphs: [
+        'I had severe fatigue for the first 18 months. I do not mean "tired." I mean lying on the bathroom floor at 2 PM because I could not make it to the couch — after doing nothing more exhausting than a 20-minute therapy session and a shower.',
+        'What moved the needle, in rough order: treating the sleep apnea I did not know I had (month four — this was the single biggest improvement), treating the depression aggressively with SSRIs (month seven), cutting alcohol entirely (month six), and building a structured pacing schedule so I stopped spending good days at 100% and crashing for three days after.',
+        'At year two, fatigue was manageable. At year four, it was a minor background feature. At year seven, I have afternoon fatigue on high-cognitive-load days and normal energy otherwise. The trajectory is real. Do not accept "this is just how it is now" without fighting every treatable cause first.',
+      ],
+    },
   ],
   faqs: [
     { q: 'How long does post-stroke fatigue last?', a: 'For many survivors it improves significantly over 3–12 months. For some it persists for years and requires ongoing management. Treatment usually helps even when it does not fully resolve.' },
@@ -777,6 +952,29 @@ export const POST_SPASTICITY = makeBlogPost({
       paragraphs: [
         'The most underused treatment is active movement of the spastic limb. Constraint-induced movement therapy (CIMT), task-specific repetitive practice, and electrical stimulation paired with active effort all force the brain to recruit residual motor pathways and reduce spasticity over time.',
         'The Sasquatch Daily Routine includes spasticity-aware protocols: stretch, then activate, then strengthen the opposite (antagonist) muscles. Doing this daily for 12–16 weeks moves the needle in ways that no single intervention does in isolation.',
+      ],
+    },
+    {
+      h2: 'Electrical stimulation at home: what the evidence says',
+      paragraphs: [
+        'Neuromuscular electrical stimulation (NMES) and functional electrical stimulation (FES) devices can significantly reduce spasticity when used consistently at home. They work by sending electrical pulses to the muscle that trigger a contraction — essentially mimicking the signal the brain is failing to send. Paired with active effort (trying to move the limb while the device stimulates), they are far more effective than passive stimulation alone.',
+        'Transcutaneous electrical nerve stimulation (TENS) units available over the counter target sensory nerves and can reduce tone temporarily — useful before stretching or therapy. True NMES devices require slightly more voltage and target motor nerves directly. Your PT or physiatrist can prescribe a trial with a clinical-grade device and help you interpret the response before you invest in a home unit.',
+        'The TENS units in the Recovery Store are a cost-effective starting point for at-home electrical stimulation. They do not replace clinical NMES but they are accessible, affordable, and supported by a reasonable evidence base for spasticity management.',
+      ],
+      bullets: [
+        'TENS: sensory stimulation, reduces tone temporarily, OTC accessible',
+        'NMES: motor stimulation, directly activates muscle contraction, more effective for rehab',
+        'FES: functional electrical stimulation, synchronizes with movement attempts',
+        'Active effort during stimulation dramatically improves outcomes vs. passive use',
+        'Use before stretching to pre-treat tone, or as a standalone session',
+      ],
+    },
+    {
+      h2: 'What I did for my own spasticity',
+      paragraphs: [
+        'My left arm had significant flexor spasticity from month one. My OT fitted me with a resting hand splint immediately. I had Botox injections at month five into the bicep and forearm flexors — that created a three-month window where I could actually open my hand enough to grip objects.',
+        'The combination that worked: Botox every four months for the first two years, daily resting splint at night, aggressive stretching every morning before the splint came off, TENS before each stretching session to pre-treat the tone, and daily active movement practice that started with mirror therapy and progressed to task practice. By year three the Botox interval stretched to six months. By year five, I stopped needing it. My hand is not normal — but it is functional.',
+        'The lesson: spasticity is not a wall. It is a problem with a treatment pathway. Get a physiatrist involved early, because Botox combined with intensive rehab is dramatically more effective than Botox alone or rehab alone.',
       ],
     },
   ],
@@ -850,6 +1048,28 @@ export const POST_MEMORY = makeBlogPost({
         'Memory should slowly improve or stabilize over the first 1–2 years, with continued slow gains possible after that. If memory is getting noticeably worse over months, that is not typical post-stroke recovery and warrants evaluation for other causes (vascular dementia, Alzheimer\'s comorbidity, depression, medication, sleep apnea).',
       ],
     },
+    {
+      h2: 'Practical compensatory tools that actually work',
+      paragraphs: [
+        'The gap between "I know I should remember" and "I actually remember" is closed by external systems, not willpower. The single most effective compensatory strategy I found: a morning briefing. Every morning before anything else, I open a notebook and write the date, the three most important things I need to do today, and the one appointment or event I cannot miss. That 3-minute ritual replaced the cognitive load of holding those items in working memory for hours.',
+        'Smartphones are underused by stroke survivors for memory support. Alarms — not just for wake time but for medications, therapy, meals, and transitions — eliminate the need to remember timing. The camera replaces the need to remember where you parked, what the prescription label says, what the OT demonstrated. Short voice memos replace the need to mentally hold ideas.',
+        'Environmental design matters: same place for keys, wallet, phone — always. The cognitive overhead of tracking objects is disproportionate to how much effort it seems to take for people without memory impairment. Reduce variables. Make the environment do the remembering.',
+      ],
+      bullets: [
+        'Morning briefing notebook: date, top 3 tasks, one unmissable appointment',
+        'Alarm chains for medications, therapy, meals, and transitions',
+        'Camera for visual reference: prescriptions, parking spots, demonstration steps',
+        'Voice memos for ideas that need to be captured in under 10 seconds',
+        'Fixed homes for all daily-use objects — eliminate search overhead',
+      ],
+    },
+    {
+      h2: 'Nick\'s memory experience: what helped, what did not',
+      paragraphs: [
+        'My word-finding was the most visible problem in the first two years — pauses mid-sentence, reaching for a word that I knew was in my head but would not come. This is not memory failure; it is retrieval latency. The word is there. The pathway to get it out is slower. What helped: not rushing. Accepting the pause. Keeping talking even while searching. The pauses got shorter over three years of daily reading, writing, and conversation practice.',
+        'My working memory (holding a phone number in mind, following multi-step instructions) improved the most with physical exercise. The aerobic sessions that most helped my legs also measurably helped my recall. The research on this is consistent: aerobic exercise is the single strongest cognitive intervention available to stroke survivors. More consistent than any brain game or supplement.',
+      ],
+    },
   ],
   faqs: [
     { q: 'Will my memory ever come back after stroke?', a: 'Most survivors see substantial improvement in the first 6–12 months. Continued gains are possible with cognitive rehab, lifestyle factors, and compensatory strategies. Full pre-stroke baseline is uncommon but functional independence is achievable for most.' },
@@ -921,6 +1141,21 @@ export const POST_PBA = makeBlogPost({
       paragraphs: [
         'The single hardest part of PBA is the social fallout. Coworkers, neighbors, and even family interpret the tears as something the survivor is doing on purpose or as a sign of severe depression. Naming it directly defuses most of this. "It is called pseudobulbar affect — my brain is misfiring after my stroke. Give me 30 seconds and it will pass."',
         'Survivors who name PBA out loud to the people in their lives report dramatically less embarrassment and isolation. Caregivers should understand that the survivor is often more upset by the episode than the people around them.',
+      ],
+    },
+    {
+      h2: 'Nick\'s experience with pseudobulbar affect',
+      paragraphs: [
+        'I had PBA from about week six until around month eighteen. Mine was primarily crying — not laughing. It happened most reliably when someone was kind to me. A nurse helping me with PT. A friend calling to check in. My daughter drawing a picture for me. Each of those moments would produce a wave of tears I could not stop and did not match how I actually felt inside. I was grateful, not sad. My face was saying something I was not saying.',
+        'The most disabling part was not the crying itself — it was the misinterpretation. People started treating me as more fragile than I was. They stopped telling me about hard things because they assumed I could not handle them. That isolation was more damaging than the PBA.',
+        'My neurologist diagnosed it properly at month eight. Sertraline at a low dose reduced the frequency by roughly 70% within three weeks. The episodes did not stop entirely until about month twenty. What stopped them most: naming it out loud, loudly, to everyone in my world. Once everyone knew it was a brain misfire and not a mood, the social fallout dissolved.',
+      ],
+    },
+    {
+      h2: 'How to support a survivor who has PBA',
+      paragraphs: [
+        'For caregivers and family: the most important thing is to not escalate. When an episode begins, stay calm. Do not ask "are you okay?" repeatedly — that makes it worse. A quiet presence, a glass of water, and thirty seconds of waiting is usually all that is needed. The survivor knows the tears are not appropriate to the moment. They are embarrassed. They do not need commentary.',
+        'For the survivor: carry a brief explanation card in your wallet. "I have a neurological condition called pseudobulbar affect. Episodes involve involuntary laughing or crying unrelated to my actual mood. It is a known complication of my stroke. I am fine. Thank you for your patience." Some survivors find the card more useful than verbal explanation in the middle of an episode.',
       ],
     },
   ],
@@ -1194,6 +1429,22 @@ export const POST_HOME_BP_MONITOR = makeBlogPost({
         { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke' },
       ],
     },
+    {
+      h2: 'How to read the trends — not just the numbers',
+      paragraphs: [
+        'A single reading tells you almost nothing. Two weeks of readings tells you something. Six months of readings tells you everything. Here is what to look for in the trend data:',
+        'Morning surge: a spike in systolic BP in the first hour after waking — higher than evening readings — is called morning surge and significantly increases stroke risk. It is often invisible without home monitoring. If your morning reading is consistently 15–20 points higher than your evening reading, mention it to your neurologist.',
+        'Nocturnal pattern: some monitors have a night mode or can be read with a timestamp. Non-dippers (people whose BP does not drop at night) have higher stroke risk than dippers. CPAP therapy often converts non-dippers to dippers — another reason to treat sleep apnea if you have it.',
+        'Medication timing: if your evening readings are much higher than morning readings, your once-daily medication may be wearing off. Your prescriber can time the dose differently or add a second agent. If your reading is highest 30 minutes after taking your medication, that is a false peak and not clinically meaningful. Track both timing and reading.',
+      ],
+      bullets: [
+        'Morning surge: systolic 15-20 points higher in morning than evening — flag for neurologist',
+        'Consistently above 130/80 despite medication — adjustment needed, do not wait',
+        'Single readings below 90/60 — medication may be too aggressive, can trigger falls',
+        'Irregular heartbeat detected: note timestamp and notify cardiologist within 24 hours',
+        'Readings varying >20 points on same day: check technique (position, cuff size, arm)',
+      ],
+    },
   ],
   faqs: [
     { q: 'What is the best BP target after stroke?', a: 'Most stroke survivors should aim for under 130/80. Hemorrhagic stroke survivors may need even tighter control. Your neurologist sets the target — track toward it, not a generic number.' },
@@ -1270,6 +1521,27 @@ export const POST_RESISTANCE_BANDS = makeBlogPost({
       },
       paragraphs: [
         'Never anchor a band to a door without a proper door anchor. Never stand on a band with bare feet — it will slip. Never use a band that is frayed or cracked. Start with 2–3 sets of 10–15 reps. Rest 60–90 seconds between sets. If you feel pain that is sharp or joint-level, stop. If you feel fatigue that is muscular, continue.',
+      ],
+    },
+    {
+      h2: 'The 6 exercises I used every single day',
+      paragraphs: [
+        'These are the six band exercises that formed the core of my early home strength program. I chose them because they hit the movements that matter most for daily function: pulling yourself up, pushing something away, walking stability, and getting off a chair.',
+      ],
+      bullets: [
+        'Seated row (tube band with handles): improves posture, scapular control, and the ability to pull open doors. Anchor at knee height. Pull both handles to your chest.',
+        'Bicep curl (tube band, one or both arms): rebuilds elbow flexion for lifting and carrying. Stand on the band. Curl slowly.',
+        'Terminal knee extension (loop band above knee): critical for knee stability and reducing gait deviations. Stand in slight knee bend, band provides resistance to straightening.',
+        'Hip abduction (loop band above knee, lying or standing): targets the hip stabilizers that prevent hip drop during walking — one of the most common gait problems after stroke.',
+        'Shoulder external rotation (tube band at elbow height): prevents shoulder impingement on the affected side, often caused by muscle imbalance from spasticity.',
+        'Seated leg press simulation (loop band, foot through loop): plantarflexion and dorsiflexion from a chair — great for ankle and foot control without weight-bearing risk.',
+      ],
+    },
+    {
+      h2: 'Progressing from bands to the gym',
+      paragraphs: [
+        'I moved to a gym at month fourteen. I had a physical therapist evaluate my form with the basic movements before I touched any machine. The form issues that bands did not catch — subtle hip shift during squats, shoulder elevation during rows — were caught immediately when a trained eye watched me. Do not skip the evaluation. A compensatory movement pattern at the gym becomes a chronic injury by month eighteen.',
+        'The transition order that worked: bands for the first year, cable machines for the next six months (cables mimic band physics), then barbells and dumbbells. The cable machine is underused by survivors — it provides smooth, weight-stack resistance with many of the safety advantages of a band.',
       ],
     },
   ],
@@ -1349,6 +1621,28 @@ export const POST_SHOWER_SAFETY = makeBlogPost({
         { href: '/blog/complete-stroke-recovery-home-kit', label: 'Complete stroke recovery home kit' },
       ],
     },
+    {
+      h2: 'How to install grab bars properly — the guide no one gives you',
+      paragraphs: [
+        'Most people buy grab bars and screw them into tile. That is wrong. Tile alone cannot support a person\'s weight when they slip. A grab bar must be anchored into a stud — the wooden framing member behind the wall. If there is no stud in the right place, you use a heavy-duty toggle bolt rated for 250+ lbs or a specialized grab bar anchor plate.',
+        'Placement matters as much as installation. The entry grab bar should be at the height of the top of the tub, angled at 45 degrees toward the person stepping in. This lets you grip it for both lowering and rising. The wall bar should be at the height of your waist when seated, horizontal, within reach of the shower chair without leaning.',
+        'If you rent: most landlords will agree to grab bar installation when presented with a letter from a physician or OT documenting medical necessity. The Americans with Disabilities Act requires reasonable accommodations. Some landlords will install them at their cost; others will allow the modification with an agreement to return the wall to original condition. A grab bar hole and a $10 anchor cap is not a restoration problem.',
+      ],
+      bullets: [
+        'Find the stud: use a stud finder or the knock method (hollow sound vs. solid)',
+        'Entry bar: at tub-top height, angled 45 degrees, rated for 250+ lbs',
+        'Shower wall bar: horizontal, at seated waist height, within reach of chair',
+        'Use stainless steel or chrome — plastic-coated bars corrode in shower humidity',
+        'Test before first use: hang your full weight on the bar before stepping on a wet surface',
+      ],
+    },
+    {
+      h2: 'My two falls — what happened and what I changed',
+      paragraphs: [
+        'First fall: month two, reaching for shampoo while standing on a wet surface. No grab bar installed yet. I grabbed the towel bar — it pulled out of the wall — and went down. Bruised ribs, two weeks of setback. Lesson: towel bars are decorative. They will not hold a person.',
+        'Second fall: month three, stepping out of the tub with my affected leg first. My knee buckled. I had a suction grab bar that failed when I grabbed it. Head on the tub edge, stitches. Lesson: suction cups are not safe fall-prevention equipment. After that fall, I had two professional bars installed within 48 hours. I have not fallen in the shower since.',
+      ],
+    },
   ],
   faqs: [
     { q: 'How long should I use a shower chair?', a: 'Use it until you can stand in the shower for 10 minutes without holding the grab bar. For most survivors, that is 6–12 months. Some use it longer. There is no shame in using it as long as you need it.' },
@@ -1421,6 +1715,20 @@ export const POST_ADAPTIVE_EATING = makeBlogPost({
       h2: 'What I skipped and why',
       paragraphs: [
         'I tried a universal cuff (a strap that holds the utensil to the hand). It worked but it was awkward and embarrassing. I used it for two weeks, then switched to the weighted spoon and never looked back. I also skipped the swivel spoon — the bowl stays level regardless of hand angle. It sounded smart but it was finicky and hard to clean.',
+      ],
+    },
+    {
+      h2: 'The path back to normal utensils',
+      paragraphs: [
+        'Adaptive utensils are a bridge. The goal is to need them less and less over time — not to become dependent on them. The hand therapy work that ran in parallel with the adaptive utensils is what made the transition possible: mirror therapy, hand therapy tools, and eventually finger individuation exercises.',
+        'The milestones I used: Month 2 — rocker knife and plate guard for every meal. Month 5 — standard fork for soft foods, rocker knife still for cutting. Month 8 — standard fork and knife for most foods. Month 12 — adaptive utensils only for foods requiring two-hand coordination (steak, dense bread). Month 18 — back to standard utensils entirely.',
+        'If the hand is not progressing toward utensil independence, that is a signal to escalate hand therapy — not to accept the plateau. Ask for a referral to a hand therapist who specializes in neurological rehabilitation, not just orthopedic rehab. The techniques are different.',
+      ],
+      bullets: [
+        'Track which utensils you still need monthly — the trend shows whether hand function is improving',
+        'Eating is daily practice for fine motor skills — treat every meal as a therapy session',
+        'Decrease reliance gradually: switch standard first at breakfast (lowest-stakes meal), then lunch, then dinner',
+        'Do not ditch adaptive utensils too soon — a fall from a dropped utensil is a setback',
       ],
     },
   ],
@@ -1497,6 +1805,15 @@ export const POST_CPAP_STROKE = makeBlogPost({
         'Mask fit — nasal pillows for minimal contact, nasal mask for mouth-breathers, full-face for high-pressure needs',
       ],
     },
+    {
+      h2: 'How to get a sleep study — and what happens if you cannot tolerate CPAP',
+      paragraphs: [
+        'Getting the study: ask your neurologist or primary care doctor to order a polysomnography. Many providers now offer home sleep apnea tests (HSAT) — a simplified overnight device that measures oxygen saturation, airflow, and respiratory effort without a lab stay. HSTAs are adequate for diagnosing moderate-to-severe OSA. If the HSAT is negative but symptoms persist, request an in-lab study — central apnea (common after stroke) can be missed by home devices.',
+        'If you cannot tolerate CPAP: mask intolerance is the most common reason people quit. Work with a respiratory therapist and try at least three different mask types before concluding CPAP does not work for you. If pressure tolerance is the issue, ask about BILEVEL (BiPAP) which has separate inhale and exhale pressures and is often more comfortable. Auto-titrating BiPAP is now covered by most insurance with a documented CPAP intolerance.',
+        'Positional therapy: some survivors have obstructive apnea only when sleeping on their back. A positional sleep device (a backpack-style vest that prevents supine position) can reduce AHI by 50–60% in position-dependent OSA without a mask. Not as effective as CPAP for moderate/severe cases but better than nothing for CPAP-intolerant survivors.',
+        'Oral appliances: mandibular advancement devices (custom-fitted by a dentist with sleep training) are effective for mild-to-moderate OSA. Less effective than CPAP but far more tolerable for some people. Covered by dental insurance with a sleep physician prescription at many plans.',
+      ],
+    },
   ],
   faqs: [
     { q: 'How do I know if I have sleep apnea after stroke?', a: 'Ask for a sleep study. If you snore, wake up tired, or your partner reports gasping or long pauses in breathing, get a sleep study. Most neurologists order one routinely after stroke, but if yours did not, ask for it.' },
@@ -1570,6 +1887,16 @@ export const POST_GAIT_TRAINING_HOME = makeBlogPost({
       relatedLinks: [
         { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab equipment review' },
         { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors' },
+      ],
+    },
+    {
+      h2: 'The gait deviations to target — and how to fix each one at home',
+      paragraphs: [
+        'Most stroke survivors develop compensatory gait patterns that feel stable but are biomechanically damaging over time. The three most common: hip circumduction, Trendelenburg gait, and vaulting.',
+        'Hip circumduction: the affected leg swings out to the side in an arc instead of stepping straight forward. Cause: weak hip flexors and/or foot drop. Fix: hip flexor strengthening (resistance bands, standing knee raises), foot drop training, and deliberate "high step" practice — exaggerate the knee lift on each step until the pattern resets.',
+        'Trendelenburg gait (hip drop): the hip on the unaffected side drops when the affected foot is on the ground. Cause: weak hip abductors on the affected side. Fix: side-lying hip abduction with a loop band daily. The hip abductor is one of the most undertreated muscles in stroke rehab — strengthening it produces rapid gait improvement.',
+        'Vaulting: rising onto the toes of the unaffected foot to clear the floor for the affected leg. Cause: combination of foot drop and inability to flex the affected knee in swing phase. Fix: treat foot drop with active training; practice partial weight-bearing stance on the affected leg.',
+        'The easiest way to identify your deviations: video your gait from behind (ask someone to record with your phone) and compare to a normal walking video. The deviations are usually obvious when you can see them. If you cannot identify them yourself, a single PT session focused on gait video analysis is worth the copay.',
       ],
     },
   ],
@@ -1651,6 +1978,35 @@ export const POST_STROKE_GIFT_GUIDE = makeBlogPost({
       relatedLinks: [
         { href: '/blog/complete-stroke-recovery-home-kit', label: 'Complete stroke recovery home kit' },
         { href: '/blog/adaptive-eating-utensils-stroke', label: 'Adaptive eating utensils for stroke' },
+      ],
+    },
+    {
+      h2: 'Budget-friendly gift list by price range',
+      paragraphs: [
+        'Not everyone can afford the electric ankle trainer or a custom grab bar installation. Here is a practical gift list by price range, all of which appear in the Recovery Store.',
+      ],
+      table: {
+        caption: 'Stroke recovery gifts by budget',
+        headers: ['Budget', 'Gift', 'Why it helps'],
+        rows: [
+          ['Under $20', 'Non-slip mat', 'Prevents bathroom falls — one of the most common and serious hazards'],
+          ['Under $20', 'Rocker knife', 'One-handed cutting — immediate quality-of-life for someone with hemiparesis'],
+          ['Under $20', 'Plate guard', 'Keeps food on the plate, restores independent eating'],
+          ['Under $30', 'Loop resistance bands (set)', 'First strength tool for home rehab'],
+          ['Under $40', 'Weighted spoon and fork set', 'Reduces tremor and proprioception loss at meals'],
+          ['Under $60', 'Home blood pressure monitor', 'The single most important prevention tool'],
+          ['Under $80', 'Handheld showerhead + long hose', 'Enables shower chair use, one-handed washing'],
+          ['Under $100', 'Shower chair (height-adjustable)', 'Eliminates the most dangerous daily activity risk'],
+          ['$150+', 'Grab bar installation (professional)', 'The gift of permanent safety — do not buy suction cups'],
+          ['$200+', 'Electric ankle rehabilitation trainer', 'For survivors with foot drop — the highest-impact single device'],
+        ],
+      },
+    },
+    {
+      h2: 'Gifts that require a conversation first',
+      paragraphs: [
+        'Some gifts need a conversation before you buy them. Mobility aids (walkers, canes, rollators) depend on the person\'s current function and their PT\'s recommendation — the wrong device can create a compensatory pattern. Exercise equipment beyond basic bands should be discussed with the OT or PT. High-tech devices (robotic gloves, FES systems) have specific indications and should only be purchased if the survivor\'s rehab team agrees they are appropriate.',
+        'When in doubt: give something consumable or returnable, and have the conversation. The survivor knows their body and their rehab plan better than any list.',
       ],
     },
   ],
@@ -1757,6 +2113,28 @@ export const POST_COMPLETE_HOME_KIT = makeBlogPost({
       relatedLinks: [
         { href: '/blog/stroke-recovery-gift-guide', label: 'Stroke recovery gift guide' },
         { href: '/blog/shower-safety-stroke-survivor', label: 'Shower safety for stroke survivors' },
+      ],
+    },
+    {
+      h2: 'How to pay for it: HSA/FSA, insurance, and grants',
+      paragraphs: [
+        'Most of these items qualify for HSA and FSA reimbursement as medical expenses. The IRS considers equipment "primarily for medical care" to be eligible — and all of these items qualify with a physician or OT letter of medical necessity. Save receipts. Submit for reimbursement. The shower chair, grab bars, BP monitor, ankle trainer, and CPAP accessories are all routinely reimbursed.',
+        'Some insurance plans cover durable medical equipment (DME) for items like the blood pressure monitor, CPAP machine, and shower chair when ordered by a physician. Call your insurer\'s DME line and ask about your plan\'s coverage before you pay out of pocket. Medicaid and Medicare Part B both cover specific DME categories — a hospital social worker or discharge planner can help you navigate this.',
+        'If cost is a barrier: many stroke survivor advocacy organizations offer equipment loan programs. The American Stroke Association, local rehabilitation centers, and medical equipment lending closets (often run through churches and community organizations) have basic items available. Ask your hospital discharge team for local resources before you pay retail.',
+      ],
+      bullets: [
+        'HSA/FSA: keep receipts, submit with letter of medical necessity from your physician',
+        'Insurance DME: call your insurer before buying — BP monitors, CPAP, shower chairs often covered',
+        'Medicare Part B: covers certain DME including shower chairs and grab bars with prescription',
+        'Equipment lending programs: ask your hospital social worker for local resources',
+        'Amazon Warehouse deals: lightly used items often available for 30–50% off list price',
+      ],
+    },
+    {
+      h2: 'One thing I wish someone had told me on day one',
+      paragraphs: [
+        'Buy the shower chair and the grab bars before the survivor comes home from the hospital. Not after the first fall. Before.',
+        'Most families wait until there is an incident, then scramble to fix the bathroom in a panic. The installation takes a few hours and requires finding a handyman or someone handy — that is not a task you want to do the evening after a fall. Do it the week before discharge. The installer does not need to be a professional; they need to be able to locate a stud with a finder and use a drill. The time window between discharge and the first fall is shorter than families expect.',
       ],
     },
   ],
@@ -2361,6 +2739,26 @@ export const POST_MOBILITY_SCOOTER = makeBlogPost({
         'The coverage process takes 4–12 weeks. If you need the scooter now, buy it and simultaneously initiate the coverage request. Retroactive coverage is not guaranteed — but an approved claim within the look-back window is possible.',
       ],
     },
+    {
+      h2: 'What changed when I stopped fighting the scooter',
+      paragraphs: [
+        'At year two I was still walking everywhere — slowly, with a cane, spending enormous energy getting between places. I was proud of it and also exhausted all the time. My therapist finally said something that landed: "You are spending your recovery budget on transportation. There is a better use for it."',
+        'I resisted for three months. In my head, using a scooter meant I had given up. It was the same logic that had me refusing a walker when I should have been using one, which is how I fell twice and set my recovery back each time. The logic is always the same: refusing the tool to prove something, and the proving always costs more than the tool would have.',
+        'I borrowed a friend\'s Pride Go-Go for two weeks as a trial. The first thing I noticed: I had energy at dinner. I had energy to do my hand exercises after going to the grocery store. I had energy to actually talk to people I met instead of conserving every drop of focus for my gait pattern. The scooter was not the end of walking. It was what gave me back the capacity to actually live while I kept working on walking.',
+        'I still walk. I walk every day, more than a mile, without the scooter. The scooter handles the rest. Both things are true at once.',
+      ],
+    },
+    {
+      h2: 'Practical checklist before you buy',
+      bullets: [
+        'Measure your doorways: minimum 32" clearance needed; 36" preferred. Most travel scooters are 22–24" wide.',
+        'Measure your vehicle trunk or hatch: disassembled components must fit. Get the dimensions of the heaviest single piece from the product spec sheet.',
+        'Test the tiller: can you operate it comfortably with one hand? Visit a medical equipment showroom if possible.',
+        'Confirm the weight capacity: add your weight plus anything you carry.',
+        'Ask about the battery charger: standard 110V outlet charges in 8–10 hours. A second battery extends range significantly.',
+        'Check the return policy: 30-day returns are common; verify before ordering online.',
+      ],
+    },
   ],
   faqs: [
     { q: 'Can I drive a mobility scooter on a public sidewalk after stroke?', a: 'In most US states, yes — mobility scooters are classified as pedestrian devices and are permitted on sidewalks and in pedestrian areas. They are not street legal. Check your specific state regulations; some municipalities have speed restrictions on sidewalk devices.' },
@@ -2448,6 +2846,28 @@ export const POST_WHEELCHAIR = makeBlogPost({
       h2: 'Medicare coverage for wheelchairs',
       paragraphs: [
         'Medicare Part B covers manual wheelchairs as Durable Medical Equipment with a physician\'s written order certifying medical necessity. The process requires a face-to-face exam and an enrolled Medicare DME supplier. Coverage typically runs 80% of the Medicare-approved amount after the Part B deductible.',
+      ],
+    },
+    {
+      h2: 'The wheelchair as a stage, not a verdict',
+      paragraphs: [
+        'I used a transport wheelchair for the first six weeks after discharge. I hated it with a clarity and intensity that I can still feel now. Not because the chair was bad — it was fine — but because every time I sat in it I felt like I was making a decision about who I was going to be.',
+        'I was not. I was sitting in a chair that was keeping me safe while my body learned to be itself again. That is all it was. A stage — one specific, bounded stage in a longer story. The chair was not the story.',
+        'The survivors I know who have the most difficult time with the wheelchair as a psychological tool are the ones who conflate using it with accepting it as a permanent state. The ones who move through it fastest are the ones who treat it as a training tool. Use it. Get your energy back. Redirect that energy to therapy and movement. The chair is a means.',
+        'If you are a caregiver: resist the instinct to push the survivor everywhere. Let them propel themselves — strong arm on the wheel, strong foot on the floor — whenever it is safe to do so. That is therapy. Every self-propelled length of hallway is neuroplasticity.',
+      ],
+    },
+    {
+      h2: 'Preventing shoulder injury during wheelchair use',
+      paragraphs: [
+        'Shoulder pain is the most common secondary injury in long-term wheelchair users. The repetitive overhead and rotational forces of propulsion gradually damage the rotator cuff — particularly in survivors who are pushing a chair that is too heavy or poorly sized.',
+      ],
+      bullets: [
+        'Keep the chair as light as possible — every pound saved is a pound of force removed from the shoulder on every push stroke',
+        'Optimal push pattern: long, smooth strokes with the hand landing at 11 o\'clock and releasing at 5 o\'clock — not short rapid strokes',
+        'Gloves: lightweight wheelchair gloves protect the palm and improve grip without adding significant wrist restriction',
+        'Shoulder strengthening: rotator cuff exercises (external rotation with resistance band) 3x/week. Preventing injury is always easier than rehabbing it',
+        'Seating evaluation: improper seat height and armrest position are the two most common contributors to shoulder overuse — get a formal seating assessment from a PT or OT',
       ],
     },
   ],
@@ -2543,6 +2963,25 @@ export const POST_PEDAL_EXERCISER = makeBlogPost({
       paragraphs: [
         'It won\'t replace walking. The gait pattern — weight shift, stance phase, heel strike, push-off — requires vertical loading that a seated pedal device doesn\'t provide. Use the pedal exerciser to build base endurance and rhythmic activation, then take that to walking therapy.',
         'It won\'t resolve foot drop. The dorsiflexion component of pedaling is minimal compared to what\'s required for walking. Address drop foot with your AFO and ankle-specific work.',
+      ],
+    },
+    {
+      h2: 'How the pedal exerciser fits in the actual daily routine',
+      paragraphs: [
+        'At year one, the DeskCycle sat under my desk during every Zoom call, every phone call, every reading session. It was not a workout — it was a background activity. Ten minutes at a time, zero resistance, slow and rhythmic. The affected leg participated maybe 30% of the time by my estimate. The other 70% the right leg was driving the rhythm.',
+        'By year two, I was up to 25 minutes per session at resistance two or three, and the affected leg was contributing most of the time. I could tell by the fact that I could stop pedaling and restart with just the affected leg initiating — that was not possible in the first six months.',
+        'The utility of the device was not as a workout. It was as a way to accumulate movement repetitions in otherwise dead time. If I pedaled during every video call for a year, that was hundreds of hours of lower limb activation that would not have happened otherwise. At the neural level, that compound interest shows up.',
+      ],
+    },
+    {
+      h2: 'Pairing with upper body work for efficiency',
+      paragraphs: [
+        'The most efficient use of 30 minutes of pedal time: do your hand therapy simultaneously. Putty work, finger extensions with the rubber band, grip trainer squeezes — these require no attention to your legs and add zero fatigue load to the cycling session.',
+        'Two-for-one recovery time is the principle. The pedal exerciser runs the lower body rhythm on autopilot while your hands do concentrated, high-repetition work. Most survivors underestimate how much of their day can be used this way.',
+      ],
+      externalLinks: [
+        { label: 'Best hand therapy tools for stroke survivors', href: '/blog/best-hand-therapy-tools-stroke-recovery' },
+        { label: 'Gait training at home after stroke', href: '/blog/gait-training-home-stroke-recovery' },
       ],
     },
   ],
@@ -2839,6 +3278,28 @@ export const POST_ANKLE_BRACE = makeBlogPost({
       externalLinks: [
         { label: 'TheraBand resistance bands for stroke recovery — full guide', href: '/blog/best-resistance-bands-stroke-recovery' },
       ],
+    },
+    {
+      h2: 'My experience transitioning from AFO to lace-up brace',
+      paragraphs: [
+        'I wore a rigid solid-ankle AFO for the first 14 months. My PT was conservative about transitioning — correctly so, given my gait speed and the unevenness of my dorsiflexion return. When I finally moved to the Ossur dynamic AFO at month 15, the difference in push-off mechanics was immediately noticeable. The rigid brace had been blocking the terminal stance phase of my gait. That cost me energy I did not realize I was spending.',
+        'I moved to a lace-up stabilizer at month 26 — not because I had full dorsiflexion, because I never got it back 100%. But because the active dorsiflexion I did have was reliable enough to clear my toe during level-surface walking, and what I was still dealing with was lateral ankle instability, not foot drop. The lace-up addressed the instability without restricting the dorsiflexion I had rebuilt.',
+        'What my PT told me that I pass on to every survivor I talk to: "The brace you use should match the deficit you have now, not the deficit you had six months ago." The progression is: rigid AFO → dynamic AFO → posterior leaf spring → lace-up → no brace. Not everyone makes it to the end. But the direction matters. Your brace should be getting lighter and more minimal over time, not staying the same.',
+      ],
+    },
+    {
+      h2: 'Which ankle support level do you actually need?',
+      table: {
+        caption: 'Ankle support comparison for stroke survivors',
+        headers: ['Support Level', 'Best For', 'Products', 'Trade-off'],
+        rows: [
+          ['Rigid solid AFO', 'Complete foot drop, no active dorsiflexion', 'Custom-molded or prefab rigid', 'Blocks push-off; heaviest'],
+          ['Dynamic AFO', 'Partial dorsiflexion, faster gait speed', 'Ossur AFO Dynamic, Richie Brace', 'More natural gait than rigid'],
+          ['Carbon fiber leaf spring', 'Active survivors; running/hiking', 'IDEO, custom carbon AFOs', 'Requires adequate ankle stability'],
+          ['Lace-up stabilizer', 'Ankle instability with preserved dorsiflexion', 'Vive Lace-Up, ASO Ankle Stabilizer', 'Light and shoe-compatible'],
+          ['Compression sleeve', 'Mild edema and very mild instability only', 'Generic sleeves', 'Minimal mechanical support'],
+        ],
+      },
     },
   ],
   faqs: [
@@ -5456,40 +5917,87 @@ export const POST_GAIT_BELT = makeBlogPost({
     {
       h2: 'What a gait belt actually does',
       paragraphs: [
-        'A gait belt is a sturdy strap that buckles around your waist. A caregiver holds the belt — not your weak arm — while you stand, transfer, or practice walking. That single change protects your shoulder from being yanked (a real cause of post-stroke shoulder pain) and gives your helper a controlled grip if your knee buckles.',
-        'It is the cheapest, highest-leverage piece of equipment in the entire recovery toolkit. A good one costs about the price of two coffees and prevents the fall that sends survivors back to the hospital.',
+        'A gait belt is a sturdy webbing strap that buckles around your waist. A caregiver holds the belt — not your weak arm — while you stand, transfer, or practice walking. That single change protects your shoulder from being yanked (a real cause of post-stroke shoulder subluxation and pain) and gives your helper a firm, central grip if your knee buckles mid-step.',
+        'It is the cheapest, highest-leverage piece of equipment in the entire recovery toolkit. A good one costs about the price of two coffees and prevents the fall that sends survivors back to the hospital. In my first six months at home, the gait belt was the difference between practicing in the hallway every day and sitting in a chair waiting for my next PT appointment.',
+        'The belt changes the physics of a transfer. Without it, a caregiver reaches for whatever is close — usually a weak arm or clothing. With it, they control your center of mass from your center, where the load belongs. That matters more as you get heavier with compensation patterns and your caregiver tires.',
       ],
       bullets: [
-        'Protects the weak shoulder from pulling injuries',
-        'Gives the caregiver a controlled, central grip',
-        'Turns risky sit-to-stand transfers into safe ones',
-        'Makes early walking practice possible at home',
+        'Protects the weak shoulder from yanking injuries and subluxation',
+        'Gives the caregiver a controlled, central grip at your center of mass',
+        'Turns risky sit-to-stand transfers into safe, repeatable ones',
+        'Makes daily walking practice possible at home without a full therapy team',
+        'Works for bed-to-chair, chair-to-standing, and guarded walking',
       ],
     },
     {
-      h2: 'How to choose one',
+      h2: 'Gait belt vs. transfer belt vs. lifting sling: the right tool for each stage',
+      table: {
+        caption: 'Choosing based on current weight-bearing ability',
+        headers: ['Tool', 'Weight bearing needed', 'Best for', 'Cost range'],
+        rows: [
+          ['Gait belt', 'Full or most weight', 'Guarded walking, sit-to-stand from chair', '$12–$30'],
+          ['Transfer sling', 'Partial weight', 'Rising from bed or low chair with one caregiver', '$25–$60'],
+          ['Sit-to-stand lift', 'Minimal or none', 'Non-weight-bearing transfers, heavier survivors', '$200–$600'],
+          ['Hoyer lift', 'None required', 'Complete non-weight-bearing, high-assist transfers', '$600+'],
+        ],
+      },
+    },
+    {
+      h2: 'How to choose the right gait belt',
       paragraphs: [
-        'Look for a metal quick-release buckle (plastic buckles slip under load), a belt at least 1.5 inches wide so it does not dig in, and a length rated for your waist plus clothing. Padded belts with hand loops are easier for caregivers to grip and worth the small extra cost.',
+        'The belt you buy matters. A cheap, thin, plastic-buckle belt can slip or snap under load — which is exactly the wrong moment for equipment failure. Here is what to look for.',
+        'Width matters for comfort and grip. A 1.5-inch belt will dig into your ribs during a transfer; a 2-inch or wider belt spreads the load. If your caregiver has large hands or if you tend to use the belt frequently throughout the day, hand loops built into the webbing make the grip more secure and less fatiguing.',
       ],
       bullets: [
-        'Metal quick-release buckle — never plastic for weight-bearing',
-        '1.5–2 inch width to spread the load',
-        'Hand loops if a caregiver assists often',
-        'Machine-washable webbing',
+        'Metal quick-release buckle — never plastic for weight-bearing use',
+        '1.5–2 inch width minimum to spread the load and reduce discomfort',
+        'Hand loops built into the webbing for a more secure caregiver grip',
+        'Machine-washable webbing — it will get washed',
+        'Length: measure your waist over normal clothing and add 10–12 inches',
+        'Bariatric option: 72-inch or longer for waists over 50 inches',
       ],
     },
     {
-      h2: 'How to use it safely',
+      h2: 'How to use a gait belt safely: step-by-step',
+      steps: [
+        { name: 'Position the belt', text: 'Wrap the belt around the survivor\'s waist over clothing, never on bare skin. Center it at waist level, not high on the ribs or low on the hips.' },
+        { name: 'Fasten and check tightness', text: 'Buckle the belt and slide a flat hand underneath. You should feel resistance but be able to move your hand. Too loose and it slides up; too tight and it restricts breathing.' },
+        { name: 'Caregiver grip', text: 'The caregiver grips the belt underhand (palm up) from behind or at the side, never overhand. Underhand grip gives more control and prevents the caregiver from accidentally pulling up and back.' },
+        { name: 'Cue before moving', text: 'Count down together: "1-2-3 stand." The survivor pushes up with their stronger leg; the caregiver guides from the belt, keeping their own back straight and knees bent.' },
+        { name: 'Guard during walking', text: 'Walk slightly behind and to the weak side, one hand on the belt. Stay close enough to catch a stumble but not so close you crowd their step pattern.' },
+        { name: 'Lower back to the seat', text: 'Reverse the process. The survivor reaches back to feel the seat before lowering. The caregiver controls the descent with the belt — this is where most falls happen, on the way down.' },
+      ],
+    },
+    {
+      h2: 'When a gait belt is not enough',
       paragraphs: [
-        'Fasten the belt snugly over clothing, not bare skin — you should be able to slide a flat hand underneath. The caregiver grips underhand from behind or at the side, keeps their own back straight, and never lifts by the belt like a suitcase. The belt is for guiding and catching, not hoisting. If you cannot bear any weight yet, you need a sit-to-stand aid or lift instead.',
+        'A gait belt is a guarding tool, not a lifting tool. If the survivor cannot bear any weight through their legs — if their knees buckle completely or they cannot initiate a stand at all — a gait belt cannot safely support the transfer. You need a sit-to-stand sling or a mechanical lift.',
+        'Signs that you need to step up: the caregiver has to strain visibly to keep the survivor upright; the survivor has fallen in the last week despite belt use; or the survivor weighs significantly more than the caregiver can safely manage. Those are not signs of failure — they are signs that the right tool has changed.',
+        'Check with your occupational or physical therapist any time you are unsure. An equipment misjudgment costs a lot more than an OT visit.',
+      ],
+      bullets: [
+        'Knee buckles completely during stand: use a transfer sling instead',
+        'No weight bearing at all: use a sit-to-stand or Hoyer lift',
+        'Caregiver straining: get a PT to reassess and recommend the right tool',
+        'Survivor over 250 lb and one caregiver: consider a bariatric lift',
+      ],
+    },
+    {
+      h2: 'Nick\'s experience: the belt that changed everything at home',
+      paragraphs: [
+        'I came home from acute rehab in January 2019 — six weeks post-stroke, left side significantly impaired, walking with a quad cane inside parallel bars. My wife had zero clinical training. The hospital handed us a gait belt and a three-minute demonstration. That was it.',
+        'That belt became the most-used piece of equipment we owned for the next four months. Every morning transfer from bed to wheelchair, every bathroom trip, every attempt to walk the hallway — my wife gripped the back of that belt and I learned to trust my legs would not drop me without warning. The psychological effect mattered as much as the physical safety: I tried more because I knew she had me.',
+        'We replaced the first belt after about three months — the buckle started sticking. The second belt had hand loops and was slightly wider. That one lasted a year. By month eight I no longer needed daily guarding, but we kept the belt on the bedpost for another six months for the hard days. Buy two.',
       ],
     },
   ],
   faqs: [
-    { q: 'Is a gait belt safe to use at home without a therapist?', a: 'Yes, for guarding and transfers once your therapist has cleared you to bear weight. Have your PT demonstrate the grip once. The belt is for guiding and catching a stumble — never for lifting someone who cannot stand.' },
-    { q: 'What is the difference between a gait belt and a transfer belt?', a: 'They are the same tool. "Gait belt" emphasizes walking practice; "transfer belt" emphasizes moving from bed to chair. A belt with hand loops works for both.' },
-    { q: 'What size gait belt do I need?', a: 'Measure your waist over the clothing you usually wear and add a few inches. Standard 60-inch belts fit most adults; bariatric lengths run to 72 inches or more.' },
-    { q: 'Can I use a gait belt if I have no caregiver?', a: 'A gait belt is a two-person tool. If you are alone, focus instead on grab bars, a rollator, and a chair alarm. Do not attempt guarded walking solo.' },
+    { q: 'Is a gait belt safe to use at home without a therapist?', a: 'Yes, for guarding and transfers once your therapist has cleared you to bear weight. Have your PT demonstrate the correct grip technique once — it takes about five minutes to learn. The belt is for guiding and catching a stumble, never for lifting someone who cannot stand.' },
+    { q: 'What is the difference between a gait belt and a transfer belt?', a: 'They are the same tool with different names based on use. "Gait belt" emphasizes walking practice; "transfer belt" emphasizes moving from bed to chair. A belt with hand loops works well for both.' },
+    { q: 'What size gait belt do I need?', a: 'Measure your waist over the clothing you normally wear, then add 10–12 inches for the buckle and overlap. Standard 60-inch belts fit most adults up to a 48-inch waist. Bariatric lengths run 72 inches or more.' },
+    { q: 'Can I use a gait belt if I have no caregiver?', a: 'A gait belt is a two-person tool — it requires someone to grip and guide. If you are alone, focus instead on grab bars, a rollator, a bedside commode, and removing trip hazards. Do not attempt guarded walking solo without clearance from your PT.' },
+    { q: 'How tight should a gait belt be?', a: 'Snug but not compressing. You should be able to slide a flat hand underneath with mild resistance. If you can grab a fistful of slack above the belt, it is too loose. If breathing feels restricted at all, it is too tight.' },
+    { q: 'How long will I need to use a gait belt?', a: 'Most survivors need daily guarding for weeks to months in the early phase. As balance, strength, and confidence improve, the belt becomes backup rather than routine. I needed daily belt use for about four months, then kept one on hand for harder days for another six.' },
   ],
   related: [
     { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home', blurb: 'Rebuild your walk safely after the therapy stops.' },
@@ -5520,34 +6028,72 @@ export const POST_TRANSFER_SLING = makeBlogPost({
   ctaSecondary: { href: '/blog/gait-belt-for-stroke-recovery', label: 'When to use a gait belt instead' },
   sections: [
     {
-      h2: 'Which aid matches your stage',
+      h2: 'Which aid matches your stage right now',
       paragraphs: [
-        'The right tool depends on how much weight you can bear through your legs today. Choose up, not down — the safer tool prevents the fall that sets recovery back months.',
+        'The single most dangerous mistake in early stroke recovery transfers is using the wrong tool for the wrong stage. A caregiver who grabs a weak arm to help a survivor stand has already failed — even if nobody falls that day. The shoulder pays the price over weeks.',
+        'Match the tool to how much weight the survivor can actually bear through their legs today, not how much they could bear last week or how much you hope they can bear tomorrow.',
       ],
       bullets: [
-        'Can bear most weight, needs guarding: a gait belt is enough',
-        'Can bear partial weight, needs a controlled pull-up: a padded sit-to-stand transfer sling',
-        'Cannot bear weight safely yet: a hydraulic or electric sit-to-stand lift',
+        'Can bear most weight, needs guarding only: a gait belt is sufficient',
+        'Can bear partial weight but cannot reliably push to stand: a padded sit-to-stand transfer sling',
+        'Legs buckle or bear no weight: a hydraulic or powered sit-to-stand lift',
+        'Full non-weight-bearing, heavier survivor, or one-person care: a Hoyer full-body lift',
       ],
     },
     {
-      h2: 'Why a padded sit-to-stand sling helps',
+      h2: 'Why a padded sit-to-stand sling protects both of you',
       paragraphs: [
-        'A padded sling wraps around your back and under your arms so a caregiver can help you rise through your core instead of pulling on a hemiparetic shoulder. That protects the weak arm — post-stroke shoulder subluxation and pain are common and largely avoidable — and gives the caregiver leverage without wrecking their own back.',
+        'A padded transfer sling wraps around the survivor\'s back and under the arms, creating a structured cradle a caregiver can grip and guide. The load transfers through the survivor\'s core — not through the shoulder. That matters enormously after stroke, because post-stroke shoulder subluxation (the joint partially slipping out) is extremely common and almost entirely caused by pulling on a weak arm during transfers.',
+        'For the caregiver, the sling replaces the awkward, back-straining reach-and-lift with a controlled pull that uses leg drive. Most caregivers who sustain injuries do so in the first three months, when the survivor\'s weight-bearing is most unpredictable. The sling closes that window.',
+        'It also changes the transfer psychologically. A survivor who trusts the equipment tries harder. A caregiver who knows they have a controlled grip does not hesitate at the moment of standing. Both matter for making daily practice actually happen.',
+      ],
+      bullets: [
+        'Load transfers through core, never through the hemiparetic shoulder',
+        'Prevents the shoulder subluxation that sets back arm recovery by months',
+        'Caregiver uses leg drive instead of back strain',
+        'Makes partial-weight-bearing transfers repeatable and safe',
       ],
     },
     {
-      h2: 'When to step up to a lift',
+      h2: 'How to use a sit-to-stand transfer sling',
+      steps: [
+        { name: 'Position the survivor at the edge of the seat', text: 'Before any transfer, scoot the survivor to the front third of the seat so the feet are flat on the floor and the knees are at 90 degrees or slightly less.' },
+        { name: 'Fit the sling', text: 'Slide the padded back panel behind the survivor\'s back at waist level. Thread the arm loops under each arm and across the back. Check that padding sits on the back, not on the armpits.' },
+        { name: 'Caregiver position', text: 'Stand facing the survivor, feet shoulder-width apart. Grip the sling handles with both hands, knuckles up. Keep your own back straight — the lift comes from your legs, not your spine.' },
+        { name: 'Cue the stand together', text: 'Count down: "1-2-3 stand." The survivor leans forward ("nose over toes") and pushes through whatever leg strength they have. The caregiver lifts and backs slightly to guide the survivor upright.' },
+        { name: 'Stabilize at standing', text: 'Once upright, pause. Let the survivor feel the standing position before pivoting to a wheelchair, chair, or commode. A two-second pause reduces fall risk by giving the survivor time to find balance.' },
+        { name: 'Lower back to the seat', text: 'This is the highest-risk moment. Guide the descent slowly with the sling, cuing the survivor to reach back and feel the seat before lowering. Controlled descent prevents the sudden drop that causes tailbone fractures.' },
+      ],
+    },
+    {
+      h2: 'When to step up to a mechanical lift',
       paragraphs: [
-        'If you cannot reliably plant your feet and take some weight, no belt or sling is safe — you need a hydraulic or powered sit-to-stand lift rated well above your body weight. Lifts feel like a big step, but they end the daily gamble of manual transfers and keep both of you out of the ER.',
+        'If the survivor cannot reliably plant their feet and take even partial weight, a sling is not enough. The sling relies on some leg participation — without it, you are asking one caregiver to take the full body weight through their arms, which is unsafe regardless of the equipment.',
+        'Hydraulic and powered sit-to-stand lifts fill the gap. They are rated for the survivor\'s full weight, require no leg participation, and protect the caregiver from back injury completely. They feel like a big step, but they end the daily gamble and allow transfers to happen consistently without injury risk.',
+        'The other case for a lift: a survivor who weighs significantly more than the caregiver can safely manage. No sling compensates for a weight mismatch beyond a certain point. Get an occupational therapist to assess and specify the right lift before someone gets hurt.',
+      ],
+      bullets: [
+        'No leg participation at all: use a sit-to-stand or Hoyer lift',
+        'Survivor weight exceeds caregiver capacity: get an OT assessment',
+        'More than one fall in the past two weeks despite sling: reassess equipment',
+        'Caregiver showing back or wrist strain: mechanical lift is overdue',
+      ],
+    },
+    {
+      h2: 'What caregivers get wrong about transfer equipment',
+      paragraphs: [
+        'The most common mistake is waiting too long to use the right tool. Caregivers tolerate risky transfers because the equipment feels clinical, expensive, or like an admission that things are serious. They are serious. A hip fracture from a fall costs far more in every currency than the right sling or lift.',
+        'The second most common mistake: using a gait belt when a sling is needed, because the belt was what the hospital sent home. The belt is right for the right stage. If the stage has changed — if transfers have gotten harder, not easier — the tool needs to change too.',
       ],
     },
   ],
   faqs: [
-    { q: 'What is the difference between a transfer sling and a gait belt?', a: 'A gait belt guards someone who can already stand and bear weight. A transfer sling wraps the torso to help someone who can only bear partial weight rise safely. If the legs cannot take any weight, you need a lift, not a sling.' },
-    { q: 'Do I need a mechanical lift or is a sling enough?', a: 'If you can plant your feet and take some weight, a padded sit-to-stand sling with a caregiver is usually enough. If you cannot bear weight at all, use a hydraulic or electric sit-to-stand lift rated above your body weight.' },
-    { q: 'Can one caregiver use a transfer sling alone?', a: 'For a padded sit-to-stand sling with a partial-weight-bearing survivor, yes — that is what it is designed for. Have your therapist confirm your weight-bearing status first.' },
-    { q: 'Will a sling hurt my weak shoulder?', a: 'A properly fitted torso sling is designed to avoid pulling on the arm — that is its main advantage over grabbing the survivor by the hand or forearm.' },
+    { q: 'What is the difference between a transfer sling and a gait belt?', a: 'A gait belt guards someone who can already stand and bear most of their weight. A transfer sling wraps the torso to help someone who can only bear partial weight rise from seated. If the legs cannot take any weight, neither is safe — you need a mechanical lift.' },
+    { q: 'Do I need a mechanical lift or is a sling enough?', a: 'If the survivor can plant their feet and take partial weight during the push-to-stand, a padded sit-to-stand sling with a caregiver is usually sufficient. If there is no weight bearing at all, or the caregiver is straining to manage the transfer, step up to a hydraulic or powered sit-to-stand lift.' },
+    { q: 'Can one caregiver use a transfer sling alone?', a: 'For a padded sit-to-stand sling with a partial-weight-bearing survivor, one caregiver is usually sufficient — that is what the tool is designed for. Have your therapist confirm weight-bearing status and correct technique before doing it solo.' },
+    { q: 'Will a transfer sling hurt my weak shoulder?', a: 'A properly fitted torso sling moves load through the core and back, not the arm. That is its primary advantage over being grabbed by the hand or forearm. Make sure the arm loops sit under the arm, not digging into the axilla (armpit).' },
+    { q: 'How do I know if the sling fits correctly?', a: 'The back panel should sit at waist level, not riding up to the shoulders. The arm loops should lie flat under each arm with no bunching. When the caregiver lifts, you should feel pressure across your back and sides — not in your armpits or on your shoulders.' },
+    { q: 'Can I wash a transfer sling?', a: 'Most padded transfer slings are machine-washable. Check the label. Wash on gentle and air-dry — high heat shrinks the webbing and degrades padding over time. Replace the sling if any stitching frays or the buckles show signs of cracking.' },
   ],
   related: [
     { href: '/blog/gait-belt-for-stroke-recovery', label: 'Gait belts for stroke recovery', blurb: 'The cheapest fall-prevention tool there is.' },
@@ -5580,34 +6126,67 @@ export const POST_HAND_SPLINT = makeBlogPost({
     {
       h2: 'Why the hand curls after a stroke',
       paragraphs: [
-        'After a stroke, the muscles that close the hand often fire without permission while the muscles that open it stay weak. The result is a hand that pulls into a fist. Left in that position, the soft tissue and tendons shorten — that is a contracture, and once it sets in it is far harder to reverse than to prevent.',
-        'A resting hand splint holds the wrist and fingers in a safe, open position so the tissue stays at length. It does not cure spasticity, but it buys you the range you need to keep doing therapy.',
+        'After a stroke, the muscles that close the hand — the flexors — often fire without permission while the muscles that open it — the extensors — stay weak or silent. The result is a hand that pulls into a fist, sometimes within hours of the stroke. This is spasticity: overactive muscle tone driven by the brain injury, not by anything the survivor is doing wrong.',
+        'Left in a fisted position, the soft tissue and tendons shorten over days and weeks. That shortening is a contracture — and contracture is not just tightness, it is structural change. A mild contracture can take months of intensive stretching to reverse. A severe one may never fully reverse. The point of a resting splint is to prevent contracture from forming in the first place, not to fix spasticity.',
+        'My left hand started pulling inward about two weeks post-stroke. My OT fitted me with a resting splint on day 14 of acute rehab. At the time I thought it was overkill. Eighteen months later, watching other survivors struggle with hands locked into permanent fists, I understood exactly why she did it immediately.',
       ],
     },
     {
-      h2: 'What to look for in a splint',
+      h2: 'What a resting hand splint actually does',
       paragraphs: [
-        'A good anti-spasticity splint supports the wrist in slight extension, separates the fingers, and often includes a soft ball or palm cone to keep the thumb out of the palm. It should be adjustable — spasticity changes through the day — and breathable enough to wear for hours without sweating the skin raw.',
+        'A resting splint holds the wrist in slight extension (bent gently backward), the fingers in a relaxed, partially open position, and the thumb out of the palm. That position puts the flexor tendons on mild stretch — not aggressive stretch, just enough to prevent the tissue from shortening during the hours the hand is at rest.',
+        'It does not cure spasticity. It does not lower tone. What it does is preserve the range of motion you need so that stretching, therapy, electrical stimulation, and eventually functional practice can keep working. Without that range, every other intervention loses ground.',
       ],
       bullets: [
-        'Wrist held in slight extension, not flat or flexed',
-        'Adjustable finger separator or palm cone',
-        'Breathable, washable, padded lining',
-        'Straps you can fasten one-handed',
+        'Holds wrist in slight extension to lengthen flexor tendons',
+        'Keeps fingers partially open and separated',
+        'Positions thumb out of the palm — prevents web-space contracture',
+        'Preserves range so therapy, stretching, and e-stim keep working',
+        'Does not treat tone directly — pairs with stretching and PT/OT',
       ],
     },
     {
-      h2: 'When and how long to wear it',
+      h2: 'What to look for when choosing a splint',
       paragraphs: [
-        'Most survivors use a resting splint at night and during rest periods rather than during active movement — the goal is to preserve range, not to freeze the hand. Build up wear time gradually and check the skin for pressure marks. Pair the splint with daily stretching, and talk to your therapist about whether you are also a candidate for Botox or serial casting if the tone is severe.',
+        'Not all anti-spasticity splints are equal. The key features are wrist position, adjustability, breathability, and one-handed donning. A splint that is technically correct but impossible to put on alone will never get worn consistently — and consistent wear is the whole game.',
+        'If your spasticity is severe, consider a custom-fabricated thermoplastic splint from your OT over an off-the-shelf option. Custom splints cost more but fit the exact contour of your hand, which matters for pressure distribution over a 6–8 hour night of wear.',
+      ],
+      bullets: [
+        'Wrist held in slight extension — not flat (neutral) and not flexed',
+        'Adjustable finger separator or palm cone included',
+        'Breathable, moisture-wicking lining — you will wear this for hours',
+        'Straps and closures you can manage one-handed',
+        'Washable — hygiene matters for prolonged wear',
+        'Size options — one-size-fits-all rarely fits correctly',
+      ],
+    },
+    {
+      h2: 'How to put on and wear a resting hand splint',
+      steps: [
+        { name: 'Stretch first', text: 'Before donning the splint, do 5–10 slow, gentle finger extension stretches. Opening the hand against resistance is easier when the tissue is not cold and stiff. Your OT will show you the correct technique — never force a contracted finger open.' },
+        { name: 'Position the wrist', text: 'Lay the splint flat and place your forearm on it palm-down. The wrist should rest in slight extension (gently bent back). If the splint pushes your wrist into flexion, it is the wrong size or the wrong product.' },
+        { name: 'Open the fingers gently', text: 'Use your strong hand or a caregiver\'s help to lay each finger into the finger channels, starting with the index finger and working outward. The thumb should rest in opposition, pointing away from the palm.' },
+        { name: 'Fasten the straps from distal to proximal', text: 'Fasten the finger strap first, then the wrist strap, then the forearm strap. This sequence keeps the hand positioned correctly before you secure the wrist.' },
+        { name: 'Check pressure points', text: 'After 20 minutes of first wear, remove the splint and check for red marks. A small amount of redness that fades in 20 minutes is normal. Redness lasting longer means the fit needs adjustment — talk to your OT.' },
+        { name: 'Build wear time gradually', text: 'Start with 1–2 hours. Progress to 4 hours, then overnight if your therapist recommends it. Check skin daily, especially over bony prominences at the wrist and finger joints.' },
+      ],
+    },
+    {
+      h2: 'When splinting is not enough: Botox and serial casting',
+      paragraphs: [
+        'For mild-to-moderate spasticity, a resting splint combined with daily stretching and therapy is usually sufficient to prevent contracture. For severe spasticity — a hand that cannot be passively opened past a partially closed position, or that curls back within minutes of being stretched — splinting alone may not be enough.',
+        'Botulinum toxin (Botox) injections into the overactive flexor muscles temporarily reduce muscle tone, creating a window of several weeks where the hand is more responsive to splinting and therapy. Serial casting — a series of casts applied progressively over weeks to lengthen the tissue — is used for established contractures. Neither replaces splinting; both work better when splinting continues alongside them.',
+        'Talk to a physiatrist (rehabilitation medicine specialist) if your hand tone is severe or if you have been splinting consistently for three months without maintaining range. The escalation options are real and effective.',
       ],
     },
   ],
   faqs: [
-    { q: 'Do hand splints actually reduce spasticity?', a: 'A resting splint does not lower muscle tone by itself, but it prevents the tissue shortening (contracture) that makes a spastic hand permanently stuck. It preserves the range you need so stretching and therapy keep working.' },
-    { q: 'Should I wear a hand splint all day or just at night?', a: 'Most survivors wear a resting splint at night and during rest, not during active use of the hand. Build up wear time gradually and check for pressure marks. Follow your therapist\u2019s schedule.' },
-    { q: 'What is the difference between a resting splint and a wrist brace?', a: 'A wrist brace supports a weak or painful wrist. A resting hand splint additionally holds the fingers and thumb open to fight spasticity and contracture.' },
-    { q: 'Can a splint fix a hand that is already contracted?', a: 'A splint works best to prevent contracture. For an established contracture, splinting is combined with stretching, and sometimes Botox or serial casting — ask your therapist or physiatrist.' },
+    { q: 'Do hand splints actually reduce spasticity?', a: 'A resting splint does not lower muscle tone directly, but it prevents the tissue shortening (contracture) that makes a spastic hand permanently stuck. It preserves range of motion so stretching, therapy, and e-stim can keep working. For direct tone reduction, talk to your physiatrist about Botox.' },
+    { q: 'Should I wear a hand splint all day or just at night?', a: 'Most survivors start with night wear — 6–8 hours — and rest periods during the day. Wearing a splint during active hand use is generally counterproductive. Build up wear time gradually, check skin after every session, and follow your OT\'s specific schedule.' },
+    { q: 'What is the difference between a resting splint and a wrist brace?', a: 'A wrist brace supports a weak or painful wrist in a neutral or slightly extended position. A resting hand splint additionally holds the fingers, thumb, and forearm — it is a more comprehensive positioning device designed specifically for spasticity and contracture prevention.' },
+    { q: 'Can a splint fix a hand that is already contracted?', a: 'Splinting works best to prevent contracture. For an established contracture, splinting is combined with aggressive stretching, serial casting, and often Botox to create a window for lengthening the tissue. Talk to your physiatrist or OT — the earlier you start, the better the outcome.' },
+    { q: 'How long will I need to wear a hand splint?', a: 'That depends entirely on your tone and how your hand responds to therapy. Some survivors wear a splint for 3–6 months and then maintain range without it. Others find it a permanent part of their nighttime routine years post-stroke. My OT had me in one for 14 months.' },
+    { q: 'My hand is too tight to get into the splint. What do I do?', a: 'Never force a contracted hand into a splint. Do passive stretches first, apply moist heat for 10 minutes if your OT recommends it, then attempt to don the splint with the hand more relaxed. If you cannot fit into an off-the-shelf splint, ask your OT about a custom-fabricated thermoplastic version fitted to your current hand shape.' },
   ],
   related: [
     { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke', blurb: 'What causes the tightness and what actually helps.' },

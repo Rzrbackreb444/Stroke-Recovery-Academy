@@ -217,7 +217,7 @@ function renderProductCard(p: Product): string {
     ${nick}
     <div class="price-row">
       <div class="price"><span class="now">${esc(p.price)}</span>${orig}</div>
-      <a class="buy" href="${esc(url)}" target="_blank" rel="noopener noreferrer sponsored nofollow" aria-label="Buy ${esc(p.name)} on Amazon">Buy Now \u2197</a>
+      <a class="buy" href="${esc(url)}" target="_blank" rel="noopener noreferrer sponsored nofollow" aria-label="Buy ${esc(p.name)} on Amazon">Buy on Amazon \u2197</a>
     </div>
     ${benefits ? `<div class="benefits"><span class="benefits-label">Recovery benefits</span><ul>${benefits}</ul></div>` : ''}
   </div>
