@@ -200,7 +200,7 @@ function ProductCard({ product, tag, configReady }: { product: Product; tag: str
               >
                 <a href={amazonUrl} target="_blank" rel="noopener noreferrer sponsored nofollow">
                   <ShoppingCart className="w-4 h-4 mr-2" />
-                  Buy Now
+                  Buy on Amazon
                 </a>
               </Button>
             ) : (
