@@ -56,7 +56,7 @@ function ProductCard({ p, tag, configReady }: { p: ShopProduct; tag: string | nu
           >
             <a href={url} target="_blank" rel="noopener noreferrer sponsored nofollow">
               <ExternalLink className="h-4 w-4 mr-2" />
-              View on Amazon
+              Buy on Amazon
             </a>
           </Button>
         ) : (

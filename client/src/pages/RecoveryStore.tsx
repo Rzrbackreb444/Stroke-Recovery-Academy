@@ -463,7 +463,15 @@ export default function RecoveryStore() {
                 <CardContent className="py-12 text-center">
                   <Search className="w-12 h-12 text-gray-500 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-white mb-2">No products found</h3>
-                  <p className="text-gray-400">Try adjusting your search or category filter</p>
+                  <p className="text-gray-400 mb-4">Try adjusting your search or category filter</p>
+                  <Button
+                    variant="outline"
+                    className="border-[#E2741B] text-[#E2741B] hover:bg-[#E2741B]/10"
+                    onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }}
+                    data-testid="button-clear-filters"
+                  >
+                    Clear filters
+                  </Button>
                 </CardContent>
               </Card>
             )}
