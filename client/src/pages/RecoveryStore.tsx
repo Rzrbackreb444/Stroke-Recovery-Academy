@@ -185,28 +185,23 @@ function ProductCard({ product, tag, configReady }: { product: Product; tag: str
             </div>
           )}
           
-          <div className="flex items-center justify-between pt-2">
-            <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-[#E2741B]">{product.price}</span>
-              {product.originalPrice && (
-                <span className="text-sm text-gray-500 line-through">{product.originalPrice}</span>
-              )}
-            </div>
+          <div className="pt-2">
             {configReady ? (
               <Button
                 asChild
-                className="bg-[#E2741B] hover:bg-[#B8860B] text-black"
+                variant="outline"
+                className="border-[#E2741B] text-[#E2741B] hover:bg-[#E2741B]/10 w-full"
                 data-testid={`button-buy-${product.id}`}
               >
                 <a href={amazonUrl} target="_blank" rel="noopener noreferrer sponsored nofollow">
                   <ShoppingCart className="w-4 h-4 mr-2" />
-                  Buy on Amazon
+                  Check Current Price on Amazon
                 </a>
               </Button>
             ) : (
               <Button
                 disabled
-                className="bg-[#E2741B]/40 text-black"
+                className="bg-[#E2741B]/40 text-black w-full"
                 data-testid={`button-buy-${product.id}-loading`}
               >
                 <ShoppingCart className="w-4 h-4 mr-2" />

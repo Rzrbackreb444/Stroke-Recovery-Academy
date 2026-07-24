@@ -412,9 +412,8 @@ function renderSections(sections: ContentSection[]): string {
   ${s.products && s.products.length > 0 ? `<div class="sra-product-grid">${s.products.map(p => `
   <div class="sra-product-card">
     <div class="sra-product-card-name">${esc(p.name)}</div>
-    <div class="sra-product-card-price">${esc(p.price)}</div>
     <p class="sra-product-card-note">${esc(p.note)}</p>
-    <a href="${escAttr(tagAmazonLink(p.link))}" class="sra-product-card-link" target="_blank" rel="noopener noreferrer sponsored nofollow">View on Amazon ↗</a>
+    <a href="${escAttr(tagAmazonLink(p.link))}" class="sra-product-card-link" target="_blank" rel="noopener noreferrer sponsored nofollow">Check Current Price on Amazon ↗</a>
   </div>`).join('')}</div>` : ''}
   ${s.externalLinks && s.externalLinks.length > 0 ? `<div class="sra-citations" role="list" aria-label="Sources">${s.externalLinks.map(l =>
     `<a href="${escAttr(l.href || l.url || '#')}" class="sra-citation-link" target="_blank" rel="noopener noreferrer" role="listitem">${esc(l.label)}</a>${l.note ? ` <span class="sra-citation-note">${esc(l.note)}</span>` : ''}`
@@ -570,6 +569,7 @@ a:hover { text-decoration: underline; }
 }
 .sra-hero p { font-size: 19px; color: var(--sra-text-dim); margin: 0 0 24px; max-width: 720px; }
 .sra-cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.sra-affiliate-banner { margin: 0 0 24px; padding: 10px 16px; background: var(--sra-bg-card); border: 1px solid var(--sra-border); border-radius: 6px; font-size: 12px; color: var(--sra-text-dim); }
 .sra-btn-primary {
   background: var(--sra-gold); color: #000 !important; padding: 12px 24px;
   border-radius: 4px; font-weight: 600; display: inline-block;
@@ -783,6 +783,8 @@ ${renderHeader()}
       ${ctaSecondary ? `<a href="${escAttr(ctaSecondary.href)}" class="sra-btn-secondary">${esc(ctaSecondary.label)}</a>` : ''}
     </div>
   </div>
+
+  ${cfg.url.startsWith('/blog/') && cfg.url !== '/blog' ? `<div class="sra-affiliate-banner">As an Amazon Associate, Stroke Recovery Academy earns from qualifying purchases. No cost to you.</div>` : ''}
 
   ${renderTableOfContents(cfg.sections)}
 
