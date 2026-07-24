@@ -15,9 +15,33 @@ import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import {
   ArrowLeft, Clock, Calendar, User, Eye, Heart,
   Share2, BookOpen, ArrowRight, Twitter, Linkedin,
-  Link2, ShieldCheck, List, ChevronDown, ChevronUp
+  Link2, ShieldCheck, List, ChevronDown, ChevronUp, Star
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { buildAmazonUrl } from "@/lib/amazonLink";
+import { RECOVERY_PRODUCTS } from "@/data/recoveryProducts";
+
+// Real products (from the curated store catalog) mapped to relevant posts.
+// Keys are post slugs; values are product ids from RECOVERY_PRODUCTS.
+const POST_PRODUCTS: Record<string, string[]> = {
+  "aphasia-exercises-at-home": ["word-search-1", "brain-games-book-1", "crossword-puzzles-1"],
+  "stroke-recovery-exercises-at-home-daily-routine": ["therapy-bands-1", "putty-therapy-1", "pedal-exerciser-1"],
+  "stroke-recovery-plateau-how-to-break-through": ["grip-strengthener-1", "balance-board-1", "pedal-exerciser-1"],
+  "stroke-recovery-timeline-month-by-month": ["therapy-bands-1", "grip-strengthener-1", "brain-games-book-1"],
+  "returning-to-work-after-stroke": ["brain-games-book-1", "finger-exerciser-1", "pedal-exerciser-1"],
+  "five-years-after-stroke": ["balance-board-1", "putty-therapy-1", "brain-games-book-1"],
+  "how-to-talk-to-stroke-survivor": ["brain-games-book-1", "word-search-1"],
+  "life-after-stroke-rebuilding-identity-and-purpose": ["pedal-exerciser-1", "balance-board-1", "brain-games-book-1"],
+};
+
+function productsForSlug(slug: string | undefined) {
+  if (!slug) return [];
+  const ids = POST_PRODUCTS[slug];
+  if (!ids) return [];
+  return ids
+    .map((id) => RECOVERY_PRODUCTS.find((p) => p.id === id))
+    .filter((p): p is (typeof RECOVERY_PRODUCTS)[number] => Boolean(p));
+}
 
 interface BlogPost {
   id: number;
@@ -65,15 +89,41 @@ function safeUrl(s: string): string {
   return '#';
 }
 
-function processInline(text: string): string {
+function isAmazonHost(href: string): boolean {
+  try {
+    return /(^|\.)amazon\./i.test(new URL(href, window.location.origin).hostname);
+  } catch {
+    return false;
+  }
+}
+
+function processInline(text: string, amazonTag?: string | null): string {
   return escapeHtml(text)
     .replace(/\*\*(.+?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
     .replace(/\*(.+?)\*/g, '<em class="italic">$1</em>')
     // nosemgrep: javascript.lang.security.html-in-template-string
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, label, href) => `<a href="${safeUrl(href)}" class="text-[#E2741B] hover:underline font-medium">${label}</a>`);
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, label, href) => {
+      // href arrives HTML-escaped (escapeHtml ran first), so decode entities
+      // before URL parsing/tagging — otherwise query-param `&` becomes `&amp;`
+      // and corrupts the link. safeUrl() re-escapes the final value.
+      const rawHref = String(href)
+        .replace(/&amp;/g, '&')
+        .replace(/&#39;/g, "'")
+        .replace(/&quot;/g, '"')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>');
+      const isAmazon = isAmazonHost(rawHref);
+      // Apply the affiliate tag only to amazon.* hosts; a.co short links carry
+      // their tag baked in via SiteStripe and are left untouched by buildAmazonUrl.
+      const finalHref = isAmazon ? buildAmazonUrl(rawHref, amazonTag) : rawHref;
+      const rel = isAmazon
+        ? ' target="_blank" rel="noopener noreferrer sponsored nofollow"'
+        : '';
+      return `<a href="${safeUrl(finalHref)}"${rel} class="text-[#E2741B] hover:underline font-medium">${label}</a>`;
+    });
 }
 
-function renderMarkdown(text: string): string {
+function renderMarkdown(text: string, amazonTag?: string | null): string {
   const lines = text.split('\n');
   const output: string[] = [];
   let inUl = false;
@@ -83,7 +133,7 @@ function renderMarkdown(text: string): string {
   const flushParagraph = () => {
     if (pendingParagraph.length > 0) {
       // nosemgrep: javascript.lang.security.html-in-template-string
-      output.push(`<p class="text-gray-300 mb-5 leading-relaxed text-lg">${processInline(pendingParagraph.join(' '))}</p>`);
+      output.push(`<p class="text-gray-300 mb-5 leading-relaxed text-lg">${processInline(pendingParagraph.join(' '), amazonTag)}</p>`);
       pendingParagraph = [];
     }
   };
@@ -98,32 +148,32 @@ function renderMarkdown(text: string): string {
     if (line.startsWith('## ')) {
       flushParagraph(); closeList();
       // nosemgrep: javascript.lang.security.html-in-template-string
-      output.push(`<h2 class="text-2xl font-bold mt-10 mb-4 text-white border-b border-[#333] pb-2">${processInline(line.slice(3))}</h2>`);
+      output.push(`<h2 class="text-2xl font-bold mt-10 mb-4 text-white border-b border-[#333] pb-2">${processInline(line.slice(3), amazonTag)}</h2>`);
     } else if (line.startsWith('### ')) {
       flushParagraph(); closeList();
       // nosemgrep: javascript.lang.security.html-in-template-string
-      output.push(`<h3 class="text-xl font-bold mt-8 mb-3 text-[#E2741B]">${processInline(line.slice(4))}</h3>`);
+      output.push(`<h3 class="text-xl font-bold mt-8 mb-3 text-[#E2741B]">${processInline(line.slice(4), amazonTag)}</h3>`);
     } else if (line.startsWith('#### ')) {
       flushParagraph(); closeList();
       // nosemgrep: javascript.lang.security.html-in-template-string
-      output.push(`<h4 class="text-lg font-semibold mt-6 mb-2 text-white">${processInline(line.slice(5))}</h4>`);
+      output.push(`<h4 class="text-lg font-semibold mt-6 mb-2 text-white">${processInline(line.slice(5), amazonTag)}</h4>`);
     } else if (/^[-*]\s/.test(line)) {
       flushParagraph();
       if (inOl) { output.push('</ol>'); inOl = false; }
       if (!inUl) { output.push('<ul class="space-y-2 mb-5 ml-2">'); inUl = true; }
       // nosemgrep: javascript.lang.security.html-in-template-string
-      output.push(`<li class="text-gray-300 flex gap-2 text-lg"><span class="text-[#E2741B] font-bold mt-0.5 flex-shrink-0">•</span><span>${processInline(line.replace(/^[-*]\s/, ''))}</span></li>`);
+      output.push(`<li class="text-gray-300 flex gap-2 text-lg"><span class="text-[#E2741B] font-bold mt-0.5 flex-shrink-0">•</span><span>${processInline(line.replace(/^[-*]\s/, ''), amazonTag)}</span></li>`);
     } else if (/^\d+\.\s/.test(line)) {
       flushParagraph();
       if (inUl) { output.push('</ul>'); inUl = false; }
       if (!inOl) { output.push('<ol class="space-y-2 mb-5 ml-2 list-none counter-reset-item">'); inOl = true; }
       const num = line.match(/^(\d+)\./)?.[1] ?? '';
       // nosemgrep: javascript.lang.security.html-in-template-string
-      output.push(`<li class="text-gray-300 flex gap-3 text-lg"><span class="text-[#E2741B] font-bold flex-shrink-0 w-6">${num}.</span><span>${processInline(line.replace(/^\d+\.\s/, ''))}</span></li>`);
+      output.push(`<li class="text-gray-300 flex gap-3 text-lg"><span class="text-[#E2741B] font-bold flex-shrink-0 w-6">${num}.</span><span>${processInline(line.replace(/^\d+\.\s/, ''), amazonTag)}</span></li>`);
     } else if (line.startsWith('> ')) {
       flushParagraph(); closeList();
       // nosemgrep: javascript.lang.security.html-in-template-string
-      output.push(`<blockquote class="border-l-4 border-[#E2741B] pl-4 my-6 italic text-gray-300 text-xl leading-relaxed">${processInline(line.slice(2))}</blockquote>`);
+      output.push(`<blockquote class="border-l-4 border-[#E2741B] pl-4 my-6 italic text-gray-300 text-xl leading-relaxed">${processInline(line.slice(2), amazonTag)}</blockquote>`);
     } else {
       if (inUl || inOl) closeList();
       pendingParagraph.push(line);
@@ -225,9 +275,20 @@ export default function RecoveryBlogPost() {
   // Derived content — useMemo so we don't re-parse on every render
   const rawContent = post?.content || '';
 
+  const { data: affiliate } = useQuery<{ amazonTag: string | null }>({
+    queryKey: ['/api/config/affiliate'],
+    queryFn: async () => {
+      const res = await fetch('/api/config/affiliate');
+      if (!res.ok) return { amazonTag: null };
+      return res.json();
+    },
+    staleTime: Infinity,
+  });
+  const amazonTag = affiliate?.amazonTag ?? null;
+
   const rawRendered = useMemo(
-    () => renderMarkdown(rawContent),
-    [rawContent]
+    () => renderMarkdown(rawContent, amazonTag),
+    [rawContent, amazonTag]
   );
 
   const { items: tocItems, html: renderedContent } = useMemo(
@@ -571,6 +632,57 @@ export default function RecoveryBlogPost() {
               dangerouslySetInnerHTML={{ __html: renderedContent }}
               data-testid="article-content"
             />
+
+            {productsForSlug(post?.slug).length > 0 && (
+              <section className="mt-12" data-testid="section-recommended-gear">
+                <h2 className="text-2xl font-bold mb-2 text-white">Gear Nick actually uses</h2>
+                <p className="text-sm text-gray-500 mb-6">
+                  As an Amazon Associate, Stroke Recovery Academy earns from qualifying purchases. No cost to you — it keeps the bonfire lit.
+                </p>
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {productsForSlug(post?.slug).map((product) => (
+                    <a
+                      key={product.id}
+                      href={buildAmazonUrl(product.amazonUrl, amazonTag)}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored nofollow"
+                      className="group rounded-md border border-[#333] bg-[#111] overflow-hidden hover-elevate"
+                      data-testid={`card-product-${product.id}`}
+                    >
+                      <div className="aspect-square bg-white flex items-center justify-center overflow-hidden">
+                        <img
+                          src={product.imageUrl}
+                          alt={product.name}
+                          loading="lazy"
+                          className="h-full w-full object-contain"
+                          data-testid={`img-product-${product.id}`}
+                        />
+                      </div>
+                      <div className="p-4">
+                        <div className="flex items-center gap-1 mb-1 text-[#E2741B]">
+                          <Star className="h-3.5 w-3.5 fill-[#E2741B]" />
+                          <span className="text-xs font-semibold" data-testid={`text-rating-${product.id}`}>
+                            {product.rating.toFixed(1)}
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            ({formatNumber(product.reviewCount)})
+                          </span>
+                        </div>
+                        <h3 className="text-sm font-semibold text-white leading-snug line-clamp-2">
+                          {product.name}
+                        </h3>
+                        <p className="mt-2 text-sm font-bold text-white" data-testid={`text-price-${product.id}`}>
+                          {product.price}
+                        </p>
+                        <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-[#E2741B] group-hover:underline">
+                          View on Amazon <ArrowRight className="h-3 w-3" />
+                        </span>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </section>
+            )}
 
             <Separator className="my-10 bg-[#333]" />
 
