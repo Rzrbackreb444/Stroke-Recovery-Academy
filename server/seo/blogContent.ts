@@ -6282,10 +6282,123 @@ export const BLOG_HUB: SsrPageConfig = {
   },
   sections: [
     {
-      h2: 'The questions every survivor asks',
-      paragraphs: [
-        'These are the questions that show up in every stroke survivor\'s search bar in the first week, the first month, the first year. We answer them with research and lived experience — no fluff, no marketing, no fake hope.',
-      ],
+      h2: 'Understanding Your Stroke',
+      paragraphs: ['The first questions every survivor asks — timeline, recovery ceiling, warning signs, prevention, and the type-of-stroke distinction that shapes your next 90 days.'],
+      rawHtml: `<div class="sra-related-grid">
+  <a href="/blog/how-long-does-stroke-rehab-take" class="sra-related-card"><span class="sra-related-label">How Long Does Stroke Rehab Actually Take?</span><span class="sra-related-blurb">The honest timeline — week 1 to year 5 — with what the research actually says.</span></a>
+  <a href="/blog/can-you-fully-recover-from-a-stroke" class="sra-related-card"><span class="sra-related-label">Can You Fully Recover From a Stroke?</span><span class="sra-related-blurb">What "full recovery" means, what the ceiling actually is, and how Nick got to 90%.</span></a>
+  <a href="/blog/tia-vs-stroke" class="sra-related-card"><span class="sra-related-label">TIA vs. Stroke — The Difference That Changes Everything</span><span class="sra-related-blurb">Why a TIA is a red-alert warning, not a near-miss you can ignore.</span></a>
+  <a href="/blog/ischemic-vs-hemorrhagic-stroke" class="sra-related-card"><span class="sra-related-label">Ischemic vs. Hemorrhagic Stroke</span><span class="sra-related-blurb">Your stroke type determines your recovery protocols. Here's what changes.</span></a>
+  <a href="/blog/signs-of-a-second-stroke" class="sra-related-card"><span class="sra-related-label">Signs of a Second Stroke — What to Watch For</span><span class="sra-related-blurb">Every survivor fears another. Recognize the warning signs fast.</span></a>
+  <a href="/blog/how-to-prevent-a-second-stroke" class="sra-related-card"><span class="sra-related-label">How to Prevent a Second Stroke</span><span class="sra-related-blurb">Seven evidence-based habits that cut second-stroke risk — the ones Nick lives by.</span></a>
+  <a href="/blog/can-you-drive-after-a-stroke" class="sra-related-card"><span class="sra-related-label">Can You Drive After a Stroke?</span><span class="sra-related-blurb">The legal, medical, and practical guide to getting your keys back.</span></a>
+</div>`,
+    },
+    {
+      h2: 'Symptoms & Daily Challenges',
+      paragraphs: ['Fatigue, spasticity, memory fog, emotional lability — the secondary effects nobody warned you about. Here\'s what causes them and what actually helps.'],
+      rawHtml: `<div class="sra-related-grid">
+  <a href="/blog/fatigue-after-stroke" class="sra-related-card"><span class="sra-related-label">Fatigue After Stroke</span><span class="sra-related-blurb">Why post-stroke fatigue isn't laziness — and the protocols that move the needle.</span></a>
+  <a href="/blog/spasticity-after-stroke" class="sra-related-card"><span class="sra-related-label">Spasticity After Stroke</span><span class="sra-related-blurb">The tight, resistant muscles explained — causes, treatment, and daily management.</span></a>
+  <a href="/blog/memory-problems-after-stroke" class="sra-related-card"><span class="sra-related-label">Memory Problems After Stroke</span><span class="sra-related-blurb">Cognitive rehab tools and strategies that rebuild working memory.</span></a>
+  <a href="/blog/why-do-stroke-survivors-cry-easily" class="sra-related-card"><span class="sra-related-label">Why Stroke Survivors Cry Easily</span><span class="sra-related-blurb">Pseudobulbar affect explained — the neurological reason behind uncontrollable crying.</span></a>
+  <a href="/blog/cpap-machine-stroke-survivor" class="sra-related-card"><span class="sra-related-label">CPAP Machines for Stroke Survivors</span><span class="sra-related-blurb">The sleep-stroke connection and why treating apnea accelerates recovery.</span></a>
+</div>`,
+    },
+    {
+      h2: 'Mobility, Drop Foot & Getting Around',
+      paragraphs: ['Drop foot, gait retraining, AFOs, wheelchairs, grab bars — the equipment and protocols that move survivors from bed to independent walking.'],
+      rawHtml: `<div class="sra-related-grid">
+  <a href="/blog/foot-drop-rehab-equipment-review" class="sra-related-card"><span class="sra-related-label">Foot Drop Rehab Equipment — A Survivor's Review</span><span class="sra-related-blurb">The gear that actually helps foot drop and what Nick uses every day.</span></a>
+  <a href="/blog/afo-vs-electric-ankle-trainer" class="sra-related-card"><span class="sra-related-label">AFO vs. Electric Ankle Trainer</span><span class="sra-related-blurb">Static brace vs. functional electrical stimulation — which is right for you.</span></a>
+  <a href="/blog/best-afo-brace-drop-foot" class="sra-related-card"><span class="sra-related-label">Best AFO Brace for Drop Foot</span><span class="sra-related-blurb">The top ankle-foot orthoses ranked by survivors and physios.</span></a>
+  <a href="/blog/best-ankle-brace-stroke-survivor" class="sra-related-card"><span class="sra-related-label">Best Ankle Brace for Stroke Survivors</span><span class="sra-related-blurb">Support without the bulk — for everyday wear and community ambulation.</span></a>
+  <a href="/blog/best-shoes-stroke-survivors" class="sra-related-card"><span class="sra-related-label">Best Shoes for Stroke Survivors</span><span class="sra-related-blurb">Width, heel counter, and closure features that make walking safer.</span></a>
+  <a href="/blog/brooks-shoes-stroke-recovery-survivor-review" class="sra-related-card"><span class="sra-related-label">Brooks Shoes — Stroke Survivor Review</span><span class="sra-related-blurb">Nick's personal breakdown of the Brooks lineup for hemiplegic gait.</span></a>
+  <a href="/blog/gait-training-home-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Gait Training at Home After Stroke</span><span class="sra-related-blurb">The 20-minute walking drill protocol Nick does every morning.</span></a>
+  <a href="/blog/best-walking-aids-stroke-survivors" class="sra-related-card"><span class="sra-related-label">Best Walking Aids for Stroke Survivors</span><span class="sra-related-blurb">Cane, quad cane, hemi-walker, rollator — the honest comparison.</span></a>
+  <a href="/blog/gait-belt-for-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Gait Belts for Stroke Recovery</span><span class="sra-related-blurb">The safety essential for standing transfers — when and how to use one.</span></a>
+  <a href="/blog/transfer-sling-sit-to-stand-stroke" class="sra-related-card"><span class="sra-related-label">Transfer Sling for Sit-to-Stand</span><span class="sra-related-blurb">The gear that prevents both falls and caregiver injuries during transfers.</span></a>
+  <a href="/blog/best-wheelchair-stroke-survivor" class="sra-related-card"><span class="sra-related-label">Best Wheelchair for Stroke Survivors</span><span class="sra-related-blurb">Transport vs. manual vs. power — matching chair to recovery stage.</span></a>
+  <a href="/blog/best-mobility-scooter-stroke-survivor" class="sra-related-card"><span class="sra-related-label">Best Mobility Scooter for Stroke Survivors</span><span class="sra-related-blurb">When a scooter is the right call — and which models hold up.</span></a>
+  <a href="/blog/parallel-bars-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Parallel Bars for Stroke Recovery at Home</span><span class="sra-related-blurb">Freestanding bars that bring the PT clinic into your living room.</span></a>
+  <a href="/blog/stair-lift-stroke-survivor" class="sra-related-card"><span class="sra-related-label">Best Stair Lifts for Stroke Survivors</span><span class="sra-related-blurb">When to install one, what to look for, and whether it's permanent.</span></a>
+  <a href="/blog/threshold-ramps-grab-bars-stroke-home-accessibility" class="sra-related-card"><span class="sra-related-label">Threshold Ramps and Grab Bars</span><span class="sra-related-blurb">The $150 changes that prevent most in-home falls after stroke.</span></a>
+</div>`,
+    },
+    {
+      h2: 'Home Exercise & Strength Training',
+      paragraphs: ['Resistance bands, pedal exercisers, stationary bikes, balance boards — the home gym toolkit that replaces expensive gym memberships and keeps the daily reps going.'],
+      rawHtml: `<div class="sra-related-grid">
+  <a href="/blog/best-resistance-bands-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Resistance Bands for Stroke Recovery</span><span class="sra-related-blurb">The most versatile recovery tool — ranked by resistance level and grip design.</span></a>
+  <a href="/blog/best-pedal-exerciser-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Pedal Exerciser for Stroke Recovery</span><span class="sra-related-blurb">Seated cycling for arms and legs when you can't walk yet.</span></a>
+  <a href="/blog/best-push-up-bars-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Push-Up Bars for Stroke Recovery</span><span class="sra-related-blurb">Why handles beat the floor for wrist-compromised survivors.</span></a>
+  <a href="/blog/best-elliptical-machine-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Elliptical Machine for Stroke Recovery</span><span class="sra-related-blurb">Low-impact cardio that rebuilds coordination on both sides.</span></a>
+  <a href="/blog/best-stationary-bike-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Stationary Bike for Stroke Recovery</span><span class="sra-related-blurb">The cardio anchor of Nick's daily routine — ranked by stability and ease of mount.</span></a>
+  <a href="/blog/best-treadmill-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Treadmill for Stroke Recovery</span><span class="sra-related-blurb">Handrail support, safety key, and low-speed training — what to look for.</span></a>
+  <a href="/blog/best-weighted-vest-stroke-balance-training" class="sra-related-card"><span class="sra-related-label">Best Weighted Vest for Stroke Balance Training</span><span class="sra-related-blurb">The counterintuitive tool that improves balance and rebuilds bone density.</span></a>
+  <a href="/blog/best-balance-board-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Balance Board for Stroke Recovery</span><span class="sra-related-blurb">Wobble boards that rebuild proprioception — ranked by stability and progression.</span></a>
+  <a href="/blog/best-home-gym-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Home Gym Setup for Stroke Recovery</span><span class="sra-related-blurb">The full multi-station system for serious home training without the clinic bill.</span></a>
+  <a href="/blog/hot-tub-hydrotherapy-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Hot Tub Hydrotherapy for Stroke Recovery</span><span class="sra-related-blurb">The warm-water protocol Nick uses daily for spasticity and joint mobility.</span></a>
+</div>`,
+    },
+    {
+      h2: 'Hand & Upper Body Rehab',
+      paragraphs: ['The affected hand is the hardest thing to get back after stroke. These are the tools — from $20 putty to $500 robotic gloves — that rebuild the neural pathway.'],
+      rawHtml: `<div class="sra-related-grid">
+  <a href="/blog/best-hand-therapy-tools-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Hand Therapy Tools for Stroke Recovery</span><span class="sra-related-blurb">Putty, finger stretchers, fine-motor trainers — the full toolkit ranked.</span></a>
+  <a href="/blog/best-robotic-glove-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Robotic Glove for Stroke Hand Recovery</span><span class="sra-related-blurb">Powered exoskeleton gloves that drive neuroplasticity in the affected hand.</span></a>
+  <a href="/blog/best-grip-strengthener-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Grip Strengthener for Stroke Recovery</span><span class="sra-related-blurb">Adjustable squeezers to finger boards — picking the right resistance level.</span></a>
+  <a href="/blog/spasticity-hand-splint-stroke" class="sra-related-card"><span class="sra-related-label">Spasticity Hand Splint for Stroke</span><span class="sra-related-blurb">Resting and dynamic splints that prevent contracture while you sleep.</span></a>
+  <a href="/blog/saebo-stroke-recovery-devices" class="sra-related-card"><span class="sra-related-label">Saebo Stroke Recovery Devices — Are They Worth It?</span><span class="sra-related-blurb">The premium hand rehab line reviewed honestly by a survivor who used it.</span></a>
+</div>`,
+    },
+    {
+      h2: 'Daily Living & Home Setup',
+      paragraphs: ['Adaptive utensils, shower safety, blood pressure monitors, smart home tech — the unglamorous modifications that restore independence and reduce fall risk.'],
+      rawHtml: `<div class="sra-related-grid">
+  <a href="/blog/adaptive-eating-utensils-stroke" class="sra-related-card"><span class="sra-related-label">Adaptive Eating Utensils for Stroke Survivors</span><span class="sra-related-blurb">The forks, spoons, and plates that make eating independent again.</span></a>
+  <a href="/blog/shower-safety-stroke-survivor" class="sra-related-card"><span class="sra-related-label">Shower Safety for Stroke Survivors</span><span class="sra-related-blurb">Grab bars, shower chairs, handheld heads — preventing the #1 in-home injury.</span></a>
+  <a href="/blog/best-adjustable-bed-wedge-pillow-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Adjustable Bed Wedge Pillow</span><span class="sra-related-blurb">Position matters for shoulder, lymphedema, reflux, and spasticity overnight.</span></a>
+  <a href="/blog/best-smart-home-devices-stroke-survivors" class="sra-related-card"><span class="sra-related-label">Best Smart Home Devices for Stroke Survivors</span><span class="sra-related-blurb">Voice control, automated lighting, and fall-alert systems that restore autonomy.</span></a>
+  <a href="/blog/best-blood-pressure-monitor-stroke-survivor" class="sra-related-card"><span class="sra-related-label">Best Blood Pressure Monitor for Stroke Survivors</span><span class="sra-related-blurb">The home device that reduces second-stroke risk — accuracy and cuff fit matter.</span></a>
+  <a href="/blog/compression-garments-stroke-recovery-edema" class="sra-related-card"><span class="sra-related-label">Compression Garments — Edema After Stroke</span><span class="sra-related-blurb">Managing arm and leg swelling — which garment, which compression level, and why.</span></a>
+  <a href="/blog/best-standing-desk-stroke-recovery-return-to-work" class="sra-related-card"><span class="sra-related-label">Best Standing Desk for Stroke — Return to Work</span><span class="sra-related-blurb">Sit-stand workstations for cognitive and physical recovery in the office or home.</span></a>
+</div>`,
+    },
+    {
+      h2: 'Pain Relief & Recovery Technology',
+      paragraphs: ['TENS units, percussion therapy, red light — three technologies that reduce spasticity and pain. Here\'s what the evidence says and what Nick actually uses.'],
+      rawHtml: `<div class="sra-related-grid">
+  <a href="/blog/best-tens-unit-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best TENS Unit for Stroke Recovery</span><span class="sra-related-blurb">Electrical muscle stimulation for pain management and nerve reactivation.</span></a>
+  <a href="/blog/best-massage-gun-stroke-spasticity" class="sra-related-card"><span class="sra-related-label">Best Massage Gun for Stroke Spasticity</span><span class="sra-related-blurb">High-frequency percussion therapy that breaks spastic tone before exercise.</span></a>
+  <a href="/blog/red-light-therapy-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Red Light Therapy for Stroke Recovery</span><span class="sra-related-blurb">The evidence on photobiomodulation — and Nick's honest take after 18 months of use.</span></a>
+</div>`,
+    },
+    {
+      h2: 'Brain, Speech & Cognitive Recovery',
+      paragraphs: ['Aphasia apps, memory games, brain-training books — the cognitive rehabilitation tools that complement speech therapy and rebuild neural pathways between sessions.'],
+      rawHtml: `<div class="sra-related-grid">
+  <a href="/blog/best-brain-games-books-stroke-cognitive-recovery" class="sra-related-card"><span class="sra-related-label">Best Brain Games and Books for Cognitive Recovery</span><span class="sra-related-blurb">The exercises and reads that build new neural pathways — ranked by evidence.</span></a>
+  <a href="/blog/best-speech-therapy-apps-tools-aphasia-stroke" class="sra-related-card"><span class="sra-related-label">Best Speech Therapy Apps for Aphasia</span><span class="sra-related-blurb">The apps and devices that bridge the gap between weekly therapy sessions.</span></a>
+</div>`,
+    },
+    {
+      h2: 'Nutrition, Supplements & What to Eat',
+      paragraphs: ['The anti-inflammatory diet that reduces second-stroke risk, and an honest look at which supplements have real evidence behind them — and which are hype.'],
+      rawHtml: `<div class="sra-related-grid">
+  <a href="/blog/best-foods-for-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Foods for Stroke Recovery</span><span class="sra-related-blurb">The evidence-based diet that reduces inflammation and rebuilds brain function.</span></a>
+  <a href="/blog/supplements-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Supplements for Stroke Recovery</span><span class="sra-related-blurb">What the research actually says — what helps, what's hype, and what to avoid.</span></a>
+</div>`,
+    },
+    {
+      h2: 'Gear Guides, Gift Ideas & Getting Started',
+      paragraphs: ['Don\'t know where to start? These guides cut through the noise — the complete home kit, the gift guide survivors actually want, and resources for finding real coaching help.'],
+      rawHtml: `<div class="sra-related-grid">
+  <a href="/blog/complete-stroke-recovery-home-kit" class="sra-related-card"><span class="sra-related-label">Complete Stroke Recovery Home Kit</span><span class="sra-related-blurb">The 15 items that should be in every survivor's home — from day 1 to year 7.</span></a>
+  <a href="/blog/stroke-recovery-gift-guide" class="sra-related-card"><span class="sra-related-label">Stroke Recovery Gift Guide</span><span class="sra-related-blurb">What stroke survivors actually want — from someone who's been there.</span></a>
+  <a href="/blog/online-stroke-recovery-coach" class="sra-related-card"><span class="sra-related-label">Online Stroke Recovery Coach — What to Look For</span><span class="sra-related-blurb">Virtual coaching options and what makes one legitimate vs. a waste of money.</span></a>
+</div>`,
     },
   ],
   faqs: [
