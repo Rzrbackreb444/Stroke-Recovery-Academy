@@ -24,14 +24,19 @@ import { RECOVERY_PRODUCTS } from "@/data/recoveryProducts";
 // Real products (from the curated store catalog) mapped to relevant posts.
 // Keys are post slugs; values are product ids from RECOVERY_PRODUCTS.
 const POST_PRODUCTS: Record<string, string[]> = {
-  "aphasia-exercises-at-home": ["word-search-1", "brain-games-book-1", "crossword-puzzles-1"],
-  "stroke-recovery-exercises-at-home-daily-routine": ["therapy-bands-1", "putty-therapy-1", "pedal-exerciser-1"],
-  "stroke-recovery-plateau-how-to-break-through": ["grip-strengthener-1", "balance-board-1", "pedal-exerciser-1"],
-  "stroke-recovery-timeline-month-by-month": ["therapy-bands-1", "grip-strengthener-1", "brain-games-book-1"],
-  "returning-to-work-after-stroke": ["brain-games-book-1", "finger-exerciser-1", "pedal-exerciser-1"],
+  "aphasia-exercises-at-home": ["aphasia-word-search-1", "word-search-1", "crossword-puzzles-1", "brain-games-book-1"],
+  "speech-therapy-exercises-home": ["aphasia-word-search-1", "word-search-1", "brain-games-book-1"],
+  "voice-journaling-for-aphasia-and-speech-recovery": ["aphasia-word-search-1", "brain-games-book-1"],
+  "constraint-induced-movement-therapy": ["hand-therapy-kit-1", "putty-therapy-1", "grip-strengthener-1", "finger-exerciser-1"],
+  "neuroplasticity-and-recovery": ["brain-games-book-1", "sudoku-1", "crossword-puzzles-1"],
+  "hemorrhagic-stroke-recovery-complete-guide": ["walking-cane-1", "afo-brace-1", "drop-foot-stretcher-1", "ankle-orthosis-1"],
+  "stroke-recovery-exercises-at-home-daily-routine": ["therapy-bands-1", "putty-therapy-1", "pedal-exerciser-1", "recumbent-bike-1"],
+  "stroke-recovery-plateau-how-to-break-through": ["grip-strengthener-1", "balance-board-1", "push-up-bars-1", "pedal-exerciser-1"],
+  "stroke-recovery-timeline-month-by-month": ["therapy-bands-1", "grip-strengthener-1", "brain-games-book-1", "walking-cane-1"],
+  "returning-to-work-after-stroke": ["brooks-adrenaline-1", "brain-games-book-1", "finger-exerciser-1", "pedal-exerciser-1"],
   "five-years-after-stroke": ["balance-board-1", "putty-therapy-1", "brain-games-book-1"],
   "how-to-talk-to-stroke-survivor": ["brain-games-book-1", "word-search-1"],
-  "life-after-stroke-rebuilding-identity-and-purpose": ["pedal-exerciser-1", "balance-board-1", "brain-games-book-1"],
+  "life-after-stroke-rebuilding-identity-and-purpose": ["recumbent-bike-1", "balance-board-1", "pedal-exerciser-1"],
 };
 
 function productsForSlug(slug: string | undefined) {
