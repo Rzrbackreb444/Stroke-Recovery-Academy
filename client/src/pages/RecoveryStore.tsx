@@ -39,6 +39,25 @@ const CATEGORIES = [
   { id: "brain", name: "Brain Games & Books", icon: Brain },
 ];
 
+const STORE_FAQS = [
+  {
+    q: "How are these recovery products chosen?",
+    a: "Every product is hand-picked by stroke survivor Nick Kremers or recommended by stroke recovery specialists for genuine therapeutic value. There are no paid placements — products are included only because they help the recovery journey.",
+  },
+  {
+    q: "Are these products a substitute for therapy?",
+    a: "No. Adaptive equipment and home recovery tools support the work you do with your physical, occupational, and speech therapists — they do not replace clinical care. Always check with your therapy team before starting a new tool or exercise.",
+  },
+  {
+    q: "How does buying here support stroke survivors?",
+    a: "The Recovery Store uses Amazon affiliate links. When you buy through them, a small commission funds free resources and scholarship support for stroke survivors at no extra cost to you.",
+  },
+  {
+    q: "Do I pay more by using these links?",
+    a: "No. Affiliate links never change the price you pay. You pay Amazon's normal price, and a small referral commission supports the mission.",
+  },
+];
+
 function ProductSchema({ product, tag }: { product: Product; tag: string | null }) {
   const schema = {
     "@context": "https://schema.org",
@@ -228,7 +247,7 @@ export default function RecoveryStore() {
   const configReady = !affiliateLoading;
 
   useEffect(() => {
-    document.title = "Recovery Store | Stroke Lyfe - Curated Products for Stroke Survivors";
+    document.title = "Recovery Store | Stroke Recovery Academy - Curated Products for Stroke Survivors";
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
@@ -240,9 +259,25 @@ export default function RecoveryStore() {
       document.head.appendChild(meta);
     }
 
+    let keywords = document.querySelector('meta[name="keywords"]');
+    if (!keywords) {
+      keywords = document.createElement("meta");
+      keywords.setAttribute("name", "keywords");
+      document.head.appendChild(keywords);
+    }
+    keywords.setAttribute("content", "stroke recovery products, adaptive equipment for stroke survivors, gait belt, drop foot brace, grip strengthener, hand therapy tools, transfer sling, brain games for stroke, recovery store");
+
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute("href", "https://strokerecoveryacademy.com/recovery/store");
+
     const ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) {
-      ogTitle.setAttribute("content", "Recovery Store | Stroke Lyfe");
+      ogTitle.setAttribute("content", "Recovery Store | Stroke Recovery Academy");
     }
 
     const ogDescription = document.querySelector('meta[property="og:description"]');
@@ -273,17 +308,38 @@ export default function RecoveryStore() {
 
   const pageSchema = {
     "@context": "https://schema.org",
-    "@type": "Store",
-    name: "Stroke Lyfe Recovery Store",
-    description: "Curated recovery products recommended by stroke survivor Nick Kremers. Every product is hand-picked for stroke recovery success.",
-    url: "https://strokelyfe.org/store",
-    brand: { "@type": "Brand", name: "Stroke Lyfe" },
-    founder: {
-      "@type": "Person",
-      name: "Nick Kremers",
-      description: "Stroke survivor who recovered from 0% to 90% function. Expert in stroke recovery methodology.",
-      knowsAbout: ["Stroke Recovery", "Neuroplasticity", "Physical Therapy", "Cognitive Rehabilitation"],
-    },
+    "@graph": [
+      {
+        "@type": "Store",
+        name: "Stroke Recovery Academy Recovery Store",
+        description: "Curated recovery products hand-picked by stroke survivor Nick Kremers. Every product is chosen for genuine therapeutic value in stroke recovery.",
+        url: "https://strokerecoveryacademy.com/recovery/store",
+        brand: { "@type": "Brand", name: "Stroke Recovery Academy" },
+        founder: {
+          "@type": "Person",
+          name: "Nick Kremers",
+          description: "Stroke survivor who recovered from 0% to 90% function. Expert in stroke recovery methodology.",
+          url: "https://strokerecoveryacademy.com/recovery/about-nick",
+          knowsAbout: ["Stroke Recovery", "Neuroplasticity", "Physical Therapy", "Cognitive Rehabilitation", "Adaptive Equipment"],
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: "https://strokerecoveryacademy.com/" },
+          { "@type": "ListItem", position: 2, name: "Recovery", item: "https://strokerecoveryacademy.com/recovery" },
+          { "@type": "ListItem", position: 3, name: "Recovery Store", item: "https://strokerecoveryacademy.com/recovery/store" },
+        ],
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: STORE_FAQS.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+      },
+    ],
   };
 
   return (
@@ -444,6 +500,26 @@ export default function RecoveryStore() {
                 <h3 className="font-semibold text-white mb-1">Community First</h3>
                 <p className="text-sm text-gray-500">Affiliate revenue supports survivors</p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-12 px-4 border-t border-[#333]">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-2xl font-bold text-white mb-6 text-center font-serif">
+              Recovery Store FAQ
+            </h2>
+            <div className="space-y-4">
+              {STORE_FAQS.map((faq, i) => (
+                <div
+                  key={i}
+                  className="bg-[#1a1a1a] border border-[#333] rounded-lg p-5"
+                  data-testid={`faq-store-${i}`}
+                >
+                  <h3 className="font-semibold text-white mb-2">{faq.q}</h3>
+                  <p className="text-sm text-gray-400 leading-relaxed">{faq.a}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>

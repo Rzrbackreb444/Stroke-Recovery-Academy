@@ -2145,7 +2145,7 @@ export const POST_WALKING_AIDS = makeBlogPost({
     { href: '/recovery/shop', label: 'Recovery Store', blurb: 'HurryCane and survivor-tested gear in one place.' },
     { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'The right shoe makes every walking aid more effective.' },
     { href: '/blog/foot-drop-rehab-at-home', label: 'Drop foot rehab at home', blurb: 'Address the gait deficit that makes walking aids necessary.' },
-    { href: '/blog/gait-training-at-home', label: 'Gait training at home', blurb: 'The protocol for rebuilding independent ambulation.' },
+    { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home', blurb: 'The protocol for rebuilding independent ambulation.' },
     { href: '/blog/best-afo-brace-drop-foot', label: 'Best AFO braces for drop foot', blurb: 'When you need more support than a cane can give.' },
   ],
   publishedDate: '2026-06-05',
@@ -2490,7 +2490,7 @@ export const POST_PEDAL_EXERCISER = makeBlogPost({
   keyword: 'pedal exerciser stroke recovery',
   subhead: 'Cycling motion is one of the earliest things stroke survivors can do on the affected leg — but only the right type of device captures the full benefit. Here is the breakdown.',
   ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
-  ctaSecondary: { href: '/blog/gait-training-at-home', label: 'Gait training guide too' },
+  ctaSecondary: { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training guide too' },
     image: '/images/blog/pedal-exerciser-product.jpg',
   sections: [
     {
@@ -2554,7 +2554,7 @@ export const POST_PEDAL_EXERCISER = makeBlogPost({
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/recovery/shop', label: 'Recovery Store', blurb: 'DeskCycle and all stroke recovery gear in one place.' },
-    { href: '/blog/gait-training-at-home', label: 'Gait training at home', blurb: 'Build on the cycling base with walking-specific training.' },
+    { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home', blurb: 'Build on the cycling base with walking-specific training.' },
     { href: '/blog/best-balance-board-stroke-recovery', label: 'Best balance boards for stroke recovery', blurb: 'Take the work from seated to standing.' },
     { href: '/blog/managing-fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'Energy management for sustainable daily exercise.' },
   ],
@@ -2954,7 +2954,7 @@ export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
     { href: '/recovery/shop', label: 'Recovery Store', blurb: 'StrongTek balance board and all stroke recovery gear.' },
     { href: '/blog/best-ankle-brace-stroke-survivor', label: 'Best ankle braces for stroke survivors', blurb: 'Stabilize before you challenge.' },
-    { href: '/blog/gait-training-at-home', label: 'Gait training at home', blurb: 'Take balance work into the walking pattern.' },
+    { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home', blurb: 'Take balance work into the walking pattern.' },
     { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'The right shoe pairs with balance work.' },
     { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'The framework that makes balance training a daily habit.' },
   ],
@@ -5418,7 +5418,7 @@ export const POST_BROOKS_SURVIVOR_REVIEW = makeBlogPost({
     { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors (full guide)', blurb: 'The complete comparison of all recommended footwear for stroke recovery.' },
     { href: '/blog/foot-drop-rehab-at-home', label: 'Foot drop rehab at home', blurb: 'The protocol for rebuilding dorsiflexion and reducing toe drag.' },
     { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs electric ankle trainer', blurb: 'Which drop foot solution fits your recovery stage.' },
-    { href: '/blog/gait-training-at-home-after-stroke', label: 'Gait training at home', blurb: 'Rebuild your walking pattern with the correct gait-cycle exercises.' },
+    { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home', blurb: 'Rebuild your walking pattern with the correct gait-cycle exercises.' },
     { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors', blurb: 'When shoes are not enough — canes, walkers, and rollators.' },
   ],
   publishedDate: '2026-06-07',
@@ -5440,9 +5440,196 @@ export const POST_BROOKS_SURVIVOR_REVIEW = makeBlogPost({
 });
 
 // =============================================================================
+// Gait belts for safe walking practice
+// =============================================================================
+export const POST_GAIT_BELT = makeBlogPost({
+  slug: 'gait-belt-for-stroke-recovery',
+  title: 'Gait Belt for Stroke Recovery: How to Choose and Use One',
+  description: 'A gait belt is the single cheapest fall-prevention tool in stroke recovery. How to pick one, how to use it safely, and why every caregiver needs one.',
+  h1: 'Gait belts for stroke recovery: the $15 tool that prevents falls',
+  keyword: 'gait belt for stroke recovery',
+  extraKeywords: ['gait belt stroke', 'transfer belt', 'gait belt how to use', 'fall prevention stroke'],
+  subhead: 'One in three survivors falls in the first year. A gait belt turns a terrifying transfer into a controlled one — for you and whoever helps you.',
+  ctaPrimary: { href: '/recovery/store#gait-belt-1', label: 'See survivor-tested gait belts' },
+  ctaSecondary: { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home' },
+  sections: [
+    {
+      h2: 'What a gait belt actually does',
+      paragraphs: [
+        'A gait belt is a sturdy strap that buckles around your waist. A caregiver holds the belt — not your weak arm — while you stand, transfer, or practice walking. That single change protects your shoulder from being yanked (a real cause of post-stroke shoulder pain) and gives your helper a controlled grip if your knee buckles.',
+        'It is the cheapest, highest-leverage piece of equipment in the entire recovery toolkit. A good one costs about the price of two coffees and prevents the fall that sends survivors back to the hospital.',
+      ],
+      bullets: [
+        'Protects the weak shoulder from pulling injuries',
+        'Gives the caregiver a controlled, central grip',
+        'Turns risky sit-to-stand transfers into safe ones',
+        'Makes early walking practice possible at home',
+      ],
+    },
+    {
+      h2: 'How to choose one',
+      paragraphs: [
+        'Look for a metal quick-release buckle (plastic buckles slip under load), a belt at least 1.5 inches wide so it does not dig in, and a length rated for your waist plus clothing. Padded belts with hand loops are easier for caregivers to grip and worth the small extra cost.',
+      ],
+      bullets: [
+        'Metal quick-release buckle — never plastic for weight-bearing',
+        '1.5–2 inch width to spread the load',
+        'Hand loops if a caregiver assists often',
+        'Machine-washable webbing',
+      ],
+    },
+    {
+      h2: 'How to use it safely',
+      paragraphs: [
+        'Fasten the belt snugly over clothing, not bare skin — you should be able to slide a flat hand underneath. The caregiver grips underhand from behind or at the side, keeps their own back straight, and never lifts by the belt like a suitcase. The belt is for guiding and catching, not hoisting. If you cannot bear any weight yet, you need a sit-to-stand aid or lift instead.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Is a gait belt safe to use at home without a therapist?', a: 'Yes, for guarding and transfers once your therapist has cleared you to bear weight. Have your PT demonstrate the grip once. The belt is for guiding and catching a stumble — never for lifting someone who cannot stand.' },
+    { q: 'What is the difference between a gait belt and a transfer belt?', a: 'They are the same tool. "Gait belt" emphasizes walking practice; "transfer belt" emphasizes moving from bed to chair. A belt with hand loops works for both.' },
+    { q: 'What size gait belt do I need?', a: 'Measure your waist over the clothing you usually wear and add a few inches. Standard 60-inch belts fit most adults; bariatric lengths run to 72 inches or more.' },
+    { q: 'Can I use a gait belt if I have no caregiver?', a: 'A gait belt is a two-person tool. If you are alone, focus instead on grab bars, a rollator, and a chair alarm. Do not attempt guarded walking solo.' },
+  ],
+  related: [
+    { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home', blurb: 'Rebuild your walk safely after the therapy stops.' },
+    { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids after stroke', blurb: 'Canes, rollators, and when to use each.' },
+    { href: '/recovery/store', label: 'The Recovery Store', blurb: 'Every survivor-tested tool in one place.' },
+  ],
+  productCard: {
+    title: 'Gait & Transfer Belt with Metal Buckle',
+    description: 'Sturdy metal-buckle gait belt for safe transfers and guarded walking practice — the tool every caregiver should own first.',
+    link: '/recovery/store#gait-belt-1',
+    label: 'See it in the Recovery Store',
+    note: 'Curated by Nick Kremers. As an Amazon Associate, SRA earns from qualifying purchases at no extra cost to you.',
+  },
+});
+
+// =============================================================================
+// Transfer slings / sit-to-stand aids
+// =============================================================================
+export const POST_TRANSFER_SLING = makeBlogPost({
+  slug: 'transfer-sling-sit-to-stand-stroke',
+  title: 'Transfer Slings & Sit-to-Stand Aids for Stroke Survivors',
+  description: 'When a survivor cannot bear full weight yet, a transfer sling or sit-to-stand aid protects both of you. How to choose the right one for your stage of recovery.',
+  h1: 'Transfer slings and sit-to-stand aids: safe standing when the legs are not ready',
+  keyword: 'transfer sling for stroke',
+  extraKeywords: ['sit to stand aid stroke', 'patient transfer sling', 'sit to stand lift', 'safe transfer stroke survivor'],
+  subhead: 'Manual transfers hurt backs and cause falls. The right sling lets a caregiver help you stand without yanking on a weak arm.',
+  ctaPrimary: { href: '/recovery/store#transfer-sling-1', label: 'See transfer slings & aids' },
+  ctaSecondary: { href: '/blog/gait-belt-for-stroke-recovery', label: 'When to use a gait belt instead' },
+  sections: [
+    {
+      h2: 'Which aid matches your stage',
+      paragraphs: [
+        'The right tool depends on how much weight you can bear through your legs today. Choose up, not down — the safer tool prevents the fall that sets recovery back months.',
+      ],
+      bullets: [
+        'Can bear most weight, needs guarding: a gait belt is enough',
+        'Can bear partial weight, needs a controlled pull-up: a padded sit-to-stand transfer sling',
+        'Cannot bear weight safely yet: a hydraulic or electric sit-to-stand lift',
+      ],
+    },
+    {
+      h2: 'Why a padded sit-to-stand sling helps',
+      paragraphs: [
+        'A padded sling wraps around your back and under your arms so a caregiver can help you rise through your core instead of pulling on a hemiparetic shoulder. That protects the weak arm — post-stroke shoulder subluxation and pain are common and largely avoidable — and gives the caregiver leverage without wrecking their own back.',
+      ],
+    },
+    {
+      h2: 'When to step up to a lift',
+      paragraphs: [
+        'If you cannot reliably plant your feet and take some weight, no belt or sling is safe — you need a hydraulic or powered sit-to-stand lift rated well above your body weight. Lifts feel like a big step, but they end the daily gamble of manual transfers and keep both of you out of the ER.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'What is the difference between a transfer sling and a gait belt?', a: 'A gait belt guards someone who can already stand and bear weight. A transfer sling wraps the torso to help someone who can only bear partial weight rise safely. If the legs cannot take any weight, you need a lift, not a sling.' },
+    { q: 'Do I need a mechanical lift or is a sling enough?', a: 'If you can plant your feet and take some weight, a padded sit-to-stand sling with a caregiver is usually enough. If you cannot bear weight at all, use a hydraulic or electric sit-to-stand lift rated above your body weight.' },
+    { q: 'Can one caregiver use a transfer sling alone?', a: 'For a padded sit-to-stand sling with a partial-weight-bearing survivor, yes — that is what it is designed for. Have your therapist confirm your weight-bearing status first.' },
+    { q: 'Will a sling hurt my weak shoulder?', a: 'A properly fitted torso sling is designed to avoid pulling on the arm — that is its main advantage over grabbing the survivor by the hand or forearm.' },
+  ],
+  related: [
+    { href: '/blog/gait-belt-for-stroke-recovery', label: 'Gait belts for stroke recovery', blurb: 'The cheapest fall-prevention tool there is.' },
+    { href: '/blog/shower-safety-stroke-survivor', label: 'Shower safety after stroke', blurb: 'Where most falls happen — and how to stop them.' },
+    { href: '/recovery/store', label: 'The Recovery Store', blurb: 'Mobility and transfer aids, survivor-tested.' },
+  ],
+  productCard: {
+    title: 'Padded Sit-to-Stand Transfer Sling',
+    description: 'Padded torso sling that lets a caregiver help you stand through your core — no yanking on a weak arm.',
+    link: '/recovery/store#transfer-sling-1',
+    label: 'See it in the Recovery Store',
+    note: 'Curated by Nick Kremers. As an Amazon Associate, SRA earns from qualifying purchases at no extra cost to you.',
+  },
+});
+
+// =============================================================================
+// Spasticity hand splints
+// =============================================================================
+export const POST_HAND_SPLINT = makeBlogPost({
+  slug: 'spasticity-hand-splint-stroke',
+  title: 'Spasticity Hand Splints After Stroke: Do They Work?',
+  description: 'A tight, curling hand after stroke can lead to contracture. How resting hand splints help, when to wear them, and how to choose one that actually fits.',
+  h1: 'Spasticity hand splints after stroke: keeping the hand open',
+  keyword: 'spasticity hand splint stroke',
+  extraKeywords: ['resting hand splint', 'anti-spasticity splint', 'stroke hand contracture', 'stroke hand curling'],
+  subhead: 'A spastic hand that lives in a fist can stiffen into a permanent contracture. A resting splint holds it open so the tissue stays long enough to keep training.',
+  ctaPrimary: { href: '/recovery/store#spasticity-splint-1', label: 'See anti-spasticity hand splints' },
+  ctaSecondary: { href: '/blog/spasticity-after-stroke', label: 'Managing spasticity after stroke' },
+  sections: [
+    {
+      h2: 'Why the hand curls after a stroke',
+      paragraphs: [
+        'After a stroke, the muscles that close the hand often fire without permission while the muscles that open it stay weak. The result is a hand that pulls into a fist. Left in that position, the soft tissue and tendons shorten — that is a contracture, and once it sets in it is far harder to reverse than to prevent.',
+        'A resting hand splint holds the wrist and fingers in a safe, open position so the tissue stays at length. It does not cure spasticity, but it buys you the range you need to keep doing therapy.',
+      ],
+    },
+    {
+      h2: 'What to look for in a splint',
+      paragraphs: [
+        'A good anti-spasticity splint supports the wrist in slight extension, separates the fingers, and often includes a soft ball or palm cone to keep the thumb out of the palm. It should be adjustable — spasticity changes through the day — and breathable enough to wear for hours without sweating the skin raw.',
+      ],
+      bullets: [
+        'Wrist held in slight extension, not flat or flexed',
+        'Adjustable finger separator or palm cone',
+        'Breathable, washable, padded lining',
+        'Straps you can fasten one-handed',
+      ],
+    },
+    {
+      h2: 'When and how long to wear it',
+      paragraphs: [
+        'Most survivors use a resting splint at night and during rest periods rather than during active movement — the goal is to preserve range, not to freeze the hand. Build up wear time gradually and check the skin for pressure marks. Pair the splint with daily stretching, and talk to your therapist about whether you are also a candidate for Botox or serial casting if the tone is severe.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Do hand splints actually reduce spasticity?', a: 'A resting splint does not lower muscle tone by itself, but it prevents the tissue shortening (contracture) that makes a spastic hand permanently stuck. It preserves the range you need so stretching and therapy keep working.' },
+    { q: 'Should I wear a hand splint all day or just at night?', a: 'Most survivors wear a resting splint at night and during rest, not during active use of the hand. Build up wear time gradually and check for pressure marks. Follow your therapist\u2019s schedule.' },
+    { q: 'What is the difference between a resting splint and a wrist brace?', a: 'A wrist brace supports a weak or painful wrist. A resting hand splint additionally holds the fingers and thumb open to fight spasticity and contracture.' },
+    { q: 'Can a splint fix a hand that is already contracted?', a: 'A splint works best to prevent contracture. For an established contracture, splinting is combined with stretching, and sometimes Botox or serial casting — ask your therapist or physiatrist.' },
+  ],
+  related: [
+    { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke', blurb: 'What causes the tightness and what actually helps.' },
+    { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools', blurb: 'Rebuild grip and fine motor after stroke.' },
+    { href: '/recovery/store', label: 'The Recovery Store', blurb: 'Therapy and splinting tools, survivor-tested.' },
+  ],
+  productCard: {
+    title: 'Anti-Spasticity Hand Splint with Training Ball',
+    description: 'Resting hand splint with an adjustable finger separator and training ball to hold a spastic hand open and prevent contracture.',
+    link: '/recovery/store#spasticity-splint-1',
+    label: 'See it in the Recovery Store',
+    note: 'Curated by Nick Kremers. As an Amazon Associate, SRA earns from qualifying purchases at no extra cost to you.',
+  },
+});
+
+// =============================================================================
 // Aggregator
 // =============================================================================
 export const ALL_BLOG_POSTS: SsrPageConfig[] = [
+  POST_GAIT_BELT,
+  POST_TRANSFER_SLING,
+  POST_HAND_SPLINT,
   POST_REHAB_DURATION,
   POST_FULL_RECOVERY,
   POST_SECOND_STROKE_SIGNS,
