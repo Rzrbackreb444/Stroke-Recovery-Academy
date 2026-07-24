@@ -25287,6 +25287,10 @@ Format as structured JSON with clear sections.`;
   const { registerBlogRoutes } = await import('./seo/blogRoutes');
   registerBlogRoutes(app);
 
+  // SEO: SSR Recovery Store — full product catalog + Product/ItemList/FAQ schema
+  const { registerStoreRoutes } = await import('./seo/storeRoutes');
+  registerStoreRoutes(app);
+
   // SEO: Programmatic SSR — per-exercise, week-N, state-centers (G4)
   const { registerProgrammaticSeoRoutes } = await import('./seo/programmaticRoutes');
   registerProgrammaticSeoRoutes(app);
