@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut, LayoutDashboard, Settings, Heart, ChevronDown, Crown, Sparkles, Check, Flame, Users, BookOpen } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, Settings, Heart, ChevronDown, Crown, Sparkles, Check, Flame, Users, BookOpen, ShoppingCart } from "lucide-react";
 import {
   HoverCard,
   HoverCardContent,
@@ -36,6 +36,7 @@ const primaryNav: { href: string; label: string; icon?: typeof Flame }[] = [
   { href: "/recovery/never-zero", label: "Never Zero", icon: Flame },
   { href: "/recovery/buddy", label: "Bonfire", icon: Users },
   { href: "/book", label: "Book", icon: BookOpen },
+  { href: "/recovery/store", label: "Store", icon: ShoppingCart },
 ];
 
 // "More" — grouped megamenu. Four columns now (Practice / Connect / Music /
