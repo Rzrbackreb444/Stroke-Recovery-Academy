@@ -1843,7 +1843,7 @@ export const POST_GAIT_TRAINING_HOME = makeBlogPost({
   subhead: 'I walked in parallel bars at a clinic, then in my hallway at home, then down the block, then up a trail. Here is the equipment that bridged the gap between clinic and real life.',
   ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See gait training equipment on Amazon' },
   ctaSecondary: { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab guide' },
-  image: '/images/blog/gait-training-home.jpg',
+  image: '/images/blog/gait-training-home.webp',
   productCard: {
     title: 'Gait Training Equipment Kit',
     description: 'Doorway pull-up bar, wobble board, gait belt, and balance training tools. The same setup I used to go from wheelchair to unassisted walking.',
@@ -2214,19 +2214,16 @@ export const POST_ROBOTIC_GLOVE = makeBlogPost({
       products: [
         {
           name: 'Syrebo C10 — Best EMG glove for most survivors',
-          price: '$299–$369',
           link: 'https://www.amazon.com/syrebo-Rehabilitation-Hemiplegia-Recovery-Equipment/dp/B0C36PWC3H',
           note: 'Adjustable EMG sensitivity threshold, bilateral training mode, left and right versions. The device I\'d recommend for anyone with partial hand return in the subacute or chronic phase. Confirm left version at checkout if your affected hand is your left.',
         },
         {
           name: 'Syrebo E10 — Better app and sensitivity',
-          price: '$349–$449',
           link: 'https://www.amazon.com/syrebo-Rehabilitation-Training-Recovery-Equipment/dp/B0C4T1VGMK',
           note: 'Upgraded electrode contact and more robust session-tracking app over the C10. Worth the step-up if you plan daily use and want data on your progress. Bilateral mode included.',
         },
         {
           name: 'Neofect Neomano — Best for functional task training',
-          price: '$599–$799',
           link: 'https://www.amazon.com/Neofect-Neomano-Robotic-Assist-Spinal/dp/B08FD9XZX8',
           note: 'Soft robotic wearable you can use during real tasks — drinking, gripping objects — not just dedicated therapy sessions. Excellent for left-hand survivors. Higher price, superior build quality.',
         },
@@ -2288,7 +2285,7 @@ export const POST_ROBOTIC_GLOVE = makeBlogPost({
     title: 'Syrebo C10 — the EMG glove I\'d buy today',
     description: 'EMG-triggered, left and right versions, adjustable sensitivity, bilateral mode. Covers 80% of stroke survivors at the right price.',
     link: 'https://www.amazon.com/syrebo-Rehabilitation-Hemiplegia-Recovery-Equipment/dp/B0C36PWC3H',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
@@ -2345,7 +2342,6 @@ export const POST_BEST_SHOES = makeBlogPost({
       products: [
         {
           name: 'Brooks Adrenaline GTS 24 — Men\'s',
-          price: '$130–$150',
           link: 'https://www.amazon.com/Brooks-Mens-Adrenaline-Supportive-Running/dp/B0D93BZ61K',
           note: 'GuideRails stability, DNA LOFT v3 cushioning, removable insole, 2E and 4E widths. Size up half to full size for AFO use. The most PT-recommended structured shoe for stroke survivors.',
         },
@@ -2375,7 +2371,6 @@ export const POST_BEST_SHOES = makeBlogPost({
       products: [
         {
           name: 'Skechers GoWalk Arch Fit Slip-In — Men\'s',
-          price: '$65–$85',
           link: 'https://www.amazon.com/Skechers-Gowalk-Fit-Athletic-Walking-Sneaker/dp/B09KMYW8S8',
           note: 'Hands-free slip-in entry, ISOARCH support, machine washable, lightweight foam. For survivors who need morning independence. Not a motion-control shoe — if you need AFO compatibility, use the Brooks.',
         },
@@ -2415,7 +2410,7 @@ export const POST_BEST_SHOES = makeBlogPost({
     title: 'Brooks Adrenaline GTS 24 — the PT-recommended stability shoe',
     description: 'GuideRails tech, DNA LOFT v3 cushioning, removable insole for AFO use, 4E width option. Most commonly recommended by stroke rehab PTs.',
     link: 'https://www.amazon.com/Brooks-Mens-Adrenaline-Supportive-Running/dp/B0D93BZ61K',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
@@ -2463,19 +2458,16 @@ export const POST_WALKING_AIDS = makeBlogPost({
       products: [
         {
           name: 'HurryCane Freedom Edition — best single-point cane',
-          price: '$30–$45',
           link: 'https://www.amazon.com/dp/B00MV4WEVU',
           note: 'Pivoting base that self-adjusts to uneven surfaces — the key differentiator. Folds flat. Multiple heights. Already in the Recovery Store.',
         },
         {
           name: 'Hugo Mobility Offset Quad Cane — best quad cane',
-          price: '$35–$55',
           link: 'https://www.amazon.com/Hugo-Mobility-Quadpod-Offset-Stable/dp/B005IV0BBY',
           note: 'Offset handle positions weight over the base center — more natural arm alignment than in-line quad canes. Height-adjustable. Large base. The quad cane I\'d buy for the early outpatient phase.',
         },
         {
           name: 'Drive Medical Nitro Rollator — best rollator',
-          price: '$80–$110',
           link: 'https://www.amazon.com/Drive-Medical-Nitro-Rollator-Walker/dp/B009SOC9PI',
           note: 'Euro-style 4-wheel, 13 lbs, loop brakes, padded seat, storage pouch. For survivors who need more support than a cane but want speed over a traditional walker.',
         },
@@ -2531,7 +2523,7 @@ export const POST_WALKING_AIDS = makeBlogPost({
     title: 'Drive Medical Nitro Rollator — the rollator upgrade worth making',
     description: 'Euro-style, 13 lbs, loop brakes, padded seat. For survivors who need more than a cane and won\'t compromise on speed.',
     link: 'https://www.amazon.com/Drive-Medical-Nitro-Rollator-Walker/dp/B009SOC9PI',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
@@ -2572,13 +2564,11 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
       products: [
         {
           name: 'Theraputty Hand Exercise Putty Set — 6-piece progression set',
-          price: '$18–$28',
           link: 'https://www.amazon.com/dp/B001AW1PE0',
           note: 'Six resistance levels from extra-soft to extra-firm. Allows progressive loading as hand strength returns. Also in the Recovery Store. The starting point for any home hand therapy program.',
         },
         {
           name: 'CanDo Theraputty Plus — color-coded resistance',
-          price: '$14–$22',
           link: 'https://www.amazon.com/Theraputty-Exercise-Rehabilitation-Exercises-Strengthening/dp/B006LN4TOI',
           note: 'Tan through black, six resistance grades. Non-sticky formula. Good alternative if the standard set is out of stock.',
         },
@@ -2602,7 +2592,6 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
       products: [
         {
           name: 'Grip Strength Trainer Set — adjustable resistance',
-          price: '$12–$20',
           link: 'https://www.amazon.com/dp/B07B2Z3YXS',
           note: 'Adjustable resistance per finger, forearm and grip trainer included. Also in the Recovery Store. The set I\'d use alongside therapy putty for a complete home hand program.',
         },
@@ -2617,7 +2606,6 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
       products: [
         {
           name: 'D\'Addario Varigrip Hand Exerciser — individual finger resistance',
-          price: '$10–$16',
           link: 'https://www.amazon.com/dp/B001OCGGEM',
           note: 'Individual adjustable resistance per finger. Works at a desk, in a chair, or anywhere. Also in the Recovery Store.',
         },
@@ -2632,7 +2620,6 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
       products: [
         {
           name: 'Theragun Prime — percussive therapy for spasticity management',
-          price: '$199–$249',
           link: 'https://www.amazon.com/Theragun-Prime-Generation-Percussive-Treatment/dp/B086Z6V3S6',
           note: 'Used pre-session to reduce forearm flexor tone before hand exercises. Not a hand therapy tool itself — a preparation tool that makes the therapy more effective.',
         },
@@ -2667,7 +2654,7 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
     title: 'Theraputty Hand Exercise Putty Set',
     description: 'Six resistance levels from extra-soft to extra-firm. The most versatile single hand rehab tool for stroke survivors at any stage.',
     link: 'https://www.amazon.com/dp/B001AW1PE0',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
@@ -2721,7 +2708,6 @@ export const POST_MOBILITY_SCOOTER = makeBlogPost({
       products: [
         {
           name: 'Pride Go-Go Sport 4-Wheel Scooter (S74)',
-          price: '$1,199–$1,499',
           link: 'https://www.amazon.com/Pride-Mobility-4-Wheel-Electric-Scooter/dp/B00PV2QSLW',
           note: 'Disassembles into 5 lightweight pieces for vehicle transport — heaviest piece under 27 lbs. Delta tiller. 8-mile range per charge. 300 lb weight capacity. The most common compact travel scooter in stroke rehab communities.',
         },
@@ -2778,7 +2764,7 @@ export const POST_MOBILITY_SCOOTER = makeBlogPost({
     title: 'Pride Go-Go Sport 4-Wheel Scooter',
     description: 'Disassembles into 5 pieces under 27 lbs each. Delta tiller. 8-mile range. 300 lb capacity. The most common compact travel scooter in stroke rehab.',
     link: 'https://www.amazon.com/Pride-Mobility-4-Wheel-Electric-Scooter/dp/B00PV2QSLW',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
@@ -2822,7 +2808,6 @@ export const POST_WHEELCHAIR = makeBlogPost({
       products: [
         {
           name: 'Drive Medical Expedition Lightweight Transport Wheelchair',
-          price: '$90–$130',
           link: 'https://www.amazon.com/Drive-Medical-Lightweight-Expedition-Wheelchair/dp/B00537S944',
           note: '19-inch seat, flip-back padded armrests, swing-away footrests for easy transfers, 300 lb capacity, folds flat for transport. The most widely used entry-level transport wheelchair in US hospital discharge programs.',
         },
@@ -2888,7 +2873,7 @@ export const POST_WHEELCHAIR = makeBlogPost({
     title: 'Drive Medical Expedition Transport Wheelchair',
     description: 'Flip-back armrests, swing-away footrests, 300 lb capacity, folds flat. The most common hospital-discharge transport wheelchair.',
     link: 'https://www.amazon.com/Drive-Medical-Lightweight-Expedition-Wheelchair/dp/B00537S944',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
@@ -2932,7 +2917,6 @@ export const POST_PEDAL_EXERCISER = makeBlogPost({
       products: [
         {
           name: 'DeskCycle Under-Desk Pedal Exerciser',
-          price: '$159–$199',
           link: 'https://www.amazon.com/dp/B00B1VDNQA',
           note: 'Calibrated resistance, whisper-quiet operation, fits under most chairs and desks. Magnetic resistance allows smooth cycling even at slow RPM — critical for survivors who can\'t maintain fast cadence on the affected side. Also in the Recovery Store.',
         },
@@ -3002,7 +2986,7 @@ export const POST_PEDAL_EXERCISER = makeBlogPost({
     title: 'DeskCycle Under-Desk Pedal Exerciser',
     description: 'Calibrated magnetic resistance, whisper-quiet, works at slow RPM. The pedal exerciser most commonly used in stroke home rehab programs.',
     link: 'https://www.amazon.com/dp/B00B1VDNQA',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
@@ -3025,7 +3009,7 @@ export const POST_PUSH_UP_BARS_GUIDE = makeBlogPost({
   subhead: 'Rebuilding pressing strength after stroke means training around wrist limitations, compensated grip, and asymmetric loading. The right push-up bars make that possible. The wrong ones make it worse.',
   ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
   ctaSecondary: { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Add resistance bands too' },
-  image: '/images/blog/perfect-pushup-bars.jpg',
+  image: '/images/blog/grip-strength-trainer.jpg',
   sections: [
     {
       h2: 'Why wrist position matters after stroke',
@@ -3059,7 +3043,6 @@ export const POST_PUSH_UP_BARS_GUIDE = makeBlogPost({
       products: [
         {
           name: 'Perfect Fitness Push-Up Bars — rotating handles',
-          price: '$20–$35',
           link: 'https://www.amazon.com/dp/B008DNAJ5M',
           note: 'Rotating handles reduce wrist torque, non-slip base, foam grips. The most widely used push-up bar in stroke rehab home programs. Also in the Recovery Store.',
         },
@@ -3074,7 +3057,6 @@ export const POST_PUSH_UP_BARS_GUIDE = makeBlogPost({
       products: [
         {
           name: 'Bala Bangles Wrist and Ankle Weights',
-          price: '$49–$55',
           link: 'https://www.amazon.com/Bala-Bangles-Wrist-Ankle-Weights/dp/B0DDRFMZVF',
           note: '1 lb each (sold as a pair = 2 lbs total). Wraparound design requires no grip. Good for shoulder and proximal arm work when grip isn\'t available yet on the affected side.',
         },
@@ -3108,7 +3090,7 @@ export const POST_PUSH_UP_BARS_GUIDE = makeBlogPost({
     title: 'Perfect Fitness Push-Up Bars — rotating handles',
     description: 'Rotating handles reduce wrist torque. Non-slip base. The standard push-up bar in stroke home rehab programs.',
     link: 'https://www.amazon.com/dp/B008DNAJ5M',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
@@ -3154,13 +3136,11 @@ export const POST_AFO_OSSUR = makeBlogPost({
       products: [
         {
           name: 'Ossur Foot-Up Drop Foot Brace — best simple ankle solution',
-          price: '$45–$70',
           link: 'https://www.amazon.com/Ossur-Foot-up-Drop-Foot-Brace/dp/B00KB008OM',
           note: 'Shoe insert connects to a strap-on cuff — no custom fitting required. Lightweight, wearable in most laced shoes. Best for mild-to-moderate drop foot where a full plastic AFO is unnecessary. The entry-level Ossur option.',
         },
         {
           name: 'Ossur AFO Dynamic Brace — best for active gait recovery',
-          price: '$55–$85',
           link: 'https://www.amazon.com/dp/B07XNQB9RK',
           note: 'Dynamic spring-loaded design allows push-off motion. Adjustable tension. More natural gait pattern than rigid. Good for survivors with partial dorsiflexion return. Also in the Recovery Store.',
         },
@@ -3209,7 +3189,7 @@ export const POST_AFO_OSSUR = makeBlogPost({
     title: 'Ossur Foot-Up Drop Foot Brace',
     description: 'Shoe insert + strap cuff. No custom fit. Lightweight. Best entry-level AFO for mild-to-moderate drop foot.',
     link: 'https://www.amazon.com/Ossur-Foot-up-Drop-Foot-Brace/dp/B00KB008OM',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
@@ -3253,7 +3233,6 @@ export const POST_ANKLE_BRACE = makeBlogPost({
       products: [
         {
           name: 'Vive Lace-Up Ankle Brace — best all-purpose stabilizer',
-          price: '$18–$28',
           link: 'https://www.amazon.com/Vive-Laced-Ankle-Brace-Compression/dp/B073RKSNXX',
           note: 'Lace-up design with figure-8 straps for adjustable support. Wearable inside most stroke-appropriate shoes. Fits left or right ankle. For mild-to-moderate instability with preserved dorsiflexion.',
         },
@@ -3320,7 +3299,7 @@ export const POST_ANKLE_BRACE = makeBlogPost({
     title: 'Vive Lace-Up Ankle Brace',
     description: 'Figure-8 strap, lace-up, left or right. Best lightweight stabilizer for stroke survivors with preserved dorsiflexion.',
     link: 'https://www.amazon.com/Vive-Laced-Ankle-Brace-Compression/dp/B073RKSNXX',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
@@ -3368,7 +3347,6 @@ export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
       products: [
         {
           name: 'StrongTek Professional Balance Board — rocker/wobble combo',
-          price: '$35–$55',
           link: 'https://www.amazon.com/dp/B07D8J6BHR',
           note: 'Anti-slip surface, comfortable standing edge, 300 lb capacity. Can be used flat (stability board), as a rocker (one axis), or as a wobble board. Also in the Recovery Store.',
         },
@@ -3424,7 +3402,7 @@ export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
     title: 'StrongTek Professional Balance Board',
     description: 'Rocker and wobble modes. Anti-slip. 300 lb capacity. The balance board most commonly used in stroke home rehab.',
     link: 'https://www.amazon.com/dp/B07D8J6BHR',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
@@ -3470,25 +3448,21 @@ export const POST_BRAIN_BOOKS = makeBlogPost({
       products: [
         {
           name: '399 Games, Puzzles & Trivia for Stroke Recovery',
-          price: '$12–$18',
           link: 'https://www.amazon.com/dp/1648769039',
           note: 'Designed specifically for stroke survivors — graduated difficulty, multiple cognitive domains (word find, trivia, logic, fill-in), large print. The most clinically cited workbook in stroke OT home programs. Also in the Recovery Store.',
         },
         {
           name: 'Large Print Word Search for Stroke Survivors',
-          price: '$8–$12',
           link: 'https://www.amazon.com/dp/B09MYQWG2M',
           note: 'Extra-large print, designed for post-stroke visual processing changes, gradual difficulty progression. Good for survivors with visual field deficits. Also in the Recovery Store.',
         },
         {
           name: 'Easy Crossword Puzzles for Adults — large print',
-          price: '$8–$12',
           link: 'https://www.amazon.com/dp/1953561020',
           note: 'Language and memory work. Large print. Multiple difficulty levels within the book. The crossword starts easier than most adult crosswords — appropriate for early-phase aphasia recovery or word-finding deficits.',
         },
         {
           name: 'Sudoku for Stroke Recovery — large print',
-          price: '$8–$12',
           link: 'https://www.amazon.com/dp/1640307834',
           note: 'Visuospatial and logical reasoning. Does not require language — appropriate for aphasic survivors. Large print. Graded difficulty.',
         },
@@ -3537,7 +3511,7 @@ export const POST_BRAIN_BOOKS = makeBlogPost({
     title: '399 Games, Puzzles & Trivia for Stroke Recovery',
     description: 'Designed specifically for stroke survivors. Large print. Graduated difficulty. Multiple cognitive domains. The most clinically used stroke cognitive workbook.',
     link: 'https://www.amazon.com/dp/1648769039',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
@@ -3581,7 +3555,7 @@ export const POST_ELLIPTICAL = makeBlogPost({
       body: `<p>The Schwinn 430 hits every requirement: 20 levels of resistance (genuinely wide range), fixed inner handlebars alongside the moving poles for grab-and-go stability, a 20" stride length that can be adjusted by stride pace, and a step-up height that works for most stroke survivors with a single step. The footpads are wide and the toe cages are removable — important if foot drop means you need your foot sitting flat rather than strapped in.</p>
 <p>The built-in programs are mostly irrelevant for stroke rehab. What matters: manual mode, set a timer, go slow enough that the affected arm actually participates instead of being dragged by momentum from the strong side. That takes conscious practice.</p>`,
       products: [
-        { name: 'Schwinn 430 Elliptical', price: '$699–$799', link: 'https://www.amazon.com/Schwinn-Fitness-430-Elliptical-Machine/dp/B004AE2TH8', note: 'Fixed inner handlebars, 20 resistance levels, wide footpads. Best all-around value for stroke recovery use.' },
+        { name: 'Schwinn 430 Elliptical', link: 'https://www.amazon.com/Schwinn-Fitness-430-Elliptical-Machine/dp/B004AE2TH8', note: 'Fixed inner handlebars, 20 resistance levels, wide footpads. Best all-around value for stroke recovery use.' },
       ],
     },
     {
@@ -3589,7 +3563,7 @@ export const POST_ELLIPTICAL = makeBlogPost({
       body: `<p>The Nautilus E616 is a step up in build quality and data. Twenty-nine resistance levels, 22 built-in programs including interval options, a 20" stride with a smoother magnetic flywheel feel than the Schwinn 430 at the same price tier. The console tracks strides per minute — useful if your PT has given you a target cadence for gait retraining.</p>
 <p>The E616 has the same fixed inner handlebar design. The footpads have a slight tilt that some survivors with ankle instability find uncomfortable — try before buying if possible, or verify the return window before ordering.</p>`,
       products: [
-        { name: 'Nautilus E616 Elliptical', price: '$799–$999', link: 'https://www.amazon.com/Nautilus-E616-Elliptical-Machine/dp/B00FDDMVB0', note: '29 resistance levels, built-in programs, smoother flywheel than Schwinn 430. Good for mid-to-late recovery when intensity matters.' },
+        { name: 'Nautilus E616 Elliptical', link: 'https://www.amazon.com/Nautilus-E616-Elliptical-Machine/dp/B00FDDMVB0', note: '29 resistance levels, built-in programs, smoother flywheel than Schwinn 430. Good for mid-to-late recovery when intensity matters.' },
       ],
     },
     {
@@ -3616,9 +3590,8 @@ export const POST_ELLIPTICAL = makeBlogPost({
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Schwinn 430 Elliptical',
-    price: '$699–$799',
     link: 'https://www.amazon.com/Schwinn-Fitness-430-Elliptical-Machine/dp/B004AE2TH8',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Best value elliptical for stroke recovery. Fixed inner handlebars, wide footpads, 20 resistance levels. Affiliate link.',
   },
   bookPromo: {
@@ -3652,7 +3625,7 @@ export const POST_STATIONARY_BIKE = makeBlogPost({
       body: `<p>The Marcy ME-709 is the recumbent bike I see recommended most frequently in stroke survivor communities — and for good reason. Eight resistance levels (enough range for the 0–18 month window), a step-through frame with a very low bar clearance, back support that actually extends to the lower lumbar, and oversized pedals with adjustable straps that work even with foot drop. It folds for storage, which matters in most home setups.</p>
 <p>What it's not: a performance machine. The resistance knob is manual, the console is basic, and the seat comfort is average over 30+ minutes. For stroke recovery purposes, none of that matters. What matters is that it's stable, accessible, and does the job.</p>`,
       products: [
-        { name: 'Marcy Recumbent Exercise Bike ME-709', price: '$199–$249', link: 'https://www.amazon.com/Marcy-Recumbent-Exercise-Bike-Resistance/dp/B003DYERJO', note: 'Low step-through frame, 8 resistance levels, back support with lumbar extension, oversized pedals with straps. Best value recumbent for early stroke recovery.' },
+        { name: 'Marcy Recumbent Exercise Bike ME-709', link: 'https://www.amazon.com/Marcy-Recumbent-Exercise-Bike-Resistance/dp/B003DYERJO', note: 'Low step-through frame, 8 resistance levels, back support with lumbar extension, oversized pedals with straps. Best value recumbent for early stroke recovery.' },
       ],
     },
     {
@@ -3660,7 +3633,7 @@ export const POST_STATIONARY_BIKE = makeBlogPost({
       body: `<p>The Schwinn 270 is the upgrade from the Marcy. Twenty-five resistance levels, 29 built-in programs, Bluetooth connectivity for app integration, and a more comfortable seat. The additional resistance range matters once you\'re 6–12 months into recovery and the low end of the Marcy feels too easy — you don\'t want to buy a second machine.</p>
 <p>The step-over height is slightly higher than the Marcy — verify this is workable for your hip flexion and balance before ordering. Most stroke survivors at the Schwinn 270 stage are past the point where this is an issue, but it\'s worth checking.</p>`,
       products: [
-        { name: 'Schwinn 270 Recumbent Exercise Bike', price: '$499–$599', link: 'https://www.amazon.com/Schwinn-Fitness-270-Recumbent-Bike/dp/B00MCLVHRU', note: '25 resistance levels, Bluetooth, 29 programs. The step-up from the Marcy for survivors 6+ months out who need more range.' },
+        { name: 'Schwinn 270 Recumbent Exercise Bike', link: 'https://www.amazon.com/Schwinn-Fitness-270-Recumbent-Bike/dp/B00MCLVHRU', note: '25 resistance levels, Bluetooth, 29 programs. The step-up from the Marcy for survivors 6+ months out who need more range.' },
       ],
     },
     {
@@ -3687,9 +3660,8 @@ export const POST_STATIONARY_BIKE = makeBlogPost({
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Marcy Recumbent Bike ME-709',
-    price: '$199–$249',
     link: 'https://www.amazon.com/Marcy-Recumbent-Exercise-Bike-Resistance/dp/B003DYERJO',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Best value recumbent for stroke recovery. Low step-through, back support, adjustable pedal straps. Affiliate link.',
   },
   bookPromo: {
@@ -3709,7 +3681,7 @@ export const POST_TREADMILL = makeBlogPost({
   subhead: 'Gait retraining doesn\'t stop when your PT appointment ends. The right home treadmill closes that gap — if you buy correctly and use it correctly.',
   ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
-  image: '/images/blog/treadmill-rehabilitation.jpg',
+  image: '/images/blog/survivor-balance-board-scene.png',
   sections: [
     {
       heading: 'Treadmill vs. overground walking — what the research says',
@@ -3729,7 +3701,7 @@ export const POST_TREADMILL = makeBlogPost({
       body: `<p>The NordicTrack T 6.5 S has become the most-recommended home treadmill in stroke survivor PT communities I\'ve been part of. The reasons: a 20" x 55" deck with enough room for a compensated gait pattern, smooth belt performance down to 0.5 mph, a solid set of side handrails (not just the front angled ones), and iFIT compatibility for trainer-led walking programs. The AutoBreeze fan is genuinely useful — post-stroke thermoregulation issues mean overheating during exercise is a real concern for many survivors.</p>
 <p>The incline goes to 12% — you probably won\'t use it in the first year, but it means the machine doesn\'t become obsolete as you improve. Foldable for storage.</p>`,
       products: [
-        { name: 'NordicTrack T 6.5 S Treadmill', price: '$699–$799', link: 'https://www.amazon.com/NordicTrack-T-Series-Treadmill/dp/B07VPN6G54', note: '20" x 55" deck, 0.5 mph minimum, solid side handrails, iFIT compatible. Best all-around home treadmill for stroke recovery gait work.' },
+        { name: 'NordicTrack T 6.5 S Treadmill', link: 'https://www.amazon.com/NordicTrack-T-Series-Treadmill/dp/B07VPN6G54', note: '20" x 55" deck, 0.5 mph minimum, solid side handrails, iFIT compatible. Best all-around home treadmill for stroke recovery gait work.' },
       ],
     },
     {
@@ -3737,7 +3709,7 @@ export const POST_TREADMILL = makeBlogPost({
       body: `<p>The Sole F63 has a 20" x 60" deck — five inches longer than most competitors in this price range, which matters when your stride is asymmetric and unpredictable. The cushioning system (Cushion Flex Whisper Deck) is one of the better impact-reduction setups in the under-$1000 category. Heavier build quality than the NordicTrack, which also means more stable at slow speeds for survivors who are loading the handrails significantly.</p>
 <p>The console is less polished than the NordicTrack and there\'s no iFIT-style trainer integration. If PT-guided at-home programming matters to you, the NordicTrack wins. If you want a tank that won\'t wobble when you need the rails, the Sole is worth the extra spend.</p>`,
       products: [
-        { name: 'Sole F63 Treadmill', price: '$899–$1099', link: 'https://www.amazon.com/Sole-Fitness-F63-Treadmill-2019/dp/B004BWLSNI', note: '20" x 60" deck, heavy build, excellent low-speed stability. Better choice for survivors who need maximum handrail support.' },
+        { name: 'Sole F63 Treadmill', link: 'https://www.amazon.com/Sole-Fitness-F63-Treadmill-2019/dp/B004BWLSNI', note: '20" x 60" deck, heavy build, excellent low-speed stability. Better choice for survivors who need maximum handrail support.' },
       ],
     },
     {
@@ -3763,9 +3735,8 @@ export const POST_TREADMILL = makeBlogPost({
   publishedDate: '2026-06-06',
   productCard: {
     name: 'NordicTrack T 6.5 S Treadmill',
-    price: '$699–$799',
     link: 'https://www.amazon.com/NordicTrack-T-Series-Treadmill/dp/B07VPN6G54',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Best stroke-recovery treadmill. Smooth at 0.5 mph, solid side handrails, foldable. Affiliate link.',
   },
   bookPromo: {
@@ -3802,7 +3773,7 @@ export const POST_GRIP_STRENGTHENER = makeBlogPost({
       body: `<p>The Gripmaster Pro addresses what most grip tools miss: individual finger strengthening. After stroke, finger extensors and intrinsics are often disproportionately weak compared to finger flexors — and most grip tools train flexion only, reinforcing the imbalance. The Gripmaster trains each finger independently, with individually weighted buttons that can be set to different resistances per digit.</p>
 <p>Available in four resistance levels (1.5 lb, 3 lb, 5 lb, 7 lb per finger). Most stroke survivors in early hand recovery start at 1.5 lb. Don\'t let ego push you to 3 lb before you\'ve earned it — quality of extension matters as much as grip force.</p>`,
       products: [
-        { name: 'Gripmaster Pro Hand Exerciser', price: '$18–$24', link: 'https://www.amazon.com/Gripmaster-Pro-Hand-Exerciser/dp/B0002M7F2Q', note: 'Individual finger buttons, four resistance levels, trains both flexion and extension. Best starting point for stroke survivors with partial hand return.' },
+        { name: 'Gripmaster Pro Hand Exerciser', link: 'https://www.amazon.com/Gripmaster-Pro-Hand-Exerciser/dp/B0002M7F2Q', note: 'Individual finger buttons, four resistance levels, trains both flexion and extension. Best starting point for stroke survivors with partial hand return.' },
       ],
     },
     {
@@ -3810,7 +3781,7 @@ export const POST_GRIP_STRENGTHENER = makeBlogPost({
       body: `<p>The Dynaflex gyroball is a different stimulus than the Gripmaster — it trains grip endurance and wrist stability through resistance that scales with rotational speed. You start slow, build RPM, and the ball creates an angular momentum load on the wrist and forearm that\'s surprisingly effective for rebuilding the stabilizer muscles that get neglected in most stroke hand rehab.</p>
 <p>The catch: you need sufficient hand function to initiate the gyro. It requires a wrist flick to start. If your wrist extension is minimal, this isn\'t the right tool yet. Once you have that — mid-to-late recovery, or chronic phase — the Dynaflex is a genuinely useful addition to a grip program.</p>`,
       products: [
-        { name: 'Dynaflex Pro Gyroscopic Hand Exerciser', price: '$22–$32', link: 'https://www.amazon.com/Dynaflex-Pro-Gyroscopic-Hand-Exerciser/dp/B07WBM76TK', note: 'Wrist and grip endurance through gyroscopic resistance. Requires some wrist extension to start — mid-to-late recovery tool.' },
+        { name: 'Dynaflex Pro Gyroscopic Hand Exerciser', link: 'https://www.amazon.com/Dynaflex-Pro-Gyroscopic-Hand-Exerciser/dp/B07WBM76TK', note: 'Wrist and grip endurance through gyroscopic resistance. Requires some wrist extension to start — mid-to-late recovery tool.' },
       ],
     },
     {
@@ -3818,7 +3789,7 @@ export const POST_GRIP_STRENGTHENER = makeBlogPost({
       body: `<p>The Captains of Crush (CoC) Trainer is the lightest of the IronMind CoC line (100 lb closing resistance) and is the appropriate tool once you\'re building toward functional grip strength — not relearning movement patterns, but actually loading the hand for strength gains. The all-aluminum construction and spring quality is noticeably better than most consumer grip trainers.</p>
 <p>Context check: 100 lb resistance sounds mild. Post-stroke, it\'s not. Most people with full hand function find the Trainer challenging. Use this when you can close it cleanly for 10 reps on the affected side — until then, the Gripmaster or theraputty work is the right sequence.</p>`,
       products: [
-        { name: 'IronMind Captains of Crush Trainer Gripper', price: '$20–$26', link: 'https://www.amazon.com/IronMind-Captains-Crush-Grippers-Trainer/dp/B001DAXNEF', note: '100 lb closing resistance, premium spring, all-aluminum. Late-recovery grip strengthener once basic hand function is restored.' },
+        { name: 'IronMind Captains of Crush Trainer Gripper', link: 'https://www.amazon.com/IronMind-Captains-Crush-Grippers-Trainer/dp/B001DAXNEF', note: '100 lb closing resistance, premium spring, all-aluminum. Late-recovery grip strengthener once basic hand function is restored.' },
       ],
     },
     {
@@ -3844,9 +3815,8 @@ export const POST_GRIP_STRENGTHENER = makeBlogPost({
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Gripmaster Pro Hand Exerciser',
-    price: '$18–$24',
     link: 'https://www.amazon.com/Gripmaster-Pro-Hand-Exerciser/dp/B0002M7F2Q',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Best starting grip tool for stroke survivors. Individual finger training, four resistance levels. Affiliate link.',
   },
   bookPromo: {
@@ -3888,7 +3858,7 @@ export const POST_TENS_UNIT = makeBlogPost({
       body: `<p>The TENS 7000 is used in more physical therapy clinics than any other consumer-grade unit. It has been for years. The reason isn\'t marketing — it\'s that the machine works, the controls are simple, the intensity range is adequate for post-stroke shoulder pain, and the pads and leads are available everywhere. Five modes (Normal, Burst, Modulation, SD1, SD2), 0–100 mA output, dual-channel independent control.</p>
 <p>For post-stroke shoulder pain, most PTs recommend starting with Normal mode, intensity at the threshold of sensation without muscle contraction, 20–30 minutes per session. The TENS 7000 bundle includes pads, leads, and a carrying case.</p>`,
       products: [
-        { name: 'TENS 7000 Digital TENS Unit', price: '$28–$38', link: 'https://www.amazon.com/TENS-7000-Official-Muscle-Stimulator/dp/B001O1OUF6', note: 'Clinical-standard consumer TENS unit. Dual channel, 5 modes, 0–100 mA. Most PT-recommended device for home post-stroke shoulder pain management.' },
+        { name: 'TENS 7000 Digital TENS Unit', link: 'https://www.amazon.com/TENS-7000-Official-Muscle-Stimulator/dp/B001O1OUF6', note: 'Clinical-standard consumer TENS unit. Dual channel, 5 modes, 0–100 mA. Most PT-recommended device for home post-stroke shoulder pain management.' },
       ],
     },
     {
@@ -3896,7 +3866,7 @@ export const POST_TENS_UNIT = makeBlogPost({
       body: `<p>The iReliev ET-5050+ does TENS and EMS (equivalent to NMES for most stroke applications) in one device. Twenty-five programs, dual channel, rechargeable. The EMS programs are where this device earns its place — if your PT has prescribed electrical muscle stimulation for shoulder girdle motor re-education or is trying to reduce spasticity through reciprocal inhibition protocols, having dedicated EMS modes matters.</p>
 <p>The electrode quality on the included pads is better than the TENS 7000 bundle. The device is slightly more complex to operate — the extra modes require learning the menu system. For survivors who want the full TENS + EMS toolkit in one unit, this is the best value in the category.</p>`,
       products: [
-        { name: 'iReliev ET-5050+ TENS + EMS Combination Unit', price: '$55–$70', link: 'https://www.amazon.com/iReliev-Combination-TENS-Muscle-Stimulator/dp/B00ZULXJPQ', note: '25 programs, TENS + EMS, rechargeable, better pad quality than TENS 7000. Best choice if you need both pain management and motor re-education.' },
+        { name: 'iReliev ET-5050+ TENS + EMS Combination Unit', link: 'https://www.amazon.com/iReliev-Combination-TENS-Muscle-Stimulator/dp/B00ZULXJPQ', note: '25 programs, TENS + EMS, rechargeable, better pad quality than TENS 7000. Best choice if you need both pain management and motor re-education.' },
       ],
     },
     {
@@ -3904,7 +3874,7 @@ export const POST_TENS_UNIT = makeBlogPost({
       body: `<p>The PowerDot 2.0 Duo is Bluetooth-connected and app-controlled. For stroke survivors who want guided programs rather than manual settings, the PowerDot app provides electrode placement guides, program selection, and intensity progression. The app-guided approach reduces the learning curve that trips up some survivors with the manual TENS 7000 or iReliev menus.</p>
 <p>The caveat: app-dependency. The PowerDot requires a phone to operate — no manual override. If fine motor limitations make phone interaction difficult, the hardware buttons on the TENS 7000 or iReliev are more accessible. Also significantly more expensive.</p>`,
       products: [
-        { name: 'PowerDot 2.0 Duo Smart Muscle Stimulator', price: '$199–$249', link: 'https://www.amazon.com/PowerDot-2-0-Muscle-Stimulator/dp/B07G78CPW6', note: 'App-guided TENS/NMES with Bluetooth. Best for survivors who want program guidance over manual settings. Requires phone — consider accessibility.' },
+        { name: 'PowerDot 2.0 Duo Smart Muscle Stimulator', link: 'https://www.amazon.com/PowerDot-2-0-Muscle-Stimulator/dp/B07G78CPW6', note: 'App-guided TENS/NMES with Bluetooth. Best for survivors who want program guidance over manual settings. Requires phone — consider accessibility.' },
       ],
       externalLinks: [
         { label: 'Electrical stimulation for shoulder pain post-stroke — Cochrane Review', url: 'https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD004379.pub3/full' },
@@ -3925,9 +3895,8 @@ export const POST_TENS_UNIT = makeBlogPost({
   publishedDate: '2026-06-06',
   productCard: {
     name: 'TENS 7000 Digital TENS Unit',
-    price: '$28–$38',
     link: 'https://www.amazon.com/TENS-7000-Official-Muscle-Stimulator/dp/B001O1OUF6',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Clinical-standard consumer TENS. Used in PT clinics. Best starting point for home post-stroke shoulder pain management. Affiliate link.',
   },
   bookPromo: {
@@ -3970,7 +3939,7 @@ export const POST_MASSAGE_GUN = makeBlogPost({
       body: `<p>The Theragun Pro is used in sports medicine and physical therapy clinics because the amplitude (16 mm) and force (60 lbs stall force) are calibrated for real tissue work, not superficial vibration. It comes with six attachments — the soft ball and dampener are the correct choices for post-stroke spastic muscle work; avoid the cone attachment on spastic tissue. The OLED display with pressure indicator prevents over-application.</p>
 <p>One-handed operation is possible — the rotating arm and ergonomic handle are genuinely designed to reach the contralateral side. For stroke survivors doing self-treatment on the affected limbs, this matters more than it sounds.</p>`,
       products: [
-        { name: 'Theragun Pro Percussive Therapy Device', price: '$349–$399', link: 'https://www.amazon.com/Therabody-Theragun-Percussive-Therapy-Attachments/dp/B086YDTLVX', note: '16mm amplitude, 60 lb stall force, 6 attachments, one-handed rotating arm. Clinical-standard device for spasticity pre-treatment and muscle recovery.' },
+        { name: 'Theragun Pro Percussive Therapy Device', link: 'https://www.amazon.com/Therabody-Theragun-Percussive-Therapy-Attachments/dp/B086YDTLVX', note: '16mm amplitude, 60 lb stall force, 6 attachments, one-handed rotating arm. Clinical-standard device for spasticity pre-treatment and muscle recovery.' },
       ],
     },
     {
@@ -3978,7 +3947,7 @@ export const POST_MASSAGE_GUN = makeBlogPost({
       body: `<p>The Hypervolt 2 sits below the Theragun Pro in amplitude (12 mm vs 16 mm) and stall force (40 lbs vs 60 lbs), but is still genuinely effective for post-stroke spasticity warm-up and muscle recovery work. Three speed settings, five attachments, Bluetooth for app integration (optional — works without the app). Quieter than the Theragun, which matters if noise or vibration sensitivity is an issue post-stroke.</p>
 <p>The handle geometry is not as optimized for one-handed self-treatment as the Theragun Pro\'s rotating arm. If you have significant upper extremity involvement on both sides, the Theragun Pro\'s ergonomics are worth the price premium. If your strong arm is fully functional, the Hypervolt 2 is excellent value.</p>`,
       products: [
-        { name: 'Hyperice Hypervolt 2 Percussion Massage Gun', price: '$179–$199', link: 'https://www.amazon.com/Hyperice-Hypervolt-Percussion-Massage-Device/dp/B09CVCB7FW', note: '12mm amplitude, 3 speeds, 5 attachments, quieter than Theragun. Best mid-range option for survivors with functional strong-side arm.' },
+        { name: 'Hyperice Hypervolt 2 Percussion Massage Gun', link: 'https://www.amazon.com/Hyperice-Hypervolt-Percussion-Massage-Device/dp/B09CVCB7FW', note: '12mm amplitude, 3 speeds, 5 attachments, quieter than Theragun. Best mid-range option for survivors with functional strong-side arm.' },
       ],
       externalLinks: [
         { label: 'Vibration therapy and spasticity — Journal of Physical Therapy Science', url: 'https://www.jstage.jst.go.jp/article/jpts/30/7/30_jpts-2018-018/_article' },
@@ -3999,9 +3968,8 @@ export const POST_MASSAGE_GUN = makeBlogPost({
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Theragun Pro Percussive Therapy Device',
-    price: '$349–$399',
     link: 'https://www.amazon.com/Therabody-Theragun-Percussive-Therapy-Attachments/dp/B086YDTLVX',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Clinical-standard percussion therapy. Rotating arm for one-handed use. Best for spasticity pre-treatment. Affiliate link.',
   },
   bookPromo: {
@@ -4033,7 +4001,7 @@ export const POST_SMART_HOME = makeBlogPost({
       body: `<p>The Echo Show 8 is the sweet spot for stroke survivors: a 8" touchscreen with large, accessible UI elements plus full Alexa voice control. Voice commands handle lights, thermostat, timers, calls, video calls, music, weather, medication reminders. The touchscreen is a fallback when voice commands aren\'t working well — which matters for survivors with aphasia or dysarthria who have good days and bad days for verbal communication.</p>
 <p>The camera enables video calling without requiring a phone — critical for survivors who struggle with small touchscreen interfaces. Drop In feature allows family caregivers to check in without the survivor needing to answer. The Show 8\'s screen size is the minimum that makes the UI accessible with motor impairment; the Show 5 is too small for reliable touch interaction with hemiparetic hands.</p>`,
       products: [
-        { name: 'Amazon Echo Show 8 (2nd Gen)', price: '$99–$129', link: 'https://www.amazon.com/echo-show-8/dp/B07PF1Y28C', note: '8" touchscreen + Alexa voice control, video calls, Drop In, large UI elements. Best smart home hub for stroke survivors — accessible for both voice and touch.' },
+        { name: 'Amazon Echo Show 8 (2nd Gen)', link: 'https://www.amazon.com/echo-show-8/dp/B07PF1Y28C', note: '8" touchscreen + Alexa voice control, video calls, Drop In, large UI elements. Best smart home hub for stroke survivors — accessible for both voice and touch.' },
       ],
     },
     {
@@ -4041,7 +4009,7 @@ export const POST_SMART_HOME = makeBlogPost({
       body: `<p>The Echo Show 5 paired with the Echo Show 8 creates a two-zone setup: main living area (Show 8) and bedside (Show 5). Nighttime independence — medication alarms, light control without getting up, emergency calls, sleep sounds for post-stroke insomnia — is disproportionately valuable. The Show 5 is compact enough for a nightstand and still has a screen for video calling family in the morning before getting up.</p>
 <p>Don\'t try to use the Show 5 as a primary device — the 5.5" screen is too small for reliable touch with motor impairment. It\'s a bedside satellite, not a hub.</p>`,
       products: [
-        { name: 'Amazon Echo Show 5 (2nd Gen)', price: '$44–$64', link: 'https://www.amazon.com/echo-show-5/dp/B09B2SBHQK', note: '5.5" touchscreen, compact bedside size, Alexa. Best as a satellite device in the bedroom for nighttime independence.' },
+        { name: 'Amazon Echo Show 5 (2nd Gen)', link: 'https://www.amazon.com/echo-show-5/dp/B09B2SBHQK', note: '5.5" touchscreen, compact bedside size, Alexa. Best as a satellite device in the bedroom for nighttime independence.' },
       ],
     },
     {
@@ -4050,7 +4018,7 @@ export const POST_SMART_HOME = makeBlogPost({
 <p><strong>Smart lights:</strong> Philips Hue or similar let you control brightness and color by voice — useful for post-stroke light sensitivity where the overhead might be too harsh but reaching a dimmer requires crossing the room. "Alexa, dim the living room to 30%" is a real quality-of-life improvement.</p>
 <p><strong>Video doorbell:</strong> The Ring Video Doorbell lets a survivor see and speak to anyone at the door through the Echo Show without walking to the door. For survivors with gait issues, fatigue, or who live alone, this is a genuine safety and independence tool — not just a convenience gadget.</p>`,
       products: [
-        { name: 'Ring Video Doorbell (2nd Gen)', price: '$59–$99', link: 'https://www.amazon.com/Ring-Video-Doorbell/dp/B07DPQJK9L', note: 'View and speak to visitors through Echo Show without going to the door. Critical for survivors with gait issues or who live alone.' },
+        { name: 'Ring Video Doorbell (2nd Gen)', link: 'https://www.amazon.com/Ring-Video-Doorbell/dp/B07DPQJK9L', note: 'View and speak to visitors through Echo Show without going to the door. Critical for survivors with gait issues or who live alone.' },
       ],
     },
   ],
@@ -4067,9 +4035,8 @@ export const POST_SMART_HOME = makeBlogPost({
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Amazon Echo Show 8',
-    price: '$99–$129',
     link: 'https://www.amazon.com/echo-show-8/dp/B07PF1Y28C',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Best smart home hub for stroke survivors. Voice + touchscreen, video calls, Drop In. Affiliate link.',
   },
   bookPromo: {
@@ -4107,7 +4074,7 @@ export const POST_RED_LIGHT = makeBlogPost({
       body: `<p>The MitoPRO 300 is a 6" x 9" targeted panel — the right size for treating a shoulder, calf, or forearm in one session. Dual wavelength (660 nm red + 850 nm near-infrared), no EMF issues at the 6" treatment distance, no fan noise, 90-day return window. Mito Red has consistently been one of the more transparent companies about actual output specs vs. marketing claims in a category full of overstatements.</p>
 <p>Treatment protocol: 5–15 minutes per area at 6" distance, once daily or every other day. More time does not mean more benefit — there\'s a Goldilocks window with photobiomodulation. Exceeding it can actually inhibit the response (biphasic dose response). Set a timer.</p>`,
       products: [
-        { name: 'Mito Red Light MitoPRO 300 Panel', price: '$189–$239', link: 'https://www.amazon.com/Mito-Red-Light-MitoPRO-Therapy/dp/B09B3HJ7XH', note: 'Dual wavelength 660/850nm, 6"x9" targeted panel, transparent output specs. Best value entry panel for post-stroke muscle recovery and inflammation management.' },
+        { name: 'Mito Red Light MitoPRO 300 Panel', link: 'https://www.amazon.com/Mito-Red-Light-MitoPRO-Therapy/dp/B09B3HJ7XH', note: 'Dual wavelength 660/850nm, 6"x9" targeted panel, transparent output specs. Best value entry panel for post-stroke muscle recovery and inflammation management.' },
       ],
     },
     {
@@ -4115,7 +4082,7 @@ export const POST_RED_LIGHT = makeBlogPost({
       body: `<p>The Tendlite is a small, handheld 660 nm red light device for targeted tendon and joint work. It\'s the right tool if your primary use case is a specific joint — the affected shoulder, a spastic wrist, or a painful knee — rather than a larger muscle area. Ninety-second treatment time per point, FDA-cleared for the cleared indications, very simple operation with one hand.</p>
 <p>The Tendlite is not a full-body or large-muscle tool — it\'s a point device. For broader applications (the entire affected arm, the lower leg), the MitoPRO 300 panel is more practical. For a survivor whose primary target is one specific painful joint, the Tendlite\'s simplicity and one-hand operation are advantages.</p>`,
       products: [
-        { name: 'Tendlite Advanced Red Light Device', price: '$58–$78', link: 'https://www.amazon.com/Tendlite-Advanced-Red-Light-Therapy/dp/B01J3CKQZG', note: 'FDA-cleared, handheld, single-joint targeted treatment, one-hand operation. Best for survivors with one specific painful joint target.' },
+        { name: 'Tendlite Advanced Red Light Device', link: 'https://www.amazon.com/Tendlite-Advanced-Red-Light-Therapy/dp/B01J3CKQZG', note: 'FDA-cleared, handheld, single-joint targeted treatment, one-hand operation. Best for survivors with one specific painful joint target.' },
       ],
       externalLinks: [
         { label: 'Photobiomodulation for stroke — systematic review 2023', url: 'https://pubmed.ncbi.nlm.nih.gov/36972768/' },
@@ -4136,9 +4103,8 @@ export const POST_RED_LIGHT = makeBlogPost({
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Mito Red Light MitoPRO 300',
-    price: '$189–$239',
     link: 'https://www.amazon.com/Mito-Red-Light-MitoPRO-Therapy/dp/B09B3HJ7XH',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Best value red light therapy panel for stroke recovery. Dual wavelength, transparent specs. Affiliate link.',
   },
   bookPromo: {
@@ -4175,7 +4141,7 @@ export const POST_ADJUSTABLE_BED = makeBlogPost({
       body: `<p>The InteVision foam wedge is the most prescribed positioning product in stroke OT. The two-piece design — a firm base wedge plus a softer top piece — allows adjustment for trunk elevation (aspiration risk, GERD, breathing) and limb positioning simultaneously. The cover is removable and washable, which matters given the extended daily use.</p>
 <p>Use cases: elevating the head of bed 30 degrees for dysphagia or aspiration risk, propping the affected arm in slight abduction during sleep, supporting the affected leg in slight hip abduction and knee flexion to counteract extensor spasticity pattern. Your OT can give you the exact configuration for your specific presentation — what I can tell you is that the InteVision wedge is the right tool for most of those positions.</p>`,
       products: [
-        { name: 'InteVision Foam Wedge Bed Pillow', price: '$44–$58', link: 'https://www.amazon.com/InteVision-Foam-Wedge-Bed-Pillow/dp/B00FHKNO04', note: 'Two-piece adjustable design, removable washable cover. The most PT-recommended wedge for stroke positioning. Versatile for trunk, arm, and leg support.' },
+        { name: 'InteVision Foam Wedge Bed Pillow', link: 'https://www.amazon.com/InteVision-Foam-Wedge-Bed-Pillow/dp/B00FHKNO04', note: 'Two-piece adjustable design, removable washable cover. The most PT-recommended wedge for stroke positioning. Versatile for trunk, arm, and leg support.' },
       ],
     },
     {
@@ -4183,7 +4149,7 @@ export const POST_ADJUSTABLE_BED = makeBlogPost({
       body: `<p>An adjustable bed base that lets you set head and foot elevation independently changes the positioning equation entirely. No more stacking and restacking wedges at 2 AM when you need to adjust for reflux or just need to get comfortable enough to sleep. The remote works one-handed — critical. The zero-gravity preset (head and knees slightly elevated, lumbar in neutral) is what many stroke survivors find optimal for spasticity management overnight and for the neurofatigue that makes flat-lying uncomfortable.</p>
 <p>The Lucid L300 is the value entry in the adjustable base category — it does head and foot elevation with a wired remote and a wireless backup, has a USB port for device charging bedside, and is compatible with most standard and split-king mattresses. Delivery and assembly complexity: verify your bedroom access before ordering a king or split-king base.</p>`,
       products: [
-        { name: 'LUCID L300 Adjustable Bed Base', price: '$349–$549', link: 'https://www.amazon.com/LUCID-Adjustable-Base-Head-Elevation/dp/B073VHM9DV', note: 'Independent head/foot elevation, one-handed remote, zero-gravity preset, USB charging. Best value adjustable base for stroke positioning and sleep quality.' },
+        { name: 'LUCID L300 Adjustable Bed Base', link: 'https://www.amazon.com/LUCID-Adjustable-Base-Head-Elevation/dp/B073VHM9DV', note: 'Independent head/foot elevation, one-handed remote, zero-gravity preset, USB charging. Best value adjustable base for stroke positioning and sleep quality.' },
       ],
     },
     {
@@ -4209,9 +4175,8 @@ export const POST_ADJUSTABLE_BED = makeBlogPost({
   publishedDate: '2026-06-06',
   productCard: {
     name: 'InteVision Foam Wedge Bed Pillow',
-    price: '$44–$58',
     link: 'https://www.amazon.com/InteVision-Foam-Wedge-Bed-Pillow/dp/B00FHKNO04',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Most PT-recommended positioning wedge for stroke recovery. Two-piece adjustable design. Affiliate link.',
   },
   bookPromo: {
@@ -4252,7 +4217,7 @@ export const POST_COMPRESSION = makeBlogPost({
       body: `<p>Physix Gear makes the most-reviewed compression socks in the 20–30 mmHg stroke-relevant range. Moisture-wicking nylon-spandex blend, reinforced heel and toe, graduated compression from ankle to calf. Available in multiple sizes — measure ankle circumference and calf circumference before ordering, not just shoe size. The snug fit that makes them effective also makes them harder to size wrong and harder to put on.</p>
 <p>For one-handed donning: a stocking donner (a separate $15–$20 purchase) is nearly essential for compression socks with significant hemiplegia. The same donner works for the Physix Gear socks and most medical-grade alternatives.</p>`,
       products: [
-        { name: 'Physix Gear Sport Compression Socks (20–30 mmHg)', price: '$14–$20', link: 'https://www.amazon.com/Compression-Socks-Men-Women-20-30mmhg/dp/B00U1YHUJI', note: 'Graduated 20-30 mmHg, moisture-wicking, reinforced heel/toe. Best daily-use value for post-stroke leg edema management.' },
+        { name: 'Physix Gear Sport Compression Socks (20–30 mmHg)', link: 'https://www.amazon.com/Compression-Socks-Men-Women-20-30mmhg/dp/B00U1YHUJI', note: 'Graduated 20-30 mmHg, moisture-wicking, reinforced heel/toe. Best daily-use value for post-stroke leg edema management.' },
       ],
     },
     {
@@ -4260,7 +4225,7 @@ export const POST_COMPRESSION = makeBlogPost({
       body: `<p>The NormaTec Go is a battery-powered, app-controlled pneumatic compression sleeve — the portable version of the devices used in elite sports recovery and lymphedema clinics. Unlike passive compression socks, pneumatic sleeves actively cycle pressure to push fluid up the limb, mimicking the muscle pump that paralysis has disrupted. The sessions last 20–60 minutes; most stroke survivors use it after exercise or after a long day on their feet.</p>
 <p>The clinical evidence for pneumatic compression in post-stroke edema and DVT prevention is strong. The cost is significantly higher than socks — but for survivors with persistent dependent edema that isn\'t fully controlled by static compression, or those who can\'t tolerate the donning of tight socks with significant hand weakness, the NormaTec Go\'s sleeve design and one-button operation is a genuinely better solution.</p>`,
       products: [
-        { name: 'Hyperice NormaTec Go Leg Recovery System', price: '$299–$399', link: 'https://www.amazon.com/Hyperice-NormaTec-Leg-Compression-Boots/dp/B09F8D3WNH', note: 'Pneumatic sequential compression, app-controlled, battery-powered. Best for significant edema uncontrolled by static compression socks.' },
+        { name: 'Hyperice NormaTec Go Leg Recovery System', link: 'https://www.amazon.com/Hyperice-NormaTec-Leg-Compression-Boots/dp/B09F8D3WNH', note: 'Pneumatic sequential compression, app-controlled, battery-powered. Best for significant edema uncontrolled by static compression socks.' },
       ],
       externalLinks: [
         { label: 'Compression therapy for post-stroke edema — EBRSR', url: 'https://www.ebrsr.com/evidence-review/10-motor-recovery-and-rehabilitation' },
@@ -4286,9 +4251,8 @@ export const POST_COMPRESSION = makeBlogPost({
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Physix Gear Compression Socks (20–30 mmHg)',
-    price: '$14–$20',
     link: 'https://www.amazon.com/Compression-Socks-Men-Women-20-30mmhg/dp/B00U1YHUJI',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Best value daily-wear compression socks for post-stroke edema. Graduated 20–30 mmHg. Affiliate link.',
   },
   bookPromo: {
@@ -4321,7 +4285,7 @@ export const POST_STANDING_DESK = makeBlogPost({
       body: `<p>The FlexiSpot E7 is the most-reviewed electric standing desk in the $350–$500 range that consistently shows up in ergonomic and rehabilitation contexts. Dual-motor lift, 355 lb weight capacity, height range of 22.8"–48.4" that works for seated use by shorter survivors and standing use up to 6'4". The anti-collision detection stops the desk if it encounters an obstacle — important if one arm is reaching toward the desk when you hit the up button.</p>
 <p>Four programmable height memory positions. Set one for your optimal seated height (affected forearm resting flat on the desk surface), one for standing height, one for a mid-height that works if you\'re sitting on a stool during fatigue periods. One-button transitions mean you actually use the adjustment instead of avoiding it because it\'s inconvenient.</p>`,
       products: [
-        { name: 'FlexiSpot E7 Electric Height Adjustable Standing Desk', price: '$369–$449', link: 'https://www.amazon.com/FlexiSpot-Electric-Height-Adjustable-Standing/dp/B08BNQNHFY', note: 'Dual motor, 4 memory presets, anti-collision, 22.8"–48.4" range. Best value electric standing desk for stroke return-to-work setup.' },
+        { name: 'FlexiSpot E7 Electric Height Adjustable Standing Desk', link: 'https://www.amazon.com/FlexiSpot-Electric-Height-Adjustable-Standing/dp/B08BNQNHFY', note: 'Dual motor, 4 memory presets, anti-collision, 22.8"–48.4" range. Best value electric standing desk for stroke return-to-work setup.' },
       ],
     },
     {
@@ -4329,7 +4293,7 @@ export const POST_STANDING_DESK = makeBlogPost({
       body: `<p>For survivors who need the functional benefit of height adjustment without the FlexiSpot price point, the SHW electric desk delivers the core feature — motorized height adjustment with memory presets — at $200–$260. Single motor (slower transitions, lower weight capacity at 176 lbs), but fully adequate for a standard workstation setup. The height range of 28"–45" covers most sitting and standing configurations.</p>
 <p>The limitation: lower build quality is noticeable in the frame stability at standing height. If you\'re using the desk primarily at the seated position (which is appropriate for most stroke survivors in the first year), this doesn\'t matter. If you need a rock-solid standing surface for significant manual work, the FlexiSpot E7 is worth the extra spend.</p>`,
       products: [
-        { name: 'SHW Electric Height Adjustable Desk', price: '$209–$259', link: 'https://www.amazon.com/SHW-Electric-Height-Adjustable-Computer/dp/B07T96H2JM', note: 'Single motor, memory presets, 28"–45" range, 176 lb capacity. Best budget option for survivors who primarily work seated with periodic standing.' },
+        { name: 'SHW Electric Height Adjustable Desk', link: 'https://www.amazon.com/SHW-Electric-Height-Adjustable-Computer/dp/B07T96H2JM', note: 'Single motor, memory presets, 28"–45" range, 176 lb capacity. Best budget option for survivors who primarily work seated with periodic standing.' },
       ],
     },
     {
@@ -4357,9 +4321,8 @@ export const POST_STANDING_DESK = makeBlogPost({
   publishedDate: '2026-06-06',
   productCard: {
     name: 'FlexiSpot E7 Electric Standing Desk',
-    price: '$369–$449',
     link: 'https://www.amazon.com/FlexiSpot-Electric-Height-Adjustable-Standing/dp/B08BNQNHFY',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Best electric standing desk for stroke return-to-work. Dual motor, 4 memory presets. Affiliate link.',
   },
   bookPromo: {
@@ -4392,7 +4355,7 @@ export const POST_WEIGHTED_VEST = makeBlogPost({
       body: `<p>The ZFOsports vest is the most-reviewed adjustable weighted vest in the stroke and neurological rehabilitation communities. The weight is distributed in small iron ore packets across the front and back — load is balanced symmetrically across the trunk, which matters for survivors already managing asymmetric weight distribution. Available in 20 lb, 40 lb, and 60 lb versions with the ability to add or remove individual weight packets.</p>
 <p>Start with 2–4% of body weight, which is the range most PT research on post-stroke weighting uses. For a 180 lb survivor, that\'s 3.6–7.2 lbs — the 20 lb vest with partial loading covers this range and has room to progress.</p>`,
       products: [
-        { name: 'ZFOsports Weighted Vest', price: '$55–$89', link: 'https://www.amazon.com/ZFOsports-Weighted-Vest-Adjustable-Weight/dp/B00GG3TGTU', note: 'Adjustable iron ore packets, symmetric trunk loading, 20/40/60 lb versions. Most PT-referenced weighted vest for stroke gait and balance training.' },
+        { name: 'ZFOsports Weighted Vest', link: 'https://www.amazon.com/ZFOsports-Weighted-Vest-Adjustable-Weight/dp/B00GG3TGTU', note: 'Adjustable iron ore packets, symmetric trunk loading, 20/40/60 lb versions. Most PT-referenced weighted vest for stroke gait and balance training.' },
       ],
     },
     {
@@ -4400,7 +4363,7 @@ export const POST_WEIGHTED_VEST = makeBlogPost({
       body: `<p>The Henkelion vest uses a softer construction with smaller, more uniformly distributed steel shot weights. It\'s less adjustable than the ZFOsports but more comfortable for extended wear during daily activity or longer walking sessions where the ZFOsports\' rigid pockets become irritating. Available in 6 lb, 8 lb, 12 lb, 16 lb, and 20 lb fixed weights.</p>
 <p>For survivors using the vest as an all-day proprioception aid rather than a specific exercise tool, the Henkelion\'s wearability advantage matters. For survivors using it specifically during training sessions with a clear target weight, the ZFOsports\' adjustability is more valuable.</p>`,
       products: [
-        { name: 'Henkelion Weighted Vest', price: '$42–$65', link: 'https://www.amazon.com/Henkelion-Weighted-Exercise-Training-Available/dp/B07BJL3SHB', note: 'Softer construction, even weight distribution, fixed-weight versions 6–20 lb. Better for all-day wear comfort vs. ZFOsports for session-specific training.' },
+        { name: 'Henkelion Weighted Vest', link: 'https://www.amazon.com/Henkelion-Weighted-Exercise-Training-Available/dp/B07BJL3SHB', note: 'Softer construction, even weight distribution, fixed-weight versions 6–20 lb. Better for all-day wear comfort vs. ZFOsports for session-specific training.' },
       ],
     },
     {
@@ -4426,9 +4389,8 @@ export const POST_WEIGHTED_VEST = makeBlogPost({
   publishedDate: '2026-06-06',
   productCard: {
     name: 'ZFOsports Weighted Vest',
-    price: '$55–$89',
     link: 'https://www.amazon.com/ZFOsports-Weighted-Vest-Adjustable-Weight/dp/B00GG3TGTU',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Most PT-referenced weighted vest for stroke balance and gait training. Adjustable weight, symmetric loading. Affiliate link.',
   },
   bookPromo: {
@@ -4461,7 +4423,7 @@ export const POST_SPEECH_THERAPY = makeBlogPost({
       body: `<p>Constant Therapy (available on iOS and Android, subscription-based) is the most studied speech and cognitive therapy app for stroke and aphasia in published literature. It provides over 100,000 exercises across language, speech, memory, and attention domains — personalized to your specific deficit profile based on initial assessment. The platform tracks performance over time and adjusts difficulty, replicating what a skilled SLP does but at home, on your schedule, for as many daily minutes as you can manage.</p>
 <p>The subscription runs $25–$30/month. One month of daily 30-minute sessions is the equivalent of 15 hours of supplementary therapy — at a fraction of the cost of a single SLP session. The app was originally developed at Boston University\'s Aphasia Research Laboratory; the evidence base is not marketing, it\'s peer-reviewed.</p>`,
       products: [
-        { name: 'Constant Therapy: Brain Rehab App (iOS & Android)', price: '$25–$30/month', link: 'https://www.amazon.com/Constant-Therapy-Health-Brain-Rehab/dp/B00VPRHKVA', note: 'Clinically validated, 100,000+ exercises, adaptive difficulty, tracks progress over time. The highest-evidence home speech and cognitive therapy app for aphasia and stroke.' },
+        { name: 'Constant Therapy: Brain Rehab App (iOS & Android)', link: 'https://www.amazon.com/Constant-Therapy-Health-Brain-Rehab/dp/B00VPRHKVA', note: 'Clinically validated, 100,000+ exercises, adaptive difficulty, tracks progress over time. The highest-evidence home speech and cognitive therapy app for aphasia and stroke.' },
       ],
     },
     {
@@ -4469,7 +4431,7 @@ export const POST_SPEECH_THERAPY = makeBlogPost({
       body: `<p>Where Constant Therapy covers language and cognition broadly, Speech Tutor is specifically for articulation — the motor planning of speech sounds that dysarthria disrupts. The app provides visual models of mouth position for each phoneme, which is particularly useful for survivors who can hear that their speech is wrong but can\'t feel exactly where the placement error is. Video-based, no subscription, one-time purchase.</p>
 <p>Best for: dysarthria (slurred, imprecise speech from motor weakness) rather than aphasia (word-finding, comprehension, or sentence construction errors). If your SLP has identified articulation accuracy as a primary goal, Speech Tutor provides the visual feedback that home mirror practice can\'t match.</p>`,
       products: [
-        { name: 'Speech Tutor App (iOS)', price: '$4.99', link: 'https://www.amazon.com/dp/B00P1I31N4', note: 'Visual phoneme models for articulation practice, one-time purchase. Best for dysarthria — motor speech difficulties, not word-finding or comprehension.' },
+        { name: 'Speech Tutor App (iOS)', link: 'https://www.amazon.com/dp/B00P1I31N4', note: 'Visual phoneme models for articulation practice, one-time purchase. Best for dysarthria — motor speech difficulties, not word-finding or comprehension.' },
       ],
     },
     {
@@ -4477,8 +4439,8 @@ export const POST_SPEECH_THERAPY = makeBlogPost({
       body: `<p>For survivors in the acute or early subacute phase with severe expressive aphasia, low-tech AAC (augmentative and alternative communication) provides a communication bridge while language recovery is underway. Communication boards — visual symbol arrays for basic needs, emotions, and requests — can be printed or purchased as pre-made laminated sets and kept at bedside.</p>
 <p>The GoTalk 20+ is a mid-level dedicated AAC device with 20 symbol locations, recorded messages, and a durable design for survivors who need more functionality than a paper board but aren\'t ready for the complexity of an app-based system. Your SLP or an AT specialist should guide AAC device selection — the wrong device is abandoned.</p>`,
       products: [
-        { name: 'Attainment GoTalk 20+ AAC Communication Device', price: '$119–$149', link: 'https://www.amazon.com/GoTalk-20-Plus/dp/B001AJ0YZG', note: '20 symbol locations, recorded messages, durable. Appropriate bridge device for severe expressive aphasia when app-based AAC is too complex.' },
-        { name: 'Aphasia Communication Board with Images', price: '$18–$28', link: 'https://www.amazon.com/Communication-Picture-Hospital-Patient-Symbols/dp/B07GBJXQW8', note: 'Low-tech laminated picture board for basic needs and emotions. Essential acute-phase communication tool before formal AAC assessment.' },
+        { name: 'Attainment GoTalk 20+ AAC Communication Device', link: 'https://www.amazon.com/GoTalk-20-Plus/dp/B001AJ0YZG', note: '20 symbol locations, recorded messages, durable. Appropriate bridge device for severe expressive aphasia when app-based AAC is too complex.' },
+        { name: 'Aphasia Communication Board with Images', link: 'https://www.amazon.com/Communication-Picture-Hospital-Patient-Symbols/dp/B07GBJXQW8', note: 'Low-tech laminated picture board for basic needs and emotions. Essential acute-phase communication tool before formal AAC assessment.' },
       ],
     },
     {
@@ -4504,9 +4466,8 @@ export const POST_SPEECH_THERAPY = makeBlogPost({
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Constant Therapy Brain Rehab App',
-    price: '$25–$30/month',
     link: 'https://www.amazon.com/Constant-Therapy-Health-Brain-Rehab/dp/B00VPRHKVA',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Highest-evidence home aphasia and cognitive therapy app. Adaptive, tracks progress, clinically validated. Affiliate link.',
   },
   bookPromo: {
@@ -4539,7 +4500,7 @@ export const POST_THRESHOLD_RAMP = makeBlogPost({
       body: `<p>The EZ-ACCESS TRANSITIONS ramp is a rubber threshold transition ramp that eliminates the raised threshold between rooms — the 0.5"–2.5" ledges at doorways, shower entries, and sliding door tracks that are tripping hazards for foot drop and compromised gait. It\'s held in place by the weight of traffic (no permanent installation required), works for both wheelchair and ambulatory use, and comes in multiple heights for different threshold sizes.</p>
 <p>Measure your thresholds before ordering — the height needs to match the threshold. The angled entry edge is gentle enough for foot drop clearance. Non-slip rubber surface. Costs $25–$45 depending on size. A legitimate first-week-home purchase that every survivor returning to a standard home environment should make.</p>`,
       products: [
-        { name: 'EZ-ACCESS TRANSITIONS Modular Angled Entry Ramp', price: '$25–$45', link: 'https://www.amazon.com/EZ-ACCESS-TRANSITIONS-Modular-Entry-1-Inch/dp/B000I5SV3C', note: 'Rubber threshold ramp, multiple height options, no installation required, non-slip. Most essential home accessibility purchase for foot-drop and hemiparetic gait.' },
+        { name: 'EZ-ACCESS TRANSITIONS Modular Angled Entry Ramp', link: 'https://www.amazon.com/EZ-ACCESS-TRANSITIONS-Modular-Entry-1-Inch/dp/B000I5SV3C', note: 'Rubber threshold ramp, multiple height options, no installation required, non-slip. Most essential home accessibility purchase for foot-drop and hemiparetic gait.' },
       ],
     },
     {
@@ -4547,7 +4508,7 @@ export const POST_THRESHOLD_RAMP = makeBlogPost({
       body: `<p>Grab bars in the bathroom are the second-most-important modification after threshold ramps. The toilet transfer (sit to stand) and the shower entry are the two highest-fall-risk moments of a post-stroke survivor\'s day. A properly installed grab bar at each location converts a fall risk into a controllable transfer.</p>
 <p>Key specification: stainless steel, 1.25" diameter (the ANSI-standard for grab bar grip), rated to 250+ lbs, with a mounting template included. The AmazonBasics bars are ANSI-compliant and come in multiple lengths (16", 24", 32", 42"). Installation into stud or into drywall with toggle bolts — wall studs are strongly preferred for weight-bearing use. If you\'re not confident in the installation, hire a handyman. A $40 bar improperly installed that pulls out of the wall during a transfer is worse than no bar.</p>`,
       products: [
-        { name: 'Amazon Basics Grab Bar for Bathroom, 24"', price: '$22–$32', link: 'https://www.amazon.com/AmazonBasics-Grab-Bar-for-Bathroom/dp/B07DPQJK9L', note: 'ANSI-compliant, 1.25" diameter, 250 lb rated, stud or toggle-bolt mount. Install at toilet and shower entry — the two highest fall-risk transfer points.' },
+        { name: 'Amazon Basics Grab Bar for Bathroom, 24"', link: 'https://www.amazon.com/AmazonBasics-Grab-Bar-for-Bathroom/dp/B07DPQJK9L', note: 'ANSI-compliant, 1.25" diameter, 250 lb rated, stud or toggle-bolt mount. Install at toilet and shower entry — the two highest fall-risk transfer points.' },
       ],
     },
     {
@@ -4555,7 +4516,7 @@ export const POST_THRESHOLD_RAMP = makeBlogPost({
       body: `<p>For survivors using a wheelchair or rollator who face exterior steps — a single step at the front door is a common barrier — a portable aluminum ramp provides access without permanent construction. The Prairie View Industries solid aluminum ramps are the standard: non-slip surface, fold flat for storage, available in lengths from 3 to 10 feet. Length selection: for a 6" step height, a 3-foot ramp gives a 1:6 rise ratio — steeper than the ADA standard but manageable with a rollator or assistance. A 4-foot ramp gives 1:8, which is better for independent use.</p>
 <p>Heavier than it looks — the 5-foot version weighs 22 lbs. Factor in who is setting it up and whether the survivor or a caregiver handles placement daily.</p>`,
       products: [
-        { name: 'Prairie View Industries Portable Wheelchair Ramp', price: '$89–$189', link: 'https://www.amazon.com/Prairie-View-Portable-Aluminum-Wheelchair/dp/B00LJNC2XO', note: 'Solid aluminum, non-slip surface, 3–10 ft lengths, folds flat. For exterior steps or raised entries — essential for wheelchair or rollator users.' },
+        { name: 'Prairie View Industries Portable Wheelchair Ramp', link: 'https://www.amazon.com/Prairie-View-Portable-Aluminum-Wheelchair/dp/B00LJNC2XO', note: 'Solid aluminum, non-slip surface, 3–10 ft lengths, folds flat. For exterior steps or raised entries — essential for wheelchair or rollator users.' },
       ],
     },
     {
@@ -4584,9 +4545,8 @@ export const POST_THRESHOLD_RAMP = makeBlogPost({
   publishedDate: '2026-06-06',
   productCard: {
     name: 'EZ-ACCESS TRANSITIONS Angled Entry Ramp',
-    price: '$25–$45',
     link: 'https://www.amazon.com/EZ-ACCESS-TRANSITIONS-Modular-Entry-1-Inch/dp/B000I5SV3C',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Most essential home accessibility purchase for foot drop and hemiparetic gait. No installation required. Affiliate link.',
   },
   bookPromo: {
@@ -4635,7 +4595,6 @@ export const POST_HOME_GYM_STATIONS = makeBlogPost({
       products: [
         {
           name: 'Total Gym XLS',
-          price: '$749–$799',
           link: 'https://www.amazon.com/Total-Gym-XLS-Universal-Training/dp/B000XU5U7A',
           note: 'Bodyweight resistance system with glideboard. The safest entry-level home gym for stroke survivors — seated, supported, full-body training without balance demands.',
         },
@@ -4662,7 +4621,6 @@ export const POST_HOME_GYM_STATIONS = makeBlogPost({
       products: [
         {
           name: 'Bowflex Revolution Home Gym',
-          price: '$2,299–$2,999',
           link: 'https://www.amazon.com/Bowflex-Revolution-Home-Gym/dp/B000XU5U7A',
           note: 'Spiraflex resistance system with independent arm movement. The home gym that scales from early recovery to year 5. Currently on sale at $2,299.',
         },
@@ -4683,7 +4641,6 @@ export const POST_HOME_GYM_STATIONS = makeBlogPost({
       products: [
         {
           name: 'Body-Solid EXM3000LPS Home Gym',
-          price: '$1,500–$1,800',
           link: 'https://www.amazon.com/Body-Solid-EXM3000LPS-Light-Commercial-Gym/dp/B000M0J4LO',
           note: 'Three-station multi-gym with dual 210-lb selectorized stacks. Cable-based resistance for full neuroplasticity training. Best gym-for-the-money on the list.',
         },
@@ -4698,7 +4655,6 @@ export const POST_HOME_GYM_STATIONS = makeBlogPost({
       products: [
         {
           name: 'Life Fitness G4 Home Gym',
-          price: '$3,229–$3,899',
           link: 'https://www.amazon.com/Life-Fitness-G4-Home-Gym/dp/B08H6KW9QG',
           note: 'Dual adjustable pulley functional trainer with magnetic resistance. The most versatile station for stroke recovery — train every angle at every strength level.',
         },
@@ -4808,7 +4764,6 @@ export const POST_STAIR_LIFT = makeBlogPost({
       products: [
         {
           name: 'AmeriGlide Rave 2 Stair Lift',
-          price: '$1,499–$1,999',
           link: 'https://www.amazon.com/AmeriGlide-Rave-2-Stair-Lift/dp/B09M1ZPBD9',
           note: 'Straight-rail stair lift with 300-lb capacity, swivel seat, and battery backup. The most affordable legitimate stair lift for stroke survivors.',
         },
@@ -4828,7 +4783,6 @@ export const POST_STAIR_LIFT = makeBlogPost({
       products: [
         {
           name: 'Bruno Elan Stair Lift (curved rail)',
-          price: '$3,000–$8,000',
           link: 'https://www.amazon.com/s?k=bruno+elan+stair+lift',
           note: 'Custom-curved rail stair lift for L-shaped and spiral staircases. Premium build, powered footrest, ergonomic seat. 4–6 week lead time.',
         },
@@ -4944,7 +4898,6 @@ export const POST_PARALLEL_BARS = makeBlogPost({
       products: [
         {
           name: 'Progymnastic Adjustable Parallel Bars',
-          price: '$399–$499',
           link: 'https://www.amazon.com/Progymnastic-Adjustable-Parallel-Bars-Training/dp/B084633296',
           note: 'Portable, adjustable-height parallel bars for home gait training. The best entry point for stroke survivors — assembles in 15 minutes, breaks down for storage.',
         },
@@ -4964,7 +4917,6 @@ export const POST_PARALLEL_BARS = makeBlogPost({
       products: [
         {
           name: 'Drive Medical Stand-Assist Parallel Bars',
-          price: '$799–$899',
           link: 'https://www.amazon.com/Drive-Medical-Stand-Assist-Parallel-Bars/dp/B0743LJV5S',
           note: 'Clinical-grade steel-frame parallel bars with fixed height and width. The most stable option for daily home gait training — zero movement, zero wobble.',
         },
@@ -5054,7 +5006,7 @@ export const POST_HYDROTHERAPY = makeBlogPost({
   subhead: 'At month six, my spasticity was so bad I could not sleep through the night. A hot tub changed that. Here is the real cost, the real brands, and the real protocol.',
   ctaPrimary: { href: 'https://www.amazon.com/s?k=hot+tub+hydrotherapy+stroke', label: 'Browse hot tubs on Amazon' },
   ctaSecondary: { href: '/blog/spasticity-after-stroke', label: 'Spasticity guide' },
-    image: '/images/blog/hot-tub-hydrotherapy.jpg',
+    image: '/images/blog/hot-tub-hydrotherapy.webp',
   sections: [
     {
       h2: 'Why hydrotherapy matters for stroke recovery',
@@ -5079,7 +5031,6 @@ export const POST_HYDROTHERAPY = makeBlogPost({
       products: [
         {
           name: 'Empava 4-Person Inflatable Hot Tub',
-          price: '$2,000–$2,500',
           link: 'https://www.amazon.com/Empava-4-Person-Inflatable-Hot-Tub/dp/B0CCV5W3J2',
           note: '110V plug-and-play inflatable hot tub with 120 bubble jets. The best entry point for stroke survivors — no electrician, no permanent installation, gentle jets safe for reduced sensation.',
         },
@@ -5099,7 +5050,6 @@ export const POST_HYDROTHERAPY = makeBlogPost({
       products: [
         {
           name: 'Empava 6-Person Acrylic Hot Tub',
-          price: '$4,500–$5,500',
           link: 'https://www.amazon.com/Empava-6-Person-Acrylic-Hot-Tub/dp/B0FZKXRG8N',
           note: 'Permanent acrylic hot tub with 220V heater, hydro jets, and built-in filtration. The long-term investment for survivors with chronic spasticity — 10+ year lifespan, targeted muscle relief.',
         },
@@ -5214,7 +5164,6 @@ export const POST_SUPPLEMENTS = makeBlogPost({
       products: [
         {
           name: 'Nordic Naturals ProOmega 2000',
-          price: '$35–$45',
           link: 'https://www.amazon.com/Nordic-Naturals-ProOmega-2000-Supplement/dp/B001GIJW0I',
           note: '2,000 mg EPA+DHA per serving, triglyceride form, IFOS certified. The most evidence-backed supplement for stroke recovery. Two softgels daily.',
         },
@@ -5234,7 +5183,6 @@ export const POST_SUPPLEMENTS = makeBlogPost({
       products: [
         {
           name: 'Thorne Vitamin D-5000 with K2',
-          price: '$15–$20',
           link: 'https://www.amazon.com/Thorne-Research-Vitamin-D-5000/dp/B0038U40EU',
           note: '5,000 IU D3 + K2 (MK-7) in one capsule. The bone and mood stack for stroke survivors. Third-party tested by NSF.',
         },
@@ -5249,7 +5197,6 @@ export const POST_SUPPLEMENTS = makeBlogPost({
       products: [
         {
           name: 'Jarrow Formulas Methyl B-12 / Methyl Folate',
-          price: '$15–$25',
           link: 'https://www.amazon.com/Jarrow-Formulas-Methyl-B-12-Lozenges/dp/B0013OVVKO',
           note: 'Methylcobalamin B-12 + methylfolate in lozenge form. Methylated forms bypass MTHFR gene variants. Critical for nerve repair and energy metabolism.',
         },
@@ -5264,7 +5211,6 @@ export const POST_SUPPLEMENTS = makeBlogPost({
       products: [
         {
           name: 'Doctor\'s Best Ubiquinol with Kaneka',
-          price: '$25–$35',
           link: 'https://www.amazon.com/Doctors-Best-Ubiquinol-Kaneka-CoQ10/dp/B005D0X4B6',
           note: '100 mg ubiquinol (reduced, active form) per softgel. Supports mitochondrial function and ATP production in the energy-hungry post-stroke brain.',
         },
@@ -5279,7 +5225,6 @@ export const POST_SUPPLEMENTS = makeBlogPost({
       products: [
         {
           name: 'Pure Encapsulations Magnesium Glycinate',
-          price: '$15–$20',
           link: 'https://www.amazon.com/Pure-Encapsulations-Magnesium-Glycinate-Supplement/dp/B0058HW6DM',
           note: '120 mg elemental magnesium per capsule, glycinate form for maximum absorption and minimal GI side effects. Take 2–3 in the evening for muscle relaxation and sleep.',
         },
@@ -5387,7 +5332,6 @@ export const POST_SAEBO = makeBlogPost({
       products: [
         {
           name: 'Saebo Flex Hand Extension Device',
-          price: '$299',
           link: 'https://www.amazon.com/Saebo-Flex-Hand-Extension-Device/dp/B00U0I0A6W',
           note: 'Dynamic hand orthosis with spring-loaded finger extension assistance. The bridge between a closed hand and an open hand. Active flexion, assisted extension.',
         },
@@ -5407,7 +5351,6 @@ export const POST_SAEBO = makeBlogPost({
       products: [
         {
           name: 'Saebo ReJoyce Hand Therapy Workstation',
-          price: '$199',
           link: 'https://www.amazon.com/Saebo-ReJoyce-Hand-Therapy-Workstation/dp/B00U0I0A6W',
           note: 'Gamified hand therapy workstation with joystick and button training. The motivation layer that makes daily practice engaging and measurable.',
         },
@@ -5805,7 +5748,6 @@ export const POST_BROOKS_SURVIVOR_REVIEW = makeBlogPost({
       products: [
         {
           name: 'Brooks Cascadia 18 — Men\u2019s',
-          price: '$140–$160',
           link: 'https://www.amazon.com/Brooks-Cascadia-18-Trail-Running/dp/B0D6R3K9Z2',
           note: 'BioMoGo DNA cushioning, wide toe box, 4mm drop, aggressive trail tread. The trail shoe I wear daily for stroke recovery. True to size — size up half for AFO use.',
         },
@@ -5887,7 +5829,7 @@ export const POST_BROOKS_SURVIVOR_REVIEW = makeBlogPost({
     title: 'Brooks Cascadia 18 — the trail shoe I wear daily',
     description: 'BioMoGo DNA cushioning, wide toe box, 4mm drop, aggressive trail tread. The shoe that took me from walker to trail. Survivor-tested, 7 years post-stroke.',
     link: 'https://www.amazon.com/Brooks-Cascadia-18-Trail-Running/dp/B0D6R3K9Z2',
-    label: 'View on Amazon',
+    label: 'Check Current Price on Amazon',
     note: 'Affiliate link. Costs you nothing extra. I wear this shoe. I recommend it because it works.',
   },
   video: {
@@ -6283,7 +6225,7 @@ export const BLOG_HUB: SsrPageConfig = {
   sections: [
     {
       h2: 'Understanding Your Stroke',
-      paragraphs: ['The first questions every survivor asks — timeline, recovery ceiling, warning signs, prevention, and the type-of-stroke distinction that shapes your next 90 days.'],
+      paragraphs: ['The first questions every survivor asks — timeline, recovery ceiling, warning signs, prevention, and the type-of-stroke distinction that shapes your next 90 days.', 'As an Amazon Associate, Stroke Recovery Academy earns from qualifying purchases. Product links below are affiliate links — your price is unchanged.'],
       rawHtml: `<div class="sra-related-grid">
   <a href="/blog/how-long-does-stroke-rehab-take" class="sra-related-card"><span class="sra-related-label">How Long Does Stroke Rehab Actually Take?</span><span class="sra-related-blurb">The honest timeline — week 1 to year 5 — with what the research actually says.</span></a>
   <a href="/blog/can-you-fully-recover-from-a-stroke" class="sra-related-card"><span class="sra-related-label">Can You Fully Recover From a Stroke?</span><span class="sra-related-blurb">What "full recovery" means, what the ceiling actually is, and how Nick got to 90%.</span></a>

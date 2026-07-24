@@ -597,6 +597,11 @@ export default function RecoveryBlogPost() {
 
       {/* Content grid — article + TOC sidebar */}
       <div className="max-w-6xl mx-auto px-4 py-10">
+        {productsForSlug(post?.slug).length > 0 && (
+          <div className="mb-8 text-xs text-gray-500 bg-[#1a1a1a] border border-[#333] rounded-md px-4 py-3" data-testid="banner-affiliate-disclosure">
+            As an Amazon Associate, Stroke Recovery Academy earns from qualifying purchases. No cost to you.
+          </div>
+        )}
         <div className={tocItems.length > 3 ? "lg:grid lg:grid-cols-[1fr_240px] lg:gap-12" : ""}>
 
           {/* Article column */}
@@ -642,9 +647,7 @@ export default function RecoveryBlogPost() {
             {productsForSlug(post?.slug).length > 0 && (
               <section className="mt-12" data-testid="section-recommended-gear">
                 <h2 className="text-2xl font-bold mb-2 text-white">Gear Nick actually uses</h2>
-                <p className="text-sm text-gray-500 mb-6">
-                  As an Amazon Associate, Stroke Recovery Academy earns from qualifying purchases. No cost to you — it keeps the bonfire lit.
-                </p>
+                <p className="text-sm text-gray-500 mb-6">Gear Nick actually uses in recovery.</p>
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {productsForSlug(post?.slug).map((product) => (
                     <a
@@ -677,11 +680,8 @@ export default function RecoveryBlogPost() {
                         <h3 className="text-sm font-semibold text-white leading-snug line-clamp-2">
                           {product.name}
                         </h3>
-                        <p className="mt-2 text-sm font-bold text-white" data-testid={`text-price-${product.id}`}>
-                          {product.price}
-                        </p>
                         <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-[#E2741B] group-hover:underline">
-                          View on Amazon <ArrowRight className="h-3 w-3" />
+                          Check Current Price on Amazon <ArrowRight className="h-3 w-3" />
                         </span>
                       </div>
                     </a>

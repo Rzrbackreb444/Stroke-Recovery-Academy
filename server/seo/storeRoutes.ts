@@ -216,8 +216,7 @@ function renderProductCard(p: Product): string {
     ${tags ? `<div class="tags">${tags}</div>` : ''}
     ${nick}
     <div class="price-row">
-      <div class="price"><span class="now">${esc(p.price)}</span>${orig}</div>
-      <a class="buy" href="${esc(url)}" target="_blank" rel="noopener noreferrer sponsored nofollow" aria-label="Buy ${esc(p.name)} on Amazon">Buy on Amazon \u2197</a>
+      <a class="buy full-width" href="${esc(url)}" target="_blank" rel="noopener noreferrer sponsored nofollow" aria-label="Check price for ${esc(p.name)} on Amazon">Check Current Price on Amazon \u2197</a>
     </div>
     ${benefits ? `<div class="benefits"><span class="benefits-label">Recovery benefits</span><ul>${benefits}</ul></div>` : ''}
   </div>
@@ -353,6 +352,10 @@ ${renderHeader()}
     </div>
   </section>
 
+  <section class="disclosure" style="margin-top:0;margin-bottom:28px;">
+    <p><strong>Affiliate disclosure:</strong> As an Amazon Associate, Stroke Recovery Academy earns from qualifying purchases. Prices are identical to buying directly on Amazon \u2014 your purchase costs you nothing extra and helps fund free resources and scholarships for stroke survivors. Product links open on Amazon.</p>
+  </section>
+
   ${renderNicksPicks()}
 
   ${CATEGORIES.map((c) => renderCategorySection(c.id, c.name)).join('')}
@@ -360,8 +363,7 @@ ${renderHeader()}
   ${renderFaqs()}
 
   <section class="disclosure">
-    <p><strong>Affiliate disclosure:</strong> As an Amazon Associate, Stroke Recovery Academy earns from qualifying purchases. Prices are identical to buying directly on Amazon \u2014 your purchase costs you nothing extra and helps fund free resources and scholarships for stroke survivors. Product links open on Amazon.</p>
-    <p class="non-clinical">The Recovery Store is non-clinical and curated from lived experience. It is not medical advice. Talk to your doctor or therapist before starting new equipment or exercises.</p>
+    <p class="non-clinical"><strong>Non-clinical notice:</strong> The Recovery Store is curated from lived experience. It is not medical advice. Talk to your doctor or therapist before starting new equipment or exercises.</p>
   </section>
 </main>
 ${renderFooter()}
@@ -458,6 +460,7 @@ h1,h2,h3{font-family:'Crimson Pro',Georgia,serif}
 .price .now{font-size:22px;font-weight:800;color:var(--orange)}
 .price .orig{font-size:14px;color:var(--muted);text-decoration:line-through}
 .buy{background:var(--orange);color:#000!important;font-weight:700;font-size:14px;padding:10px 18px;border-radius:8px}
+.buy.full-width{width:100%;text-align:center}
 .buy:hover{text-decoration:none;opacity:.92}
 .benefits{border-top:1px solid var(--border);padding-top:10px}
 .benefits-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);display:block;margin-bottom:7px}

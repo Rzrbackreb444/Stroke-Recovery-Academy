@@ -836,7 +836,7 @@ export const BOOK_WEBSITE_TEMPLATES: BookWebsiteTemplate[] = [
     sampleContent: {
       tagline: "An Epic Fantasy Adventure",
       description: "Write a short and striking summary of your book to capture the reader's attention. This is a great way to introduce your book.",
-      ctaText: "Buy on Amazon",
+      ctaText: "Check Current Price on Amazon",
       testimonialPlaceholder: "A richly imagined world with unforgettable characters. - Fantasy Book Review"
     }
   },

@@ -252,11 +252,6 @@ function FeaturedProductCard({ product }: { product: Product }) {
           {product.title}
         </h4>
         <div className="flex items-center justify-between">
-          {product.priceDisplay && (
-            <p className="text-lg font-bold text-[#FF6B35]">
-              {product.priceDisplay}
-            </p>
-          )}
           {product.rating && (
             <div className="flex items-center gap-1">
               <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
@@ -313,11 +308,6 @@ function ProductCard({ product }: { product: Product }) {
           {product.title}
         </h4>
         <div className="flex items-center justify-between">
-          {product.priceDisplay && (
-            <p className="text-lg font-bold text-[#FF6B35]">
-              {product.priceDisplay}
-            </p>
-          )}
           {product.rating && (
             <div className="flex items-center gap-1">
               <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
@@ -336,7 +326,7 @@ function ProductCard({ product }: { product: Product }) {
         >
           <a href={product.amazonUrl} target="_blank" rel="noopener noreferrer">
             <ExternalLink className="w-4 h-4 mr-2" />
-            View on Amazon
+            Check Current Price on Amazon
           </a>
         </Button>
       </CardContent>
