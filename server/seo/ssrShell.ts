@@ -66,7 +66,7 @@ export interface SsrPageConfig {
     title?: string;
     /** Alias for title */
     name?: string;
-    description: string;
+    description?: string;
     link: string;
     label: string;
     note?: string;
