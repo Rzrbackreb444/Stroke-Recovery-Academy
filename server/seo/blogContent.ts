@@ -1517,6 +1517,15 @@ export const POST_RESISTANCE_BANDS = makeBlogPost({
       ],
     },
     {
+      h2: 'Latex-free band option',
+      paragraphs: [
+        'Some stroke survivors develop skin sensitivity or latex allergy during recovery. Standard latex bands can cause irritation, rashes, or contact dermatitis. A latex-free set eliminates this risk while providing the same progressive resistance training.',
+      ],
+      products: [
+        { name: 'Lianjindun 5-Piece Professional Resistance Band Set', link: 'https://www.amazon.com/dp/B0C5M1YDKQ', note: 'Latex-free resistance bands with five tension levels. Includes loop and tube bands with handles. Also in the Recovery Store.' },
+      ],
+    },
+    {
       h2: 'Safety rules for survivors',
       image: {
         src: '/images/blog/survivor-resistance-bands-scene.png',
@@ -1623,6 +1632,16 @@ export const POST_SHOWER_SAFETY = makeBlogPost({
       relatedLinks: [
         { href: '/blog/stroke-recovery-gift-guide', label: 'Stroke recovery gift guide' },
         { href: '/blog/complete-stroke-recovery-home-kit', label: 'Complete stroke recovery home kit' },
+      ],
+    },
+    {
+      h2: 'Products I recommend now',
+      paragraphs: [
+        'The exact models matter. A cheap shower chair wobbles. A weak grab bar rips out of drywall. These are the specific products that worked for me and thousands of other survivors.',
+      ],
+      products: [
+        { name: 'Drive Medical Premium Shower Chair with Back and Padded Arms', link: 'https://www.amazon.com/dp/B013AX88P2', note: 'Height-adjustable with backrest and padded arms. Eliminates balance risk entirely. Also in the Recovery Store.' },
+        { name: 'PerfectMed Spill-Proof Urinals for Men (2 Pack)', link: 'https://www.amazon.com/dp/B07YMHR8SJ', note: '32 oz portable urinals with glow-in-the-dark lids. Eliminates nighttime bathroom trips — the single biggest fall risk window after stroke. Also in the Recovery Store.' },
       ],
     },
     {
@@ -2639,6 +2658,16 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
         'Log reps. Note which fingers fired. Track weekly.',
       ],
     },
+    {
+      h2: 'ADL tools that extend what the hand can do',
+      paragraphs: [
+        'Hand therapy builds strength and control. But real life happens between sessions — dressing, picking things up off the floor, reaching high shelves. A reacher (grabber stick) bridges the gap between where hand function is today and where daily life demands it to be. It does not replace hand therapy — it removes the frustration that comes from not being able to complete simple tasks while you are rebuilding.',
+        'Use the reacher for tasks that are still outside your current hand capability: pulling on socks, picking up dropped items, retrieving objects from cabinets. Keep doing the hand work. The reacher handles the rest for now.',
+      ],
+      products: [
+        { name: 'FitPlus Reacher Grabber Tool — 32 Inch Extra Long', link: 'https://www.amazon.com/dp/B0CSPTWZYH', note: '32-inch extra-long reacher with rotating jaw and magnetic tip. One-handed operation. The ADL bridge while hand function rebuilds. Also in the Recovery Store.' },
+      ],
+    },
   ],
   faqs: [
     { q: 'What is the best therapy putty resistance level to start with after stroke?', a: 'Extra-soft or soft (tan or yellow in most color-coding systems). Most survivors start too hard — which triggers spasm and defeats the purpose. If you can complete 20 reps with good form without your hand locking up, the resistance is appropriate. Progress to the next color when 3 sets of 30 feels easy.' },
@@ -2721,6 +2750,16 @@ export const POST_MOBILITY_SCOOTER = makeBlogPost({
         alt: 'Sasquatch at the intersection — the choice between different mobility paths for stroke recovery',
         caption: 'Every tool in the mobility toolkit serves the larger goal: a life worth living, with energy to spare.',
       },
+    },
+    {
+      h2: 'More scooter options by need',
+      paragraphs: [
+        'The Pride Go-Go Sport is the standard recommendation, but it is not the only option. Two alternatives serve different needs: the ultra-lightweight folding scooter for travel, and the heavy-duty 4-wheel scooter for outdoor terrain and longer range.',
+      ],
+      products: [
+        { name: 'Ranger Ultra-Light 28 lbs Folding Mobility Scooter', link: 'https://www.amazon.com/dp/B0FHP3X1MM', note: 'Carbon-frame folding scooter at 28 lbs — one of the lightest available. Air-travel ready and liftable by one person. Also in the Recovery Store.' },
+        { name: 'Eldryvon 4-Wheel Electric Mobility Scooter (15–50 Mile Range)', link: 'https://www.amazon.com/dp/B0DSR2KV8S', note: '350W motor, rotating seat for easy transfers, dual basket. Better for outdoor terrain and longer community trips. Also in the Recovery Store.' },
+      ],
     },
     {
       h2: 'Insurance and Medicare coverage',
@@ -3362,6 +3401,17 @@ export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
       },
     },
     {
+      h2: 'Alternative tools for balance and proprioception',
+      paragraphs: [
+        'Balance boards are not the only proprioceptive tools. A balance pad creates gentle instability without the fall risk of a rocker or wobble board. A slant board maintains ankle dorsiflexion range, which is prerequisite to stable standing. These tools work alongside the balance board, not instead of it.',
+      ],
+      products: [
+        { name: 'High-Density TPE Balance Pad', link: 'https://www.amazon.com/dp/B0DM5WN3J7', note: 'Foam balance pad with non-slip surface. Safer than a board for early-stage proprioceptive retraining. Also in the Recovery Store.' },
+        { name: 'Revbalance 101 v2 Balance Board', link: 'https://www.amazon.com/dp/B00AAXD6X0', note: 'True wobble board with 360-degree instability. The next step after rocker board mastery. Also in the Recovery Store.' },
+        { name: 'Adjustable Wooden Slant Board — 5-Angle Calf Stretcher', link: 'https://www.amazon.com/dp/B0FNCPG6V6', note: '5-angle progression for controlled dorsiflexion stretching. Maintains ankle range of motion that balance work depends on. Also in the Recovery Store.' },
+      ],
+    },
+    {
       h2: 'The balance board progression for stroke survivors',
       image: {
         src: '/images/blog/survivor-balance-board-scene.png',
@@ -3568,6 +3618,14 @@ export const POST_ELLIPTICAL = makeBlogPost({
 <p>The E616 has the same fixed inner handlebar design. The footpads have a slight tilt that some survivors with ankle instability find uncomfortable — try before buying if possible, or verify the return window before ordering.</p>`,
       products: [
         { name: 'Nautilus E616 Elliptical', link: 'https://www.amazon.com/Nautilus-E616-Elliptical-Machine/dp/B00FDDMVB0', note: '29 resistance levels, built-in programs, smoother flywheel than Schwinn 430. Good for mid-to-late recovery when intensity matters.' },
+      ],
+    },
+    {
+      heading: 'Niceday Elliptical — compact stride for home spaces',
+      body: `<p>The Niceday Elliptical packs a 16-inch stride and 16-level magnetic resistance into a compact footprint that fits in most apartments and home gyms. The 400 lb loading capacity means stability is not a concern even for larger survivors. The shorter stride (16" vs 20") can be an advantage for stroke survivors with limited hip extension — the affected leg does not need to reach as far to complete the cycle.</p>
+<p>The tradeoff: no moving handlebars, so the bilateral arm-leg coordination benefit of a full-size elliptical is reduced. If you are using the elliptical primarily for leg cardio and will do arm work separately (resistance bands, hand therapy), this is a reasonable compromise for the space savings.</p>`,
+      products: [
+        { name: 'Niceday Elliptical Exercise Machine', link: 'https://www.amazon.com/dp/B08V8M5ZGS', note: '16-inch stride, 16-level magnetic resistance, 400 lb capacity. Compact footprint ideal for home stroke recovery cardio. Also in the Recovery Store.' },
       ],
     },
     {
@@ -3809,6 +3867,22 @@ export const POST_GRIP_STRENGTHENER = makeBlogPost({
       ],
     },
     {
+      heading: 'FitBeast Digital Grip Strength Trainer Kit — measurable progress',
+      body: `<p>Most grip tools give you no feedback. You squeeze, you hope it is getting stronger, and you guess. The FitBeast kit replaces guessing with numbers: a digital grip strength tester that measures force in real time, plus an adjustable gripper (22–132 lbs) and individual finger exerciser. The tracker is the motivator — when you see the number climb from 15 lbs to 35 lbs, the invisible process becomes visible.</p>
+<p>Use the digital tester once per week as a benchmark. Do your daily grip and finger work with the adjustable gripper and finger exerciser. Track the weekly number. Progress is not always felt, but it is always measurable.</p>`,
+      products: [
+        { name: 'FitBeast Digital Grip Strength Trainer Kit (3-in-1 Advanced)', link: 'https://www.amazon.com/dp/B0FM7LXWZ5', note: 'Digital tester + adjustable gripper + finger exerciser. Measures progress numerically. Also in the Recovery Store.' },
+      ],
+    },
+    {
+      heading: 'Marcy Wrist and Forearm Developer — the overlooked prerequisite',
+      body: `<p>Wrist control is prerequisite to functional grasp, but most stroke hand rehab skips it. The Marcy Wrist and Forearm Developer trains wrist flexion, extension, and rotation against adjustable resistance. The compact wedge design sits on a desk or table — no gym required.</p>
+<p>Use it before grip work: 2 sets of 15 reps each direction (flexion, extension, pronation, supination). A stable wrist makes every grip exercise more effective and reduces compensatory shoulder elevation.</p>`,
+      products: [
+        { name: 'Marcy Wrist and Forearm Developer/Strengthener', link: 'https://www.amazon.com/dp/B00076SPZY', note: 'Wedge-style wrist and forearm trainer. Compact desk use. The overlooked prerequisite to functional grasp. Also in the Recovery Store.' },
+      ],
+    },
+    {
       heading: 'Programming grip work into your recovery routine',
       body: `<p>Three sessions per week, not daily. The hand needs recovery time — tendinitis is a real risk if you over-train an already-compromised neuromuscular system. Two to three sets of 10–15 reps per session. Active rest between sets — don\'t clench the hand, do light finger extension stretches.</p>
 <p>Track both sides. The goal is closing the asymmetry ratio — if your strong hand grips at 80 lbs and your affected hand grips at 20 lbs, you\'re at 25% symmetry. Progress means that ratio improving. Absolute strength is less meaningful than symmetry for most stroke outcomes.</p>`,
@@ -3879,6 +3953,7 @@ export const POST_TENS_UNIT = makeBlogPost({
 <p>For post-stroke shoulder pain, most PTs recommend starting with Normal mode, intensity at the threshold of sensation without muscle contraction, 20–30 minutes per session. The TENS 7000 bundle includes pads, leads, and a carrying case.</p>`,
       products: [
         { name: 'TENS 7000 Digital TENS Unit', link: 'https://www.amazon.com/TENS-7000-Official-Muscle-Stimulator/dp/B001O1OUF6', note: 'Clinical-standard consumer TENS unit. Dual channel, 5 modes, 0–100 mA. Most PT-recommended device for home post-stroke shoulder pain management.' },
+        { name: 'TENS 7000 Bundle with Accessories', link: 'https://www.amazon.com/dp/B00NCRE4GO', note: 'Same TENS 7000 unit with full accessory bundle: pads, leads, carrying case. Ready to use immediately. Also in the Recovery Store.' },
       ],
     },
     {
@@ -6787,6 +6862,12 @@ export const POST_SHOES_GENDER_STYLE = makeBlogPost({
           link: 'https://www.amazon.com/dp/B000QSPEOM',
           price: '$24.99',
           note: 'Adds height to the sound-side shoe to level hips when wearing a walking boot or AFO. Prevents back and hip pain from asymmetry.',
+        },
+        {
+          name: 'Metal Shoe Horn Long Handle for Seniors',
+          link: 'https://www.amazon.com/dp/B01LBLH4FA',
+          price: '$9.99',
+          note: '14+ inch extra-long metal shoehorn. Eliminates bending and reaching when putting on shoes with one functional hand. Also in the Recovery Store.',
         },
       ],
     },
