@@ -105,7 +105,7 @@ function tagAmazonLink(url: string): string {
   if (!tag || !url) return url;
   try {
     const u = new URL(url);
-    if (!u.hostname.includes('amazon.')) return url;
+    if (!u.hostname.includes('amazon.') && !u.hostname.includes('a.co')) return url;
     u.searchParams.set('tag', tag);
     return u.toString();
   } catch {
