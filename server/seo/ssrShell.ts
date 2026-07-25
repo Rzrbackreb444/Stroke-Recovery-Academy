@@ -24,7 +24,7 @@ export interface ContentSection {
   /** Footnote-style external citation links rendered below section content */
   externalLinks?: { label: string; href?: string; url?: string; note?: string }[];
   /** Inline product cards — affiliate tag applied server-side via tagAmazonLink */
-  products?: { name: string; price: string; link: string; note: string }[];
+  products?: { name: string; price?: string; link: string; note: string }[];
   /** Inline cross-links to related posts — renders a "Also check out" line in the section */
   relatedLinks?: { href: string; label: string }[];
   /**

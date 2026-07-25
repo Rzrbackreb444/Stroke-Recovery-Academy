@@ -506,6 +506,9 @@ export const POST_TIA_VS_STROKE = makeBlogPost({
           ['Diabetes present', '1 point', 'Metabolic risk factor'],
         ],
       },
+    },
+    {
+      h2: 'ABCD2 score interpretation',
       paragraphs: [
         'Total score: 0–3 is low risk (2-day stroke risk ~1%), 4–5 is moderate (~4%), 6–7 is high (~8%). Many centers admit moderate and high-risk patients for 23-hour observation and initiate dual antiplatelet therapy regardless of score. Ask your team where you fall and what the plan is.',
       ],
@@ -6145,11 +6148,377 @@ export const POST_HAND_SPLINT = makeBlogPost({
 });
 
 // =============================================================================
+// 55. Best walker for stroke survivors
+// =============================================================================
+export const POST_WALKER = makeBlogPost({
+  slug: 'best-walker-stroke-survivor',
+  title: 'Best Walker for Stroke Survivors: Stand-Up Support and Safe Transfers',
+  description: 'The wrong walker tilts you toward your weak side. The right walker has stand-up grips, adjustable height, and a base that stays planted. A 7-year survivor\'s guide.',
+  h1: 'Best walker for stroke survivors',
+  keyword: 'best walker for stroke survivor',
+  extraKeywords: ['walker after stroke', 'stand up walker', 'stroke walker with seat'],
+  subhead: 'A walker is not just a frame with wheels. For a hemiparetic survivor, it is a transfer aid, a balance anchor, and a psychological permission slip to try walking again. Here is how to choose.',
+  ctaPrimary: { href: '/recovery/store#walker-tamubaks-1', label: 'See survivor-tested walkers' },
+  ctaSecondary: { href: '/blog/best-walking-aids-stroke-survivors', label: 'Compare canes and rollators' },
+  image: '/images/blog/survivor-walker-scene.png',
+  sections: [
+    {
+      h2: 'Why standard walkers fail stroke survivors',
+      paragraphs: [
+        'A standard walker requires bilateral grip and equal push through both arms. Most stroke survivors do not have that. The weak-side hand may grip lightly or not at all, which causes the walker to tilt toward the affected side \u2014 exactly the wrong direction.',
+        'Stroke-specific walker needs: stand-up support handles (so you can pull yourself from sitting without yanking furniture), a wide base that does not tip when loaded unevenly, height adjustability that accounts for the hemiplegic posture (often slightly stooped on the affected side), and rubber tips that grip hard floors without skidding.',
+      ],
+    },
+    {
+      h2: 'Stand-up support: the feature that changes everything',
+      paragraphs: [
+        'The single most useful walker feature for early-stage survivors is a set of horizontal grips at hip height that let you pull yourself upright from a chair or bed before starting to walk. Without them, you are reaching for furniture, doorframes, or a caregiver\'s arm \u2014 all of which create fall risk and shoulder strain.',
+        'Stand-up grips also serve as a resting point during walking practice. If fatigue hits mid-hallway, gripping the horizontal bar gives a stable pause without having to find a chair. That changes how much practice you can do in a single session.',
+      ],
+    },
+    {
+      h2: 'Recommended walker for stroke survivors',
+      products: [
+        {
+          name: 'TAMUBAKS Adjustable Medical Walker with Stand-Up Support',
+          link: 'https://www.amazon.com/dp/B0DZ2D8GV1',
+          note: 'Height-adjustable frame with stand-up support handles and non-slip rubber tips. Designed for safe transfers and stable ambulation. Also in the Recovery Store.',
+        },
+      ],
+      image: {
+        src: '/images/blog/survivor-walker-scene.png',
+        alt: 'Stroke survivor using a walker with stand-up support handles indoors',
+        caption: 'Stand-up grips turn the walker into a transfer aid, not just a walking aid.',
+      },
+    },
+    {
+      h2: 'Walker height and the hemiplegic posture',
+      paragraphs: [
+        'Standard walker height advice \u2014 top of grips at wrist crease with arms at sides \u2014 assumes symmetrical posture. Stroke survivors often have shoulder droop on the affected side, which lowers the wrist crease and leads to a walker set too low.',
+        'A walker set too low causes the survivor to lean forward, increasing kyphosis and reducing the visual field. A walker set too high causes shoulder elevation and reduces weight-bearing through the legs. Measure from the unaffected side\'s wrist crease, then verify that both elbows are flexed 20\u201330 degrees when gripping.',
+      ],
+      bullets: [
+        'Measure from the unaffected side\'s wrist crease',
+        'Elbows flexed 20\u201330 degrees at the grip',
+        'Eyes forward, not looking down at the floor',
+        'Affected shoulder supported, not hanging or shrugging',
+      ],
+    },
+    {
+      h2: 'When to move from walker to rollator or cane',
+      paragraphs: [
+        'The walker is a stage, not a destination. Most survivors transition to a rollator (4-wheeled walker with seat) when ambulation distance increases beyond what the standard walker allows comfortably \u2014 typically 50\u2013100 feet at a time.',
+        'The transition to a cane happens when balance is reliable on flat surfaces and the walker is being used more for confidence than for mechanical support. Your PT should clear this transition with a functional gait assessment. Do not rush it.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Can I use a walker if my affected hand has no grip?', a: 'Yes \u2014 choose a walker with a wide base and rubber tips that grip the floor even when loaded unevenly. The unaffected hand does most of the steering and braking. Some survivors add a forearm platform attachment to the affected side so the arm rests and steers without requiring hand grip.' },
+    { q: 'Should a walker have wheels or be static?', a: 'Front wheels only for early-stage survivors. Full wheels (rollator) require more dynamic balance control. A static walker (no wheels) is the safest starting point because it stops when you stop. Progress to front-wheel when your PT clears dynamic balance work.' },
+    { q: 'How wide should a walker be for a stroke survivor?', a: 'Wide enough that the base does not tip when the survivor leans toward the affected side. Most standard walkers are 25\u201328 inches wide. If the survivor has significant lateral sway, a bariatric-width frame (30+ inches) adds stability at the cost of fitting through doorways. Measure your narrowest doorway before buying.' },
+    { q: 'Can I use a walker on carpet?', a: 'Yes, but rubber tips matter more on carpet than on hard floors because the drag is higher. Non-slip rubber tips with deep tread patterns work best. Avoid walkers with plastic or smooth rubber tips on carpet \u2014 they slide unpredictably.' },
+  ],
+  related: [
+    { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids after stroke', blurb: 'Canes, rollators, and when to use each.' },
+    { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home', blurb: 'The protocol for rebuilding independent ambulation.' },
+    { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'The right shoe makes every walking aid more effective.' },
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Walker and all survivor-tested gear in one place.' },
+  ],
+  publishedDate: '2026-07-25',
+  productCard: {
+    title: 'TAMUBAKS Adjustable Medical Walker with Stand-Up Support',
+    description: 'Stand-up grips for safe chair-to-standing transfers, adjustable height, and non-slip rubber tips. The walker built for hemiparetic survivors.',
+    link: 'https://www.amazon.com/dp/B0DZ2D8GV1',
+    label: 'Check Current Price on Amazon',
+    note: 'Curated by Nick Kremers. As an Amazon Associate, SRA earns from qualifying purchases at no extra cost to you.',
+  },
+  bookPromo: {
+    title: 'The gait rebuild is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the complete mobility toolkit \u2014 walkers, rollators, canes, and the daily routine that keeps recovery moving forward.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
+// 56. Best sit-to-stand lift for stroke recovery
+// =============================================================================
+export const POST_SIT_TO_STAND_LIFT = makeBlogPost({
+  slug: 'best-sit-to-stand-lift-stroke-recovery',
+  title: 'Best Sit-to-Stand Lift for Stroke Recovery: When a Sling Is Not Enough',
+  description: 'When a survivor cannot bear weight through their legs, a powered sit-to-stand lift eliminates caregiver back strain and prevents falls. A survivor\'s honest guide to the right lift.',
+  h1: 'Best sit-to-stand lift for stroke recovery',
+  keyword: 'sit to stand lift stroke recovery',
+  extraKeywords: ['patient lift stroke', 'sit to stand lift elderly', 'powered transfer lift stroke'],
+  subhead: 'Manual transfers hurt backs and cause falls. A powered sit-to-stand lift lets a single caregiver safely move a survivor from bed to chair without lifting. Here is when you need one and how to choose.',
+  ctaPrimary: { href: '/recovery/store#sit-to-stand-lift-perlecare-1', label: 'See sit-to-stand lifts' },
+  ctaSecondary: { href: '/blog/transfer-sling-sit-to-stand-stroke', label: 'Compare transfer slings' },
+  image: '/images/blog/survivor-transfer-scene.png',
+  sections: [
+    {
+      h2: 'When a sling is not enough',
+      paragraphs: [
+        'A transfer sling relies on the survivor bearing some weight through their legs \u2014 even if it is only 20\u201330 percent. If the survivor\'s knees buckle completely, if they have no leg participation at all, or if the caregiver is physically unable to lift even partial weight safely, a sling becomes a back injury waiting to happen.',
+        'The powered sit-to-stand lift fills that gap. The device takes the full weight of the survivor. The caregiver operates controls, not muscles. The survivor is supported in a standing sling or harness that maintains posture and prevents shoulder strain.',
+      ],
+    },
+    {
+      h2: 'Powered vs hydraulic: which is right for home use',
+      paragraphs: [
+        'Hydraulic lifts are cheaper and do not require an electrical outlet, but they require the caregiver to pump a handle \u2014 which is still physical work and can be difficult for a smaller caregiver with a larger survivor.',
+        'Powered lifts use an electric motor to raise and lower the survivor. A single caregiver can operate them with one hand on the controls. The tradeoff is cost (typically $200\u2013600 vs $100\u2013200 for hydraulic) and the need for a nearby outlet or charged battery.',
+        'For home stroke recovery: powered is almost always the better choice. The goal is to remove physical strain from the caregiver so transfers happen consistently, not just on days when the caregiver feels strong enough.',
+      ],
+    },
+    {
+      h2: 'Recommended sit-to-stand lift',
+      products: [
+        {
+          name: 'PERLECARE Sit to Stand Lift',
+          link: 'https://www.amazon.com/dp/B0GDFSGTNN',
+          note: 'Electric sit-to-stand patient lift for safe powered transfers. Eliminates caregiver lifting and prevents falls. Also in the Recovery Store.',
+        },
+      ],
+    },
+    {
+      h2: 'Sizing and weight capacity',
+      paragraphs: [
+        'Most home sit-to-stand lifts are rated for 300\u2013450 lb. Verify the capacity against the survivor\'s current weight plus 10\u201315 percent margin \u2014 a survivor who has gained weight from reduced mobility needs the higher rating.',
+        'Base width matters for fitting under beds and wheelchairs. Measure the clearance under your bed frame and the seat height of your primary chair before ordering. A lift that cannot slide under the bed is useless for bedside transfers.',
+      ],
+    },
+    {
+      h2: 'Insurance and Medicare coverage',
+      paragraphs: [
+        'Medicare Part B covers patient lifts as Durable Medical Equipment when prescribed by a physician as medically necessary. A face-to-face exam and a written order are required. Coverage is typically 80% of the Medicare-approved amount after the Part B deductible.',
+        'The key phrase for the physician\'s order: "patient is unable to bear weight through lower extremities and requires mechanical assistance for safe transfers." Your PT or OT can write the letter of medical necessity that supports the order.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Do I need a lift if I already have a gait belt?', a: 'A gait belt is for guarding and guiding during transfers where the survivor can bear most of their weight. A lift is for transfers where the survivor cannot bear weight or the caregiver cannot safely manage the load. If the survivor\'s knees buckle or the caregiver strains visibly, it is time to step up to a lift.' },
+    { q: 'Can one caregiver operate a powered lift alone?', a: 'Yes \u2014 that is the primary advantage. A powered lift is designed for single-caregiver operation. The caregiver positions the sling, attaches the lift hooks, and operates the raise/lower controls. No lifting or straining is required.' },
+    { q: 'How much space does a sit-to-stand lift need?', a: 'Most models require a 3-foot radius of clear floor space around the bed or chair for safe maneuvering. The base slides under the bed or chair, and the mast pivots to position the survivor over the destination seat. Measure your bedroom before ordering.' },
+    { q: 'Is a Hoyer lift better than a sit-to-stand lift?', a: 'A Hoyer (full-body sling lift) is for complete non-weight-bearing transfers \u2014 the survivor is lifted while lying or seated and moved without standing. A sit-to-stand lift brings the survivor to a standing position, which maintains bone density, circulation, and the psychological benefit of upright posture. If the survivor can tolerate standing even briefly, a sit-to-stand lift is preferable.' },
+  ],
+  related: [
+    { href: '/blog/transfer-sling-sit-to-stand-stroke', label: 'Transfer slings for stroke', blurb: 'The step below a lift \u2014 for partial weight-bearing transfers.' },
+    { href: '/blog/gait-belt-for-stroke-recovery', label: 'Gait belts for stroke', blurb: 'The cheapest safety tool for guarded transfers.' },
+    { href: '/blog/best-wheelchair-stroke-survivor', label: 'Best wheelchair for stroke', blurb: 'When transfers are not yet possible at all.' },
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Lifts, slings, belts, and all transfer gear in one place.' },
+  ],
+  publishedDate: '2026-07-25',
+  productCard: {
+    title: 'PERLECARE Sit to Stand Lift',
+    description: 'Electric powered lift for safe zero-strain transfers. Eliminates caregiver back injuries and prevents falls.',
+    link: 'https://www.amazon.com/dp/B0GDFSGTNN',
+    label: 'Check Current Price on Amazon',
+    note: 'Curated by Nick Kremers. As an Amazon Associate, SRA earns from qualifying purchases at no extra cost to you.',
+  },
+  bookPromo: {
+    title: 'The full mobility toolkit is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers every transfer stage \u2014 from the first bed-to-chair attempt to independent standing \u2014 with the daily routine that closes the gap.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
+// 57. Mirror therapy for stroke hand recovery
+// =============================================================================
+export const POST_MIRROR_THERAPY = makeBlogPost({
+  slug: 'mirror-therapy-stroke-hand-recovery',
+  title: 'Mirror Therapy for Stroke Hand Recovery: The Evidence and How to Do It at Home',
+  description: 'Mirror therapy uses visual feedback to rewire the brain after stroke. Here is the evidence, the protocol, and the affordable box that makes daily practice consistent.',
+  h1: 'Mirror therapy for stroke hand recovery',
+  keyword: 'mirror therapy stroke hand recovery',
+  extraKeywords: ['mirror box therapy stroke', 'visual feedback stroke recovery', 'hand recovery mirror therapy'],
+  subhead: 'Mirror therapy is one of the most evidence-backed, low-cost methods for hand recovery after stroke. A $40 box and 15 minutes a day can produce measurable cortical change. Here is how it works and how to do it right.',
+  ctaPrimary: { href: '/recovery/store#mirror-therapy-box-odoxia-1', label: 'See mirror therapy boxes' },
+  ctaSecondary: { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Add hand therapy tools' },
+  image: '/images/blog/survivor-mirror-therapy-scene.png',
+  sections: [
+    {
+      h2: 'How mirror therapy actually works',
+      paragraphs: [
+        'Mirror therapy exploits a quirk of the brain\'s visual-motor system. When you watch your unaffected hand move in a mirror, the brain sees what looks like the affected hand moving. That visual illusion activates the motor cortex on the affected side \u2014 the same area that was damaged by the stroke.',
+        'The mechanism is called visual feedback motor imagery. The brain does not distinguish perfectly between real movement and mirrored movement. Repeated sessions create new neural pathways that bypass the damaged area, gradually restoring voluntary control to the affected hand.',
+        'The evidence is strong. Multiple randomized controlled trials show significant improvements in hand function, spasticity, and pain after 4\u20136 weeks of daily mirror therapy. It is recommended in clinical practice guidelines for upper limb rehabilitation after stroke.',
+      ],
+    },
+    {
+      h2: 'The correct mirror therapy protocol',
+      bullets: [
+        'Position the mirror vertically between your hands, perpendicular to your chest.',
+        'Place the affected hand behind the mirror (out of sight). Place the unaffected hand in front of the mirror (in view).',
+        'Move the unaffected hand through simple motions: open and close, wrist flex and extend, finger taps, thumb opposition.',
+        'Watch the reflection as if it were your affected hand moving. Do not look at the real affected hand \u2014 only the mirror image.',
+        '10\u201315 minutes per session, twice daily, 5\u20136 days per week, for 4\u20136 weeks minimum.',
+        'Progress to bimanual tasks (both hands doing the same motion symmetrically) as the affected hand begins to participate.',
+      ],
+    },
+    {
+      h2: 'Recommended mirror therapy box',
+      products: [
+        {
+          name: 'ODOXIA Mirror Therapy Box for Stroke Recovery',
+          link: 'https://www.amazon.com/dp/B0DP34JVXX',
+          note: 'Portable mirror box designed for consistent mirror therapy setup. Also in the Recovery Store.',
+        },
+      ],
+      image: {
+        src: '/images/blog/survivor-mirror-therapy-scene.png',
+        alt: 'Stroke survivor performing mirror therapy with a mirror box at home',
+        caption: 'The reflection of the strong hand tricks the brain into activating the affected hand\'s motor cortex.',
+      },
+    },
+    {
+      h2: 'What mirror therapy will not do',
+      paragraphs: [
+        'Mirror therapy is not a substitute for active hand exercises. It is a preparation and facilitation tool. The visual activation it creates must be followed by real movement attempts \u2014 putty work, grip training, functional tasks \u2014 to convert cortical activation into motor skill.',
+        'It also will not work if the survivor cannot see clearly or has significant visual field neglect (hemianopia) on the affected side. In those cases, the mirror image may not register in the brain\'s visual system, and the therapy produces limited benefit.',
+      ],
+    },
+    {
+      h2: 'Nick\'s experience with mirror therapy',
+      paragraphs: [
+        'I started mirror therapy at month four, after my OT introduced it in a single session. I was skeptical \u2014 it felt like watching a magic trick, not doing real rehab. But the first time I saw my left hand (in the mirror) open and close while my real left hand lay still behind the glass, I felt something in the affected forearm twitch.',
+        'I used a simple hand mirror for the first two weeks, then bought a mirror box to keep the setup consistent. By week six I could initiate a slow finger open on the affected side without the mirror \u2014 something I had not been able to do since the stroke. It was not dramatic. It was a millimeter of movement. But it was real, and it was the first voluntary movement I had felt in four months.',
+        'Mirror therapy is not exciting. It is quiet, repetitive, and requires patience. But the evidence is real, the cost is low, and for many survivors it is the first thing that produces a genuine cortical response in the affected hand.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'How long does mirror therapy take to show results?', a: 'Most studies show measurable improvements after 4\u20136 weeks of twice-daily 15-minute sessions. Individual results vary by stroke severity, time since stroke, and consistency. The key variable is daily practice \u2014 missing days reduces the effect significantly.' },
+    { q: 'Can I do mirror therapy without a mirror box?', a: 'Yes \u2014 a hand mirror or any vertical mirror works. The mirror box is convenient because it holds the mirror at the correct angle and provides a stable base, but it is not medically necessary. A $10 bathroom mirror propped on a table produces the same visual feedback.' },
+    { q: 'Is mirror therapy safe for all stroke survivors?', a: 'It is safe for most, but contraindicated for survivors with severe visual neglect (hemianopia) on the affected side who cannot process the mirror image, or those with severe cognitive impairment who cannot follow the protocol. Consult your OT before starting.' },
+    { q: 'Should I do mirror therapy before or after other hand exercises?', a: 'Before. Mirror therapy reduces cortical inhibition and primes the motor cortex for the active work that follows. The ideal sequence: 10\u201315 minutes mirror therapy, then 15\u201320 minutes of active hand exercises (putty, grip trainer, functional tasks).' },
+  ],
+  related: [
+    { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools', blurb: 'Putty, grip trainers, and finger exercisers for the active work after mirror therapy.' },
+    { href: '/blog/best-robotic-glove-stroke-recovery', label: 'Best robotic glove', blurb: 'EMG-assisted movement for when the hand begins to fire again.' },
+    { href: '/blog/spasticity-hand-splint-stroke', label: 'Spasticity hand splint', blurb: 'Prevent contracture while the hand rebuilds.' },
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Mirror therapy box and all hand rehab gear in one place.' },
+  ],
+  publishedDate: '2026-07-25',
+  productCard: {
+    title: 'ODOXIA Mirror Therapy Box for Stroke Recovery',
+    description: 'Portable mirror box for consistent daily mirror therapy \u2014 the evidence-backed method for hand reactivation after stroke.',
+    link: 'https://www.amazon.com/dp/B0DP34JVXX',
+    label: 'Check Current Price on Amazon',
+    note: 'Curated by Nick Kremers. As an Amazon Associate, SRA earns from qualifying purchases at no extra cost to you.',
+  },
+  bookPromo: {
+    title: 'The hand recovery protocol is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers mirror therapy, robotic gloves, and the complete daily hand routine \u2014 from dense paralysis to functional grip.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
+// 58. Best leg elevation pillow for stroke recovery
+// =============================================================================
+export const POST_LEG_ELEVATION = makeBlogPost({
+  slug: 'best-leg-elevation-pillow-stroke-recovery',
+  title: 'Best Leg Elevation Pillow for Stroke Recovery: Reducing Edema and Improving Circulation',
+  description: 'Post-stroke leg swelling is common, uncomfortable, and slows recovery. A leg elevation pillow keeps the affected leg above heart level during rest \u2014 reducing edema and improving circulation.',
+  h1: 'Best leg elevation pillow for stroke recovery',
+  keyword: 'leg elevation pillow stroke recovery',
+  extraKeywords: ['stroke leg swelling pillow', 'edema pillow stroke', 'circulation pillow stroke survivor'],
+  subhead: 'The affected leg swells after stroke \u2014 from reduced mobility, venous pooling, and lymphatic slowdown. A leg elevation pillow is a simple, low-cost tool that reduces swelling and makes the leg more comfortable for therapy and walking practice.',
+  ctaPrimary: { href: '/recovery/store#leg-elevation-pillow-cloudbliss-1', label: 'See leg elevation pillows' },
+  ctaSecondary: { href: '/blog/compression-garments-stroke-recovery-edema', label: 'Compare compression garments' },
+  image: '/images/blog/survivor-leg-elevation-scene.png',
+  sections: [
+    {
+      h2: 'Why the affected leg swells after stroke',
+      paragraphs: [
+        'Reduced mobility is the primary cause. When the affected leg is not walking, pumping blood back to the heart against gravity, venous blood and lymphatic fluid pool in the lower extremity. This produces dependent edema \u2014 swelling that is worst at the end of the day and improves overnight with elevation.',
+        'Other contributors: muscle pump failure (the calf muscles that normally squeeze veins during walking are weak or paralyzed), medication side effects (some antihypertensives cause peripheral edema), and reduced protein intake in early recovery, which lowers plasma oncotic pressure and allows fluid to leak into tissues.',
+      ],
+    },
+    {
+      h2: 'How leg elevation works',
+      paragraphs: [
+        'Gravity is the enemy of venous return. When the leg is below heart level, blood and fluid pool in the distal vessels. When the leg is above heart level, gravity assists venous and lymphatic drainage back toward the torso.',
+        'The standard recommendation: elevate the affected leg 15\u201320 cm above heart level for 20\u201330 minutes, 2\u20133 times per day. Combine with ankle pumps (point and flex) during elevation to activate the calf muscle pump and accelerate drainage.',
+      ],
+      bullets: [
+        'Elevate 15\u201320 cm above heart level',
+        '20\u201330 minutes per session, 2\u20133 times daily',
+        'Do ankle pumps during elevation',
+        'Combine with compression stockings for daytime control',
+      ],
+    },
+    {
+      h2: 'Recommended leg elevation pillow',
+      products: [
+        {
+          name: 'CloudBliss Leg Elevation Pillow',
+          link: 'https://www.amazon.com/dp/B0DP2WW15F',
+          note: 'Memory foam leg elevation pillow with 30-degree incline. Designed for edema reduction and circulation improvement. Also in the Recovery Store.',
+        },
+      ],
+      image: {
+        src: '/images/blog/survivor-leg-elevation-scene.png',
+        alt: 'Stroke survivor resting with the affected leg elevated on a memory foam pillow',
+        caption: 'Elevation above heart level turns gravity from an enemy into an ally for venous return.',
+      },
+    },
+    {
+      h2: 'Positioning for stroke survivors',
+      paragraphs: [
+        'The standard "legs up the wall" yoga position is not accessible for many stroke survivors because it requires hip flexion and spinal rotation that may be limited or painful. A leg elevation pillow provides the same gravitational benefit from a supine or semi-reclined position.',
+        'Place the pillow under the calf and heel, not under the knee. Elevation under the knee creates a sharp angle that compresses the popliteal vein and actually reduces drainage. The calf and heel should rest on the pillow with the knee slightly flexed but not sharply bent.',
+      ],
+    },
+    {
+      h2: 'When to see a doctor about leg swelling',
+      paragraphs: [
+        'Most post-stroke leg swelling is benign dependent edema. Some causes are not. Seek medical evaluation if: swelling is sudden and one-sided (possible deep vein thrombosis), swelling is accompanied by warmth and redness (possible cellulitis or DVT), swelling does not improve overnight with elevation (possible lymphedema or heart/kidney dysfunction), or the survivor has shortness of breath with leg swelling (possible heart failure).',
+        'Do not dismiss leg swelling as "just part of stroke recovery" without ruling out the dangerous causes first. A quick ultrasound and bloodwork can exclude DVT and systemic issues.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'How long should I keep my leg elevated after stroke?', a: '20\u201330 minutes per session, 2\u20133 times daily. Morning, midday, and evening are typical. Overnight elevation is also beneficial if the survivor can sleep comfortably with the leg raised.' },
+    { q: 'Should I elevate both legs or just the affected one?', a: 'Both is fine, but the affected leg is the priority. If the unaffected leg has normal mobility and no swelling, elevating just the affected leg is sufficient. Some survivors find it more comfortable to elevate both for symmetry.' },
+    { q: 'Can I use a regular pillow instead of a leg elevation pillow?', a: 'Yes, but a dedicated leg elevation pillow is designed with the correct incline angle (typically 30 degrees) and memory foam density to maintain position without compressing the calf. A regular bed pillow tends to flatten and shift, reducing the elevation angle over time.' },
+    { q: 'Does leg elevation replace compression stockings?', a: 'No \u2014 they work together. Compression stockings provide continuous daytime pressure that prevents fluid accumulation. Leg elevation provides intermittent drainage sessions that remove accumulated fluid. Use compression during the day and elevation during rest periods.' },
+  ],
+  related: [
+    { href: '/blog/compression-garments-stroke-recovery-edema', label: 'Compression garments for edema', blurb: 'The daytime complement to leg elevation.' },
+    { href: '/blog/best-adjustable-bed-wedge-pillow-stroke-recovery', label: 'Best adjustable bed wedge', blurb: 'Whole-body positioning for overnight comfort and drainage.' },
+    { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab', blurb: 'Address the gait issue that reduces leg pumping during walking.' },
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Leg elevation pillow and all edema management gear in one place.' },
+  ],
+  publishedDate: '2026-07-25',
+  productCard: {
+    title: 'CloudBliss Leg Elevation Pillow',
+    description: 'Memory foam leg elevation pillow with 30-degree incline. Reduces post-stroke leg swelling and improves circulation during rest.',
+    link: 'https://www.amazon.com/dp/B0DP2WW15F',
+    label: 'Check Current Price on Amazon',
+    note: 'Curated by Nick Kremers. As an Amazon Associate, SRA earns from qualifying purchases at no extra cost to you.',
+  },
+  bookPromo: {
+    title: 'The full daily routine is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers edema management, positioning, and the complete daily system that keeps the affected leg ready for therapy and walking practice.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
 // Aggregator
 // =============================================================================
 export const ALL_BLOG_POSTS: SsrPageConfig[] = [
   POST_GAIT_BELT,
   POST_TRANSFER_SLING,
+  POST_WALKER,
+  POST_SIT_TO_STAND_LIFT,
+  POST_MIRROR_THERAPY,
+  POST_LEG_ELEVATION,
   POST_HAND_SPLINT,
   POST_REHAB_DURATION,
   POST_FULL_RECOVERY,
@@ -6262,6 +6631,8 @@ export const BLOG_HUB: SsrPageConfig = {
   <a href="/blog/gait-belt-for-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Gait Belts for Stroke Recovery</span><span class="sra-related-blurb">The safety essential for standing transfers — when and how to use one.</span></a>
   <a href="/blog/transfer-sling-sit-to-stand-stroke" class="sra-related-card"><span class="sra-related-label">Transfer Sling for Sit-to-Stand</span><span class="sra-related-blurb">The gear that prevents both falls and caregiver injuries during transfers.</span></a>
   <a href="/blog/best-wheelchair-stroke-survivor" class="sra-related-card"><span class="sra-related-label">Best Wheelchair for Stroke Survivors</span><span class="sra-related-blurb">Transport vs. manual vs. power — matching chair to recovery stage.</span></a>
+  <a href="/blog/best-walker-stroke-survivor" class="sra-related-card"><span class="sra-related-label">Best Walker for Stroke Survivors</span><span class="sra-related-blurb">Stand-up support, adjustable height, and safe transfers for hemiparetic survivors.</span></a>
+  <a href="/blog/best-sit-to-stand-lift-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Sit-to-Stand Lift for Stroke Recovery</span><span class="sra-related-blurb">Powered lifts that eliminate caregiver strain and prevent falls during transfers.</span></a>
   <a href="/blog/best-mobility-scooter-stroke-survivor" class="sra-related-card"><span class="sra-related-label">Best Mobility Scooter for Stroke Survivors</span><span class="sra-related-blurb">When a scooter is the right call — and which models hold up.</span></a>
   <a href="/blog/parallel-bars-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Parallel Bars for Stroke Recovery at Home</span><span class="sra-related-blurb">Freestanding bars that bring the PT clinic into your living room.</span></a>
   <a href="/blog/stair-lift-stroke-survivor" class="sra-related-card"><span class="sra-related-label">Best Stair Lifts for Stroke Survivors</span><span class="sra-related-blurb">When to install one, what to look for, and whether it's permanent.</span></a>
@@ -6292,6 +6663,7 @@ export const BLOG_HUB: SsrPageConfig = {
   <a href="/blog/best-robotic-glove-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Robotic Glove for Stroke Hand Recovery</span><span class="sra-related-blurb">Powered exoskeleton gloves that drive neuroplasticity in the affected hand.</span></a>
   <a href="/blog/best-grip-strengthener-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Grip Strengthener for Stroke Recovery</span><span class="sra-related-blurb">Adjustable squeezers to finger boards — picking the right resistance level.</span></a>
   <a href="/blog/spasticity-hand-splint-stroke" class="sra-related-card"><span class="sra-related-label">Spasticity Hand Splint for Stroke</span><span class="sra-related-blurb">Resting and dynamic splints that prevent contracture while you sleep.</span></a>
+  <a href="/blog/mirror-therapy-stroke-hand-recovery" class="sra-related-card"><span class="sra-related-label">Mirror Therapy for Stroke Hand Recovery</span><span class="sra-related-blurb">The $40 box that tricks the brain into reactivating the affected hand.</span></a>
   <a href="/blog/saebo-stroke-recovery-devices" class="sra-related-card"><span class="sra-related-label">Saebo Stroke Recovery Devices — Are They Worth It?</span><span class="sra-related-blurb">The premium hand rehab line reviewed honestly by a survivor who used it.</span></a>
 </div>`,
     },
@@ -6305,6 +6677,7 @@ export const BLOG_HUB: SsrPageConfig = {
   <a href="/blog/best-smart-home-devices-stroke-survivors" class="sra-related-card"><span class="sra-related-label">Best Smart Home Devices for Stroke Survivors</span><span class="sra-related-blurb">Voice control, automated lighting, and fall-alert systems that restore autonomy.</span></a>
   <a href="/blog/best-blood-pressure-monitor-stroke-survivor" class="sra-related-card"><span class="sra-related-label">Best Blood Pressure Monitor for Stroke Survivors</span><span class="sra-related-blurb">The home device that reduces second-stroke risk — accuracy and cuff fit matter.</span></a>
   <a href="/blog/compression-garments-stroke-recovery-edema" class="sra-related-card"><span class="sra-related-label">Compression Garments — Edema After Stroke</span><span class="sra-related-blurb">Managing arm and leg swelling — which garment, which compression level, and why.</span></a>
+  <a href="/blog/best-leg-elevation-pillow-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Leg Elevation Pillow for Stroke Recovery</span><span class="sra-related-blurb">Reduces leg swelling and improves circulation during rest sessions.</span></a>
   <a href="/blog/best-standing-desk-stroke-recovery-return-to-work" class="sra-related-card"><span class="sra-related-label">Best Standing Desk for Stroke — Return to Work</span><span class="sra-related-blurb">Sit-stand workstations for cognitive and physical recovery in the office or home.</span></a>
 </div>`,
     },
