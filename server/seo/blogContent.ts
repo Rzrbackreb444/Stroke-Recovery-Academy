@@ -20,8 +20,9 @@ interface BlogPostInput {
   related: InternalLink[];
   publishedDate?: string;
   productCard?: {
-    title: string;
-    description: string;
+    title?: string;
+    name?: string;
+    description?: string;
     link: string;
     label: string;
     note?: string;
@@ -2304,10 +2305,10 @@ export const POST_ROBOTIC_GLOVE = makeBlogPost({
 // =============================================================================
 export const POST_BEST_SHOES = makeBlogPost({
   slug: 'best-shoes-stroke-survivors',
-  title: 'Best Shoes for Stroke Survivors: Brooks, Skechers & More',
-  description: 'Drop foot. Spasticity. AFO compatibility. One-handed dressing. The wrong shoe makes everything harder. A 7-year survivor\'s guide to footwear that works.',
-  h1: 'Best shoes for stroke survivors',
-  keyword: 'best shoes for stroke survivors',
+  title: 'Best Shoes for Stroke Patients: Men, Women, AFO & Slip-On Picks',
+  description: 'The best shoes for stroke patients by gender and need — men, women, AFO-compatible, slip-on, and sandals. A 7-year survivor\'s footwear guide that actually works.',
+  h1: 'Best shoes for stroke patients by gender and need',
+  keyword: 'best shoes for stroke patients',
   subhead: 'After my stroke at 36, footwear stopped being a fashion decision. Your shoe determines whether you trip, compensate wrong, or actually walk with confidence. Here is what works.',
   ctaPrimary: { href: '/recovery/shop', label: 'Browse recovery gear' },
   ctaSecondary: { href: '/blog/afo-vs-electric-ankle-trainer', label: 'Drop foot solutions' },
@@ -2892,9 +2893,9 @@ export const POST_WHEELCHAIR = makeBlogPost({
 // =============================================================================
 export const POST_PEDAL_EXERCISER = makeBlogPost({
   slug: 'best-pedal-exerciser-stroke-recovery',
-  title: 'Best Pedal Exercisers for Stroke Recovery (2026)',
-  description: 'Passive leg cycling increases spasticity. Active pedaling rebuilds it. A 7-year survivor\'s guide to the under-desk pedal exerciser that actually works for stroke.',
-  h1: 'Best pedal exerciser for stroke recovery',
+  title: 'Best Pedal Exercisers & Mini Exercise Bikes for Stroke Patients',
+  description: 'Mini exercise bikes and under-desk pedal exercisers for stroke patients — passive and active options ranked by recovery stage. Low-cost, low-impact, high-value.',
+  h1: 'Best pedal exerciser and mini exercise bike for stroke patients',
   keyword: 'pedal exerciser stroke recovery',
   subhead: 'Cycling motion is one of the earliest things stroke survivors can do on the affected leg — but only the right type of device captures the full benefit. Here is the breakdown.',
   ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
@@ -3611,9 +3612,9 @@ export const POST_ELLIPTICAL = makeBlogPost({
 
 export const POST_STATIONARY_BIKE = makeBlogPost({
   slug: 'best-stationary-bike-stroke-recovery',
-  title: 'Best Stationary Bikes for Stroke Recovery: Recumbent vs. Upright, and When Each Makes Sense',
-  description: 'Stationary bikes are the safest cardio starting point for most stroke survivors. Back support, no balance demand, bilateral leg training. Here\'s what actually works.',
-  h1: 'Best Stationary Bikes for Stroke Recovery',
+  title: 'Best Exercise Bikes for Stroke Patients: Stationary, Recumbent & Upright Compared',
+  description: 'Looking for the best exercise bike for a stroke patient? Recumbent, upright, and pedal exercisers ranked by recovery stage. A 7-year survivor explains which bike works and why.',
+  h1: 'Best Exercise Bikes for Stroke Patients',
   keyword: 'best stationary bike stroke recovery',
   subhead: 'Seated. Supported. Safe. The recumbent bike is how most stroke survivors should start building cardiovascular fitness — and the evidence agrees.',
   ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
@@ -3932,9 +3933,9 @@ export const POST_TENS_UNIT = makeBlogPost({
 
 export const POST_MASSAGE_GUN = makeBlogPost({
   slug: 'best-massage-gun-stroke-spasticity',
-  title: 'Best Massage Guns for Stroke Spasticity: What Works, What to Avoid, and How to Use One Safely',
-  description: 'Percussion therapy can reduce spasticity tone before exercise and improve range of motion post-stroke — if you use the right device in the right areas. Here\'s the honest guide.',
-  h1: 'Best Massage Guns for Stroke Spasticity and Muscle Recovery',
+  title: 'Best Massage Guns for Stroke Recovery: Spasticity, Length & Safety Guide',
+  description: 'Massage gun for stroke recovery — percussion therapy that reduces spasticity, improves muscle length, and preps the affected limb for exercise. A survivor\'s safety-first guide.',
+  h1: 'Best massage gun for stroke recovery and spasticity relief',
   keyword: 'best massage gun stroke spasticity',
   subhead: 'Percussion massage before your PT session can reduce tone enough to get meaningful work done. After exercise it accelerates recovery. But there are areas you must avoid — and a technique that makes the difference.',
   ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
@@ -6565,6 +6566,269 @@ export const POST_LEG_ELEVATION = makeBlogPost({
   },
 });
 
+export const POST_EXERCISE_BIKE_STROKE = makeBlogPost({
+  slug: 'best-exercise-bike-stroke-patient',
+  title: 'Best Exercise Bikes for Stroke Patients: Recumbent, Pedal & Passive Options',
+  description: 'A stroke changes what "cardio" means. Recumbent bikes, under-desk pedal exercisers, and passive motorized cycles each serve a different recovery stage. A 7-year survivor breaks down what works.',
+  h1: 'Best exercise bikes for stroke patients',
+  keyword: 'best exercise bike for stroke patient',
+  extraKeywords: ['recumbent bike stroke recovery', 'pedal exerciser stroke', 'passive exercise bike stroke', 'stationary bike after stroke'],
+  subhead: 'After my stroke at 36, my left leg was too weak to push a regular bike. I started on a passive motorized cycle — the pedals moved my legs, not the other way around. Six months later I graduated to active resistance. Here is the full progression and the equipment that makes it possible.',
+  ctaPrimary: { href: '/recovery/store#recumbent-bike-marcy-1', label: 'Browse exercise bikes' },
+  ctaSecondary: { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Add resistance bands' },
+  image: '/images/blog/recumbent-stationary-bike.jpg',
+  sections: [
+    {
+      h2: 'Why a standard upright bike is usually wrong after stroke',
+      paragraphs: [
+        'Upright bikes require balance, hip stability, and the ability to lift the leg high enough to clear the pedal at top dead center. Most stroke survivors lack one or more of these in early recovery. The risk is not just frustration — it is a fall, a compensatory pattern that reinforces the wrong muscles, or a decision to stop exercising entirely.',
+        'The three alternatives that actually work: recumbent bikes (seated with back support, low step-through), under-desk pedal exercisers (seated, no balance required, minimal resistance), and passive motorized cycles (the machine moves your legs for you). Each serves a different stage.',
+      ],
+    },
+    {
+      h2: 'Stage 1: Passive motorized cycle (0–3 months post-stroke)',
+      paragraphs: [
+        'In the first weeks, the affected leg may not generate enough force to turn a pedal against even minimal resistance. A passive motorized cycle solves this by moving the pedals for you at a controlled RPM. Your job is to let the motion happen — passive range of motion that reduces spasticity, maintains joint flexibility, and preserves the neuromuscular pathway without requiring strength you do not yet have.',
+        'Use 10–15 minutes, twice daily, at the lowest speed setting. The goal is not a workout. The goal is to remind your nervous system what a circular pedaling motion feels like.',
+      ],
+      bullets: [
+        'Passive mode moves the pedals for you',
+        'Controlled RPM prevents joint stress',
+        '10–15 minutes, twice daily, at lowest speed',
+        'Graduate to active mode when strength returns',
+      ],
+    },
+    {
+      h2: 'Stage 2: Under-desk pedal exerciser (1–6 months)',
+      paragraphs: [
+        'Once the affected leg can generate light resistance, an under-desk pedal exerciser is the next step. It sits on the floor in front of a chair — no mounting, no balance, no stepping up. Resistance is typically magnetic and adjustable in small increments. Start at level 1 for 5 minutes. Add one minute per week.',
+        'The seated position is the key safety feature. Your hips are stable, your back is supported, and if fatigue hits you simply stop pedaling. There is no risk of falling off a machine.',
+      ],
+      products: [
+        {
+          name: 'Tabeke Under-Desk Pedal Exerciser',
+          link: 'https://www.amazon.com/dp/B09NS2L9KG',
+          price: '$45.99',
+          note: 'Ultra-quiet magnetic resistance with 8 levels. No assembly required — unfold and pedal. Also in the Recovery Store.',
+        },
+        {
+          name: 'Sunny Health & Fitness Smart Pedal Exerciser',
+          link: 'https://www.amazon.com/dp/B0BPY2W9YP',
+          price: '$129.99',
+          note: 'Bluetooth tracking, adjustable magnetic resistance, and digital display for survivors who want to see progress numerically.',
+        },
+      ],
+      image: {
+        src: '/images/blog/pedal-exerciser-product.jpg',
+        alt: 'Under-desk pedal exerciser on a carpeted floor in front of a chair',
+        caption: 'The under-desk pedal exerciser requires zero balance — just sit and pedal.',
+      },
+    },
+    {
+      h2: 'Stage 3: Recumbent bike (3–12 months and beyond)',
+      paragraphs: [
+        'A recumbent bike is the long-term cardio solution for most stroke survivors. The seat has a backrest. The pedals are in front of you, not below you, so hip flexion is minimal. The step-through frame means you walk through the bike to sit down — no lifting the leg over a high bar.',
+        'Magnetic resistance provides smooth, joint-friendly loading. Start at the lowest setting and increase by one level every two weeks. A 20-minute session at moderate resistance is a realistic goal by month six for most survivors.',
+      ],
+      products: [
+        {
+          name: 'Marcy Recumbent Exercise Bike',
+          link: 'https://www.amazon.com/dp/B002KV383O',
+          price: '$279.99',
+          note: 'Recumbent bike with supportive seat back, low step-through frame, and adjustable magnetic resistance. Also in the Recovery Store.',
+        },
+      ],
+      image: {
+        src: '/images/blog/recumbent-stationary-bike.jpg',
+        alt: 'Recumbent exercise bike with step-through frame and padded back support',
+        caption: 'The recumbent position eliminates the balance and hip-flexion demands of an upright bike.',
+      },
+    },
+    {
+      h2: 'How to progress safely',
+      paragraphs: [
+        'Never increase both duration and resistance in the same week. Pick one variable and hold the other steady. If you add five minutes, keep the resistance the same. If you bump resistance up one level, keep the duration the same. This rule prevents the overuse injuries and fatigue crashes that set survivors back.',
+        'Stop immediately if you feel dizziness, chest discomfort, or unusual shortness of breath. These are not "part of the workout" after stroke — they are warning signs that require medical evaluation before continuing.',
+      ],
+    },
+    {
+      h2: 'When to see a doctor',
+      paragraphs: [
+        'Get clearance before starting any cardio program after stroke. Your neurologist or physiatrist should confirm that blood pressure is controlled, cardiac function is adequate for exertion, and there are no contraindications (such as uncontrolled arrhythmia or recent stent placement).',
+        'Seek immediate care if exercise triggers chest pain, severe shortness of breath, fainting, or neurological symptoms (sudden weakness, vision changes, speech difficulty). These are not normal exercise responses after stroke.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Can I use a regular upright stationary bike after stroke?', a: 'Most survivors should not start on an upright bike. It requires balance, hip stability, and the ability to lift the affected leg over a high center bar. A recumbent bike or pedal exerciser is safer and more effective in early and mid-recovery.' },
+    { q: 'How long should I pedal per session?', a: 'Start at 5–10 minutes for passive or under-desk cycling. Add 1–2 minutes per week. A 20-minute session is a realistic goal by month 3–6. Quality of movement matters more than duration.' },
+    { q: 'Should I pedal with the affected leg only or both legs?', a: 'Both legs. Bilateral pedaling reinforces cross-hemispheric coordination and prevents the unaffected side from overcompensating. If the affected leg cannot contribute fully, let the passive motor or the unaffected leg carry the load — the affected leg still receives the sensory input.' },
+    { q: 'Can a pedal exerciser replace physical therapy?', a: 'No. A pedal exerciser is a home supplement to structured PT, not a replacement. It builds endurance and reinforces motion patterns that PT teaches. Use it between sessions and on days when PT is not scheduled.' },
+    { q: 'What resistance level should I start at?', a: 'Level 1 on any magnetic system. The goal in the first month is motion quality, not workload. If you can pedal smoothly for 10 minutes at level 1 without compensatory trunk sway or breath-holding, you are at the right level.' },
+  ],
+  related: [
+    { href: '/blog/best-stationary-bike-stroke-recovery', label: 'Stationary bike guide', blurb: 'The earlier guide covering basic setup and safety for any bike after stroke.' },
+    { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Resistance bands', blurb: 'The companion strength tool that pairs perfectly with bike cardio.' },
+    { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab', blurb: 'Address the gait issue that makes pedaling asymmetrical.' },
+    { href: '/blog/spasticity-after-stroke', label: 'Spasticity management', blurb: 'Muscle tightness that affects pedaling smoothness and range of motion.' },
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'All exercise bikes, pedal exercisers, and cardio gear in one place.' },
+  ],
+  publishedDate: '2026-07-25',
+  productCard: {
+    title: 'Marcy Recumbent Exercise Bike',
+    description: 'Recumbent bike with supportive seat back, low step-through frame, and adjustable magnetic resistance. The long-term cardio solution for stroke survivors.',
+    link: 'https://www.amazon.com/dp/B002KV383O',
+    label: 'Check Current Price on Amazon',
+    note: 'Curated by Nick Kremers. As an Amazon Associate, SRA earns from qualifying purchases at no extra cost to you.',
+  },
+  bookPromo: {
+    title: 'The full cardio progression is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the complete exercise progression — from passive cycling to active resistance — plus the daily routine that keeps gains permanent.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+export const POST_SHOES_GENDER_STYLE = makeBlogPost({
+  slug: 'shoes-for-stroke-patients-gender-style',
+  title: 'Shoes for Stroke Patients: Best Picks by Gender, Need & Style',
+  description: 'Drop foot, one-handed dressing, and swollen feet change what "shoes" means after stroke. Gender-specific picks for men and women — including sandals, slip-ons, and AFO-compatible options.',
+  h1: 'Shoes for stroke patients by gender, need, and style',
+  keyword: 'shoes for stroke patients',
+  extraKeywords: ['stroke shoes', 'best shoes for stroke patients women', 'best shoes for stroke patients men', 'sandals for stroke patients', 'AFO compatible shoes stroke'],
+  subhead: 'After my stroke at 36, I could not tie laces with my affected hand. My foot was swollen, my ankle was unstable, and my AFO brace required extra depth. Shoes became a medical device with a fashion problem. Here is what works — by gender, by need, and by style.',
+  ctaPrimary: { href: '/recovery/store#shoes-brooks-1', label: 'Browse shoes' },
+  ctaSecondary: { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO and drop foot guide' },
+  image: '/images/blog/brooks-adrenaline-gts-product.jpg',
+  sections: [
+    {
+      h2: 'The four requirements every post-stroke shoe must meet',
+      paragraphs: [
+        'After stroke, a shoe is not a fashion choice — it is a mobility and safety device. The wrong shoe increases fall risk, reinforces compensatory gait, and makes one-handed dressing impossible. The right shoe does the opposite.',
+        'Four non-negotiables: (1) Slip-on or hands-free entry — tying laces with one functional hand is frustrating and often impossible. (2) Wide toe box and extra depth — the affected foot swells during the day, and an AFO brace adds volume. (3) Stable heel counter and supportive midsole — the ankle is weak and the foot may not clear the ground cleanly. (4) Lightweight — a heavy shoe exaggerates the energy cost of walking with a compromised gait.',
+      ],
+    },
+    {
+      h2: 'Best shoes for women after stroke',
+      paragraphs: [
+        'Women\'s stroke recovery shoes must balance support with the reality that many women\'s footwear is narrow, low-volume, and designed for aesthetics over function. These picks break that pattern.',
+      ],
+      products: [
+        {
+          name: 'Brooks Adrenaline GTS — Wide / Extra Depth',
+          link: 'https://www.amazon.com/dp/B0DHR6WR4D',
+          price: '$139.95',
+          note: 'GuideRails holistic support with wide sizing and AFO-compatible depth. Available in men\'s and women\'s widths. Also in the Recovery Store.',
+        },
+        {
+          name: 'Skechers Hands Free Slip-ins',
+          link: 'https://www.amazon.com/dp/B0DGL3NCX2',
+          price: '$85.00',
+          note: 'Step-in design with a heel pillar — no hands, no bending, no reaching required. Available in men\'s and women\'s sizing. The easiest shoe to get on after stroke.',
+        },
+      ],
+    },
+    {
+      h2: 'Best shoes for men after stroke',
+      paragraphs: [
+        'Men\'s shoes for stroke recovery tend to have more depth and width options by default, but the same requirements apply: hands-free entry, AFO compatibility, and a stable heel.',
+      ],
+      products: [
+        {
+          name: 'Brooks Adrenaline GTS — Men\'s Wide',
+          link: 'https://www.amazon.com/dp/B0DHR6WR4D',
+          price: '$139.95',
+          note: 'Same GuideRails support system in men\'s D and 2E widths. Excellent for gait correction and all-day comfort with or without an AFO.',
+        },
+        {
+          name: 'Skechers Hands Free Slip-ins — Men\'s',
+          link: 'https://www.amazon.com/dp/B0DGL3NCX2',
+          price: '$85.00',
+          note: 'Identical step-in technology in men\'s sizing. The easiest on/off experience for survivors with one-sided weakness.',
+        },
+      ],
+    },
+    {
+      h2: 'Sandals for stroke patients: what works and what does not',
+      paragraphs: [
+        'Sandals are appealing in warm weather and for quick trips, but most are unsafe after stroke. Flip-flops offer zero heel stability, no arch support, and a loose fit that turns a mild stumble into a fall. Slide sandals without a back strap are almost as bad — the foot slides forward and the toes grip reflexively, which reinforces spasticity patterns.',
+        'The only sandals that work: models with a firm heel strap, contoured footbed, and adjustable closure (Velcro or buckle) that can accommodate a swollen foot or thin AFO liner. Avoid anything that slips on without a back strap.',
+      ],
+      products: [
+        {
+          name: 'Brooks Adrenaline GTS — Wide/Extra Depth',
+          link: 'https://www.amazon.com/dp/B0DHR6WR4D',
+          price: '$139.95',
+          note: 'For survivors who need a summer shoe with support, a well-ventilated running shoe in wide sizing is safer than most sandals.',
+        },
+      ],
+    },
+    {
+      h2: 'AFO-compatible shoes: what to look for',
+      paragraphs: [
+        'An ankle-foot orthosis adds significant volume inside the shoe. Standard shoes will not accommodate it without crushing the foot or distorting the shoe. Look for: extra depth (at least 5/16 inch deeper than standard), removable insole (to create space for the AFO footplate), wide or extra-wide sizing, and a firm heel counter that does not collapse when the AFO pushes against it.',
+        'Try shoes on in the afternoon, when foot swelling is at its maximum. Walk for 10 minutes before deciding. Pressure points that feel "slight" in the store become blisters and gait compensations at home.',
+      ],
+    },
+    {
+      h2: 'Shoe accessories that help',
+      paragraphs: [
+        'Even the right shoe may need modification. A long-handled shoehorn (14+ inches) lets a survivor with limited reach get the heel in without bending. Elastic shoelaces convert any lace-up shoe into a slip-on — the laces stretch enough to slip the foot in, then rebound to hold the shoe snug. A shoe balancer levels the sound-side shoe when the affected side wears a thicker AFO or walking boot.',
+      ],
+      products: [
+        {
+          name: 'EasyPulse AFO Brace',
+          link: 'https://www.amazon.com/dp/B0DCVGD2W8',
+          price: '$79.99',
+          note: 'Medical-grade drop foot support that fits in regular shoes. The shoe and the brace work as a system. Also in the Recovery Store.',
+        },
+        {
+          name: 'EvenUp Shoe Balancer',
+          link: 'https://www.amazon.com/dp/B000QSPEOM',
+          price: '$24.99',
+          note: 'Adds height to the sound-side shoe to level hips when wearing a walking boot or AFO. Prevents back and hip pain from asymmetry.',
+        },
+      ],
+    },
+    {
+      h2: 'When to replace post-stroke shoes',
+      paragraphs: [
+        'Stroke recovery shoes wear out faster than pre-stroke shoes because gait is often asymmetrical — one side drags, scuffs, or lands harder. Check the outsole every month for uneven wear. Replace when the heel counter loses stiffness, the insole compresses unevenly, or the outsole is worn smooth on either side. Do not wait for holes.',
+        'Most survivors need replacement every 4–6 months in active recovery. That seems fast, but a worn-out shoe is a fall risk that costs more than a new pair.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Can I wear flip-flops after a stroke?', a: 'No. Flip-flops offer zero heel stability, no arch support, and a loose fit that turns a mild stumble into a fall. The toe-grip reflex they require can reinforce spasticity. Stick to shoes with a firm heel counter and back strap.' },
+    { q: 'What size shoe should I buy after stroke?', a: 'Buy in the afternoon when swelling is maximum. Choose wide or extra-wide if the affected foot swells. If you wear an AFO, look for extra-depth shoes with removable insoles. Try shoes on and walk for 10 minutes before deciding.' },
+    { q: 'Are running shoes good for stroke survivors?', a: 'Yes — if they have the right features. Running shoes with GuideRails or stability systems (like Brooks Adrenaline GTS) provide the heel counter and midsole support that weak ankles need. Avoid minimalist or barefoot-style running shoes.' },
+    { q: 'How do I put shoes on with one hand?', a: 'Use hands-free slip-on shoes (Skechers Slip-ins), elastic no-tie laces, or a long-handled shoehorn. Place the shoe on the floor, slide the foot in, and use the shoehorn to guide the heel without bending.' },
+    { q: 'Can I wear sandals with an AFO brace?', a: 'Most sandals cannot accommodate an AFO. If you need open footwear in warm weather, look for sandals with a firm heel strap, adjustable Velcro closure, and a contoured footbed. A well-ventilated running shoe in wide sizing is often safer.' },
+    { q: 'How often should I replace post-stroke shoes?', a: 'Every 4–6 months during active recovery. Gait asymmetry causes uneven wear that destabilizes the shoe faster. Replace when the heel counter softens, the insole compresses unevenly, or the outsole wears smooth.' },
+  ],
+  related: [
+    { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes overview', blurb: 'The foundational guide to footwear after stroke — what changes and why.' },
+    { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO and drop foot', blurb: 'The brace that makes shoe selection necessary in the first place.' },
+    { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab gear', blurb: 'Exercises and tools that strengthen the ankle and improve gait.' },
+    { href: '/blog/best-leg-elevation-pillow-stroke-recovery', label: 'Leg elevation pillow', blurb: 'Reduces the foot swelling that changes shoe fit throughout the day.' },
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'All shoes, AFOs, balancers, and accessories in one place.' },
+  ],
+  publishedDate: '2026-07-25',
+  productCard: {
+    title: 'Brooks Adrenaline GTS — Wide/Extra Depth',
+    description: 'GuideRails support system, wide sizing, and AFO-compatible depth. The shoe that made walking with drop foot feel possible again.',
+    link: 'https://www.amazon.com/dp/B0DHR6WR4D',
+    label: 'Check Current Price on Amazon',
+    note: 'Curated by Nick Kremers. As an Amazon Associate, SRA earns from qualifying purchases at no extra cost to you.',
+  },
+  bookPromo: {
+    title: 'The full gait and footwear chapter is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers drop foot, AFO selection, the shoes that actually work, and the daily walking practice that rebuilds confidence.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
 // =============================================================================
 // Aggregator
 // =============================================================================
@@ -6600,6 +6864,7 @@ export const ALL_BLOG_POSTS: SsrPageConfig[] = [
   POST_COMPLETE_HOME_KIT,
   POST_ROBOTIC_GLOVE,
   POST_BEST_SHOES,
+  POST_SHOES_GENDER_STYLE,
   POST_WALKING_AIDS,
   POST_HAND_THERAPY_TOOLS,
   POST_MOBILITY_SCOOTER,
@@ -6612,6 +6877,7 @@ export const ALL_BLOG_POSTS: SsrPageConfig[] = [
   POST_BRAIN_BOOKS,
   POST_ELLIPTICAL,
   POST_STATIONARY_BIKE,
+  POST_EXERCISE_BIKE_STROKE,
   POST_TREADMILL,
   POST_GRIP_STRENGTHENER,
   POST_TENS_UNIT,
