@@ -3589,7 +3589,11 @@ export const POST_ELLIPTICAL = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-'best-stationary-bike-stroke-recovery', 'best-treadmill-stroke-recovery', 'best-pedal-exerciser-stroke-recovery', 'gait-training-at-home-after-stroke'],
+{ href: '/blog/best-stationary-bike-stroke-recovery', label: 'Best stationary bike for stroke recovery', blurb: '' },
+    { href: '/blog/best-treadmill-stroke-recovery', label: 'Best treadmill for stroke recovery', blurb: '' },
+    { href: '/blog/best-pedal-exerciser-stroke-recovery', label: 'Best pedal exerciser for stroke recovery', blurb: '' },
+    { href: '/blog/gait-training-at-home-after-stroke', label: 'Gait training at home after stroke', blurb: '' },
+  ],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Schwinn 430 Elliptical',
@@ -3659,7 +3663,11 @@ export const POST_STATIONARY_BIKE = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-'best-elliptical-machine-stroke-recovery', 'best-pedal-exerciser-stroke-recovery', 'best-treadmill-stroke-recovery', 'stroke-recovery-fatigue'],
+{ href: '/blog/best-elliptical-machine-stroke-recovery', label: 'Best elliptical machine for stroke recovery', blurb: '' },
+    { href: '/blog/best-pedal-exerciser-stroke-recovery', label: 'Best pedal exerciser for stroke recovery', blurb: '' },
+    { href: '/blog/best-treadmill-stroke-recovery', label: 'Best treadmill for stroke recovery', blurb: '' },
+    { href: '/blog/stroke-recovery-fatigue', label: 'Stroke recovery fatigue', blurb: '' },
+  ],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Marcy Recumbent Bike ME-709',
@@ -3734,7 +3742,11 @@ export const POST_TREADMILL = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-'best-elliptical-machine-stroke-recovery', 'best-stationary-bike-stroke-recovery', 'gait-training-at-home-after-stroke', 'best-afo-brace-drop-foot'],
+{ href: '/blog/best-elliptical-machine-stroke-recovery', label: 'Best elliptical machine for stroke recovery', blurb: '' },
+    { href: '/blog/best-stationary-bike-stroke-recovery', label: 'Best stationary bike for stroke recovery', blurb: '' },
+    { href: '/blog/gait-training-at-home-after-stroke', label: 'Gait training at home after stroke', blurb: '' },
+    { href: '/blog/best-afo-brace-drop-foot', label: 'Best AFO brace for drop foot', blurb: '' },
+  ],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'NordicTrack T 6.5 S Treadmill',
@@ -3814,7 +3826,11 @@ export const POST_GRIP_STRENGTHENER = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-'best-hand-therapy-tools-stroke-recovery', 'best-robotic-glove-stroke-recovery', 'best-push-up-bars-stroke-recovery', 'stroke-spasticity-management'],
+{ href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools for stroke recovery', blurb: '' },
+    { href: '/blog/best-robotic-glove-stroke-recovery', label: 'Best robotic glove for stroke recovery', blurb: '' },
+    { href: '/blog/best-push-up-bars-stroke-recovery', label: 'Best push-up bars for stroke recovery', blurb: '' },
+    { href: '/blog/stroke-spasticity-management', label: 'Spasticity management after stroke', blurb: '' },
+  ],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Gripmaster Pro Hand Exerciser',
@@ -3894,7 +3910,11 @@ export const POST_TENS_UNIT = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-'best-hand-therapy-tools-stroke-recovery', 'best-massage-gun-stroke-spasticity', 'stroke-spasticity-management', 'best-robotic-glove-stroke-recovery'],
+{ href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools for stroke recovery', blurb: '' },
+    { href: '/blog/best-massage-gun-stroke-spasticity', label: 'Best massage gun for stroke spasticity', blurb: '' },
+    { href: '/blog/stroke-spasticity-management', label: 'Spasticity management after stroke', blurb: '' },
+    { href: '/blog/best-robotic-glove-stroke-recovery', label: 'Best robotic glove for stroke recovery', blurb: '' },
+  ],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'TENS 7000 Digital TENS Unit',
@@ -3967,7 +3987,11 @@ export const POST_MASSAGE_GUN = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-'best-tens-unit-stroke-recovery', 'best-hand-therapy-tools-stroke-recovery', 'stroke-spasticity-management', 'best-robotic-glove-stroke-recovery'],
+{ href: '/blog/best-tens-unit-stroke-recovery', label: 'Best TENS unit for stroke recovery', blurb: '' },
+    { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools for stroke recovery', blurb: '' },
+    { href: '/blog/stroke-spasticity-management', label: 'Spasticity management after stroke', blurb: '' },
+    { href: '/blog/best-robotic-glove-stroke-recovery', label: 'Best robotic glove for stroke recovery', blurb: '' },
+  ],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Theragun Pro Percussive Therapy Device',
@@ -4034,7 +4058,11 @@ export const POST_SMART_HOME = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-'best-adaptive-eating-tools-stroke', 'stroke-memory-cognitive-recovery', 'stroke-recovery-fatigue', 'best-brain-games-books-stroke-cognitive-recovery'],
+{ href: '/blog/best-adaptive-eating-tools-stroke', label: 'Best adaptive eating tools for stroke', blurb: '' },
+    { href: '/blog/stroke-memory-cognitive-recovery', label: 'Memory and cognitive recovery after stroke', blurb: '' },
+    { href: '/blog/stroke-recovery-fatigue', label: 'Stroke recovery fatigue', blurb: '' },
+    { href: '/blog/best-brain-games-books-stroke-cognitive-recovery', label: 'Best brain games and books for stroke cognitive recovery', blurb: '' },
+  ],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Amazon Echo Show 8',
@@ -4102,7 +4130,11 @@ export const POST_RED_LIGHT = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-'best-tens-unit-stroke-recovery', 'best-massage-gun-stroke-spasticity', 'best-hand-therapy-tools-stroke-recovery', 'stroke-spasticity-management'],
+{ href: '/blog/best-tens-unit-stroke-recovery', label: 'Best TENS unit for stroke recovery', blurb: '' },
+    { href: '/blog/best-massage-gun-stroke-spasticity', label: 'Best massage gun for stroke spasticity', blurb: '' },
+    { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools for stroke recovery', blurb: '' },
+    { href: '/blog/stroke-spasticity-management', label: 'Spasticity management after stroke', blurb: '' },
+  ],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Mito Red Light MitoPRO 300',
@@ -4174,7 +4206,11 @@ export const POST_ADJUSTABLE_BED = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-'stroke-spasticity-management', 'best-hand-therapy-tools-stroke-recovery', 'stroke-recovery-fatigue', 'best-tens-unit-stroke-recovery'],
+{ href: '/blog/stroke-spasticity-management', label: 'Spasticity management after stroke', blurb: '' },
+    { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools for stroke recovery', blurb: '' },
+    { href: '/blog/stroke-recovery-fatigue', label: 'Stroke recovery fatigue', blurb: '' },
+    { href: '/blog/best-tens-unit-stroke-recovery', label: 'Best TENS unit for stroke recovery', blurb: '' },
+  ],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'InteVision Foam Wedge Bed Pillow',
@@ -4250,7 +4286,11 @@ export const POST_COMPRESSION = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-'best-ankle-brace-stroke-survivor', 'best-adjustable-bed-wedge-pillow-stroke-recovery', 'best-wheelchair-stroke-survivor', 'stroke-spasticity-management'],
+{ href: '/blog/best-ankle-brace-stroke-survivor', label: 'Best ankle brace for stroke survivors', blurb: '' },
+    { href: '/blog/best-adjustable-bed-wedge-pillow-stroke-recovery', label: 'Best adjustable bed wedge pillow for stroke recovery', blurb: '' },
+    { href: '/blog/best-wheelchair-stroke-survivor', label: 'Best wheelchair for stroke survivors', blurb: '' },
+    { href: '/blog/stroke-spasticity-management', label: 'Spasticity management after stroke', blurb: '' },
+  ],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Physix Gear Compression Socks (20–30 mmHg)',
@@ -4320,7 +4360,11 @@ export const POST_STANDING_DESK = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-'best-smart-home-devices-stroke-survivors', 'stroke-recovery-fatigue', 'stroke-memory-cognitive-recovery', 'best-stationary-bike-stroke-recovery'],
+{ href: '/blog/best-smart-home-devices-stroke-survivors', label: 'Best smart home devices for stroke survivors', blurb: '' },
+    { href: '/blog/stroke-recovery-fatigue', label: 'Stroke recovery fatigue', blurb: '' },
+    { href: '/blog/stroke-memory-cognitive-recovery', label: 'Memory and cognitive recovery after stroke', blurb: '' },
+    { href: '/blog/best-stationary-bike-stroke-recovery', label: 'Best stationary bike for stroke recovery', blurb: '' },
+  ],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'FlexiSpot E7 Electric Standing Desk',
@@ -4388,7 +4432,11 @@ export const POST_WEIGHTED_VEST = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-'best-treadmill-stroke-recovery', 'best-balance-board-stroke-recovery', 'best-elliptical-machine-stroke-recovery', 'gait-training-at-home-after-stroke'],
+{ href: '/blog/best-treadmill-stroke-recovery', label: 'Best treadmill for stroke recovery', blurb: '' },
+    { href: '/blog/best-balance-board-stroke-recovery', label: 'Best balance board for stroke recovery', blurb: '' },
+    { href: '/blog/best-elliptical-machine-stroke-recovery', label: 'Best elliptical machine for stroke recovery', blurb: '' },
+    { href: '/blog/gait-training-at-home-after-stroke', label: 'Gait training at home after stroke', blurb: '' },
+  ],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'ZFOsports Weighted Vest',
@@ -4465,7 +4513,11 @@ export const POST_SPEECH_THERAPY = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-'best-smart-home-devices-stroke-survivors', 'stroke-memory-cognitive-recovery', 'best-brain-games-books-stroke-cognitive-recovery', 'stroke-recovery-fatigue'],
+{ href: '/blog/best-smart-home-devices-stroke-survivors', label: 'Best smart home devices for stroke survivors', blurb: '' },
+    { href: '/blog/stroke-memory-cognitive-recovery', label: 'Memory and cognitive recovery after stroke', blurb: '' },
+    { href: '/blog/best-brain-games-books-stroke-cognitive-recovery', label: 'Best brain games and books for stroke cognitive recovery', blurb: '' },
+    { href: '/blog/stroke-recovery-fatigue', label: 'Stroke recovery fatigue', blurb: '' },
+  ],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'Constant Therapy Brain Rehab App',
@@ -4544,7 +4596,11 @@ export const POST_THRESHOLD_RAMP = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-'best-walking-aids-stroke-survivors', 'best-wheelchair-stroke-survivor', 'best-shower-safety-products-stroke', 'best-afo-brace-drop-foot'],
+{ href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors', blurb: '' },
+    { href: '/blog/best-wheelchair-stroke-survivor', label: 'Best wheelchair for stroke survivors', blurb: '' },
+    { href: '/blog/best-shower-safety-products-stroke', label: 'Best shower safety products for stroke', blurb: '' },
+    { href: '/blog/best-afo-brace-drop-foot', label: 'Best AFO brace for drop foot', blurb: '' },
+  ],
   publishedDate: '2026-06-06',
   productCard: {
     name: 'EZ-ACCESS TRANSITIONS Angled Entry Ramp',
