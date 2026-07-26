@@ -592,6 +592,18 @@ export default function RecoveryBlogPost() {
               {formatNumber(post.viewCount)} views
             </span>
           </div>
+
+          {/* Featured image */}
+          {post.heroImageUrl && (
+            <div className="mt-8 -mb-4">
+              <img
+                src={post.heroImageUrl}
+                alt={post.title}
+                className="w-full max-h-[420px] object-cover rounded-lg border border-[#333] shadow-lg"
+                loading="eager"
+              />
+            </div>
+          )}
         </div>
       </div>
 
