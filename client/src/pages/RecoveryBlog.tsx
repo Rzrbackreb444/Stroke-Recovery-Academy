@@ -194,15 +194,32 @@ export default function RecoveryBlog() {
                     className="bg-[#1a1a1a] border-[#333] overflow-hidden hover:border-[#E2741B]/50 transition-all duration-200 cursor-pointer group h-full"
                     data-testid={`card-featured-${post.id}`}
                   >
-                    <div className="h-48 bg-gradient-to-br from-[#E2741B]/20 to-[#0D0D0D] flex items-center justify-center relative">
-                      <BookOpen className="h-16 w-16 text-[#E2741B]/50 group-hover:scale-110 transition-transform" />
-                      <div className="absolute top-4 left-4">
-                        <Badge className="bg-[#E2741B] text-black">
-                          <Sparkles className="h-3 w-3 mr-1" />
-                          Featured
-                        </Badge>
+                    {post.heroImageUrl ? (
+                      <div className="h-48 bg-[#111] flex items-center justify-center overflow-hidden relative">
+                        <img
+                          src={post.heroImageUrl}
+                          alt={post.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                        <div className="absolute top-4 left-4">
+                          <Badge className="bg-[#E2741B] text-black">
+                            <Sparkles className="h-3 w-3 mr-1" />
+                            Featured
+                          </Badge>
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="h-48 bg-gradient-to-br from-[#E2741B]/20 to-[#0D0D0D] flex items-center justify-center relative">
+                        <BookOpen className="h-16 w-16 text-[#E2741B]/50 group-hover:scale-110 transition-transform" />
+                        <div className="absolute top-4 left-4">
+                          <Badge className="bg-[#E2741B] text-black">
+                            <Sparkles className="h-3 w-3 mr-1" />
+                            Featured
+                          </Badge>
+                        </div>
+                      </div>
+                    )}
                     <div className="p-6">
                       <Badge className={categoryColors[post.category] || "bg-gray-500/20 text-gray-400"}>
                         {post.category}
@@ -261,9 +278,20 @@ export default function RecoveryBlog() {
                   className="bg-[#1a1a1a] border-[#333] overflow-hidden hover:border-[#E2741B]/50 transition-all duration-200 cursor-pointer group h-full flex flex-col"
                   data-testid={`card-post-${post.id}`}
                 >
-                  <div className="h-32 bg-gradient-to-br from-[#E2741B]/10 to-[#0D0D0D] flex items-center justify-center flex-shrink-0">
-                    <BookOpen className="h-10 w-10 text-[#E2741B]/30 group-hover:scale-110 transition-transform" />
-                  </div>
+                  {post.heroImageUrl ? (
+                    <div className="h-32 bg-[#111] flex items-center justify-center overflow-hidden flex-shrink-0">
+                      <img
+                        src={post.heroImageUrl}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-32 bg-gradient-to-br from-[#E2741B]/10 to-[#0D0D0D] flex items-center justify-center flex-shrink-0">
+                      <BookOpen className="h-10 w-10 text-[#E2741B]/30 group-hover:scale-110 transition-transform" />
+                    </div>
+                  )}
                   <div className="p-5 flex flex-col flex-1">
                     <Badge className={`${categoryColors[post.category] || "bg-gray-500/20 text-gray-400 border-gray-500/30"} self-start mb-2`}>
                       {post.category}
