@@ -80,6 +80,10 @@ export interface SsrPageConfig {
   };
   /** Optional featured image URL for og:image, hero image, and schema */
   image?: string;
+  /** Optional custom alt text for the featured image; falls back to title */
+  imageAlt?: string;
+  /** Optional SEO cluster name for internal link injection */
+  cluster?: string;
   /** Optional video — enables VideoObject schema for rich video snippets */
   video?: {
     name: string;
@@ -155,6 +159,7 @@ function buildArticleSchema(cfg: SsrPageConfig): object {
     ? (typeof firstSectionImage === 'string' ? firstSectionImage : firstSectionImage.src)
     : null);
   const imageUrl = chosenImage ? `${SITE_URL}${chosenImage}` : `${SITE_URL}/og-image.jpg`;
+  const imageAlt = cfg.imageAlt || cfg.title;
   return {
     '@context': 'https://schema.org',
     '@type': cfg.schemaType === 'MedicalWebPage' ? 'MedicalWebPage' : 'Article',
@@ -181,7 +186,13 @@ function buildArticleSchema(cfg: SsrPageConfig): object {
       },
     },
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
-    image: imageUrl,
+    image: {
+      '@type': 'ImageObject',
+      url: imageUrl,
+      width: 1200,
+      height: 630,
+      caption: imageAlt,
+    },
     ...(cfg.keywords && cfg.keywords.length > 0 ? { keywords: cfg.keywords.join(', ') } : {}),
     ...(cfg.schemaType === 'MedicalWebPage' ? {
       medicalAudience: { '@type': 'MedicalAudience', audienceType: 'Patient' },
@@ -741,7 +752,7 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:type" content="image/png" />
-<meta property="og:image:alt" content="${escAttr(cfg.title)}" />
+<meta property="og:image:alt" content="${escAttr(cfg.imageAlt || cfg.title)}" />
 <meta property="og:site_name" content="Stroke Recovery Academy" />
 <meta property="og:locale" content="en_US" />
 <meta property="article:author" content="Nick Kremers" />
@@ -752,7 +763,7 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 <meta name="twitter:title" content="${escAttr(cfg.title)}" />
 <meta name="twitter:description" content="${escAttr(cfg.description)}" />
 <meta name="twitter:image" content="${cfg.image ? (cfg.image.startsWith('http') ? cfg.image : `${SITE_URL}${cfg.image}`) : `${SITE_URL}/og-image-1200x630.png`}" />
-<meta name="twitter:image:alt" content="${escAttr(cfg.title)}" />
+<meta name="twitter:image:alt" content="${escAttr(cfg.imageAlt || cfg.title)}" />
 <meta name="theme-color" content="#0D0D0D" />
 <link rel="icon" href="/favicon.ico" sizes="any" />
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
@@ -774,13 +785,13 @@ ${renderHeader()}
 <main class="sra-page">
   ${renderBreadcrumbs(cfg)}
   <div class="sra-hero">
-    ${cfg.image ? `<img src="${cfg.image}" alt="${escAttr(cfg.title)}" class="sra-hero-img" loading="eager" />` : ''}
+    ${cfg.image ? `<img src="${cfg.image}" alt="${escAttr(cfg.imageAlt || cfg.title)}" class="sra-hero-img" loading="eager" />` : ''}
     ${hero.eyebrow ? `<div class="sra-eyebrow">${esc(hero.eyebrow)}</div>` : ''}
     <h1>${esc(cfg.h1)}</h1>
     <p>${esc(hero.subhead)}</p>
     <div class="sra-cta-row">
-      <a href="${escAttr(ctaPrimary.href)}" class="sra-btn-primary">${esc(ctaPrimary.label)}</a>
-      ${ctaSecondary ? `<a href="${escAttr(ctaSecondary.href)}" class="sra-btn-secondary">${esc(ctaSecondary.label)}</a>` : ''}
+      <a href="${escAttr(tagAmazonLink(ctaPrimary.href))}" class="sra-btn-primary">${esc(ctaPrimary.label)}</a>
+      ${ctaSecondary ? `<a href="${escAttr(tagAmazonLink(ctaSecondary.href))}" class="sra-btn-secondary">${esc(ctaSecondary.label)}</a>` : ''}
     </div>
   </div>
 
@@ -820,7 +831,7 @@ ${renderHeader()}
   <section class="sra-affiliate" style="border-color: var(--sra-gold);">
     <h2 style="color: var(--sra-gold);">${esc(bookPromo.title)}</h2>
     <p>${esc(bookPromo.description)}</p>
-    <a href="${escAttr(bookPromo.link)}" class="sra-btn-primary">${esc(bookPromo.label)}</a>
+    <a href="${escAttr(tagAmazonLink(bookPromo.link))}" class="sra-btn-primary">${esc(bookPromo.label)}</a>
   </section>
   ` : ''}
 
