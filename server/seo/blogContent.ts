@@ -35,6 +35,10 @@ interface BlogPostInput {
   };
   /** Optional featured image URL for og:image and hero */
   image?: string;
+  /** Optional descriptive alt text for the featured image (defaults to title) */
+  imageAlt?: string;
+  /** Optional SEO cluster name for auto-internal-linking related posts */
+  cluster?: string;
   /** Optional video metadata — enables VideoObject schema for rich video snippets */
   video?: {
     name: string;
@@ -47,8 +51,110 @@ interface BlogPostInput {
   };
 }
 
+// Registry used for post-load cluster link injection
+const BLOG_POST_REGISTRY: SsrPageConfig[] = [];
+
+// SEO cluster mapping — groups related posts so they automatically cross-link
+const SLUG_TO_CLUSTER: Record<string, string> = {
+  // Mobility & transfers
+  'gait-belt-for-stroke-recovery': 'mobility',
+  'transfer-sling-sit-to-stand-stroke': 'mobility',
+  'best-walking-aids-stroke-survivors': 'mobility',
+  'best-wheelchair-stroke-survivor': 'mobility',
+  'best-mobility-scooter-stroke-survivor': 'mobility',
+  'best-walker-stroke-survivors': 'mobility',
+  'parallel-bars-stroke-recovery-home': 'mobility',
+  'stair-lift-stroke-survivors': 'mobility',
+  'best-sit-to-stand-lift-stroke-recovery': 'mobility',
+  'gait-training-home-stroke-recovery': 'mobility',
+  // Lower limb & foot/ankle
+  'foot-drop-rehab-equipment-review': 'lower-limb',
+  'afo-vs-electric-ankle-trainer': 'lower-limb',
+  'best-ankle-brace-stroke-recovery': 'lower-limb',
+  'best-balance-board-stroke-recovery': 'lower-limb',
+  'best-shoes-stroke-survivors': 'lower-limb',
+  'shoes-for-stroke-patients-gender-style': 'lower-limb',
+  'brooks-shoes-stroke-recovery-survivor-review': 'lower-limb',
+  // Upper limb & hand
+  'best-hand-therapy-tools-stroke-recovery': 'upper-limb',
+  'best-robotic-glove-stroke-recovery': 'upper-limb',
+  'spasticity-hand-splint-stroke': 'upper-limb',
+  'mirror-therapy-stroke-hand-recovery': 'upper-limb',
+  'saebo-stroke-recovery-review': 'upper-limb',
+  'best-grip-strengthener-stroke-recovery': 'upper-limb',
+  // Fitness & cardio
+  'best-resistance-bands-stroke-recovery': 'fitness',
+  'best-elliptical-machine-stroke-recovery': 'fitness',
+  'best-stationary-bike-stroke-recovery': 'fitness',
+  'best-exercise-bike-stroke-patient': 'fitness',
+  'best-treadmill-stroke-recovery': 'fitness',
+  'best-pedal-exerciser-stroke-recovery': 'fitness',
+  'best-home-gym-stations-stroke-recovery': 'fitness',
+  'best-weighted-vest-stroke-recovery': 'fitness',
+  'hydrotherapy-hot-tub-stroke-recovery': 'fitness',
+  'push-up-bars-stroke-recovery': 'fitness',
+  // Home safety & independence
+  'shower-safety-stroke-survivor': 'home-safety',
+  'best-adaptive-eating-utensils-stroke': 'home-safety',
+  'best-smart-home-devices-stroke-survivors': 'home-safety',
+  'complete-stroke-recovery-home-kit': 'home-safety',
+  'stroke-recovery-gift-guide': 'home-safety',
+  'threshold-ramp-stroke-recovery': 'home-safety',
+  'best-blood-pressure-monitor-stroke-survivor': 'home-safety',
+  // Sleep & circulation
+  'cpap-machine-stroke-survivor': 'sleep-circulation',
+  'red-light-therapy-stroke-recovery': 'sleep-circulation',
+  'best-adjustable-bed-stroke-recovery': 'sleep-circulation',
+  'best-compression-socks-stroke-recovery': 'sleep-circulation',
+  'best-tens-unit-stroke-recovery': 'sleep-circulation',
+  'best-massage-gun-stroke-recovery': 'sleep-circulation',
+  'best-leg-elevation-pillow-stroke-recovery': 'sleep-circulation',
+  // Recovery fundamentals
+  'how-long-does-stroke-rehab-take': 'recovery-basics',
+  'can-you-fully-recover-from-a-stroke': 'recovery-basics',
+  'signs-of-a-second-stroke': 'recovery-basics',
+  'how-to-prevent-a-second-stroke': 'recovery-basics',
+  'tia-vs-stroke': 'recovery-basics',
+  'ischemic-vs-hemorrhagic-stroke': 'recovery-basics',
+  'can-you-drive-after-a-stroke': 'recovery-basics',
+  'best-foods-for-stroke-recovery': 'recovery-basics',
+  'fatigue-after-stroke': 'recovery-basics',
+  'spasticity-after-stroke': 'recovery-basics',
+  'memory-problems-after-stroke': 'recovery-basics',
+  'why-do-stroke-survivors-cry-easily': 'recovery-basics',
+  'supplements-for-stroke-recovery': 'recovery-basics',
+  'online-stroke-recovery-coach': 'recovery-basics',
+  'speech-therapy-stroke-recovery': 'recovery-basics',
+  'best-brain-games-books-stroke-cognitive-recovery': 'recovery-basics',
+};
+
+function injectClusterLinks(): void {
+  // Build slug -> cfg index from registry
+  const bySlug: Record<string, SsrPageConfig> = {};
+  for (const cfg of BLOG_POST_REGISTRY) {
+    bySlug[cfg.url.replace('/blog/', '')] = cfg;
+  }
+  for (const cfg of BLOG_POST_REGISTRY) {
+    const cluster = cfg.cluster;
+    if (!cluster) continue;
+    const existing = new Set(cfg.related.map(r => r.href));
+    for (const [slug, peer] of Object.entries(bySlug)) {
+      if (slug === cfg.url.replace('/blog/', '')) continue;
+      if (peer.cluster !== cluster) continue;
+      const href = `/blog/${slug}`;
+      if (existing.has(href)) continue;
+      cfg.related.push({
+        href,
+        label: peer.h1,
+        blurb: peer.description.slice(0, 120),
+      });
+      existing.add(href);
+    }
+  }
+}
+
 function makeBlogPost(p: BlogPostInput): SsrPageConfig {
-  return {
+  const cfg: SsrPageConfig = {
     url: `/blog/${p.slug}`,
     title: p.title,
     description: p.description,
@@ -73,8 +179,12 @@ function makeBlogPost(p: BlogPostInput): SsrPageConfig {
     productCard: p.productCard,
     bookPromo: p.bookPromo,
     image: p.image,
+    imageAlt: p.imageAlt,
+    cluster: p.cluster || SLUG_TO_CLUSTER[p.slug],
     video: p.video,
   };
+  BLOG_POST_REGISTRY.push(cfg);
+  return cfg;
 }
 
 // =============================================================================
@@ -4090,6 +4200,8 @@ export const POST_SMART_HOME = makeBlogPost({
   h1: 'Best Smart Home Devices for Stroke Survivors',
   keyword: 'smart home devices stroke survivors independence',
   subhead: 'Controlling your home without two working hands, clear speech, or unlimited energy isn\'t a luxury — it\'s a functional independence goal. Here\'s the technology that closes the gap.',
+  image: '/images/blog/smart-home-stroke-survivor.png',
+  imageAlt: 'Amazon Echo Show smart speaker on a nightstand for voice-controlled independence after stroke',
   ctaPrimary: { label: 'Start recovering', link: '/get-started' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
   sections: [
@@ -5988,6 +6100,8 @@ export const POST_GAIT_BELT = makeBlogPost({
   keyword: 'gait belt for stroke recovery',
   extraKeywords: ['gait belt stroke', 'transfer belt', 'gait belt how to use', 'fall prevention stroke'],
   subhead: 'One in three survivors falls in the first year. A gait belt turns a terrifying transfer into a controlled one — for you and whoever helps you.',
+  image: '/images/blog/gait-belt-stroke-recovery.png',
+  imageAlt: 'Caregiver using a gait belt to help a stroke survivor stand safely during a home transfer',
   ctaPrimary: { href: '/recovery/store#gait-belt-1', label: 'See survivor-tested gait belts' },
   ctaSecondary: { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home' },
   sections: [
@@ -6101,6 +6215,8 @@ export const POST_TRANSFER_SLING = makeBlogPost({
   keyword: 'transfer sling for stroke',
   extraKeywords: ['sit to stand aid stroke', 'patient transfer sling', 'sit to stand lift', 'safe transfer stroke survivor'],
   subhead: 'Manual transfers hurt backs and cause falls. The right sling lets a caregiver help you stand without yanking on a weak arm.',
+  image: '/images/blog/transfer-sling-stroke-recovery.png',
+  imageAlt: 'Padded sit-to-stand transfer sling supporting a stroke survivor during a safe transfer',
   ctaPrimary: { href: '/recovery/store#transfer-sling-1', label: 'See transfer slings & aids' },
   ctaSecondary: { href: '/blog/gait-belt-for-stroke-recovery', label: 'When to use a gait belt instead' },
   sections: [
@@ -6197,6 +6313,8 @@ export const POST_HAND_SPLINT = makeBlogPost({
   keyword: 'spasticity hand splint stroke',
   extraKeywords: ['resting hand splint', 'anti-spasticity splint', 'stroke hand contracture', 'stroke hand curling'],
   subhead: 'A spastic hand that lives in a fist can stiffen into a permanent contracture. A resting splint holds it open so the tissue stays long enough to keep training.',
+  image: '/images/blog/hand-splint-stroke-recovery.png',
+  imageAlt: "Resting hand splint holding a stroke survivor's hand open to prevent spasticity contracture",
   ctaPrimary: { href: '/recovery/store#spasticity-splint-1', label: 'See anti-spasticity hand splints' },
   ctaSecondary: { href: '/blog/spasticity-after-stroke', label: 'Managing spasticity after stroke' },
   sections: [
@@ -6293,6 +6411,7 @@ export const POST_WALKER = makeBlogPost({
   ctaPrimary: { href: '/recovery/store#walker-tamubaks-1', label: 'See survivor-tested walkers' },
   ctaSecondary: { href: '/blog/best-walking-aids-stroke-survivors', label: 'Compare canes and rollators' },
   image: '/images/blog/survivor-walker-scene.png',
+  imageAlt: 'Stroke survivor using a rollator walker for safe indoor mobility with caregiver support',
   sections: [
     {
       h2: 'Why standard walkers fail stroke survivors',
@@ -6386,6 +6505,7 @@ export const POST_SIT_TO_STAND_LIFT = makeBlogPost({
   ctaPrimary: { href: '/recovery/store#sit-to-stand-lift-perlecare-1', label: 'See sit-to-stand lifts' },
   ctaSecondary: { href: '/blog/transfer-sling-sit-to-stand-stroke', label: 'Compare transfer slings' },
   image: '/images/blog/survivor-transfer-scene.png',
+  imageAlt: 'Caregiver using a transfer sling to help a stroke survivor stand from a chair safely',
   sections: [
     {
       h2: 'When a sling is not enough',
@@ -6469,6 +6589,7 @@ export const POST_MIRROR_THERAPY = makeBlogPost({
   ctaPrimary: { href: '/recovery/store#mirror-therapy-box-odoxia-1', label: 'See mirror therapy boxes' },
   ctaSecondary: { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Add hand therapy tools' },
   image: '/images/blog/survivor-mirror-therapy-scene.png',
+  imageAlt: 'Mirror therapy setup for stroke hand recovery with hands positioned on both sides of a mirror',
   sections: [
     {
       h2: 'How mirror therapy actually works',
@@ -6562,6 +6683,7 @@ export const POST_LEG_ELEVATION = makeBlogPost({
   ctaPrimary: { href: '/recovery/store#leg-elevation-pillow-cloudbliss-1', label: 'See leg elevation pillows' },
   ctaSecondary: { href: '/blog/compression-garments-stroke-recovery-edema', label: 'Compare compression garments' },
   image: '/images/blog/survivor-leg-elevation-scene.png',
+  imageAlt: "Leg elevation pillow supporting a stroke survivor's legs while resting on a couch",
   sections: [
     {
       h2: 'Why the affected leg swells after stroke',
@@ -6981,6 +7103,9 @@ export const ALL_BLOG_POSTS: SsrPageConfig[] = [
   POST_ONLINE_COACH,
   POST_BROOKS_SURVIVOR_REVIEW,
 ];
+
+// Inject cross-cluster internal links now that every post is registered
+injectClusterLinks();
 
 // /blog hub page — lists all posts as internal-link cluster
 export const BLOG_HUB: SsrPageConfig = {
