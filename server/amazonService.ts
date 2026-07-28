@@ -1,7 +1,21 @@
 import crypto from 'crypto';
 
-const AMAZON_ACCESS_KEY = process.env.AMAZON_ACCESS_KEY_ID;
-const AMAZON_SECRET_KEY = process.env.AMAZON_SECRET_ACCESS_KEY;
+// PA API requires the raw AWS-style access key ID and secret access key.
+// Some Associates credential exports use different opaque credential formats;
+// don't pass those to PA API because Amazon returns UnrecognizedClient.
+const newAssociatesAccessKey = process.env.AMAZON_ASSOCIATES_CREDENTIAL_ID || '';
+const newAssociatesSecretKey = process.env.AMAZON_ASSOCIATES_SECRET || '';
+const hasRawPaApiCredentials =
+  /^[A-Z0-9]{16,24}$/.test(newAssociatesAccessKey) &&
+  newAssociatesSecretKey.length >= 30 &&
+  !newAssociatesSecretKey.startsWith('amzn');
+
+const AMAZON_ACCESS_KEY = hasRawPaApiCredentials
+  ? newAssociatesAccessKey
+  : process.env.AMAZON_ACCESS_KEY_ID;
+const AMAZON_SECRET_KEY = hasRawPaApiCredentials
+  ? newAssociatesSecretKey
+  : process.env.AMAZON_SECRET_ACCESS_KEY;
 const AMAZON_AFFILIATE_TAG = process.env.AMAZON_AFFILIATE_TAG;
 const AMAZON_HOST = 'webservices.amazon.com';
 const AMAZON_REGION = 'us-east-1';
