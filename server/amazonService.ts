@@ -32,7 +32,8 @@ function getSignedHeaders(
   method: string,
   path: string,
   payload: string,
-  timestamp: string
+  timestamp: string,
+  operation: 'SearchItems' | 'GetItems' = 'SearchItems'
 ): Record<string, string> {
   if (!AMAZON_ACCESS_KEY || !AMAZON_SECRET_KEY) {
     throw new Error('Amazon API credentials not configured');
@@ -46,7 +47,7 @@ function getSignedHeaders(
     `content-type:application/json; charset=utf-8`,
     `host:${AMAZON_HOST}`,
     `x-amz-date:${amzDate}`,
-    `x-amz-target:com.amazon.paapi5.v1.ProductAdvertisingAPIv1.SearchItems`,
+    `x-amz-target:com.amazon.paapi5.v1.ProductAdvertisingAPIv1.${operation}`,
   ].join('\n') + '\n';
 
   const signedHeaders = 'content-encoding;content-type;host;x-amz-date;x-amz-target';
@@ -86,7 +87,7 @@ function getSignedHeaders(
     'content-type': 'application/json; charset=utf-8',
     'host': AMAZON_HOST,
     'x-amz-date': amzDate,
-    'x-amz-target': 'com.amazon.paapi5.v1.ProductAdvertisingAPIv1.SearchItems',
+    'x-amz-target': `com.amazon.paapi5.v1.ProductAdvertisingAPIv1.${operation}`,
     'Authorization': authorizationHeader,
   };
 }
@@ -193,8 +194,7 @@ export async function getAmazonProduct(asin: string): Promise<AmazonProduct | nu
   const timestamp = new Date().toISOString();
   
   try {
-    const headers = getSignedHeaders('POST', path, payload, timestamp);
-    headers['x-amz-target'] = 'com.amazon.paapi5.v1.ProductAdvertisingAPIv1.GetItems';
+    const headers = getSignedHeaders('POST', path, payload, timestamp, 'GetItems');
     
     const response = await fetch(`https://${AMAZON_HOST}${path}`, {
       method: 'POST',
@@ -203,6 +203,8 @@ export async function getAmazonProduct(asin: string): Promise<AmazonProduct | nu
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Amazon API error:', response.status, errorText);
       return null;
     }
 
