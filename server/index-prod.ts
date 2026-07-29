@@ -14,6 +14,9 @@ export async function serveStatic(app: Express, _server: Server) {
     );
   }
 
+  // Keep repository-level media available in production builds too. Without
+  // this mount, a missing built asset falls through to the SPA HTML shell.
+  app.use("/images", express.static(path.resolve(import.meta.dirname, "..", "public", "images")));
   app.use(express.static(distPath));
 
   // fall through to index.html if the file doesn't exist (with per-route meta injection)
@@ -52,6 +55,7 @@ process.on("unhandledRejection", (reason: unknown) => {
     const fallbackApp = express();
     const distPath = path.resolve(import.meta.dirname, "public");
     if (fs.existsSync(distPath)) {
+      fallbackApp.use("/images", express.static(path.resolve(import.meta.dirname, "..", "public", "images")));
       fallbackApp.use(express.static(distPath));
       fallbackApp.use("*", (_req, res) => {
         res.sendFile(path.resolve(distPath, "index.html"));

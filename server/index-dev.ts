@@ -3,13 +3,18 @@ import path from "node:path";
 import { type Server } from "node:http";
 
 import { nanoid } from "nanoid";
-import { type Express } from "express";
+import express, { type Express } from "express";
 import { createServer as createViteServer, createLogger } from "vite";
 
 import viteConfig from "../vite.config";
 import runApp from "./app";
 
 export async function setupVite(app: Express, server: Server) {
+  // The blog and recovery catalogs use the repository-level public/images
+  // directory. Mount it before Vite's SPA fallback so missing assets never
+  // receive index.html as a 200 response.
+  app.use("/images", express.static(path.resolve(import.meta.dirname, "..", "public", "images")));
+
   const viteLogger = createLogger();
   const serverOptions = {
     middlewareMode: true,

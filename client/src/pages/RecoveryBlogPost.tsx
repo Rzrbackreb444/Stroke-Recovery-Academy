@@ -15,7 +15,7 @@ import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import {
   ArrowLeft, Clock, Calendar, User, Eye, Heart,
   Share2, BookOpen, ArrowRight, Twitter, Linkedin,
-  Link2, ShieldCheck, List, ChevronDown, ChevronUp, Star
+  Link2, ShieldCheck, List, ChevronDown, ChevronUp, Star, ShoppingBag
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { buildAmazonUrl } from "@/lib/amazonLink";
@@ -609,6 +609,18 @@ export default function RecoveryBlogPost() {
 
       {/* Content grid — article + TOC sidebar */}
       <div className="max-w-6xl mx-auto px-4 py-10">
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-lg border border-[#E2741B]/40 bg-[#E2741B]/10 px-5 py-4">
+          <div>
+            <p className="font-semibold text-white">Looking for tools to support recovery?</p>
+            <p className="text-sm text-gray-400">Browse mobility aids, therapy tools, adaptive equipment, and brain games selected for survivors.</p>
+          </div>
+          <Link href="/recovery/store">
+            <Button className="bg-[#E2741B] text-black font-semibold whitespace-nowrap hover:bg-[#F08A2E]">
+              <ShoppingBag className="h-4 w-4 mr-2" />
+              Visit Recovery Store
+            </Button>
+          </Link>
+        </div>
         {productsForSlug(post?.slug).length > 0 && (
           <div className="mb-8 text-xs text-gray-500 bg-[#1a1a1a] border border-[#333] rounded-md px-4 py-3" data-testid="banner-affiliate-disclosure">
             As an Amazon Associate, Stroke Recovery Academy earns from qualifying purchases. No cost to you.

@@ -186,28 +186,17 @@ function ProductCard({ product, tag, configReady }: { product: Product; tag: str
           )}
           
           <div className="pt-2">
-            {configReady ? (
-              <Button
-                asChild
-                variant="outline"
-                className="border-[#E2741B] text-[#E2741B] hover:bg-[#E2741B]/10 w-full"
-                data-testid={`button-buy-${product.id}`}
-              >
-                <a href={amazonUrl} target="_blank" rel="noopener noreferrer sponsored nofollow">
-                  <ShoppingCart className="w-4 h-4 mr-2" />
-                  Check Current Price on Amazon
-                </a>
-              </Button>
-            ) : (
-              <Button
-                disabled
-                className="bg-[#E2741B]/40 text-black w-full"
-                data-testid={`button-buy-${product.id}-loading`}
-              >
+            <Button
+              asChild
+              variant="outline"
+              className="border-[#E2741B] text-[#E2741B] hover:bg-[#E2741B]/10 w-full"
+              data-testid={`button-buy-${product.id}`}
+            >
+              <a href={amazonUrl} target="_blank" rel="noopener noreferrer sponsored nofollow">
                 <ShoppingCart className="w-4 h-4 mr-2" />
-                Loading…
-              </Button>
-            )}
+                Check Current Price on Amazon
+              </a>
+            </Button>
           </div>
           
           <div className="pt-2 border-t border-[#333]">
