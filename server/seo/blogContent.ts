@@ -198,7 +198,7 @@ export const POST_REHAB_DURATION = makeBlogPost({
   keyword: 'how long does stroke rehab take',
   image: '/images/blog/therapy-exercises-dark.png',
   subhead: 'The honest answer is "longer than they tell you and shorter than you fear." Here is the real timeline, broken down by phase.',
-  ctaPrimary: { href: '/api/login', label: 'See my recovery timeline' },
+  ctaPrimary: { href: '/recovery/pricing', label: 'See my recovery timeline' },
   ctaSecondary: { href: '/blog/can-you-fully-recover-from-a-stroke', label: 'Can you fully recover?' },
   sections: [
     {
@@ -292,7 +292,7 @@ export const POST_FULL_RECOVERY = makeBlogPost({
   keyword: 'can you fully recover from a stroke',
   image: '/images/blog/walking-recovery-dark.png',
   subhead: 'The hospital says one thing. The internet says another. Here is what 7 years of recovery actually looks like.',
-  ctaPrimary: { href: '/api/login', label: 'Start the recovery plan' },
+  ctaPrimary: { href: '/recovery/pricing', label: 'Start the recovery plan' },
   ctaSecondary: { href: '/programs/sasquatch-method', label: 'See the four pillars' },
   sections: [
     {
@@ -380,7 +380,7 @@ export const POST_SECOND_STROKE_SIGNS = makeBlogPost({
   keyword: 'signs of a second stroke',
   image: '/images/blog/stroke-warning-dark.png',
   subhead: 'About 1 in 4 strokes are recurrent. The next 5 minutes after symptom onset matter more than anything you will do this year.',
-  ctaPrimary: { href: '/api/login', label: 'Get the BE-FAST checklist' },
+  ctaPrimary: { href: '/recovery/pricing', label: 'Get the BE-FAST checklist' },
   ctaSecondary: { href: '/blog/how-to-prevent-a-second-stroke', label: 'How to prevent a second stroke' },
   sections: [
     {
@@ -474,7 +474,7 @@ export const POST_PREVENT_SECOND_STROKE = makeBlogPost({
   keyword: 'how to prevent a second stroke',
   image: '/images/blog/stroke-warning-dark.png',
   subhead: '1 in 4 strokes are recurrent. Almost all of them are preventable. Here is the checklist that actually works.',
-  ctaPrimary: { href: '/api/login', label: 'Build my prevention plan' },
+  ctaPrimary: { href: '/recovery/pricing', label: 'Build my prevention plan' },
   ctaSecondary: { href: '/blog/signs-of-a-second-stroke', label: 'Know the warning signs' },
   sections: [
     {
@@ -548,7 +548,7 @@ export const POST_TIA_VS_STROKE = makeBlogPost({
   keyword: 'tia vs stroke',
   image: '/images/blog/brain-recovery-dark.png',
   subhead: 'A TIA is not a "mini-stroke." It is a major warning. Almost half of post-TIA strokes happen within 48 hours.',
-  ctaPrimary: { href: '/api/login', label: 'Build my emergency plan' },
+  ctaPrimary: { href: '/recovery/pricing', label: 'Build my emergency plan' },
   ctaSecondary: { href: '/blog/signs-of-a-second-stroke', label: 'See the warning signs' },
   sections: [
     {
@@ -652,7 +652,7 @@ export const POST_ISCHEMIC_VS_HEMORRHAGIC = makeBlogPost({
   keyword: 'ischemic vs hemorrhagic stroke',
   image: '/images/blog/brain-recovery-dark.png',
   subhead: 'Two very different brain emergencies that get the same name. The difference changes treatment, prevention, and recovery.',
-  ctaPrimary: { href: '/api/login', label: 'Get my recovery plan' },
+  ctaPrimary: { href: '/recovery/pricing', label: 'Get my recovery plan' },
   ctaSecondary: { href: '/blog/signs-of-a-second-stroke', label: 'Warning signs of a second stroke' },
   sections: [
     {
@@ -743,7 +743,7 @@ export const POST_DRIVING_AFTER_STROKE = makeBlogPost({
   keyword: 'can you drive after a stroke',
   image: '/images/blog/driving-dark.png',
   subhead: 'Driving is independence, identity, and freedom. Returning to it safely is a milestone — and one of the most contested conversations in recovery.',
-  ctaPrimary: { href: '/api/login', label: 'Get the driving readiness checklist' },
+  ctaPrimary: { href: '/recovery/pricing', label: 'Get the driving readiness checklist' },
   ctaSecondary: { href: '/learn/stroke-recovery-timeline', label: 'See the recovery timeline' },
   sections: [
     {
@@ -837,7 +837,7 @@ export const POST_BEST_FOODS = makeBlogPost({
   keyword: 'best foods for stroke recovery',
   image: '/images/blog/brain-foods-dark.png',
   subhead: 'Food is medicine in the recovery phase. Here is what the evidence actually supports — not the supplement-aisle hype.',
-  ctaPrimary: { href: '/api/login', label: 'Get the survivor meal plan' },
+  ctaPrimary: { href: '/recovery/pricing', label: 'Get the survivor meal plan' },
   ctaSecondary: { href: '/blog/how-to-prevent-a-second-stroke', label: 'Prevent a second stroke' },
   sections: [
     {
@@ -933,7 +933,7 @@ export const POST_FATIGUE = makeBlogPost({
   keyword: 'fatigue after stroke',
   image: '/images/blog/fatigue-dark.png',
   subhead: 'Up to 70% of survivors experience post-stroke fatigue. It is not laziness, not depression, not weakness. It is biology — and it is treatable.',
-  ctaPrimary: { href: '/api/login', label: 'Get the energy protocol' },
+  ctaPrimary: { href: '/recovery/pricing', label: 'Get the energy protocol' },
   ctaSecondary: { href: '/blog/sleep-problems-after-stroke', label: 'Sleep problems after stroke' },
   sections: [
     {
@@ -1031,7 +1031,7 @@ export const POST_SPASTICITY = makeBlogPost({
   keyword: 'spasticity after stroke',
   image: '/images/blog/spasticity-dark.png',
   subhead: 'Spasticity is not "tight muscles." It is a brain injury showing up in the limb. The treatment has to address both ends.',
-  ctaPrimary: { href: '/api/login', label: 'Get the spasticity protocol' },
+  ctaPrimary: { href: '/recovery/pricing', label: 'Get the spasticity protocol' },
   ctaSecondary: { href: '/learn/hemiparesis-recovery', label: 'Hemiparesis recovery' },
   sections: [
     {
@@ -1119,7 +1119,7 @@ export const POST_MEMORY = makeBlogPost({
   keyword: 'memory problems after stroke',
   image: '/images/blog/memory-dark.png',
   subhead: 'Memory issues after stroke are not all the same. Pinpointing the type is the first step toward fixing the right thing.',
-  ctaPrimary: { href: '/api/login', label: 'Get the cognitive protocol' },
+  ctaPrimary: { href: '/recovery/pricing', label: 'Get the cognitive protocol' },
   ctaSecondary: { href: '/blog/fatigue-after-stroke', label: 'Fatigue after stroke' },
   sections: [
     {
@@ -1212,7 +1212,7 @@ export const POST_PBA = makeBlogPost({
   keyword: 'why do stroke survivors cry easily',
   image: '/images/blog/brain-recovery-dark.png',
   subhead: 'Sudden tears that don\'t match how you feel inside? It has a name — pseudobulbar affect — and it is treatable.',
-  ctaPrimary: { href: '/api/login', label: 'Find the right treatment' },
+  ctaPrimary: { href: '/recovery/pricing', label: 'Find the right treatment' },
   ctaSecondary: { href: '/learn/depression-after-stroke', label: 'Depression after stroke' },
   sections: [
     {
@@ -5816,7 +5816,7 @@ export const POST_ONLINE_COACH = makeBlogPost({
   keyword: 'online stroke recovery coach',
   extraKeywords: ['stroke recovery coach', 'stroke survivor coaching', 'virtual stroke coach', 'stroke recovery mentor', 'stroke recovery accountability', 'personal stroke coach', 'stroke coaching program', 'online coach for stroke survivors'],
   subhead: 'I was told I would never walk normally again. I built a stroke recovery academy from a wheelchair in Lavaca, Arkansas. Seven years later, I coach 15,000 survivors a day. Here is how I became the online stroke recovery coach I wish I had found in the hospital.',
-  ctaPrimary: { href: '/api/login', label: 'Join the Academy' },
+  ctaPrimary: { href: '/recovery/pricing', label: 'Join the Academy' },
   ctaSecondary: { href: '/book', label: 'Read the book' },
   image: '/images/blog/online-coaching.jpg',
   sections: [
@@ -7116,7 +7116,7 @@ export const BLOG_HUB: SsrPageConfig = {
   hero: {
     eyebrow: 'Blog',
     subhead: 'Honest, in-the-trenches answers to the questions stroke survivors actually ask. Written by Nick Kremers and the SRA team.',
-    ctaPrimary: { href: '/api/login', label: 'Open the full library' },
+    ctaPrimary: { href: '/recovery/pricing', label: 'Open the full library' },
     ctaSecondary: { href: '/recovery/store', label: 'Shop survivor-tested recovery gear' },
   },
   sections: [
