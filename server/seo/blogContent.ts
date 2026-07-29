@@ -3705,7 +3705,7 @@ export const POST_ELLIPTICAL = makeBlogPost({
       heading: 'Why the elliptical is worth considering',
       body: `<p>Seven years post-stroke, the elliptical is still in my weekly rotation. Here's why it made the list over a treadmill for many survivors: the reciprocal arm-leg cross-body motion forces the brain to coordinate both sides simultaneously — exactly the bilateral integration that neuroplasticity research says matters. Zero impact on the knee and ankle means compensated gait patterns don't get reinforced the way they can on a treadmill. And the moving handlebars give a hemiparetic arm something to do that isn't just hanging there.</p>
 <p>Caveat upfront: if you have significant balance deficits or can't weight-shift laterally without losing balance, a recumbent bike is the safer starting point. The elliptical requires standing balance. Come back to it once that's more stable.</p>`,
-      image: '/images/blog/fig-04.jpg',
+      image: '/images/blog/elliptical-compact.jpg',
     },
     {
       heading: 'What to look for in a stroke-recovery elliptical',
@@ -3794,7 +3794,7 @@ export const POST_STATIONARY_BIKE = makeBlogPost({
       body: `<p>I started on a recumbent bike three weeks post-discharge. Couldn't stand for more than a minute without significant fatigue, balance was unreliable, affected leg wasn't doing much. The recumbent didn't care. Back supported, pedals out in front, nothing to fall off of. Fifteen minutes at almost zero resistance. That was enough to start.</p>
 <p>The recumbent vs. upright decision isn't about fitness preference — it's a clinical one. If you have: significant trunk weakness, balance deficits that require concentration to maintain, or fatigue that limits standing tolerance, start recumbent. Move to upright when your PT clears you for seated-balance work without back support.</p>
 <p>The upright bike gets added value for core engagement and posture — but that value is zero if you're gripping the handlebars to stay upright rather than pedaling effectively.</p>`,
-      image: '/images/blog/fig-05.jpg',
+      image: '/images/blog/recumbent-stationary-bike.jpg',
     },
     {
       heading: 'Marcy ME-709 — the recumbent for most stroke survivors',
@@ -3867,7 +3867,7 @@ export const POST_TREADMILL = makeBlogPost({
       heading: 'Treadmill vs. overground walking — what the research says',
       body: `<p>There\'s legitimate debate in the rehab literature about treadmill gait training vs. overground. The short version: body-weight-supported treadmill training (BWSTT) in clinical settings has solid evidence for gait improvement. Home treadmill use without support has less evidence but is widely recommended by PTs as a way to accumulate walking volume — and walking volume is the variable that predicts long-term mobility outcomes.</p>
 <p>The key word is supervised. A treadmill at home is not a replacement for clinical gait training — it\'s a supplement for accumulating steps in a controlled environment. Set the speed low. Use the handrails when you need them. Have someone present until your PT gives you the solo green light.</p>`,
-      image: '/images/blog/fig-06.jpg',
+      image: '/images/blog/survivor-balance-board-scene.png',
     },
     {
       heading: 'What to look for in a stroke-recovery treadmill',
@@ -4131,7 +4131,7 @@ export const POST_MASSAGE_GUN = makeBlogPost({
       heading: 'Why percussion therapy for stroke survivors',
       body: `<p>Vibration and percussion stimulate Golgi tendon organs — mechanoreceptors that signal muscle lengthening and trigger inhibitory reflexes that reduce muscle tone. That\'s the mechanism behind the anecdotal experience of using a massage gun on a spastic calf and having the foot easier to dorsiflex for the next 20–30 minutes. The effect is temporary, but temporary is enough to get therapeutic range of motion work done.</p>
 <p>The research on percussion specifically (vs. vibration) for post-stroke spasticity is thin but growing. The anecdotal evidence from stroke survivor communities is consistent: pre-exercise percussive massage to the affected arm or leg reduces tone enough to make subsequent exercises more effective. It\'s a warm-up tool, not a cure.</p>`,
-      image: '/images/blog/fig-09.jpg',
+      image: '/images/blog/survivor-massage-gun-scene.png',
     },
     {
       heading: 'Where not to use a massage gun — non-negotiable',
@@ -4209,7 +4209,7 @@ export const POST_SMART_HOME = makeBlogPost({
       heading: 'Why smart home tech matters for stroke recovery',
       body: `<p>Six months post-stroke I couldn\'t reliably operate my thermostat, unlock my front door for a home health aide, or turn off a light across the room without a full trip across unstable ground. These aren\'t trivial inconveniences — they\'re independence losses that compound fatigue, create safety risks, and grind on dignity in ways that don\'t show up on a Fugl-Meyer assessment.</p>
 <p>Smart home technology addresses the asymmetry between cognitive ability and physical execution. Most stroke survivors have intact intelligence, partially intact speech, and severely limited bilateral motor function. Voice control and automation bypass the motor bottleneck entirely. This is assistive technology that doesn\'t look like assistive technology — and that matters for motivation.</p>`,
-      image: '/images/blog/fig-10.jpg',
+      image: '/images/blog/smart-home-stroke-survivor.png',
     },
     {
       heading: 'Amazon Echo Show 8 — the control center that works',
@@ -4281,7 +4281,7 @@ export const POST_RED_LIGHT = makeBlogPost({
       heading: 'What photobiomodulation actually does',
       body: `<p>Red and near-infrared light in the 630–850 nm range is absorbed by cytochrome c oxidase — a mitochondrial enzyme involved in the final step of cellular energy production. Stimulating this pathway increases ATP production, reduces oxidative stress, and modulates inflammatory cytokines. This isn\'t speculative — the cellular mechanisms are well-characterized. The clinical question is whether those cellular effects are large enough to matter at the systemic level for stroke recovery outcomes.</p>
 <p>The honest answer: the neurological evidence is promising but not definitive. Multiple animal models show neuroprotection and improved recovery post-stroke. Human clinical trials for acute stroke neurological recovery exist but are small. For the musculoskeletal effects — reducing DOMS, improving muscle function after exercise, joint inflammation — the evidence base is substantially stronger and more mature.</p>`,
-      image: '/images/blog/fig-11.jpg',
+      image: '/images/blog/red-light-therapy.jpg',
     },
     {
       heading: 'The practical case for stroke survivors',
@@ -4357,7 +4357,7 @@ export const POST_ADJUSTABLE_BED = makeBlogPost({
       heading: 'Why positioning matters more than most survivors realize',
       body: `<p>In the acute and subacute phases, my affected arm position overnight made a measurable difference in morning tone. A shoulder left to fall into internal rotation and adduction through eight hours of sleep showed up as tighter, more resistant, and more painful in morning PT. A shoulder properly supported in slight abduction and external rotation showed up ready to work.</p>
 <p>The neurological mechanism: prolonged positioning in a shortened muscle length maintains hypertonicity. The inverse — positioning in a lengthened state — has a genuine, if modest, tone-reducing effect over time. This is why occupational therapists give detailed positioning instructions at discharge. Most survivors follow them for two weeks and then revert to whatever's comfortable. Comfortable is often the wrong position for recovery.</p>`,
-      image: '/images/blog/fig-12.jpg',
+      image: '/images/blog/adjustable-bed-medical.jpg',
     },
     {
       heading: 'InteVision Foam Wedge Pillow — the essential base',
@@ -4429,7 +4429,7 @@ export const POST_COMPRESSION = makeBlogPost({
       heading: 'Why stroke survivors need compression',
       body: `<p>Paralysis or significant weakness in the affected limb impairs the muscle pump — the mechanism by which skeletal muscle contraction pushes blood and lymph back toward the heart. No pump, fluid pools. Edema in the affected hand, ankle, and lower leg is nearly universal in the first weeks post-stroke, and many survivors deal with it for months or years.</p>
 <p>The consequences go beyond appearance. Edematous tissue is stiffer and more resistant to the range-of-motion work you need to do. Swollen fingers are harder to rehabilitate. Ankle edema in an already-compromised gait pattern adds instability and fatigue cost. DVT risk is elevated in the first 3–6 months post-stroke — immobility, hemiplegia, and hospital-acquired deconditioning are all independent risk factors. Compression addresses all of these.</p>`,
-      image: '/images/blog/fig-13.jpg',
+      image: '/images/blog/compression-sock-therapy.jpg',
     },
     {
       heading: 'Compression levels — what the numbers mean',
@@ -4509,7 +4509,7 @@ export const POST_STANDING_DESK = makeBlogPost({
       heading: 'Why a regular desk works against stroke recovery',
       body: `<p>I went back to part-time desk work at eight months post-stroke. Standard fixed-height desk, standard chair. Within two weeks my affected shoulder was worse, my trunk was listing right, and my PT was asking what changed. What changed was six hours per day of asymmetric loading in a fixed position — the affected arm resting at an angle that maintained internal rotation, the trunk habitually shifting to the stronger side, the affected leg hanging in less-than-ideal position because the seat height was wrong for my gait mechanics.</p>
 <p>Height-adjustable desks address this by giving you options. Alternate between sitting and standing. Set the height for your affected arm to rest at desk level rather than hanging. Stand during video calls to get bilateral weight-bearing. None of this replaces PT — but all of it stops compounding the asymmetries that PT is trying to reduce.</p>`,
-      image: '/images/blog/fig-14.jpg',
+      image: '/images/blog/standing-desk-adjustable.jpg',
     },
     {
       heading: 'FlexiSpot E7 — the best value electric sit-stand desk',
@@ -4583,7 +4583,7 @@ export const POST_WEIGHTED_VEST = makeBlogPost({
       heading: 'Why weighted vests for stroke recovery',
       body: `<p>The research on weighted vests for post-stroke gait comes primarily from studies using trunk weighting — adding load at the trunk or affected shoulder to improve trunk symmetry and gait pattern. The mechanism: increased proprioceptive input through the trunk and lower extremities during weight-bearing enhances sensory feedback that post-stroke hemiplegia has disrupted. More feedback means more material for the nervous system to use in recalibrating motor patterns.</p>
 <p>Weighted vests are also used for general strength conditioning during recovery-phase walking — adding load to gait without requiring separate equipment or a gym. As walking capacity improves and the same distance feels too easy, a vest is the lowest-friction way to increase the training stimulus.</p>`,
-      image: '/images/blog/fig-15.jpg',
+      image: '/images/blog/weighted-vest-workout.jpg',
     },
     {
       heading: 'ZFOsports Weighted Vest — best adjustable option',
@@ -4655,7 +4655,7 @@ export const POST_SPEECH_THERAPY = makeBlogPost({
       heading: 'The home practice gap — why it matters more than your SLP can say',
       body: `<p>The research on aphasia recovery is unambiguous on one point: intensity matters. The number of hours of practice per week is the strongest predictor of language recovery, more than the specific therapy approach used. Clinical SLP visits are typically 1–3 hours per week. The survivors who make the most progress practice daily — often 45–90 minutes per day — using apps and structured exercises between sessions.</p>
 <p>Most SLPs want their patients practicing at home and will often provide specific targets. The problem is follow-through: the exercises feel hard, progress is slow, and without external structure it\'s easy to skip days. The best tools listed here address the motivation and structure problem, not just the content problem.</p>`,
-      image: '/images/blog/fig-16.jpg',
+      image: '/images/blog/aac-device.jpg',
     },
     {
       heading: 'Constant Therapy — the most clinically validated app',
@@ -4736,7 +4736,7 @@ export const POST_THRESHOLD_RAMP = makeBlogPost({
       heading: 'The fall risk reality of post-stroke home environments',
       body: `<p>Falls are the most common serious adverse event in stroke recovery — in both inpatient and outpatient settings. Up to 73% of stroke survivors fall in the first six months post-discharge. More than half of those falls happen in the home. The majority happen during transitions: transferring from sitting to standing, crossing thresholds, bathroom activities, and stair navigation.</p>
 <p>Home modification is the highest-leverage fall prevention intervention available. It\'s not as visible as PT progress or as exciting as adaptive equipment. But a grab bar that prevents one fall in year one is worth more to your recovery than six months of resistance training — because a fall-related injury resets the entire timeline.</p>`,
-      image: '/images/blog/fig-17.jpg',
+      image: '/images/blog/threshold-ramp.jpg',
     },
     {
       heading: 'EZ-ACCESS TRANSITIONS threshold ramp — the essential first purchase',
@@ -7117,7 +7117,7 @@ export const BLOG_HUB: SsrPageConfig = {
     eyebrow: 'Blog',
     subhead: 'Honest, in-the-trenches answers to the questions stroke survivors actually ask. Written by Nick Kremers and the SRA team.',
     ctaPrimary: { href: '/api/login', label: 'Open the full library' },
-    ctaSecondary: { href: '/recovery/university', label: 'Go to Recovery University' },
+    ctaSecondary: { href: '/recovery/store', label: 'Shop survivor-tested recovery gear' },
   },
   sections: [
     {

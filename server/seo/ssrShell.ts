@@ -444,7 +444,7 @@ function renderSections(sections: ContentSection[]): string {
         <p>${esc(step.text)}</p>
       </div>
     </div>`).join('')}</div>` : ''}
-  ${s.relatedLinks && s.relatedLinks.length > 0 ? `<div class="sra-related-inline"><strong>Also check out:</strong> ${s.relatedLinks.map((l, i) => `<a href="${escAttr(l.href)}">${esc(l.label)}</a>${i < s.relatedLinks.length - 1 ? ', ' : ''}`).join('')}</div>` : ''}
+  ${s.relatedLinks && s.relatedLinks.length > 0 ? `<div class="sra-related-inline"><strong>Also check out:</strong> ${s.relatedLinks.map((l, i, links) => `<a href="${escAttr(l.href)}">${esc(l.label)}</a>${i < links.length - 1 ? ', ' : ''}`).join('')}</div>` : ''}
   ${html}
 </section>`;
   }).join('\n');
@@ -581,6 +581,8 @@ a:hover { text-decoration: underline; }
 .sra-hero p { font-size: 19px; color: var(--sra-text-dim); margin: 0 0 24px; max-width: 720px; }
 .sra-cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
 .sra-affiliate-banner { margin: 0 0 24px; padding: 10px 16px; background: var(--sra-bg-card); border: 1px solid var(--sra-border); border-radius: 6px; font-size: 12px; color: var(--sra-text-dim); }
+.sra-topic-store-cta { margin: 0 0 28px; padding: 14px 18px; background: linear-gradient(90deg, rgba(226,116,27,.16), rgba(226,116,27,.04)); border: 1px solid rgba(226,116,27,.38); border-radius: 8px; font-size: 14px; color: var(--sra-text); }
+.sra-topic-store-cta a { color: var(--sra-gold); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 .sra-btn-primary {
   background: var(--sra-gold); color: #000 !important; padding: 12px 24px;
   border-radius: 4px; font-weight: 600; display: inline-block;
@@ -796,6 +798,7 @@ ${renderHeader()}
   </div>
 
   ${cfg.url.startsWith('/blog/') && cfg.url !== '/blog' ? `<div class="sra-affiliate-banner">As an Amazon Associate, Stroke Recovery Academy earns from qualifying purchases. No cost to you.</div>` : ''}
+  ${cfg.url.startsWith('/blog/') && cfg.url !== '/blog' ? `<div class="sra-topic-store-cta"><strong>Shopping for recovery gear?</strong> <a href="/recovery/store">Browse the survivor-tested Recovery Store</a> for mobility aids, therapy tools, adaptive equipment, and brain games.</div>` : ''}
 
   ${renderTableOfContents(cfg.sections)}
 
