@@ -84,6 +84,8 @@ export interface SsrPageConfig {
   imageAlt?: string;
   /** Optional SEO cluster name for internal link injection */
   cluster?: string;
+  /** Key takeaways — rendered as a highlighted summary box after the hero */
+  takeaways?: string[];
   /** Optional video — enables VideoObject schema for rich video snippets */
   video?: {
     name: string;
@@ -616,6 +618,10 @@ a:hover { text-decoration: underline; }
 .sra-section p { margin: 0 0 16px; color: var(--sra-text); }
 .sra-section ul { padding-left: 22px; margin: 0 0 16px; }
 .sra-section li { margin-bottom: 8px; color: var(--sra-text); }
+.sra-takeaways { margin: 0 0 28px; padding: 20px 24px; background: var(--sra-bg-card); border-left: 3px solid var(--sra-gold); border-radius: 6px; }
+.sra-takeaways h2 { font-family: 'Crimson Pro', Georgia, serif; font-size: 20px; margin: 0 0 10px; color: var(--sra-gold); }
+.sra-takeaways ul { margin: 0; padding-left: 20px; }
+.sra-takeaways li { color: var(--sra-text); margin: 6px 0; line-height: 1.5; }
 .sra-faq { margin: 48px 0 32px; padding: 24px; background: var(--sra-bg-card); border: 1px solid var(--sra-border); border-radius: 6px; }
 .sra-faq h2 { font-family: 'Crimson Pro', Georgia, serif; font-size: 24px; margin: 0 0 16px; color: var(--sra-text); }
 .sra-faq-item { border-top: 1px solid var(--sra-border); padding: 14px 0; }
@@ -799,6 +805,12 @@ ${renderHeader()}
 
   ${cfg.url.startsWith('/blog/') && cfg.url !== '/blog' ? `<div class="sra-affiliate-banner">As an Amazon Associate, Stroke Recovery Academy earns from qualifying purchases. No cost to you.</div>` : ''}
   ${cfg.url.startsWith('/blog/') && cfg.url !== '/blog' ? `<div class="sra-topic-store-cta"><strong>Shopping for recovery gear?</strong> <a href="/recovery/store">Browse the survivor-tested Recovery Store</a> for mobility aids, therapy tools, adaptive equipment, and brain games.</div>` : ''}
+
+  ${cfg.takeaways && cfg.takeaways.length > 0 ? `
+  <section class="sra-takeaways" aria-label="Key takeaways">
+    <h2>Key Takeaways</h2>
+    <ul>${cfg.takeaways.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+  </section>` : ''}
 
   ${renderTableOfContents(cfg.sections)}
 
