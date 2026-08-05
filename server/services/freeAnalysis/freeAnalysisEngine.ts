@@ -96,7 +96,15 @@ interface AnalyzeInput {
 export interface AnalyzeResult {
   shape: "analysis" | "crisis" | "failed";
   output?: AnalysisOutput;
-  crisis?: { category: string; message: string; resources: string[] };
+  crisis?: {
+    category: string;
+    message: string;
+    resources: Array<{
+      label: string;
+      detail: string;
+      action: { type: "tel" | "sms" | "url"; value: string };
+    }>;
+  };
   errorMessage?: string;
 }
 

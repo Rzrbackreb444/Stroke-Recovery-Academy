@@ -31,7 +31,7 @@ export function getToc(): TocEntry[] {
   const toc: TocEntry[] = [];
   let currentPartLabel: string | undefined;
 
-  const push = (entry: Omit<TocEntry, "id" | "lineEnd">, lineStart: number) => {
+  const push = (entry: Omit<TocEntry, "id" | "lineEnd" | "lineStart">, lineStart: number) => {
     toc.push({ ...entry, id: slug(entry.title, toc.length), lineStart, lineEnd: -1 });
   };
 

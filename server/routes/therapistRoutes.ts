@@ -4,6 +4,7 @@ import { db } from '../db';
 import { therapistApplications, therapistProfiles, users } from '@shared/schema';
 import { and, desc, eq } from 'drizzle-orm';
 import { requireAdmin } from '../middleware/requireAdmin';
+import { getUserId } from '../lib/authUtils';
 
 // Day → ISO weekday (0=Sun..6=Sat used by JS Date.getDay())
 const DAY_KEYS = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'] as const;

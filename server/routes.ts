@@ -18,7 +18,7 @@ import {
 } from "./middleware/anonCoachQuota";
 import { redactEmail } from "./lib/redact";
 import { requireAdmin } from "./middleware/requireAdmin";
-import { getUserId } from "./lib/authUtils";
+import { getUserId, getUserEmail } from "./lib/authUtils";
 import emailAuthRoutes from "./emailAuthRoutes";
 import luluRoutes from "./luluRoutes";
 import puzzleRoutes from "./puzzleRoutes";
@@ -13072,7 +13072,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/recovery/journal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = getUserId(req)!;
       const entries = await storage.getJournalEntries(userId);
       res.json(entries);
     } catch (error) {
@@ -13083,7 +13083,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/recovery/journal', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = getUserId(req)!;
       const validated = insertRecoveryJournalSchema.safeParse(req.body);
       if (!validated.success) {
         return res.status(400).json({ message: "Invalid journal entry", details: validated.error.issues });
@@ -13114,7 +13114,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // "Felt this" reactions — only on shared, non-private entries.
   app.post('/api/recovery/journal/:id/react', isAuthenticated, authActionLimiter, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = getUserId(req)!;
       const entryId = parseInt(req.params.id, 10);
       if (!Number.isFinite(entryId)) return res.status(400).json({ message: "Invalid entry" });
       const result = await storage.addJournalReaction(entryId, userId);
@@ -13128,7 +13128,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.delete('/api/recovery/journal/:id/react', isAuthenticated, authActionLimiter, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = getUserId(req)!;
       const entryId = parseInt(req.params.id, 10);
       if (!Number.isFinite(entryId)) return res.status(400).json({ message: "Invalid entry" });
       const result = await storage.removeJournalReaction(entryId, userId);
@@ -13142,7 +13142,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.get('/api/recovery/journal/insights', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = getUserId(req)!;
       const insights = await storage.getJournalInsights(userId);
       res.json(insights);
     } catch (error) {
@@ -13154,7 +13154,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // Real impact numbers — 0 until real sales land. No fabrication.
   app.get('/api/recovery/journal/impact', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = getUserId(req)!;
       const impact = await storage.getJournalImpact(userId);
       res.json(impact);
     } catch (error) {
@@ -13168,7 +13168,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // the client can deep-link into Book Studio.
   app.post('/api/recovery/journal/compile-book', isAuthenticated, authActionLimiter, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
       const authorName =
         [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim() ||
@@ -13192,7 +13192,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // file. The webhook never generates a PDF.
   app.post('/api/recovery/journal/checkout', isAuthenticated, authActionLimiter, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = getUserId(req)!;
       const editionType = req.body?.editionType === 'print' ? 'print_paperback' : 'digital_pdf';
 
       const user = await storage.getUser(userId);
@@ -13314,7 +13314,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.patch('/api/recovery/journal/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = getUserId(req);
+      const userId = getUserId(req)!;
       const entryId = parseInt(req.params.id);
       const validated = updateRecoveryJournalSchema.partial().safeParse(req.body);
       if (!validated.success) {
@@ -13759,10 +13759,12 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       // Verify caller is a participant before exposing messages
       const { db: dbInst } = await import('./db');
       const { conversationParticipants } = await import('../shared/schema');
-      const { eq } = await import('drizzle-orm');
+      const { eq, and } = await import('drizzle-orm');
       const [participant] = await dbInst.select().from(conversationParticipants)
-        .where(eq(conversationParticipants.conversationId, conversationId))
-        .where(eq(conversationParticipants.userId, userId)).limit(1);
+        .where(and(
+          eq(conversationParticipants.conversationId, conversationId),
+          eq(conversationParticipants.userId, userId),
+        )).limit(1);
       if (!participant) return res.status(404).json({ message: "Not found" });
       const { limit, offset } = req.query;
       const messages = await storage.getConversationMessages(
@@ -13784,10 +13786,12 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       // Verify caller is a participant before allowing write
       const { db: dbInst } = await import('./db');
       const { conversationParticipants } = await import('../shared/schema');
-      const { eq } = await import('drizzle-orm');
+      const { eq, and } = await import('drizzle-orm');
       const [participant] = await dbInst.select().from(conversationParticipants)
-        .where(eq(conversationParticipants.conversationId, conversationId))
-        .where(eq(conversationParticipants.userId, userId)).limit(1);
+        .where(and(
+          eq(conversationParticipants.conversationId, conversationId),
+          eq(conversationParticipants.userId, userId),
+        )).limit(1);
       if (!participant) return res.status(404).json({ message: "Not found" });
       const message = await storage.sendDirectMessage({
         conversationId,
@@ -14005,7 +14009,10 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     try {
       const userId = getUserId(req)!;
       const { participantIds } = req.body;
-      const conversation = await storage.createConversation(userId, participantIds);
+      const conversation = await storage.createConversation(
+        { createdById: userId },
+        participantIds,
+      );
       res.json(conversation);
     } catch (error) {
       res.status(500).json({ message: "Failed to create conversation" });
@@ -25127,10 +25134,10 @@ Format as structured JSON with clear sections.`;
       const { id } = req.params;
       const medId = parseInt(id);
       // Verify caller owns the medication before logging
-      const [owner] = await db.execute(sql`
+      const ownerResult = await db.execute(sql`
         SELECT id FROM medications WHERE id = ${medId} AND user_id = ${userId} AND is_active = true
       `);
-      if (!owner) return res.status(404).json({ message: 'Not found' });
+      if (!ownerResult.rows[0]) return res.status(404).json({ message: 'Not found' });
       const { skipped, skipReason, notes } = req.body;
       await db.execute(sql`
         INSERT INTO medication_logs (medication_id, user_id, taken_at, skipped, skip_reason, notes)

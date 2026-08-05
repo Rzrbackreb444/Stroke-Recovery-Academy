@@ -32,7 +32,7 @@ const MAX_SCRIPT_LEN = 600; // ~30s at conversational TTS pace
 const djIntrosLimiter = publicRateLimit({
   windowMs: 60_000,
   max: 60,
-  message: "Too many DJ intro requests, please slow down",
+  bucketName: "dj-intros",
 });
 
 const mintSchema = z.object({

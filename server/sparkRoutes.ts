@@ -9,7 +9,7 @@ import { z } from "zod";
 import { generateSparkDraft } from "./services/spark/sparkEngine";
 import { uploadSparkMedia } from "./lib/sparkMedia";
 import { generateImageWithImagen } from "./imagenService";
-import { textToSpeech } from "./elevenlabs";
+import { getElevenLabsService } from "./elevenlabs";
 import { sendEmail } from "./emailService";
 import { renderEmail } from "./emailTemplate";
 import { renderSsrPage } from "./seo/ssrShell";
@@ -224,7 +224,7 @@ export function registerSparkRoutes(app: Express): void {
       if (parsed.data.audio) {
         const voiceId = process.env.SASQUATCH_VOICE_ID || "onwK4e9ZLuTAKqWW03F";
         const narration = `${spark.title}. ${spark.body}`.slice(0, 4800);
-        const audioBuf = await textToSpeech(narration, voiceId);
+        const audioBuf = await getElevenLabsService().textToSpeech(narration, voiceId);
         patch.audioUrl = await uploadSparkMedia(audioBuf, "audio/mpeg", ownerId);
       }
     } catch (err: any) {
@@ -359,7 +359,7 @@ async function emailSubscribers(spark: typeof sparks.$inferSelect): Promise<{ se
   const allowedBilling = billingTiersFor(spark.requiredTier);
   const recipients = await db.select({ email: users.email })
     .from(users)
-    .where(inArray(users.subscriptionTier, allowedBilling));
+    .where(sql`subscription_tier = ANY(ARRAY[${sql.join(allowedBilling.map((t) => sql`${t}`), sql`, `)}]::text[])`);
 
   const ctaHref = `${SITE_URL}/recovery/spark/${spark.slug}`;
   const heroImage = spark.heroImageUrl
