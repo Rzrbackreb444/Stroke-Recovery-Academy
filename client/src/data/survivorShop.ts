@@ -72,7 +72,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     brand: "Hugo Mobility",
     asin: "B0058XAMQO",
     priceClass: "$",
-    whyNick: "Four-point base. The first cane I owned that didn't tip when I leaned hard on it during a balance check.",
+    whyNick: "Four-point base — the first cane I owned that didn't tip when I leaned my full weight on it during a balance check. That's the whole point of a quad cane after a stroke: it stays standing on its own and stays planted on uneven ground, so it steadies you instead of becoming one more thing that can fall. Folds down for the car, and the height adjusts to your wrist crease.",
   },
   {
     id: "mob-vive-walker",
@@ -81,7 +81,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     brand: "Vive Health",
     asin: "B07Q3MZHQ7",
     priceClass: "$$",
-    whyNick: "Two-wheel front + glides in back. Easier to push if your dominant arm is the affected side.",
+    whyNick: "Two wheels up front, glides in back, so you push it forward instead of lifting-and-placing every step — a real difference when your affected side is doing the walking and you don't have the shoulder strength to hoist a standard pickup walker. Folds flat for the car. Get the height set so your wrists rest naturally on the grips without hunching.",
   },
   {
     id: "mob-gait-belt",
@@ -90,7 +90,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     brand: "Vive Health",
     asin: "B01N7WKSSP",
     priceClass: "$",
-    whyNick: "Loops give a caregiver a real handle. Nobody should grab your pants to lift you.",
+    whyNick: "The sewn-in loops give a caregiver real handles to hold at your waist — your center of gravity — instead of grabbing your pants or yanking your weak arm to stand you up. That's how transfers stay controlled and how nobody wrecks a shoulder that's already prone to subluxation after a stroke. Cinch it snug over clothing so it can't ride up.",
   },
   {
     id: "mob-transfer-disc",
@@ -99,7 +99,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     brand: "Stander",
     asin: "B0083T76EM",
     priceClass: "$$",
-    whyNick: "Wheelchair-to-toilet transfers without twisting the knee. My PT swore by these.",
+    whyNick: "Lets you pivot from wheelchair to toilet or bed as one smooth turn instead of shuffling your feet and twisting a knee that can't take it yet — the disc rotates under you so your caregiver just guides the turn. My PT swore by these for the first weeks home when standing is possible but stepping-and-turning isn't. Use it on a hard floor, not carpet, and always with someone spotting.",
   },
   {
     id: "mob-bed-cane",
@@ -108,7 +108,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     brand: "Stander",
     asin: "B003UKTPZS",
     priceClass: "$$",
-    whyNick: "Slips between the mattress and box spring. Gives you a strong handle to sit up with one arm.",
+    whyNick: "The plate slips between the mattress and box spring so the handle stands up right at bed height — a solid grab bar to pull yourself from lying to sitting with your one strong arm, instead of straining your neck and core to fight gravity. Getting out of bed is one of the first battles home, and this makes it a controlled move rather than a struggle. Just make sure it's anchored firmly before you trust your weight to it.",
   },
   {
     id: "mob-rollator",
@@ -117,7 +117,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     brand: "Drive Medical",
     asin: "B00HF4LU0I",
     priceClass: "$$$",
-    whyNick: "Built-in seat for when fatigue hits mid-walk. The hand brakes are easy to grip with weak fingers.",
+    whyNick: "The built-in seat is the point: post-stroke fatigue hits fast and without warning, and being able to sit down anywhere mid-walk is what lets you leave the house without fear of getting stranded. The Nitro's front wheels turn tight for indoor corners, and the loop hand brakes are easy to squeeze even with weak fingers. Fit the handle height to your wrists and lock the brakes before you sit.",
   },
 
   // ─── Hand & Grip ──────────────────────────────────────────────────────
@@ -155,7 +155,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     brand: "Squegg",
     asin: "B08QD4JQ8C",
     priceClass: "$$",
-    whyNick: "Bluetooth tracking turns squeezes into a video game. Helped me hit my daily count without getting bored.",
+    whyNick: "The Bluetooth tracking turns squeezes into a video game with a live count and progress graph — and seeing that number climb is huge when hand recovery feels invisible day to day. It's what got me to hit my daily reps without quitting from boredom. The soft egg shape is easy to hold even with a weak or partly-open hand.",
   },
   {
     id: "hand-grip-strengthener",
@@ -164,7 +164,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     brand: "IFAST",
     asin: "B07VJTW3MV",
     priceClass: "$",
-    whyNick: "Adjustable from 22-88 lbs. One device replaces three.",
+    whyNick: "Adjustable from 22 to 88 lbs, so one device carries you from 'barely closing my hand' all the way up to real grip strength — no buying three separate grippers as you improve. Dial it to the lowest setting first; the win is clean, full squeezes, not straining against a spring you can't move yet.",
   },
   {
     id: "hand-saebo-glove",
@@ -231,7 +231,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     name: "The Aphasia Workbook (Lingraphica)",
     asin: "1416400737",
     priceClass: "$$",
-    whyNick: "Daily writing and naming reps. Pair with your SLP — don't try to grade yourself.",
+    whyNick: "Structured daily writing and naming reps for aphasia — the kind of high-frequency practice that actually rewires language, done in small, repeatable sets you can do between speech therapy visits. Pair it with your SLP and let them grade you; the trap with aphasia is judging your own answers and spiraling. Your job is the reps, not the scoring.",
   },
   {
     id: "speech-stroke-recovery-book",
@@ -248,7 +248,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     name: "Wisdom Tree Memory Match Cards",
     asin: "B07ZPGT2QC",
     priceClass: "$",
-    whyNick: "Old-school cardboard memory match. Five minutes a day, no screen, no battery.",
+    whyNick: "Old-school cardboard memory match — flip cards, hold the picture in mind, find its pair. That's direct working-memory and attention training for the exact fog most survivors fight, and there's no screen glare or battery to deal with. Five minutes a day beats one long session; a caregiver can play along so it's practice, not a test.",
   },
   {
     id: "speech-magnetic-letters",
@@ -256,7 +256,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     name: "Magnetic Letters & Numbers (Foam)",
     asin: "B0765XQVPN",
     priceClass: "$",
-    whyNick: "Spelling reps on the fridge. Low embarrassment, high frequency.",
+    whyNick: "Spelling and word-building reps right on the fridge where you already stand a dozen times a day — that turns a therapy exercise into a habit you can't skip. The foam letters are easy to pinch and move with a weak or clumsy hand, and building a word standing up sneaks in a little balance work too. Low embarrassment, high frequency: exactly what rewiring language needs.",
   },
   {
     id: "speech-crossword",
@@ -283,7 +283,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     brand: "Drive Medical",
     asin: "B0007WL1LM",
     priceClass: "$$",
-    whyNick: "Non-negotiable for the first 6 weeks home. Worth more than any rehab gadget.",
+    whyNick: "Non-negotiable for the first six weeks home, and worth more than any fancy rehab gadget. Nighttime and early-morning bathroom trips are when survivors fall — dark, groggy, weak legs, and a long hallway. A commode right at the bedside kills that whole risk and saves the dignity of not needing help across the house at 2am. Get the drop-arm version if transfers are hard.",
   },
   {
     id: "care-slide-sheet",

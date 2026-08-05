@@ -1725,6 +1725,20 @@ export const POST_RESISTANCE_BANDS = makeBlogPost({
       ],
     },
     {
+      h2: 'Resistance band sets compared at a glance',
+      paragraphs: [
+        'Both sets below appear in this post. Use the table to decide quickly, then read the details before buying.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['Resistance Band Set for Stroke Recovery', 'The exact progression Nick used to rebuild strength before dumbbells', 'Light-to-heavy loop and tube bands with handles', 'About $20'],
+          ['Lianjindun 5-Piece Professional Set', 'Latex-sensitive skin during recovery', 'Latex-free, five tension levels, loop + tube bands with handles', 'See current price'],
+        ],
+        caption: 'Resistance band sets compared — standard set for value, latex-free set for sensitive skin.',
+      },
+    },
+    {
       h2: 'The types I used and the order I used them',
       paragraphs: [
         'I started with a light loop band (the flat circular kind) for lateral leg raises. Then I added a tube band with handles for seated rows, bicep curls, and shoulder presses. Then I added a heavier loop band for squats and standing abduction. The progression was gentle, measurable, and safe.',
@@ -1758,6 +1772,12 @@ export const POST_RESISTANCE_BANDS = makeBlogPost({
       },
       paragraphs: [
         'Never anchor a band to a door without a proper door anchor. Never stand on a band with bare feet — it will slip. Never use a band that is frayed or cracked. Start with 2–3 sets of 10–15 reps. Rest 60–90 seconds between sets. If you feel pain that is sharp or joint-level, stop. If you feel fatigue that is muscular, continue.',
+      ],
+      bullets: [
+        'Buy bands if: you are in the first 6–18 months, you want a safe way to load the affected side, or you travel and need portable resistance.',
+        'Buy the latex-free set if: you have developed skin sensitivity, a rash, or a known latex allergy during recovery.',
+        'Skip bands (for now) if: you cannot yet grip a handle or loop safely on the affected side — start with hand therapy and grip work first.',
+        'Add weights instead if: you are past 12–18 months, cleared by your PT, and bands no longer challenge you at their heaviest tension.',
       ],
     },
     {
@@ -1854,6 +1874,21 @@ export const POST_SHOWER_SAFETY = makeBlogPost({
         'Non-slip mat with suction cups — covers the tub floor. Replace every 6 months as the suction degrades.',
         'Handheld showerhead — lets you wash while seated. Game-changer for the chair period.',
       ],
+    },
+    {
+      h2: 'Shower safety gear compared at a glance',
+      paragraphs: [
+        'These are the specific products recommended in this post. Use the table to prioritize your first purchases, then read the full sections for installation and placement.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['Drive Medical Premium Shower Chair', 'Eliminating balance risk while washing seated', 'Height-adjustable, backrest, padded arms', 'See current price'],
+          ['PerfectMed Spill-Proof Urinals (2 pack)', 'Removing the nighttime bathroom trip — the biggest fall window', '32 oz portable, glow-in-the-dark lids', 'See current price'],
+          ['Shower Safety Kit', 'Buying the whole setup at once', 'Shower chair, grab bars, non-slip mat, handheld showerhead', 'Under $150 total'],
+        ],
+        caption: 'Shower safety gear compared — start with the chair, add grab bars, and remove nighttime trips.',
+      },
     },
     {
       h2: 'The setup I used',
@@ -2637,6 +2672,20 @@ export const POST_BEST_SHOES = makeBlogPost({
       ],
     },
     {
+      h2: 'Stroke recovery shoes compared at a glance',
+      paragraphs: [
+        'Both shoes below are recommended in this guide. Use the table to match the shoe to your biggest barrier — stability versus getting the shoe on alone — then read the full write-ups.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['Brooks Adrenaline GTS 24', 'Stability, AFO compatibility, ankle instability', 'GuideRails, DNA LOFT v3, removable insole, 2E/4E widths', 'See current price'],
+          ['Skechers GoWalk Arch Fit Slip-In', 'One-handed on/off and morning independence', 'Hands-free slip-in heel, ISOARCH, machine washable, lightweight', 'See current price'],
+        ],
+        caption: 'Stroke recovery shoes compared — Brooks for structure and AFOs, Skechers for hands-free entry.',
+      },
+    },
+    {
       h2: 'Brooks Adrenaline GTS 24 — the structured support benchmark',
       paragraphs: [
         'The Adrenaline GTS line has been the go-to among stroke rehab PTs for years. The GTS 24 refines what already worked: GuideRails technology that controls excess movement at the knee and ankle without the rigidity of a traditional motion-control shoe, DNA LOFT v3 foam for cushioning that holds up across 500+ miles of compensated gait, and a wide platform that gives a hemiparetic foot something trustworthy to land on.',
@@ -2761,6 +2810,21 @@ export const POST_WALKING_AIDS = makeBlogPost({
       ],
     },
     {
+      h2: 'Walking aids compared at a glance',
+      paragraphs: [
+        'These are the three aids recommended in this post. Use the table to match the aid to your current balance and weight-bearing needs, then read the details below.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['HurryCane Freedom Edition', 'Single-point support on uneven surfaces', 'Self-adjusting pivoting base, folds flat, multiple heights', 'See current price'],
+          ['Hugo Mobility Offset Quad Cane', 'Load-bearing balance in early outpatient phase', 'Offset handle, large stable base, height-adjustable', 'See current price'],
+          ['Drive Medical Nitro Rollator', 'More support than a cane without losing speed', 'Euro-style 4-wheel, 13 lbs, loop brakes, padded seat', 'See current price'],
+        ],
+        caption: 'Walking aids compared — cane for offloading, quad cane for load-bearing, rollator for support with speed.',
+      },
+    },
+    {
       h2: 'Three aids I recommend',
       paragraphs: [
         'Affiliate links — small commission at no cost to you.',
@@ -2871,6 +2935,24 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
         'Meaningful cortical remapping requires 400–600 repetitions per session. A standard 60-minute outpatient OT session — accounting for transport, setup, assessment, and other treatment components — might yield 100–200 focused hand reps. That leaves a gap.',
         'The survivors who rebuild hand function are the ones filling that gap at home. Not with heroic effort — with the right tools and 20–30 minutes twice a day.',
       ],
+    },
+    {
+      h2: 'Hand therapy tools compared at a glance',
+      paragraphs: [
+        'Every tool below is recommended in this guide. Use the table to build your home kit in order — putty first, then grip, finger isolation, tone management, and an ADL bridge.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['Theraputty Hand Exercise Putty Set', 'The foundation of any home hand program', '6 resistance levels, squeeze/pinch/roll/extension', 'See current price'],
+          ['CanDo Theraputty Plus', 'Backup putty when the standard set is out of stock', 'Tan-to-black, 6 grades, non-sticky formula', 'See current price'],
+          ['Grip Strength Trainer Set', 'Loading the forearm flexors and whole grip', 'Adjustable resistance per finger, forearm trainer', 'See current price'],
+          ["D'Addario Varigrip Hand Exerciser", 'Isolating lagging individual fingers', 'Individual adjustable spring resistance per finger', 'See current price'],
+          ['Theragun Prime', 'Reducing forearm tone before each session', 'Percussive therapy prep tool (not a hand tool itself)', 'See current price'],
+          ['FitPlus Reacher Grabber Tool', 'Bridging ADLs while hand function rebuilds', '32 in, rotating jaw, magnetic tip, one-handed', 'See current price'],
+        ],
+        caption: 'Hand therapy tools compared — build the kit in order for a complete 20-minute daily session.',
+      },
     },
     {
       h2: 'Therapy putty — the foundation',
@@ -3152,6 +3234,21 @@ export const POST_WHEELCHAIR = makeBlogPost({
       paragraphs: [
         'Transport (caregiver-propelled) wheelchairs are lighter, fold smaller, and are the right choice when someone else is doing most of the propulsion. Self-propelled chairs have larger rear wheels that allow independent propulsion. If you will be using the chair alone at any point, you need a self-propelled model.',
         'Hemiparetic self-propulsion works. The strong arm propels the wheel. The strong foot steers and brakes against the floor. This is a legitimate and effective propulsion method and does not require bilateral arm function.',
+      ],
+      table: {
+        headers: ['Chair type', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['Transport (caregiver-propelled)', 'When someone else does most of the pushing', 'Lightest, folds smallest, small rear wheels', 'Lowest'],
+          ['Self-propelled', 'Any time you will use the chair alone', 'Large rear wheels for independent hand propulsion', 'Higher'],
+          ['One-arm drive', 'Minimal lower-extremity function on either side', 'Dual-rim system driven from the stronger side', 'Highest'],
+        ],
+        caption: 'Wheelchair types compared — choose by who propels and how much strong-side function you have.',
+      },
+      bullets: [
+        'Buy a transport chair if: a caregiver does the pushing, you need the lightest chair to lift into a car, and self-propulsion is not a near-term goal.',
+        'Buy a self-propelled chair if: you will spend any time in the chair alone and can push with your strong arm or hemi-propel with your strong foot.',
+        'Consider one-arm drive if: you have minimal function in both legs and need to steer both wheels from one side.',
+        'Skip heavy-duty models unless: you have bariatric weight requirements — otherwise go as light as possible to protect the shoulder.',
       ],
     },
     {
@@ -3504,6 +3601,20 @@ export const POST_AFO_OSSUR = makeBlogPost({
       ],
     },
     {
+      h2: 'AFO braces compared at a glance',
+      paragraphs: [
+        'Both braces below are recommended in this guide. Use the table to match the brace to your drop-foot severity and gait speed, then read the details.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['Ossur Foot-Up Drop Foot Brace', 'Mild-to-moderate drop foot needing a simple solution', 'Shoe-insert cuff, no custom fitting, lightweight, laced-shoe friendly', 'See current price'],
+          ['Ossur AFO Dynamic Brace', 'Active gait recovery with partial dorsiflexion return', 'Spring-loaded push-off, adjustable tension, more natural gait', 'See current price'],
+        ],
+        caption: 'AFO braces compared — Foot-Up for a simple solution, Dynamic for push-off and active gait.',
+      },
+    },
+    {
       h2: 'Recommended AFO models',
       products: [
         {
@@ -3724,6 +3835,22 @@ export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
         'A wobble board tilts in all planes simultaneously — more unstable, more neurologically demanding. Better for intermediate-to-advanced training when single-plane stability is already established.',
         'Start rocker. Progress to wobble. Using a wobble board before rocker stability is established is how people fall.',
       ],
+    },
+    {
+      h2: 'Balance boards and pads compared at a glance',
+      paragraphs: [
+        'Every tool below is recommended in this guide. Use the table to match the tool to your current stage, then read the details — and never train without a safety setup nearby.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['StrongTek Professional Balance Board', 'One board that grows from stable to rocker to wobble', 'Anti-slip, 300 lb capacity, flat/rocker/wobble modes', 'See current price'],
+          ['High-Density TPE Balance Pad', 'Safest early-stage proprioceptive retraining', 'Foam pad, non-slip, gentle instability, low fall risk', 'See current price'],
+          ['Revbalance 101 v2 Balance Board', 'Advanced work after rocker mastery', 'True wobble board, 360-degree instability', 'See current price'],
+          ['Adjustable Wooden Slant Board', 'Maintaining the dorsiflexion range balance depends on', '5-angle progression, controlled calf/ankle stretch', 'See current price'],
+        ],
+        caption: 'Balance tools compared — start with the pad or flat board, progress to rocker then wobble.',
+      },
     },
     {
       h2: 'The recommended board — with a critical safety caveat',
@@ -3962,6 +4089,21 @@ export const POST_ELLIPTICAL = makeBlogPost({
 <p><strong>Resistance range:</strong> You want both ends — low enough to start at near-zero resistance as the affected side builds, high enough to actually challenge you six months from now.</p>`,
     },
     {
+      heading: 'Ellipticals compared at a glance',
+      paragraphs: [
+        'All three ellipticals below are recommended in this guide. Use the table to match the machine to your space, stride, and stage, then read the full write-ups.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['Schwinn 430 Elliptical', 'Best all-around value for most survivors', '20 resistance levels, fixed inner handlebars, wide footpads, 20" stride', 'See current price'],
+          ['Nautilus E616 Elliptical', 'Mid-to-late recovery when intensity matters', '29 levels, 22 programs, smoother flywheel, cadence tracking', 'See current price'],
+          ['Niceday Elliptical', 'Small spaces and limited hip extension', '16" stride, 16 magnetic levels, 400 lb capacity, compact', 'See current price'],
+        ],
+        caption: 'Ellipticals compared — Schwinn 430 for value, Nautilus E616 for intensity, Niceday for tight spaces.',
+      },
+    },
+    {
       heading: 'Schwinn 430 — the best value for most survivors',
       body: `<p>The Schwinn 430 hits every requirement: 20 levels of resistance (genuinely wide range), fixed inner handlebars alongside the moving poles for grab-and-go stability, a 20" stride length that can be adjusted by stride pace, and a step-up height that works for most stroke survivors with a single step. The footpads are wide and the toe cages are removable — important if foot drop means you need your foot sitting flat rather than strapped in.</p>
 <p>The built-in programs are mostly irrelevant for stroke rehab. What matters: manual mode, set a timer, go slow enough that the affected arm actually participates instead of being dragged by momentum from the strong side. That takes conscious practice.</p>`,
@@ -4049,6 +4191,20 @@ export const POST_STATIONARY_BIKE = makeBlogPost({
 <p>The recumbent vs. upright decision isn't about fitness preference — it's a clinical one. If you have: significant trunk weakness, balance deficits that require concentration to maintain, or fatigue that limits standing tolerance, start recumbent. Move to upright when your PT clears you for seated-balance work without back support.</p>
 <p>The upright bike gets added value for core engagement and posture — but that value is zero if you're gripping the handlebars to stay upright rather than pedaling effectively.</p>`,
       image: '/images/blog/recumbent-stationary-bike.jpg',
+    },
+    {
+      heading: 'Recumbent bikes compared at a glance',
+      paragraphs: [
+        'Both recumbent bikes below are recommended in this guide. Use the table to match the bike to your recovery stage and resistance needs, then read the details.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['Marcy Recumbent Bike ME-709', 'Early recovery value pick (0–18 months)', 'Low step-through, 8 levels, lumbar back support, strapped pedals', 'See current price'],
+          ['Schwinn 270 Recumbent Bike', 'Survivors 6+ months out who need more range', '25 levels, Bluetooth, 29 programs, more comfortable seat', 'See current price'],
+        ],
+        caption: 'Recumbent bikes compared — Marcy to start, Schwinn 270 once the low end feels too easy.',
+      },
     },
     {
       heading: 'Marcy ME-709 — the recumbent for most stroke survivors',
@@ -4328,6 +4484,21 @@ export const POST_TENS_UNIT = makeBlogPost({
       },
     },
     {
+      heading: 'TENS unit comparison at a glance',
+      paragraphs: [
+        'Every device below is recommended in this guide. Use the table to shortlist by what you are treating and how you prefer to control the device, then read each full write-up before buying.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['TENS 7000 Digital TENS Unit', 'Home shoulder-pain management; PT-standard starting point', 'Dual channel, 5 modes, 0–100 mA, hardware buttons', 'Budget'],
+          ['iReliev ET-5050+ TENS + EMS', 'Both pain relief and motor re-education (TENS + EMS)', '25 programs, dual channel, rechargeable, better pads', 'Mid-range'],
+          ['PowerDot 2.0 Duo', 'App-guided use for survivors who want program guidance', 'Bluetooth, app-controlled TENS/NMES (requires phone)', 'Premium'],
+        ],
+        caption: 'TENS/NMES devices compared — TENS 7000 for pain, iReliev for pain + motor work, PowerDot for app guidance.',
+      },
+    },
+    {
       heading: 'Safety first — electrode placement you must avoid',
       body: `<p>Absolutely do not place electrodes: over the carotid artery (front of the neck), over a cardiac pacemaker or ICD, over the eyes, on broken or irritated skin, or transthoracically (one electrode on each side of the chest, passing current through the heart). For stroke survivors specifically: avoid placement over areas of significantly impaired sensation — you won\'t feel if the current is too high, which is how skin burns happen.</p>
 <p>If you have hemiplegic shoulder subluxation (the shoulder joint is partially dislocated — very common post-stroke), get specific electrode placement from a PT or physiatrist before self-treating. The shoulder capsule geometry changes with subluxation and standard placement guides may not apply.</p>`,
@@ -4416,6 +4587,20 @@ export const POST_MASSAGE_GUN = makeBlogPost({
       image: '/images/blog/survivor-massage-gun-scene.png',
     },
     {
+      heading: 'Massage gun comparison at a glance',
+      paragraphs: [
+        'Both devices below are recommended in this guide. Use the table to match the device to your situation, then read the full write-up for each before buying.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['Theragun Pro', 'Clinical-standard spasticity pre-treatment; one-handed self-treatment', '16 mm amplitude, 60 lb stall force, 6 attachments, rotating arm', 'Premium'],
+          ['Hyperice Hypervolt 2', 'Mid-range value when your strong-side arm is functional', '12 mm amplitude, 3 speeds, 5 attachments, quieter', 'Mid-range'],
+        ],
+        caption: 'Percussion massage guns compared — pick the Pro for one-handed use, the Hypervolt 2 for value.',
+      },
+    },
+    {
       heading: 'Where not to use a massage gun — non-negotiable',
       image: {
         src: '/images/blog/survivor-massage-gun-scene.png',
@@ -4499,6 +4684,21 @@ export const POST_SMART_HOME = makeBlogPost({
       body: `<p>Six months post-stroke I couldn\'t reliably operate my thermostat, unlock my front door for a home health aide, or turn off a light across the room without a full trip across unstable ground. These aren\'t trivial inconveniences — they\'re independence losses that compound fatigue, create safety risks, and grind on dignity in ways that don\'t show up on a Fugl-Meyer assessment.</p>
 <p>Smart home technology addresses the asymmetry between cognitive ability and physical execution. Most stroke survivors have intact intelligence, partially intact speech, and severely limited bilateral motor function. Voice control and automation bypass the motor bottleneck entirely. This is assistive technology that doesn\'t look like assistive technology — and that matters for motivation.</p>`,
       image: '/images/blog/smart-home-stroke-survivor.png',
+    },
+    {
+      heading: 'Smart home devices compared at a glance',
+      paragraphs: [
+        'Every device below is recommended in this guide. Use the table to build your setup — hub first, then a bedside satellite, then a doorbell — and read the details before buying.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['Amazon Echo Show 8 (2nd Gen)', 'The main hands-free control hub', '8" touchscreen + Alexa, video calls, Drop In, large UI', 'See current price'],
+          ['Amazon Echo Show 5 (2nd Gen)', 'Bedside nighttime independence (satellite device)', '5.5" touchscreen, compact, alarms, night light control', 'See current price'],
+          ['Ring Video Doorbell (2nd Gen)', 'Answering the door without walking to it', 'View/speak to visitors through the Echo Show', 'See current price'],
+        ],
+        caption: 'Smart home devices compared — Echo Show 8 as the hub, Show 5 bedside, Ring for the door.',
+      },
     },
     {
       heading: 'Amazon Echo Show 8 — the control center that works',
@@ -4585,6 +4785,20 @@ export const POST_RED_LIGHT = makeBlogPost({
 <p>I use red light therapy on my spastic calf and affected shoulder post-exercise. The joint and muscle recovery effect is real for me. Whether it\'s also doing something in my central nervous system, I genuinely don\'t know. But the risk profile is low, the cost is manageable, and it\'s one of the few things I do that has no downside.</p>`,
     },
     {
+      heading: 'Red light devices compared at a glance',
+      paragraphs: [
+        'Both devices below are recommended in this guide. Use the table to match the device to your treatment area, then read the details before buying.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['Mito Red Light MitoPRO 300 Panel', 'Larger areas — shoulder, calf, or forearm', 'Dual wavelength 660/850 nm, 6"x9" panel, transparent specs', 'See current price'],
+          ['Tendlite Advanced Red Light Device', 'One specific painful joint, one-handed use', 'FDA-cleared handheld 660 nm, 90-second point treatment', 'See current price'],
+        ],
+        caption: 'Red light devices compared — MitoPRO 300 panel for muscle areas, Tendlite for a single joint.',
+      },
+    },
+    {
       heading: 'Mito Red MitoPRO 300 — the best value panel',
       body: `<p>The MitoPRO 300 is a 6" x 9" targeted panel — the right size for treating a shoulder, calf, or forearm in one session. Dual wavelength (660 nm red + 850 nm near-infrared), no EMF issues at the 6" treatment distance, no fan noise, 90-day return window. Mito Red has consistently been one of the more transparent companies about actual output specs vs. marketing claims in a category full of overstatements.</p>
 <p>Treatment protocol: 5–15 minutes per area at 6" distance, once daily or every other day. More time does not mean more benefit — there\'s a Goldilocks window with photobiomodulation. Exceeding it can actually inhibit the response (biphasic dose response). Set a timer.</p>`,
@@ -4661,6 +4875,20 @@ export const POST_ADJUSTABLE_BED = makeBlogPost({
       body: `<p>In the acute and subacute phases, my affected arm position overnight made a measurable difference in morning tone. A shoulder left to fall into internal rotation and adduction through eight hours of sleep showed up as tighter, more resistant, and more painful in morning PT. A shoulder properly supported in slight abduction and external rotation showed up ready to work.</p>
 <p>The neurological mechanism: prolonged positioning in a shortened muscle length maintains hypertonicity. The inverse — positioning in a lengthened state — has a genuine, if modest, tone-reducing effect over time. This is why occupational therapists give detailed positioning instructions at discharge. Most survivors follow them for two weeks and then revert to whatever's comfortable. Comfortable is often the wrong position for recovery.</p>`,
       image: '/images/blog/adjustable-bed-medical.jpg',
+    },
+    {
+      heading: 'Bed positioning products compared at a glance',
+      paragraphs: [
+        'Both products below are recommended in this guide. Use the table to decide where to start — wedge first, adjustable base if positioning meaningfully affects your mornings.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['InteVision Foam Wedge Bed Pillow', 'The essential positioning base for most survivors', 'Two-piece adjustable, removable washable cover', 'See current price'],
+          ['LUCID L300 Adjustable Bed Base', 'Survivors ready to invest in independent elevation', 'Independent head/foot, one-handed remote, zero-gravity preset, USB', 'See current price'],
+        ],
+        caption: 'Bed positioning compared — start with the wedge, add the adjustable base if mornings depend on it.',
+      },
     },
     {
       heading: 'InteVision Foam Wedge Pillow — the essential base',
@@ -4748,6 +4976,20 @@ export const POST_COMPRESSION = makeBlogPost({
 <p><strong>15–20 mmHg:</strong> Moderate OTC. Best starting point for most stroke survivors with mild-to-moderate dependent edema in the affected leg.</p>
 <p><strong>20–30 mmHg:</strong> Firm. Medical-grade — usually requires a prescription for reimbursement but is OTC-available. Indicated for significant edema, venous insufficiency, or DVT prevention protocol.</p>
 <p><strong>30–40 mmHg:</strong> Extra firm. Prescription only in most clinical contexts. Not for self-purchase without physician guidance.</p>`,
+    },
+    {
+      heading: 'Compression options compared at a glance',
+      paragraphs: [
+        'Both products below are recommended in this guide. Use the table to match the option to how much edema you are managing and your hand function, then read the details.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['Physix Gear Compression Socks', 'Daily-wear value for mild-to-moderate leg edema', 'Graduated 20–30 mmHg, moisture-wicking, reinforced heel/toe', 'See current price'],
+          ['Hyperice NormaTec Go', 'Significant edema uncontrolled by static socks', 'Pneumatic sequential compression, app-controlled, battery-powered', 'See current price'],
+        ],
+        caption: 'Compression compared — socks for daily wear, NormaTec Go when the muscle pump needs active help.',
+      },
     },
     {
       heading: 'Physix Gear compression socks — best daily-wear value',
@@ -5075,6 +5317,21 @@ export const POST_THRESHOLD_RAMP = makeBlogPost({
       body: `<p>Falls are the most common serious adverse event in stroke recovery — in both inpatient and outpatient settings. Up to 73% of stroke survivors fall in the first six months post-discharge. More than half of those falls happen in the home. The majority happen during transitions: transferring from sitting to standing, crossing thresholds, bathroom activities, and stair navigation.</p>
 <p>Home modification is the highest-leverage fall prevention intervention available. It\'s not as visible as PT progress or as exciting as adaptive equipment. But a grab bar that prevents one fall in year one is worth more to your recovery than six months of resistance training — because a fall-related injury resets the entire timeline.</p>`,
       image: '/images/blog/threshold-ramp.jpg',
+    },
+    {
+      heading: 'Home accessibility gear compared at a glance',
+      paragraphs: [
+        'Every product below is recommended in this guide. Use the table to prioritize your first purchases — threshold ramp and grab bars first — then read the details and the full home audit.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['EZ-ACCESS TRANSITIONS Angled Entry Ramp', 'Eliminating interior threshold ledges (the first buy)', 'Rubber, multiple heights, no installation, non-slip', 'About $25–$45'],
+          ['Amazon Basics Grab Bar (24")', 'Toilet and shower-entry fall prevention', 'ANSI-compliant, 1.25" diameter, 250 lb rated, stud/toggle mount', 'See current price'],
+          ['Prairie View Portable Wheelchair Ramp', 'Exterior steps for wheelchair or rollator users', 'Solid aluminum, non-slip, 3–10 ft lengths, folds flat', 'See current price'],
+        ],
+        caption: 'Home accessibility gear compared — ramp and grab bars first, portable ramp for exterior steps.',
+      },
     },
     {
       heading: 'EZ-ACCESS TRANSITIONS threshold ramp — the essential first purchase',
@@ -6857,6 +7114,28 @@ export const POST_WALKER = makeBlogPost({
       ],
     },
     {
+      h2: 'Walker types compared at a glance',
+      paragraphs: [
+        'Before the specific pick below, here is how the walker types this post describes stack up. Match the type to your current balance stage, then read why the recommended model fits hemiparetic survivors.',
+      ],
+      table: {
+        headers: ['Walker type', 'Best for', 'Key trait', 'Approx. price'],
+        rows: [
+          ['Static (no wheels)', 'Safest starting point in early recovery', 'Stops when you stop; needs lifting each step', 'Lowest'],
+          ['Front-wheeled', 'Once your PT clears dynamic balance work', 'Rolls forward, back legs plant for stability', 'Low'],
+          ['Rollator (4-wheeled with seat)', 'Longer distances (50–100+ ft) with reliable balance', 'Full wheels, brakes, and a seat; most dynamic control', 'Higher'],
+          ['TAMUBAKS Stand-Up Support Walker', 'Hemiparetic transfers and balance anchoring', 'Stand-up grips, wide base, height-adjustable, non-slip tips', 'See current price'],
+        ],
+        caption: 'Walker types compared — progress from static to front-wheeled to rollator as balance improves.',
+      },
+      bullets: [
+        'Buy this walker if: you need stand-up grips to rise from a chair, your affected hand grips lightly or not at all, or you want a stable balance anchor for walking practice.',
+        'Choose a static walker first if: you are early-stage and your PT has not cleared dynamic balance — it stops when you stop.',
+        'Move to a rollator if: your balance is reliable and you want to walk farther without stopping.',
+        'Skip a full rollator (for now) if: you still tip toward the affected side without a wide, planted base.',
+      ],
+    },
+    {
       h2: 'Recommended walker for stroke survivors',
       products: [
         {
@@ -7238,6 +7517,21 @@ export const POST_EXERCISE_BIKE_STROKE = makeBlogPost({
         'Upright bikes require balance, hip stability, and the ability to lift the leg high enough to clear the pedal at top dead center. Most stroke survivors lack one or more of these in early recovery. The risk is not just frustration — it is a fall, a compensatory pattern that reinforces the wrong muscles, or a decision to stop exercising entirely.',
         'The three alternatives that actually work: recumbent bikes (seated with back support, low step-through), under-desk pedal exercisers (seated, no balance required, minimal resistance), and passive motorized cycles (the machine moves your legs for you). Each serves a different stage.',
       ],
+    },
+    {
+      h2: 'Exercise bikes and pedal exercisers compared at a glance',
+      paragraphs: [
+        'Every option below is recommended in this guide. Use the table to match the machine to your recovery stage, then read the details for each.',
+      ],
+      table: {
+        headers: ['Product', 'Best for', 'Key spec', 'Approx. price'],
+        rows: [
+          ['Tabeke Under-Desk Pedal Exerciser', 'Stage 2: light seated pedaling (1–6 months)', 'Ultra-quiet magnetic resistance, 8 levels, no assembly', '$45.99'],
+          ['Sunny Health & Fitness Smart Pedal Exerciser', 'Seated pedaling with progress tracking', 'Bluetooth tracking, adjustable magnetic resistance, display', '$129.99'],
+          ['Marcy Recumbent Exercise Bike', 'Stage 3: long-term cardio (3–12 months+)', 'Supportive seat back, low step-through, magnetic resistance', '$279.99'],
+        ],
+        caption: 'Bikes and pedal exercisers compared — pedal exerciser to start, recumbent bike as the long-term solution.',
+      },
     },
     {
       h2: 'Stage 1: Passive motorized cycle (0–3 months post-stroke)',
