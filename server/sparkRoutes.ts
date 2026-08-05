@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { db } from "./db";
-import { sparks, sparkSourceAtoms, users } from "@shared/schema";
+import { sparks, sparkSourceAtoms, users, userSubscriptions, subscriptionTiers } from "@shared/schema";
 import { eq, desc, sql, and, inArray } from "drizzle-orm";
 import { isAuthenticated } from "./replitAuth";
 import { requireAdmin } from "./middleware/requireAdmin";
@@ -21,7 +21,8 @@ type Tier = (typeof TIER_ORDER)[number];
 function getRecoveryTier(subscriptionTier?: string | null): Tier {
   switch (subscriptionTier) {
     case "enterprise": return "platinum";
-    case "pro": return "champion";
+    case "pro":
+    case "professional": return "champion";
     case "creator":
     case "survivor": return "warrior";
     default: return "explorer";
@@ -36,9 +37,9 @@ function canAccessTier(userTier: Tier, requiredTier: string): boolean {
 function billingTiersFor(requiredTier: string): string[] {
   const ri = TIER_ORDER.indexOf(requiredTier as Tier);
   const map: Record<Tier, string[]> = {
-    explorer: ["free", "survivor", "creator", "pro", "enterprise"],
-    warrior: ["survivor", "creator", "pro", "enterprise"],
-    champion: ["pro", "enterprise"],
+    explorer: ["free", "survivor", "creator", "pro", "professional", "enterprise"],
+    warrior: ["survivor", "creator", "pro", "professional", "enterprise"],
+    champion: ["pro", "professional", "enterprise"],
     platinum: ["enterprise"],
   };
   return ri >= 0 ? map[TIER_ORDER[ri]] : map.warrior;
@@ -281,8 +282,7 @@ export function registerSparkRoutes(app: Express): void {
     const userId = getUserId(req);
     let hasAccess = false;
     if (userId) {
-      const [user] = await db.select().from(users).where(eq(users.id, userId));
-      hasAccess = canAccessTier(getRecoveryTier((user as any)?.subscriptionTier), spark.requiredTier);
+      hasAccess = canAccessTier(getRecoveryTier(await getBillingTier(userId)), spark.requiredTier);
     }
 
     // Count a teaser view (non-owners).
@@ -354,12 +354,32 @@ export function registerSparkRoutes(app: Express): void {
   });
 }
 
+// Resolves a user's billing tier from the real source of truth:
+// user_subscriptions (status=active) joined to subscription_tiers. No row = free.
+async function getBillingTier(userId: string): Promise<string> {
+  const [row] = await db.select({ name: subscriptionTiers.name })
+    .from(userSubscriptions)
+    .innerJoin(subscriptionTiers, eq(subscriptionTiers.id, userSubscriptions.tierId))
+    .where(and(eq(userSubscriptions.userId, userId), eq(userSubscriptions.status, "active")))
+    .limit(1);
+  return row?.name ?? "free";
+}
+
 // Sends the full subscriber edition to every user whose tier grants access.
 async function emailSubscribers(spark: typeof sparks.$inferSelect): Promise<{ sent: number; failed: number }> {
   const allowedBilling = billingTiersFor(spark.requiredTier);
+  // Users with no active subscription count as "free" (matters only for explorer-tier Sparks).
   const recipients = await db.select({ email: users.email })
     .from(users)
-    .where(sql`subscription_tier = ANY(ARRAY[${sql.join(allowedBilling.map((t) => sql`${t}`), sql`, `)}]::text[])`);
+    .leftJoin(userSubscriptions, and(
+      eq(userSubscriptions.userId, users.id),
+      eq(userSubscriptions.status, "active"),
+    ))
+    .leftJoin(subscriptionTiers, eq(subscriptionTiers.id, userSubscriptions.tierId))
+    .where(and(
+      sql`${users.email} IS NOT NULL`,
+      inArray(sql`COALESCE(${subscriptionTiers.name}, 'free')`, allowedBilling),
+    ));
 
   const ctaHref = `${SITE_URL}/recovery/spark/${spark.slug}`;
   const heroImage = spark.heroImageUrl
