@@ -10,12 +10,37 @@ import { RECOVERY_PRODUCTS, type Product } from '@shared/recoveryProducts';
 const SITE_URL = 'https://strokerecoveryacademy.com';
 const STORE_PATH = '/recovery/store';
 
-const CATEGORIES: { id: string; name: string }[] = [
-  { id: 'strength', name: 'Strength Training' },
-  { id: 'mobility', name: 'Mobility & Drop Foot' },
-  { id: 'therapy', name: 'Therapy Tools' },
-  { id: 'adaptive', name: 'Adaptive Aids' },
-  { id: 'brain', name: 'Brain Games & Books' },
+const CATEGORIES: { id: string; name: string; guide: string }[] = [
+  {
+    id: 'strength',
+    name: 'Strength Training',
+    guide:
+      'When you are rebuilding strength after a stroke, start lighter than you think and choose tools with graded, adjustable resistance so you can progress one small step at a time. Prioritize equipment you can use seated or with support — balance and one-sided weakness make free weights risky early on. The best strength tool is the one that is easy enough to reach for every single day.',
+  },
+  {
+    id: 'mobility',
+    name: 'Mobility & Drop Foot',
+    guide:
+      'For mobility and drop foot, stability on uneven ground matters far more than how a device looks — a wide or pivoting base, a locking brake, and the correct height for your wrist crease are what prevent falls. Drop-foot braces should lift your toe cleanly and fit inside your regular shoe; have a therapist or orthotist confirm the side and fit. Match the level of support to where you are today, and step down to a lighter aid only as confidence returns.',
+  },
+  {
+    id: 'therapy',
+    name: 'Therapy Tools',
+    guide:
+      'Good home therapy tools let you do high-frequency, repeatable reps — repetition is what drives neuroplasticity, so pick tools you will actually use daily. Look for graded resistance or adjustable difficulty so the tool grows with you, and choose items that isolate the weak part (a single finger, the wrist, the ankle) rather than letting stronger muscles take over. These support the work you do with your OT and PT; they do not replace it.',
+  },
+  {
+    id: 'adaptive',
+    name: 'Adaptive Aids',
+    guide:
+      'Adaptive aids buy back independence and dignity in daily life, so choose for the specific task that is hard right now — dressing, eating, reaching, or bathing — rather than a whole kit you may not need. Favor tools that work one-handed or with little grip, built-up or strapped handles, and no-bend reach. The right aid removes the exact barrier between you and doing it yourself.',
+  },
+  {
+    id: 'brain',
+    name: 'Brain Games & Books',
+    guide:
+      'For cognitive and language recovery, large print, short sessions, and graded difficulty keep you practicing instead of frustrated. Choose a mix — word puzzles for language and word-finding, number and logic puzzles for attention and working memory — to train both sides of recovery. Ten focused minutes a day beats one long, exhausting session once a week.',
+  },
 ];
 
 const STORE_FAQS: { q: string; a: string }[] = [
@@ -34,6 +59,14 @@ const STORE_FAQS: { q: string; a: string }[] = [
   {
     q: 'What if I have weakness or limited hand function?',
     a: 'Many items \u2014 adaptive utensils, dressing aids, transfer slings, and rotating-grip trainers \u2014 are chosen specifically for survivors with hemiparesis or limited grip. Each product lists its recovery benefits so you can match a tool to where you are today.',
+  },
+  {
+    q: 'How do the affiliate links work?',
+    a: 'Each \u201CCheck Current Price on Amazon\u201D button opens the product on Amazon.com with our Amazon Associates tag attached. You then check out on Amazon exactly as you normally would \u2014 we never see your payment details, and the tag simply lets Amazon credit the referral. Prices and Amazon Prime shipping are unchanged.',
+  },
+  {
+    q: 'What is the return policy on these products?',
+    a: 'All purchases are fulfilled and shipped by Amazon or its sellers, so Amazon\u2019s standard return policy applies \u2014 most items can be returned within 30 days directly through your Amazon account. Because you buy and check out on Amazon, returns, refunds, warranties, and customer service are handled entirely by Amazon, not by Stroke Recovery Academy.',
   },
   {
     q: 'Is this medical advice?',
@@ -223,7 +256,7 @@ function renderProductCard(p: Product): string {
 </article>`;
 }
 
-function renderCategorySection(catId: string, catName: string): string {
+function renderCategorySection(catId: string, catName: string, guide: string): string {
   const items = RECOVERY_PRODUCTS.filter((p) => p.category === catId);
   if (items.length === 0) return '';
   return `
@@ -232,8 +265,49 @@ function renderCategorySection(catId: string, catName: string): string {
     <h2>${esc(catName)}</h2>
     <span class="cat-count">${items.length} product${items.length === 1 ? '' : 's'}</span>
   </div>
+  ${guide ? `<p class="cat-guide"><span class="cat-guide-label">What to look for</span>${esc(guide)}</p>` : ''}
   <div class="grid">
     ${items.map(renderProductCard).join('')}
+  </div>
+</section>`;
+}
+
+function renderHowNickPicks(): string {
+  const criteria: { title: string; body: string }[] = [
+    {
+      title: 'Survivor-tested first',
+      body: 'Everything is either gear Nick uses in his own recovery or a tool proven by the survivors and therapists he trusts \u2014 not chosen from a spec sheet.',
+    },
+    {
+      title: 'Real therapeutic value',
+      body: 'Each product has to solve a specific recovery problem \u2014 grip, drop foot, balance, spasticity, fine motor, cognition, or daily living \u2014 not just look useful.',
+    },
+    {
+      title: 'Start where you are',
+      body: 'Adjustable resistance, graded difficulty, and one-handed or seated use win, so a tool meets you at week one and still fits months later.',
+    },
+    {
+      title: 'No paid placements',
+      body: 'Nobody pays to be listed. Rankings and picks are based on real-world usefulness and verified customer ratings \u2014 nothing else.',
+    },
+  ];
+  return `
+<section class="how-picks">
+  <div class="how-picks-head">
+    <span class="eyebrow">Survivor-Tested Criteria</span>
+    <h2>How Nick picks products</h2>
+    <p>Nick Kremers recovered from near-total paralysis to roughly 90% function over seven years. Every item in this store has to clear the same bar he used on himself.</p>
+  </div>
+  <div class="how-picks-grid">
+    ${criteria
+      .map(
+        (c) => `
+    <div class="how-card">
+      <h3>${esc(c.title)}</h3>
+      <p>${esc(c.body)}</p>
+    </div>`,
+      )
+      .join('')}
   </div>
 </section>`;
 }
@@ -356,9 +430,11 @@ ${renderHeader()}
     <p><strong>Affiliate disclosure:</strong> As an Amazon Associate, Stroke Recovery Academy earns from qualifying purchases. Prices are identical to buying directly on Amazon \u2014 your purchase costs you nothing extra and helps fund free resources and scholarships for stroke survivors. Product links open on Amazon.</p>
   </section>
 
+  ${renderHowNickPicks()}
+
   ${renderNicksPicks()}
 
-  ${CATEGORIES.map((c) => renderCategorySection(c.id, c.name)).join('')}
+  ${CATEGORIES.map((c) => renderCategorySection(c.id, c.name, c.guide)).join('')}
 
   ${renderFaqs()}
 
@@ -425,6 +501,17 @@ h1,h2,h3{font-family:'Crimson Pro',Georgia,serif}
 .cat-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
 .cat-nav a{font-size:13px;font-weight:600;color:var(--dim);border:1px solid var(--border);border-radius:8px;padding:8px 14px}
 .cat-nav a:hover{color:var(--text);border-color:var(--orange-line);text-decoration:none}
+.how-picks{margin:0 0 40px;padding:26px 24px;background:var(--card);border:1px solid var(--border);border-radius:14px}
+.how-picks-head .eyebrow{margin-bottom:12px}
+.how-picks-head h2{margin:0 0 6px;font-size:26px}
+.how-picks-head p{margin:0 0 20px;color:var(--dim);font-size:15px;max-width:720px}
+.how-picks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.how-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px 16px 18px}
+.how-card h3{margin:0 0 6px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff}
+.how-card h3::before{content:'\u2713';color:var(--orange);font-weight:700;margin-right:8px}
+.how-card p{margin:0;font-size:13px;color:var(--dim);line-height:1.55}
+.cat-guide{margin:0 0 20px;padding:14px 16px;background:var(--orange-soft);border:1px solid var(--orange-line);border-radius:10px;font-size:14px;color:#e8e2d5;line-height:1.6}
+.cat-guide-label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--orange);margin-bottom:6px}
 .picks{margin:0 0 48px;padding:22px;background:var(--card);border:1px solid var(--border);border-radius:14px}
 .picks-head h2{margin:0 0 4px;font-size:24px}.picks-head p{margin:0 0 18px;color:var(--dim);font-size:14px}
 .picks-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px}
