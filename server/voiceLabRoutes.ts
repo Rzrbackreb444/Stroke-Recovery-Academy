@@ -61,7 +61,7 @@ export const SASQUATCH_VOICE_CANDIDATES = [
 
 export function registerVoiceLabRoutes(app: Express) {
   // Admin-only burst limit: 30 previews/min/admin (LLM-adjacent cost control)
-  const previewLimiter = publicRateLimit({ windowMs: 60_000, max: 30, name: "voice-lab-preview" });
+  const previewLimiter = publicRateLimit({ windowMs: 60_000, max: 30, bucketName: "voice-lab-preview" });
 
   app.get("/api/admin/voice-lab/candidates", isAuthenticated, requireAdmin, (_req, res) => {
     res.json({

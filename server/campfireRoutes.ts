@@ -137,7 +137,7 @@ export async function registerCampfireRoutes(app: Express) {
   const postLimiter = publicRateLimit({
     windowMs: 60_000,
     max: 10,
-    name: "campfire-post",
+    bucketName: "campfire-post",
   });
 
   // GET /api/campfire/rooms — list rooms with computed open status

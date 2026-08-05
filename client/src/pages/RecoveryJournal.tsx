@@ -122,10 +122,10 @@ export default function RecoveryJournal() {
       // Optimistically reflect the saved entry so counts + unlocks update
       // instantly — don't wait on a background refetch to settle.
       if (newEntry && newEntry.id != null) {
-        queryClient.setQueryData<any[]>(["/api/recovery/journal"], (old) =>
+        queryClient.setQueryData<any[]>(["/api/recovery/journal"], (old: any) =>
           Array.isArray(old) ? [newEntry, ...old] : [newEntry],
         );
-        queryClient.setQueryData<any>(["/api/recovery/journal/insights"], (old) => {
+        queryClient.setQueryData<any>(["/api/recovery/journal/insights"], (old: any) => {
           const s = (old && old.stats) || {};
           return {
             ...(old || {}),

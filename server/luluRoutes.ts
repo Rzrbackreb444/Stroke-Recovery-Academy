@@ -14,6 +14,7 @@ import {
   luluWebhooks,
   luluPrintJobs,
   bookProjects,
+  bookOrders,
   users
 } from '@shared/schema';
 import { eq, and, desc } from 'drizzle-orm';

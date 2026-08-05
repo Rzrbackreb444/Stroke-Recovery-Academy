@@ -123,9 +123,16 @@ export default function SasquatchCoach() {
       const json = await res.json().catch(() => ({} as any));
       if (res.status === 401 && json?.requireAuth) {
         return {
-          response: json.message ?? "Sign in to keep talking with Sasquatch.",
-          requireAuth: true as const,
-          anon: { used: json.anonLimit ?? 3, limit: json.anonLimit ?? 3 },
+          response: (json.message ?? "Sign in to keep talking with Sasquatch.") as string,
+          requireAuth: true,
+          anon: { used: (json.anonLimit ?? 3) as number, limit: (json.anonLimit ?? 3) as number },
+        } as {
+          response: string;
+          audioBase64?: string;
+          crisis?: boolean;
+          resources?: CrisisResource[];
+          anon?: { used: number; limit: number } | null;
+          requireAuth?: boolean;
         };
       }
       if (!res.ok) {
