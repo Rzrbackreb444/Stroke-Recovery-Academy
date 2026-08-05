@@ -56,3 +56,7 @@ VAPID_EMAIL = "mailto:nick@strokerecoveryacademy.com"
 
 [objectStorage]
 defaultBucketID = "replit-objstore-6695a99c-acae-4297-ba17-54ca57afa29e"
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 180000

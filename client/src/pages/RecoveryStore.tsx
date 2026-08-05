@@ -28,6 +28,14 @@ import strokeLyfeLogo from "@assets/Untitled_design_1776789083877.png";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 
 import { Product, RECOVERY_PRODUCTS } from "@/data/recoveryProducts";
+import {
+  STORE_CATEGORY_GUIDES as CATEGORY_GUIDES,
+  STORE_FAQS,
+  HOW_NICK_PICKS,
+  HOW_NICK_PICKS_HEADING,
+  HOW_NICK_PICKS_EYEBROW,
+  HOW_NICK_PICKS_INTRO,
+} from "@shared/storeEditorial";
 
 
 const CATEGORIES = [
@@ -37,68 +45,6 @@ const CATEGORIES = [
   { id: "therapy", name: "Therapy Tools", icon: Hand },
   { id: "adaptive", name: "Adaptive Aids", icon: Utensils },
   { id: "brain", name: "Brain Games & Books", icon: Brain },
-];
-
-// Buying-guide intros — mirror the SSR store page (server/seo/storeRoutes.ts)
-// so the SPA and crawler HTML render the same guidance.
-const CATEGORY_GUIDES: Record<string, string> = {
-  strength:
-    "When you're rebuilding strength after a stroke, start lighter than you think and choose tools with graded, adjustable resistance so you can progress one small step at a time. Prioritize equipment you can use seated or with support — balance and one-sided weakness make free weights risky early on. The best strength tool is the one that's easy enough to reach for every single day.",
-  mobility:
-    "For mobility and drop foot, stability on uneven ground matters far more than how a device looks — a wide or pivoting base, a locking brake, and the correct height for your wrist crease are what prevent falls. Drop-foot braces should lift your toe cleanly and fit inside your regular shoe; have a therapist or orthotist confirm the side and fit. Match the level of support to where you are today, and step down to a lighter aid only as confidence returns.",
-  therapy:
-    "Good home therapy tools let you do high-frequency, repeatable reps — repetition is what drives neuroplasticity, so pick tools you'll actually use daily. Look for graded resistance or adjustable difficulty so the tool grows with you, and choose items that isolate the weak part (a single finger, the wrist, the ankle) rather than letting stronger muscles take over. These support the work you do with your OT and PT; they do not replace it.",
-  adaptive:
-    "Adaptive aids buy back independence and dignity in daily life, so choose for the specific task that's hard right now — dressing, eating, reaching, or bathing — rather than a whole kit you may not need. Favor tools that work one-handed or with little grip, built-up or strapped handles, and no-bend reach. The right aid removes the exact barrier between you and doing it yourself.",
-  brain:
-    "For cognitive and language recovery, large print, short sessions, and graded difficulty keep you practicing instead of frustrated. Choose a mix — word puzzles for language and word-finding, number and logic puzzles for attention and working memory — to train both sides of recovery. Ten focused minutes a day beats one long, exhausting session once a week.",
-};
-
-// Survivor-tested criteria — mirrors the "How Nick picks products" block on the SSR store page.
-const HOW_NICK_PICKS: { title: string; body: string }[] = [
-  {
-    title: "Survivor-tested first",
-    body: "Everything is either gear Nick uses in his own recovery or a tool proven by the survivors and therapists he trusts — not chosen from a spec sheet.",
-  },
-  {
-    title: "Real therapeutic value",
-    body: "Each product has to solve a specific recovery problem — grip, drop foot, balance, spasticity, fine motor, cognition, or daily living — not just look useful.",
-  },
-  {
-    title: "Start where you are",
-    body: "Adjustable resistance, graded difficulty, and one-handed or seated use win, so a tool meets you at week one and still fits months later.",
-  },
-  {
-    title: "No paid placements",
-    body: "Nobody pays to be listed. Rankings and picks are based on real-world usefulness and verified customer ratings — nothing else.",
-  },
-];
-
-const STORE_FAQS = [
-  {
-    q: "How are these recovery products chosen?",
-    a: "Every product is hand-picked by stroke survivor Nick Kremers or recommended by stroke recovery specialists for genuine therapeutic value. There are no paid placements — products are included only because they help the recovery journey.",
-  },
-  {
-    q: "Are these products a substitute for therapy?",
-    a: "No. Adaptive equipment and home recovery tools support the work you do with your physical, occupational, and speech therapists — they do not replace clinical care. Always check with your therapy team before starting a new tool or exercise.",
-  },
-  {
-    q: "How does buying here support stroke survivors?",
-    a: "The Recovery Store uses Amazon affiliate links. When you buy through them, a small commission funds free resources and scholarship support for stroke survivors at no extra cost to you.",
-  },
-  {
-    q: "Do I pay more by using these links?",
-    a: "No. Affiliate links never change the price you pay. You pay Amazon's normal price, and a small referral commission supports the mission.",
-  },
-  {
-    q: "How do the affiliate links work?",
-    a: "Each \"Check Current Price on Amazon\" button opens the product on Amazon.com with our Amazon Associates tag attached. You then check out on Amazon exactly as you normally would — we never see your payment details, and the tag simply lets Amazon credit the referral. Prices and Amazon Prime shipping are unchanged.",
-  },
-  {
-    q: "What is the return policy on these products?",
-    a: "All purchases are fulfilled and shipped by Amazon or its sellers, so Amazon's standard return policy applies — most items can be returned within 30 days directly through your Amazon account. Because you buy and check out on Amazon, returns, refunds, warranties, and customer service are handled entirely by Amazon, not by Stroke Recovery Academy.",
-  },
 ];
 
 function ProductSchema({ product, tag }: { product: Product; tag: string | null }) {
@@ -452,13 +398,10 @@ export default function RecoveryStore() {
           <div className="mb-6">
             <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30 mb-3">
               <Award className="w-3 h-3 mr-1" />
-              Survivor-Tested Criteria
+              {HOW_NICK_PICKS_EYEBROW}
             </Badge>
-            <h2 className="text-2xl font-bold text-white mb-2 font-serif">How Nick picks products</h2>
-            <p className="text-gray-400 max-w-2xl">
-              Nick Kremers recovered from near-total paralysis to roughly 90% function over seven years.
-              Every item in this store has to clear the same bar he used on himself.
-            </p>
+            <h2 className="text-2xl font-bold text-white mb-2 font-serif">{HOW_NICK_PICKS_HEADING}</h2>
+            <p className="text-gray-400 max-w-2xl">{HOW_NICK_PICKS_INTRO}</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {HOW_NICK_PICKS.map((c) => (
