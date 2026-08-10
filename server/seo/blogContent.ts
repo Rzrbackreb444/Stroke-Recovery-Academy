@@ -94,6 +94,9 @@ const SLUG_TO_CLUSTER: Record<string, string> = {
   'best-weighted-vest-stroke-recovery': 'fitness',
   'hydrotherapy-hot-tub-stroke-recovery': 'fitness',
   'push-up-bars-stroke-recovery': 'fitness',
+  'best-push-up-bars-stroke-recovery': 'fitness',
+  'perfect-fitness-pushup-stands-review-stroke-recovery': 'fitness',
+  'rotating-push-up-bars-vs-fixed-pushup-stands-stroke': 'fitness',
   // Home safety & independence
   'shower-safety-stroke-survivor': 'home-safety',
   'best-adaptive-eating-utensils-stroke': 'home-safety',
@@ -3545,6 +3548,8 @@ export const POST_PUSH_UP_BARS_GUIDE = makeBlogPost({
     { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Push-up bars and all stroke recovery training gear.' },
     { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'The pull-based counterpart to push-up training.' },
     { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools', blurb: 'Build the grip strength that makes bar work possible.' },
+    { href: '/blog/perfect-fitness-pushup-stands-review-stroke-recovery', label: 'Perfect Fitness Pushup Stands review', blurb: 'The fixed, stability-first alternative to rotating bars.' },
+    { href: '/blog/rotating-push-up-bars-vs-fixed-pushup-stands-stroke', label: 'Rotating bars vs fixed pushup stands', blurb: 'Pick the right pressing tool for your specific deficit.' },
     { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'The system for sustainable daily upper body work.' },
   ],
   publishedDate: '2026-06-05',
@@ -3558,6 +3563,283 @@ export const POST_PUSH_UP_BARS_GUIDE = makeBlogPost({
   bookPromo: {
     title: 'The upper body rebuild is in the book',
     description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the complete strength progression from arm slings and shoulder subluxation through advanced pressing and pulling patterns.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
+// Perfect Fitness Pushup Stands — survivor review
+// =============================================================================
+export const POST_PUSHUP_STANDS_REVIEW = makeBlogPost({
+  slug: 'perfect-fitness-pushup-stands-review-stroke-recovery',
+  title: 'Perfect Fitness Pushup Stands Review for Stroke Recovery',
+  description: 'A 7-year survivor reviews the Perfect Fitness Pushup Stands — neutral wrist position, a 360 stability platform for one-sided weakness, and how to progress safely.',
+  h1: 'Perfect Fitness Pushup Stands review for stroke recovery',
+  keyword: 'perfect fitness pushup stands review stroke recovery',
+  extraKeywords: ['pushup stands stroke survivor', 'neutral wrist push-up stands', 'stable push-up handles hemiparesis'],
+  takeaways: [
+    'The Perfect Fitness Pushup Stands keep the wrist neutral and sit on a wide 360 stability platform — ideal for weak or spastic wrists.',
+    'The fixed, planted base does not spin, so one-sided weakness feels safer than with rotating handles.',
+    'At $19.99 with molded ABS handles that stack for storage, they suit small-space home rehab.',
+    'Start at the wall, move to a counter, then progress to the floor — never skip a step.',
+    'Choose these when balance and stability matter more than wrist rotation.',
+  ],
+  subhead: 'After stroke, the barrier to push-ups is rarely strength alone — it is a wrist that will not extend and a base that feels unsafe when one side is weaker. Here is how the Perfect Fitness Pushup Stands solve both, from a survivor who lived it.',
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B00MBEVV8S', label: 'Check Current Price on Amazon' },
+  ctaSecondary: { href: '/blog/best-push-up-bars-stroke-recovery', label: 'Compare push-up bars for stroke recovery' },
+  image: '/images/blog/grip-strength-trainer.jpg',
+  imageAlt: 'Perfect Fitness Pushup Stands with padded non-skid handles for stroke recovery upper body training',
+  sections: [
+    {
+      h2: 'Are the Perfect Fitness Pushup Stands good for stroke survivors?',
+      paragraphs: [
+        'Yes — for stroke survivors whose main obstacle is a stiff or spastic wrist and a shaky sense of balance, the Perfect Fitness Pushup Stands (ASIN B00MBEVV8S, $19.99) are one of the safest ways back into pressing exercise. They lift the hand off the floor so the wrist stays in a neutral position instead of the deep 90-degree extension a floor push-up demands, and each handle sits on a wide 360 stability platform that plants into the floor and does not tip.',
+        'That combination — neutral wrist plus a base that does not move — is exactly what a hemiparetic survivor needs. You are not fighting the equipment. You place the handle, you trust it, and you press. The molded ABS handles are lightweight, the grips are padded and non-skid, and the two handles stack together so they store in a drawer.',
+      ],
+    },
+    {
+      h2: 'Why neutral wrist position matters after stroke',
+      paragraphs: [
+        'Spasticity after stroke usually pulls the wrist into flexion — the hand closes and the wrist curls down. A standard floor push-up forces the opposite: about 90 degrees of wrist extension under your full body weight. For many survivors that position is painful, unreachable, or triggers the spastic pattern the moment load goes on.',
+        'The Perfect Fitness Pushup Stands raise the hand roughly 3 inches and let you grip a vertical handle. Instead of extending the wrist onto the floor, your forearm and hand stay stacked in a neutral column. That single change is often the difference between being able to load the push-up pattern and skipping it entirely.',
+      ],
+      image: {
+        src: '/images/blog/grip-strength-trainer.jpg',
+        alt: 'Padded handle push-up equipment keeping the wrist neutral for a stroke survivor',
+        caption: 'Gripping a raised handle keeps a spastic or weak wrist neutral instead of forcing full extension.',
+      },
+    },
+    {
+      h2: 'How does the 360 stability platform help one-sided weakness?',
+      paragraphs: [
+        'With hemiparesis, your two sides do not push evenly. The strong side drives harder, and any handle that can move or spin will drift under that uneven load — which is unnerving when you are already low to the ground. The 360 stability platform on the Perfect Fitness Pushup Stands is a wide, flat non-skid base. It resists tipping in every direction, so the affected side has a fixed anchor to press against even when it only contributes 10–20% of the force.',
+        'Practically, that means you can keep the weak arm in the movement instead of collapsing onto the strong side. The base being planted also lets you experiment with hand position — wider for chest, narrower for triceps — without the handle wandering.',
+      ],
+    },
+    {
+      h2: 'Specs and what you get for $19.99',
+      table: {
+        headers: ['Feature', 'Detail', 'Why it matters after stroke'],
+        rows: [
+          ['Handle type', 'Fixed, molded ABS with padded grip', 'Predictable, no spin when one side is weaker'],
+          ['Base', '360 stability platform, non-skid', 'Will not tip under uneven hemiparetic load'],
+          ['Wrist position', 'Neutral / elevated ~3 in', 'Avoids painful 90° wrist extension'],
+          ['Storage', 'Handles stack together', 'Fits a drawer in small-space home rehab'],
+          ['Colorway / material', 'Black/Red ABS', 'Lightweight, durable, easy to wipe down'],
+          ['Price', '$19.99', 'Lower cost than most rehab pressing tools'],
+        ],
+        caption: 'Perfect Fitness Pushup Stands at a glance — the specs that matter for survivor pressing work.',
+      },
+    },
+    {
+      h2: 'The wall to counter to floor progression',
+      paragraphs: [
+        'Do not start on the floor. Most survivors in the first 6–12 months are not ready, and a failed floor rep teaches your nervous system fear. Use the stands at a gradient instead.',
+      ],
+      steps: [
+        { name: 'Wall push-ups', text: 'Place the stands against a wall at chest height, stand arm\'s length back, and press. This loads the pressing muscles at a small fraction of body weight while your wrist stays neutral on the handle.' },
+        { name: 'Counter or table push-ups', text: 'Move the stands to a kitchen counter. The steeper angle adds roughly 15–20% more body weight. Keep the affected arm engaged even if the strong side leads the rhythm.' },
+        { name: 'Incline (bench) push-ups', text: 'Set the stands on a low bench or sturdy box. This is the bridge between vertical and floor work — control the lowering phase, which is where strength is built.' },
+        { name: 'Floor push-ups', text: 'Only when incline reps are clean and pain-free. On the floor the 360 platform earns its keep, giving the weak side a stable anchor. Modify on the knees first if needed.' },
+      ],
+    },
+    {
+      h2: 'What I would change — the honest limitations',
+      bullets: [
+        'The handles are fixed, not rotating. If your barrier is forearm tone that fights a locked position, rotating bars may feel better — see the comparison below.',
+        'Padded grips are firm, not plush. Survivors with very sensitive palms may want to wear light gloves at first.',
+        'No angle adjustment on the handle itself — you change difficulty by changing the surface (wall, counter, floor), not the tool.',
+        'At only ~3 inches of lift they help most with wrist angle and stability, not with a large range-of-motion increase.',
+      ],
+    },
+    {
+      h2: 'Who should buy the Perfect Fitness Pushup Stands',
+      paragraphs: [
+        'Buy these if your dominant concern is stability and a wrist that will not extend onto the floor — the planted 360 base and neutral grip are their whole point, and at $19.99 they are an easy, low-risk addition to a home program.',
+        'Skip them in favor of rotating push-up bars if your main issue is forearm or wrist tone that resists a fixed hand angle. Both belong in the Recovery Store, and many survivors own both — stands for stability days, bars for tone days.',
+      ],
+      products: [
+        {
+          name: 'Perfect Fitness Pushup Stands',
+          price: '$19.99',
+          link: 'https://www.amazon.com/dp/B00MBEVV8S',
+          note: 'Fixed molded ABS handles, padded non-skid grips, 360 stability platform, stack for storage. Keeps the wrist neutral. Also in the Recovery Store.',
+        },
+        {
+          name: 'Perfect Fitness Push-Up Bars — rotating handles',
+          link: 'https://www.amazon.com/dp/B008DNAJ5M',
+          note: 'The rotating alternative — better when forearm tone fights a fixed hand position.',
+        },
+      ],
+      relatedLinks: [
+        { href: '/blog/rotating-push-up-bars-vs-fixed-pushup-stands-stroke', label: 'Rotating bars vs fixed stands — which to pick' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Are the Perfect Fitness Pushup Stands good for weak or spastic wrists after stroke?', a: 'Yes. They elevate the hand about 3 inches and let you grip a vertical handle so the wrist stays neutral instead of extending 90 degrees onto the floor. That avoids the painful, hard-to-reach position that stops most survivors with wrist spasticity from doing push-ups.' },
+    { q: 'Do fixed pushup stands help with one-sided weakness?', a: 'They do. The 360 stability platform is a wide non-skid base that resists tipping in every direction, so the weaker side has a fixed anchor to press against. Because the handle does not spin, it will not drift when your strong side pushes harder.' },
+    { q: 'How much do the Perfect Fitness Pushup Stands cost?', a: 'They are $19.99. That includes two molded ABS handles with padded non-skid grips and the 360 stability platform, and the handles stack together for storage.' },
+    { q: 'Should I start push-ups on the floor with these stands?', a: 'No. Start with the stands against a wall, then progress to a counter, then an incline bench, then the floor. Each step adds roughly 15–20% more body weight. Skipping steps risks a failed rep that teaches fear rather than strength.' },
+    { q: 'Are rotating push-up bars or fixed pushup stands better for stroke survivors?', a: 'It depends on your deficit. Choose fixed stands if your concern is balance and stability; choose rotating bars if forearm or wrist tone fights a locked hand position. Many survivors keep both — see the full comparison guide.' },
+  ],
+  related: [
+    { href: '/blog/best-push-up-bars-stroke-recovery', label: 'Best push-up bars for stroke recovery', blurb: 'The rotating-handle guide these stands are compared against.' },
+    { href: '/blog/rotating-push-up-bars-vs-fixed-pushup-stands-stroke', label: 'Rotating bars vs fixed pushup stands', blurb: 'Pick the right pressing tool for your specific deficit.' },
+    { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'The pull-based counterpart to push-up training.' },
+    { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools', blurb: 'Build the grip and wrist tolerance that makes handle work possible.' },
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Pushup stands and all stroke recovery training gear.' },
+  ],
+  publishedDate: '2026-08-10',
+  productCard: {
+    title: 'Perfect Fitness Pushup Stands',
+    description: 'Fixed padded handles on a 360 stability platform keep the wrist neutral and the base planted — built for survivors who need stability, not spin. $19.99.',
+    link: 'https://www.amazon.com/dp/B00MBEVV8S',
+    label: 'Check Current Price on Amazon',
+    note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
+  },
+  bookPromo: {
+    title: 'The full upper body rebuild is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION covers the complete pressing progression from wall push-ups through floor work, including how to keep a weak side in the movement.',
+    link: '/book',
+    label: 'Get the book',
+  },
+});
+
+// =============================================================================
+// Rotating push-up bars vs fixed pushup stands — comparison
+// =============================================================================
+export const POST_BARS_VS_STANDS = makeBlogPost({
+  slug: 'rotating-push-up-bars-vs-fixed-pushup-stands-stroke',
+  title: 'Rotating Push-Up Bars vs Fixed Pushup Stands (Stroke)',
+  description: 'Rotating push-up bars or fixed pushup stands after stroke? Pick by deficit — wrist pain and tone favor rotating bars; balance and stability favor fixed stands.',
+  h1: 'Rotating push-up bars vs fixed pushup stands for stroke survivors',
+  keyword: 'rotating push-up bars vs fixed pushup stands stroke',
+  extraKeywords: ['push-up bars vs stands stroke', 'best push-up handles hemiparesis', 'wrist tone push-up equipment'],
+  takeaways: [
+    'Perfect Fitness Push-Up Bars (rotating) win when wrist pain or forearm tone fights a fixed hand angle.',
+    'Perfect Fitness Pushup Stands (fixed, 360 platform) win when balance and stability are the concern.',
+    'Rotating handles reduce wrist torque; fixed stands give a planted, no-spin anchor for one-sided weakness.',
+    'Both keep the wrist off the floor and cost about $20 — many survivors own both.',
+    'Match the tool to your deficit, not to reviews written for able-bodied lifters.',
+  ],
+  subhead: 'Two Perfect Fitness tools, two very different jobs. The right choice depends on whether your biggest barrier is wrist tone or balance. Here is how a survivor decides.',
+  ctaPrimary: { href: '/recovery/shop', label: 'See both in the Recovery Store' },
+  ctaSecondary: { href: '/blog/perfect-fitness-pushup-stands-review-stroke-recovery', label: 'Read the pushup stands review' },
+  image: '/images/blog/grip-strength-trainer.jpg',
+  imageAlt: 'Rotating push-up bars and fixed pushup stands side by side for stroke recovery comparison',
+  sections: [
+    {
+      h2: 'Rotating push-up bars or fixed pushup stands — which should a stroke survivor pick?',
+      paragraphs: [
+        'Pick by your deficit, not by star ratings. If your biggest barrier is wrist pain or forearm tone that fights a locked hand position, choose the rotating Perfect Fitness Push-Up Bars (ASIN B008DNAJ5M) — the handles turn with your forearm and shed torque at the wrist. If your biggest barrier is balance and a base that feels unsafe when one side is weaker, choose the fixed Perfect Fitness Pushup Stands (ASIN B00MBEVV8S, $19.99) — the 360 stability platform plants into the floor and does not spin.',
+        'Both raise the hand so the wrist stays off the floor, both cost around $20, and both live in the Recovery Store. This is not a "better product" question. It is a "which of your problems is louder" question.',
+      ],
+    },
+    {
+      h2: 'What rotating handles actually do for the wrist',
+      paragraphs: [
+        'Rotating push-up bars let the handle pivot as your forearm supinates and pronates through the rep. For survivors whose forearm and wrist carry tone, that pivot means the joint follows its natural arc instead of being pinned in one angle. Less torque at the wrist means less of the compensatory grip tension that fires the spastic pattern.',
+        'The trade-off: a handle that can turn can also feel unstable when your two sides push unevenly. If your affected side is very weak, the spin can amplify that wobble.',
+      ],
+    },
+    {
+      h2: 'What the 360 stability platform actually does for balance',
+      paragraphs: [
+        'The fixed Perfect Fitness Pushup Stands sit on a wide, non-skid 360 stability platform. Nothing turns. When hemiparesis makes your strong side drive harder, the base does not drift, so the weak arm always has a solid anchor to press against. That predictability is calming when you are close to the ground and worried about a collapse.',
+        'The trade-off: a fixed hand angle is exactly what a tone-dominant wrist may resist. If keeping the wrist pinned in one position triggers pain or spasticity, the stability advantage will not matter because you will not want to load it.',
+      ],
+    },
+    {
+      h2: 'Head-to-head comparison table',
+      paragraphs: [
+        'Both tools are recommended in the Recovery Store. Use this table to match the tool to your dominant deficit, then read the picks below.',
+      ],
+      table: {
+        headers: ['Factor', 'Rotating Push-Up Bars (B008DNAJ5M)', 'Fixed Pushup Stands (B00MBEVV8S)'],
+        rows: [
+          ['Handle', 'Rotates with the forearm', 'Fixed, molded ABS, padded grip'],
+          ['Best for deficit', 'Wrist pain / forearm tone / spasticity', 'Balance / stability / one-sided weakness'],
+          ['Base', 'Non-slip, narrower', '360 stability platform, wide non-skid'],
+          ['Wrist torque', 'Lowest — handle sheds torque', 'Low — neutral but fixed angle'],
+          ['Stability under uneven load', 'Can feel wobbly if very weak', 'Planted, does not spin or drift'],
+          ['Storage', 'Compact', 'Handles stack together'],
+          ['Approx. price', '~$24.99', '$19.99'],
+        ],
+        caption: 'Rotating bars vs fixed stands — the survivor-specific breakdown by deficit.',
+      },
+    },
+    {
+      h2: 'Choose rotating push-up bars if...',
+      bullets: [
+        'Your affected wrist or forearm carries tone or spasticity that fights a locked hand angle.',
+        'Floor push-ups hurt your wrist and even neutral handles feel stiff.',
+        'Your balance is decent but your grip and wrist mechanics are the limiter.',
+        'You want the lowest possible torque through the wrist joint.',
+      ],
+      products: [
+        {
+          name: 'Perfect Fitness Push-Up Bars — rotating handles',
+          price: '$24.99',
+          link: 'https://www.amazon.com/dp/B008DNAJ5M',
+          note: 'Rotating handles reduce wrist torque, non-slip base, foam grips. Already in the Recovery Store and Nick\'s pick for tone-dominant wrists.',
+        },
+      ],
+    },
+    {
+      h2: 'Choose fixed pushup stands if...',
+      bullets: [
+        'Balance and a base that stays put matter more to you than handle rotation.',
+        'One side is much weaker and a spinning handle would make you feel unsafe.',
+        'Your wrist tolerates a neutral, fixed position without pain.',
+        'You want a lower price ($19.99) and handles that stack for small-space storage.',
+      ],
+      products: [
+        {
+          name: 'Perfect Fitness Pushup Stands',
+          price: '$19.99',
+          link: 'https://www.amazon.com/dp/B00MBEVV8S',
+          note: 'Fixed padded handles on a 360 stability platform. Planted, no spin — built for stability and one-sided weakness. Also in the Recovery Store.',
+        },
+      ],
+      relatedLinks: [
+        { href: '/blog/perfect-fitness-pushup-stands-review-stroke-recovery', label: 'Full Perfect Fitness Pushup Stands review' },
+      ],
+    },
+    {
+      h2: 'Why many survivors keep both',
+      paragraphs: [
+        'Recovery is not linear, and neither is tone. On a high-tone morning, the rotating bars let the wrist follow its arc. On a low-balance, deconditioned day, the fixed stands give you a base you can trust close to the floor. At roughly $20 each, owning both is cheaper than most single rehab gadgets and lets you train through whatever your body brings that day.',
+        'Whichever you start with, keep the same progression — wall, counter, incline, floor — and keep the weak side in the movement even when it only adds a little force. The tool removes the wrist and balance barriers; the reps still have to be honest.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Are rotating push-up bars or fixed pushup stands better for stroke survivors?', a: 'Neither is universally better — it depends on your deficit. Rotating Perfect Fitness Push-Up Bars are better for wrist pain and forearm tone because the handle turns with your forearm. Fixed Perfect Fitness Pushup Stands are better for balance and one-sided weakness because the 360 stability platform will not spin or tip.' },
+    { q: 'Which push-up equipment is best for wrist pain after stroke?', a: 'Rotating push-up bars. Because the handle pivots as your forearm supinates and pronates, torque at the wrist drops and the joint follows its natural arc instead of being pinned in one position — which usually means less pain and less spastic firing.' },
+    { q: 'Which push-up handles help most with balance and one-sided weakness?', a: 'Fixed pushup stands with a wide 360 stability platform. The base plants into the floor and does not spin, so the weaker side always has a solid anchor to press against even when the strong side pushes harder.' },
+    { q: 'Do I need both push-up bars and pushup stands?', a: 'Not required, but many survivors keep both. At about $20 each, the rotating bars cover high-tone days and the fixed stands cover low-balance days. Owning both lets you train through whatever tone and stability you have on a given day.' },
+    { q: 'How much do these Perfect Fitness push-up tools cost?', a: 'The fixed Perfect Fitness Pushup Stands are $19.99 and the rotating Perfect Fitness Push-Up Bars are around $24.99. Both are in the Recovery Store with affiliate links.' },
+  ],
+  related: [
+    { href: '/blog/perfect-fitness-pushup-stands-review-stroke-recovery', label: 'Perfect Fitness Pushup Stands review', blurb: 'The full survivor review of the fixed-stand option.' },
+    { href: '/blog/best-push-up-bars-stroke-recovery', label: 'Best push-up bars for stroke recovery', blurb: 'The rotating-handle guide and upper-body session structure.' },
+    { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'The pull-based counterpart to push-up training.' },
+    { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools', blurb: 'Build the grip and wrist tolerance that makes handle work possible.' },
+    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Both tools and all stroke recovery training gear.' },
+  ],
+  publishedDate: '2026-08-10',
+  productCard: {
+    title: 'Perfect Fitness Pushup Stands',
+    description: 'The fixed, stability-first option — 360 platform, neutral wrist, $19.99. Pair it with the rotating bars for tone-dominant days.',
+    link: 'https://www.amazon.com/dp/B00MBEVV8S',
+    label: 'Check Current Price on Amazon',
+    note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
+  },
+  bookPromo: {
+    title: 'The full pressing progression is in the book',
+    description: 'THE ULTIMATE STROKE RECOVERY REVOLUTION walks through the wall-to-floor push-up progression and how to keep a weak side in the movement.',
     link: '/book',
     label: 'Get the book',
   },
@@ -7832,6 +8114,8 @@ export const ALL_BLOG_POSTS: SsrPageConfig[] = [
   POST_WHEELCHAIR,
   POST_PEDAL_EXERCISER,
   POST_PUSH_UP_BARS_GUIDE,
+  POST_PUSHUP_STANDS_REVIEW,
+  POST_BARS_VS_STANDS,
   POST_AFO_OSSUR,
   POST_ANKLE_BRACE,
   POST_BALANCE_BOARD_GUIDE,
