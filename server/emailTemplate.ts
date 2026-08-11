@@ -19,7 +19,7 @@ export const EMAIL = {
   warningBorder: '#7a2a2a',
   warningText: '#ffd9d9',
   site: SITE,
-  logo: `${SITE}/email-assets/sasquatch-logo.png`,
+  logo: `${SITE}/email-assets/sra-logo.png`,
   beforeAfter: `${SITE}/email-assets/before-after-2018-2027.png`,
 };
 
