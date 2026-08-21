@@ -850,7 +850,7 @@ ${renderHeader()}
   <section class="sra-affiliate" style="border-color: var(--sra-gold);">
     <h2 style="color: var(--sra-gold);">${esc(bookPromo.title)}</h2>
     <p>${esc(bookPromo.description)}</p>
-    <a href="${escAttr(tagAmazonLink(bookPromo.link))}" class="sra-btn-primary">${esc(bookPromo.label)}</a>
+    <a href="${escAttr(tagAmazonLink(bookPromo.link))}" class="sra-btn-primary"${externalLinkAttrs(bookPromo.link)}>${esc(bookPromo.label)}</a>
   </section>
   ` : ''}
 
