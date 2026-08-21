@@ -7,4 +7,4 @@ description: Product scope and truthfulness rules for the Laundromat Mastery Com
 
 **Why:** The owner explicitly chose to replace the previous application rather than create a separate product, and supplied the WashBizHub community and Location Intelligence course as the visual and product references.
 
-**How to apply:** Keep courses, operator discussions, location intelligence, and equipment planning coherent around laundromat ownership. Clearly label browser-local data and planning estimates; do not present self-assessments, equipment estimates, or local workspace posts as verified external data, supplier quotes, or a shared authenticated network.
+**How to apply:** Keep courses, operator discussions, location intelligence, and equipment planning coherent around laundromat ownership. Member progress, scorecards, equipment plans, and discussions must be authenticated, server-owned data; do not substitute browser-local state or fabricated activity. Keep planning categories and self-assessments explicitly distinct from supplier quotes, inventory, or verified financial due diligence.

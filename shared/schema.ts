@@ -557,6 +557,46 @@ export const courses = pgTable("courses", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+// ============================================================================
+// WASHBIZHUB MEMBER WORKSPACE
+// ============================================================================
+
+export const washbizCourseProgress = pgTable("washbiz_course_progress", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  completedLessons: integer("completed_lessons").notNull().default(0),
+  reflection: text("reflection").notNull().default(""),
+  revision: integer("revision").notNull().default(1),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("washbiz_course_progress_user_unique").on(table.userId),
+]);
+
+export const washbizScorecards = pgTable("washbiz_scorecards", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  siteName: text("site_name").notNull(),
+  eveningTraffic: varchar("evening_traffic", { length: 16 }).notNull(),
+  competition: varchar("competition", { length: 16 }).notNull(),
+  rent: varchar("rent", { length: 16 }).notNull(),
+  score: integer("score").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => [
+  index("washbiz_scorecards_user_updated_idx").on(table.userId, table.updatedAt),
+]);
+
+export const washbizEquipmentPlanItems = pgTable("washbiz_equipment_plan_items", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  equipmentKey: varchar("equipment_key", { length: 64 }).notNull(),
+  displayName: text("display_name").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("washbiz_equipment_plan_user_equipment_unique").on(table.userId, table.equipmentKey),
+  index("washbiz_equipment_plan_user_created_idx").on(table.userId, table.createdAt),
+]);
+
 // ─── Course taxonomy (multi-category + prerequisites) ───────────────────────
 export const courseCategories = pgTable("course_categories", {
   id: serial("id").primaryKey(),
