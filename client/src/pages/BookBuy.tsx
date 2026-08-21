@@ -314,6 +314,20 @@ export default function BookBuy() {
                 Read the free 43-page sample
                 <ArrowRight className="w-3.5 h-3.5" />
               </a>
+
+              <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 max-w-xl" data-testid="card-book-template-bundle">
+                <div className="flex items-center gap-2 font-semibold text-sm">
+                  <FileText className="w-4 h-4 text-amber-500" />
+                  Free 90-Day Companion Template
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed mt-2">
+                  Download the free template, then pair it with either edition for daily check-ins, weekly reviews, and recovery-plan prompts.
+                  It is the simplest way to turn a chapter into your next safe, practical rep.
+                </p>
+                <Link href="/book/90-day-template" className="inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-amber-600 hover:text-amber-700">
+                  Open the free template <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>

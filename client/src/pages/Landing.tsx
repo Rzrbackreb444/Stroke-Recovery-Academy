@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLocation, Link } from "wouter";
 import {
   Loader2, ArrowRight, Play, BrainCircuit, CalendarDays,
-  Users, CheckCircle2, ShieldCheck, Activity, Star, Flame, BookOpen,
+  Users, CheckCircle2, ShieldCheck, Activity, Star, Flame, BookOpen, FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RecoveryHeader from "@/components/RecoveryHeader";
@@ -160,6 +160,80 @@ function StatsStrip() {
   );
 }
 
+function BookSpotlight() {
+  return (
+    <section id="book" className="relative overflow-hidden bg-[#17110b] text-white">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_76%_42%,rgba(226,116,27,0.28),transparent_34%)]" />
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-20">
+        <div className="grid lg:grid-cols-[280px_1fr] gap-10 lg:gap-16 items-center">
+          <div className="flex justify-center">
+            <img
+              src="/book/cover.jpg"
+              alt="The Ultimate Stroke Recovery Revolution by Nicholas Kremers"
+              className="w-52 sm:w-60 rounded-lg shadow-[0_28px_70px_rgba(0,0,0,0.65)] ring-1 ring-white/20"
+              data-testid="img-home-book-spotlight"
+            />
+          </div>
+
+          <div>
+            <p className="text-gold text-sm font-bold uppercase tracking-[0.22em] mb-4">The book behind the Method</p>
+            <h2 className="font-display text-4xl md:text-6xl leading-[0.92] mb-5">
+              The Ultimate<br />Stroke Recovery Revolution
+            </h2>
+            <p className="max-w-3xl text-lg text-white/70 leading-relaxed mb-8">
+              A 314-page survivor-built field manual for the days after discharge: practical drills,
+              mindset, equipment guidance, real recovery stories, and a 90-day framework to help you
+              turn “I should” into today’s next rep.
+            </p>
+
+            <div className="grid sm:grid-cols-3 gap-3 mb-8 max-w-3xl">
+              {[
+                "30 chapters + 9 survivor case studies",
+                "17 appendices and the 90-Day Breakthrough Program",
+                "Digital reader, print edition, and free sample",
+              ].map((item) => (
+                <div key={item} className="flex gap-2 rounded-lg border border-white/10 bg-black/20 px-4 py-3 text-sm text-white/75">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-gold mt-0.5" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button asChild size="lg" className="bg-gold text-black font-bold hover:bg-gold/90">
+                <Link href="/book/buy" data-testid="link-home-book-buy">
+                  <BookOpen className="mr-2 h-5 w-5" /> Choose your edition
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="border-gold/50 bg-gold/10 text-gold hover:bg-gold/20">
+                <a href="https://amzn.to/45Ftbjb" target="_blank" rel="sponsored nofollow noopener noreferrer" data-testid="link-home-book-amazon">
+                  <BookOpen className="mr-2 h-5 w-5" /> Get it on Amazon
+                </a>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="border-white/25 bg-white/5 text-white hover:bg-white/10">
+                <a href="/book/sample.pdf" target="_blank" rel="noopener noreferrer" data-testid="link-home-book-sample">
+                  <FileText className="mr-2 h-5 w-5" /> Read the free sample
+                </a>
+              </Button>
+              <Button asChild size="lg" variant="ghost" className="text-white hover:bg-white/10">
+                <Link href="/book" data-testid="link-home-book-companion">Explore the companion</Link>
+              </Button>
+            </div>
+
+            <div className="mt-8 flex items-start gap-3 max-w-2xl rounded-xl border border-gold/30 bg-gold/10 p-4">
+              <FileText className="w-5 h-5 text-gold shrink-0 mt-0.5" />
+              <p className="text-sm leading-relaxed text-white/75">
+                <span className="font-bold text-white">Free 90-Day Companion Template:</span> pair the book with the
+                Academy’s daily check-in, weekly review, and recovery-plan prompts so the ideas on the page become a repeatable routine.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Method() {
   const systems = [
     {
@@ -305,18 +379,33 @@ function Books() {
       secondaryHref: "/book/buy",
     },
     {
-      title: "The Stroke Recovery Revolution",
-      subtitle: "The battle-tested blueprint for defying every “never”",
+      title: "The 90-Day Recovery Template",
+      subtitle: "Turn the book into a practical daily recovery plan",
       description:
-        "The survivor-built guide behind the Sasquatch Method — a practical starting point for survivors and caregivers who need a stronger recovery plan at home.",
-      image: "/book/cover.jpg",
-      imageAlt: "The Stroke Recovery Revolution book by Nick Kremers",
-      eyebrow: "Available on Amazon",
-      primaryLabel: "Buy on Amazon",
-      primaryHref: "https://amzn.to/4glG4DV",
-      primaryExternal: true,
-      secondaryLabel: "Explore the companion",
-      secondaryHref: "/book",
+        "Use the book with a simple daily check-in, weekly review, and recovery-plan prompts. It gives survivors and caregivers a place to turn insight into the next safe, realistic rep.",
+      image: cleanUi,
+      imageAlt: "Stroke Recovery Academy daily recovery planning template",
+      eyebrow: "Free book companion resource",
+      primaryLabel: "Open the free template",
+      primaryHref: "/book/90-day-template",
+      primaryExternal: false,
+      secondaryLabel: "Choose a book edition",
+      secondaryHref: "/book/buy",
+    },
+    {
+      title: "The Stroke Recovery Bible",
+      subtitle: "Earning My Street Cred P.H.D.",
+      description:
+        "A survivor’s deeper field guide to the hard-earned lessons, mindset shifts, and practical recovery work that do not fit inside a single appointment.",
+      image: "https://m.media-amazon.com/images/I/71mJHUGHRKL._SY342_.jpg",
+      imageAlt: "The Stroke Recovery Bible by Nicholas Kremers",
+      eyebrow: "Also by Nick · Amazon",
+      primaryLabel: "Read about the Bible",
+      primaryHref: "/blog/stroke-recovery-bible-review",
+      primaryExternal: false,
+      secondaryLabel: "Find it on Amazon",
+      secondaryHref: "https://amzn.to/4cA6fFP",
+      secondaryExternal: true,
     },
   ];
 
@@ -365,7 +454,7 @@ function Books() {
                 <div className="mt-auto flex flex-col sm:flex-row gap-3">
                   <Button asChild className="bg-gold text-black font-bold hover:bg-gold/90">
                     {book.primaryExternal ? (
-                      <a href={book.primaryHref} target="_blank" rel="noopener noreferrer">
+                      <a href={book.primaryHref} target="_blank" rel="sponsored nofollow noopener noreferrer">
                         <BookOpen className="mr-2 h-4 w-4" /> {book.primaryLabel}
                       </a>
                     ) : (
@@ -375,7 +464,13 @@ function Books() {
                     )}
                   </Button>
                   <Button asChild variant="outline" className="border-white/20 text-white bg-white/5 hover:bg-white/10">
-                    <Link href={book.secondaryHref}>{book.secondaryLabel}</Link>
+                    {book.secondaryExternal ? (
+                      <a href={book.secondaryHref} target="_blank" rel="sponsored nofollow noopener noreferrer">
+                        {book.secondaryLabel}
+                      </a>
+                    ) : (
+                      <Link href={book.secondaryHref}>{book.secondaryLabel}</Link>
+                    )}
                   </Button>
                 </div>
               </div>
@@ -383,7 +478,7 @@ function Books() {
           ))}
         </div>
         <p className="text-xs text-white/35 mt-6">
-          Amazon links may earn a commission at no additional cost to you. The Academy book checkout supports digital and print editions.
+          As an Amazon Associate, Stroke Recovery Academy earns from qualifying purchases at no extra cost to you. Choose the Academy’s digital or print edition, then use the free companion template to turn reading into a routine.
         </p>
       </div>
     </section>
@@ -639,6 +734,7 @@ export default function Landing() {
       <RecoveryHeader />
       <main>
         <Hero />
+        <BookSpotlight />
         <StatsStrip />
         <Method />
         <SasquatchArt />
