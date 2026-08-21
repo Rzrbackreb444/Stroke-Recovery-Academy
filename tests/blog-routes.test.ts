@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { createServer, type Server } from 'node:http';
 import test from 'node:test';
 import express from 'express';
+import { XMLParser, XMLValidator } from 'fast-xml-parser';
 import { ALL_BLOG_POSTS } from '../server/seo/blogContent';
 import { getBlogPageUrls, registerBlogRoutes, registerCrawlerSitemapRoute } from '../server/seo/blogRoutes';
 
@@ -73,6 +74,9 @@ test('the crawler-facing sitemap endpoint publishes all four recovery guides', a
     assert.equal(response.status, 200);
     assert.match(response.headers.get('content-type') || '', /application\/xml/);
     const xml = await response.text();
+    assert.equal(XMLValidator.validate(xml), true, 'sitemap response should be valid XML');
+    const sitemap = new XMLParser().parse(xml);
+    assert.ok(sitemap.urlset, 'sitemap response should parse as a urlset document');
 
     for (const slug of GUIDE_SLUGS) {
       assert.match(xml, new RegExp(`<loc>https://strokerecoveryacademy\\.com${slug.replaceAll('/', '\\/')}</loc>`));

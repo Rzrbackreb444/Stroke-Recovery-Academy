@@ -563,3 +563,10 @@ id = "un-DYpWo2uPa0dk16QJsk"
 uri = "file://artifacts/mockup-sandbox/public/images/warm-exercise-stock.jpg"
 type = "image"
 title = "Person doing simple exercises at home in a cozy sunlit room"
+
+[[outputs]]
+id = "gCiXIgfSMbFPq2xzQI9LL"
+uri = "file://attached_assets/image_1787328241009_single-dryer-panel.png"
+type = "image"
+title = "WashBizHub lineup — single dryer panel restored"
+description = "Corrected screenshot with the missing lower panel added to the Single Dryer card. All other machines, labels, prices, and layout are preserved."
