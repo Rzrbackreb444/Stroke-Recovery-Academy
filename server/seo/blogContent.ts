@@ -130,6 +130,10 @@ const SLUG_TO_CLUSTER: Record<string, string> = {
   'online-stroke-recovery-coach': 'recovery-basics',
   'speech-therapy-stroke-recovery': 'recovery-basics',
   'best-brain-games-books-stroke-cognitive-recovery': 'recovery-basics',
+  'stroked-out-sasquatch-recovery-book-review': 'recovery-basics',
+  'stroke-recovery-cardio-and-mobility-gear-guide': 'fitness',
+  'stroke-recovery-hand-and-brain-tools-guide': 'upper-limb',
+  'stroke-recovery-home-safety-and-adaptive-gear': 'home-safety',
 };
 
 function injectClusterLinks(): void {
@@ -8073,6 +8077,240 @@ export const POST_SHOES_GENDER_STYLE = makeBlogPost({
 });
 
 // =============================================================================
+// Affiliate recovery gear cluster — sourced from Nick's Amazon lists
+// =============================================================================
+export const POST_STROKED_OUT_BOOK_REVIEW = makeBlogPost({
+  slug: 'stroked-out-sasquatch-recovery-book-review',
+  title: 'Stroked-Out Sasquatch: A Stroke Recovery Book Review',
+  description: 'An honest survivor-led review of Stroked-Out Sasquatch, a practical stroke recovery book about daily reps, mindset, and rebuilding life.',
+  h1: 'Stroked-Out Sasquatch: the recovery book I wish I had first',
+  keyword: 'stroke recovery book',
+  extraKeywords: ['Stroked-Out Sasquatch', 'stroke survivor book', 'stroke recovery motivation'],
+  subhead: 'Recovery is not a slogan. It is the ordinary, stubborn work of building a life after your brain changes. This is the book behind that approach.',
+  ctaPrimary: { href: 'https://amzn.to/4ikLfGH', label: 'Get Stroked-Out Sasquatch' },
+  ctaSecondary: { href: '/recovery/store', label: 'Browse recovery gear' },
+  image: '/images/blog/brain-books-stroke.jpg',
+  cluster: 'recovery-basics',
+  takeaways: [
+    'This is a survivor-led blueprint, not a replacement for medical or rehabilitation care.',
+    'The useful idea is consistency: small, repeatable reps beat occasional heroic sessions.',
+    'Caregivers can use the framework to support practice without turning the home into a clinic.',
+    'The right goal is the next measurable improvement, not a promise of a guaranteed outcome.',
+  ],
+  sections: [
+    { h2: 'What the book is really about', paragraphs: [
+      'Stroked-Out Sasquatch: Rewiring the Brain, Rebuilding the Body, and Reclaiming Your Life is written from the survivor side of the hospital bed. Its central question is practical: once formal therapy is no longer filling every day, how do you keep showing up for recovery?',
+      'The answer is not a magic exercise or a claim that every survivor will recover the same way. It is a framework for turning intention into repeatable practice: choose a safe target, do useful repetitions, notice what changed, and return tomorrow.',
+    ] },
+    { h2: 'Who may find it useful', paragraphs: [
+      'A survivor who feels abandoned after discharge may appreciate the direct tone and the reminder that a slower phase is still a phase. A caregiver may use the chapters as conversation starters for goals, routines, and the kind of help that preserves independence.',
+      'It may not suit someone looking for a diagnosis, a personalized therapy protocol, or a substitute for an occupational, physical, speech, or medical professional. The book is a map for persistence, not a clinical prescription.',
+    ], bullets: [
+      'Useful for survivors building a home routine after formal therapy',
+      'Useful for caregivers who want survivor-led language and realistic encouragement',
+      'Not a substitute for a clinician, emergency guidance, or an individualized plan',
+    ] },
+    { h2: 'How to use a recovery book without overdoing it', paragraphs: [
+      'Read one idea, then translate it into one safe action. Keep the action specific: five minutes of supported reaching, a short language practice, or a written log of fatigue. Ask your clinician whether the activity fits your current strength, balance, vision, and swallowing status.',
+      'A good recovery system leaves room for rest. Pain, new neurological symptoms, unusual shortness of breath, chest pain, or a sudden change in function are reasons to stop and seek appropriate medical help—not reasons to push harder.',
+    ] },
+    { h2: 'The survivor-led standard', paragraphs: [
+      'Nick’s voice is blunt because stroke recovery can be lonely and full of low expectations. The strongest parts of this approach are the insistence on dignity, measurable practice, and long-term hope without pretending the hard parts disappear.',
+      'Read it critically. Keep what helps, adapt what does not, and bring questions to your care team. Your recovery is yours; a book should give you agency, not take away your judgment.',
+    ] },
+    { h2: 'Where it fits in the bigger recovery system', paragraphs: [
+      'The book works best alongside medical follow-up, therapy, sleep and mood support, safe equipment, and a way to track small wins. Pair the mindset work with the practical guides in this cluster and with the survivor-tested Recovery Store.',
+    ] },
+  ],
+  faqs: [
+    { q: 'Is Stroked-Out Sasquatch medical advice?', a: 'No. It is survivor-led recovery and mindset guidance. Ask your doctor or therapist before changing exercises, equipment, medication, or activity.' },
+    { q: 'Is this book for a new stroke survivor?', a: 'It can be a hopeful companion, but acute recovery needs take priority. Follow the hospital and rehabilitation team’s instructions first.' },
+    { q: 'Does the book promise a full recovery?', a: 'No responsible book can promise that. It focuses on agency, consistent practice, and building the best life possible with your care team.' },
+    { q: 'Can caregivers read it too?', a: 'Yes. Caregivers may find the survivor perspective useful for supporting practice while respecting fatigue, consent, and independence.' },
+  ],
+  related: [
+    { href: '/blog/how-long-does-stroke-rehab-take', label: 'How long does stroke rehab take?', blurb: 'The honest timeline from hospital to long-term recovery.' },
+    { href: '/blog/can-you-fully-recover-from-a-stroke', label: 'Can you fully recover from a stroke?', blurb: 'A survivor’s answer about hope, limits, and long-term gains.' },
+    { href: '/blog/best-brain-games-books-stroke-cognitive-recovery', label: 'Brain games and books for cognitive recovery', blurb: 'Ways to build consistent cognitive practice.' },
+    { href: '/programs/sasquatch-method', label: 'The Sasquatch Method', blurb: 'The broader daily recovery framework.' },
+  ],
+  publishedDate: '2026-08-21',
+  productCard: { title: 'Stroked-Out Sasquatch', description: 'Nick Kremers’ survivor-led blueprint for rebuilding the brain, body, and life after stroke.', link: 'https://amzn.to/4ikLfGH', label: 'Get the book on Amazon', note: 'Affiliate disclosure: As an Amazon Associate, SRA earns from qualifying purchases at no extra cost to you. This short link is preserved as supplied.' },
+  bookPromo: { title: 'Build the routine around the ideas', description: 'Use the Sasquatch Method and Daily Routine to turn inspiration into safe, repeatable practice.', link: '/programs/daily-routine', label: 'See the Daily Routine' },
+});
+
+export const POST_STROKE_CARDIO_MOBILITY_GEAR = makeBlogPost({
+  slug: 'stroke-recovery-cardio-and-mobility-gear-guide',
+  title: 'Stroke Recovery Cardio and Mobility Gear Guide',
+  description: 'Compare seated cardio, ankle trainers, slip-in shoes, and walking aids for stroke recovery, with safety questions for survivors and caregivers.',
+  h1: 'Stroke recovery cardio and mobility gear: choose the right level',
+  keyword: 'stroke recovery cardio equipment',
+  extraKeywords: ['seated exercise after stroke', 'ankle rehabilitation device', 'mobility gear stroke survivor'],
+  subhead: 'The best tool is the one that matches today’s ability, leaves room to progress, and can be used safely and consistently.',
+  ctaPrimary: { href: '/recovery/store', label: 'Browse the Recovery Store' },
+  ctaSecondary: { href: '/blog/gait-training-home-stroke-recovery', label: 'Read the gait guide' },
+  image: '/images/blog/recumbent-stationary-bike.jpg',
+  cluster: 'fitness',
+  takeaways: ['Start with support and control, not the most expensive machine.', 'Passive motion is not the same as active strengthening.', 'A brace, shoe, or cane needs correct fit and professional guidance.', 'Clear the setup with your clinician when balance, sensation, heart health, or spasticity is involved.'],
+  sections: [
+    { h2: 'Match the equipment to the job', paragraphs: [
+      'Cardio equipment helps with endurance; a pedal exerciser or recumbent bike can provide seated movement when standing balance is not ready. An ankle trainer may provide guided range of motion. A shoe, AFO, cane, or scooter changes how you move through the world. These are different jobs, so buying one does not replace the others.',
+      'Ask what you are trying to improve: tolerance for activity, active leg strength, ankle range, foot clearance, or safe community access. That answer keeps a persuasive product page from becoming a mismatched purchase.',
+    ] },
+    { h2: 'Seated cardio options', paragraphs: [
+      'A recumbent bike such as the MERACH model is appealing when a back-supported seat and step-through frame make transfers manageable. A low under-desk pedal or electric mini-elliptical can be easier to keep nearby. Active pedaling requires voluntary control; powered movement should not be described as equivalent to strengthening.',
+    ], products: [
+      { name: 'MERACH Recumbent Exercise Bike', link: 'https://www.amazon.com/dp/B0CR7JDT9G', note: 'Supplied destination. Back support and seated position may suit survivors who are not ready for upright cycling; confirm transfers and pedal safety first.' },
+      { name: 'Electric Ankle Rehabilitation Trainer', link: 'https://www.amazon.com/dp/B0CRYXL2FK', note: 'Supplied destination. Guided motion is not a diagnosis or a promise of recovery; ask a therapist about fit and range.' },
+      { name: 'VIVURN Under-Desk Electric Mini Elliptical', link: 'https://www.amazon.com/dp/B0GJDQX576', note: 'Supplied destination. Consider foot security, seated posture, and whether the motor can move the affected leg safely.' },
+    ] },
+    { h2: 'Walking aids, shoes, and foot clearance', paragraphs: [
+      'A cane, stable shoe, or AFO can make practice safer, but the right choice depends on gait, strength, sensation, and the surface. A pivoting cane is not automatically safer for every survivor. A brace that rubs, a shoe that collapses, or a device used on the wrong side can create new problems.',
+      'Have a therapist check height, side, shoe compatibility, and walking pattern. Inspect skin after wearing a brace and stop for pressure, numbness, or pain. Use a walker, rail, or caregiver support rather than testing a new aid near stairs.',
+    ], products: [
+      { name: 'Skechers Go Walk Flex Hands-Free Slip-Ins', link: 'https://www.amazon.com/dp/B0CK3JS6Z3', note: 'Supplied destination. Hands-free entry may help dressing, but check heel security and fit on the affected foot.' },
+      { name: 'HurryCane Freedom Edition', link: 'https://www.amazon.com/dp/B00E9ZFBII', note: 'Supplied destination. A pivoting base is a feature to evaluate—not proof that the cane fits every gait.' },
+      { name: 'Össur AFO Dynamic Foot Drop Brace', link: 'https://www.amazon.com/dp/B0040OH2NU', note: 'Supplied destination. AFO selection and fitting should involve a qualified clinician.' },
+    ] },
+    { h2: 'A realistic progression', paragraphs: [
+      'A sensible progression might move from supported range of motion, to short seated active work, to transfers and standing, then to supervised walking and community endurance. It is not a race and it is not linear. A flare in fatigue or tone means reassess the dose, not automatically abandon the goal.',
+    ], bullets: ['Measure minutes, repetitions, and recovery time', 'Use a stable chair, locked equipment, and clear floor space', 'Keep water, phone, and emergency contacts within reach', 'Stop if symptoms are new, sudden, or clearly worsening'] },
+    { h2: 'Questions for your clinician before buying', paragraphs: [
+      'Ask whether the device matches your diagnosis and precautions, whether you need supervision, how to position the weak side, what symptoms mean stop, and how to progress. A high-ticket device is not a shortcut around an assessment.',
+    ] },
+  ],
+  faqs: [
+    { q: 'Is a recumbent bike safe after stroke?', a: 'It may be appropriate for some survivors, but transfers, pedal control, blood pressure, fatigue, and seizure or cardiac precautions matter. Get individualized clearance.' },
+    { q: 'Does passive ankle movement rebuild strength?', a: 'Passive movement can support range and movement practice, but it is not the same as active strengthening. Ask a therapist what role it should play.' },
+    { q: 'Which side should hold a cane?', a: 'Often the cane is held on the stronger side, but gait patterns vary. A therapist should confirm the side and height.' },
+  ],
+  related: [
+    { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home', blurb: 'Set up walking practice around safety and repeatable progress.' },
+    { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs. electric ankle trainer', blurb: 'Understand the different jobs these tools perform.' },
+    { href: '/blog/best-pedal-exerciser-stroke-recovery', label: 'Best pedal exercisers', blurb: 'A focused guide to low-profile seated pedaling.' },
+    { href: '/recovery/store', label: 'Recovery Store', blurb: 'Browse survivor-tested mobility and therapy tools.' },
+  ],
+  publishedDate: '2026-08-21',
+  productCard: { title: 'Explore the supplied cardio and mobility picks', description: 'See the current Amazon listings for the equipment discussed in this guide.', link: 'https://www.amazon.com/dp/B0CR7JDT9G', label: 'Check the supplied Amazon listing', note: 'Affiliate disclosure: SRA may earn from qualifying purchases at no extra cost to you. Availability and specifications can change; verify before buying.' },
+  bookPromo: { title: 'Keep the reps consistent', description: 'The book and daily routine explain how to turn equipment into a sustainable recovery practice.', link: '/book', label: 'Get the full playbook' },
+});
+
+export const POST_STROKE_HAND_BRAIN_TOOLS = makeBlogPost({
+  slug: 'stroke-recovery-hand-and-brain-tools-guide',
+  title: 'Stroke Recovery Hand and Brain Tools: What to Choose',
+  description: 'A practical guide to hand therapy, grip tools, resistance bands, putty, finger training, and brain games after stroke—without hype.',
+  h1: 'Stroke recovery hand and brain tools: useful reps, not hype',
+  keyword: 'stroke recovery hand therapy tools',
+  extraKeywords: ['hand exercises after stroke', 'cognitive recovery tools', 'therapy putty stroke'],
+  subhead: 'Your hand and your thinking skills may need different kinds of practice. Here is how to choose tools that make the next rep possible.',
+  ctaPrimary: { href: '/recovery/store', label: 'Shop hand and brain tools' },
+  ctaSecondary: { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Read the hand therapy guide' },
+  image: '/images/blog/grip-strength-trainer.jpg',
+  cluster: 'upper-limb',
+  takeaways: ['Choose light resistance and clean movement before progression.', 'A gripper can hide finger differences; individual control may need separate practice.', 'Putty and bands are tools, not proof of clinical benefit for everyone.', 'Cognitive games should be graded for challenge without overwhelming fatigue or vision.'],
+  sections: [
+    { h2: 'Start with the movement you actually need', paragraphs: [
+      'After stroke, “hand strength” can mean grip, pinch, release, wrist position, isolated fingers, or the ability to use the hand in a real task. A tool that makes squeezing easy may not improve opening. A tool that trains fingers separately may be more useful for buttons and typing, but only if the position is safe.',
+      'Ask your occupational therapist to identify the missing link. Pain, swelling, shoulder instability, sensory loss, neglect, and spasticity change what practice is appropriate.',
+    ] },
+    { h2: 'Hand and upper-limb tools', paragraphs: [
+      'Resistance bands can support graded shoulder and arm work when anchored safely. Therapy putty offers tactile and pinch practice. A general grip set is inexpensive and adjustable, but the strongest setting is not the goal. The goal is controlled repetitions without breath-holding, pain, or compensatory movement.',
+    ], products: [
+      { name: 'FitBeast Grip Strengthener Set', link: 'https://www.amazon.com/dp/B07G824Z3V', note: 'Supplied destination. Start at the lowest resistance and ask whether gripping is appropriate for your tone and range.' },
+      { name: 'Fit Simplify Resistance Bands', link: 'https://www.amazon.com/dp/B01AVDVHTI', note: 'Supplied destination. Anchor securely and keep the weak arm in a position your therapist has approved.' },
+      { name: 'CanDo TheraPutty Set', link: 'https://www.amazon.com/dp/B00NBEX874', note: 'Supplied destination. Use graded resistance and stop if the hand becomes painful, clenched, or unusually fatigued.' },
+      { name: "D'Addario Varigrip Hand Exerciser", link: 'https://www.amazon.com/dp/B001OCGGEM', note: 'Supplied destination. Individual finger keys can expose asymmetry; that is a reason for guidance, not a reason to force a finger.' },
+    ] },
+    { h2: 'When a robotic glove is not the first answer', paragraphs: [
+      'A powered glove may look compelling when the hand has little voluntary movement. It is still a device that needs correct sizing, positioning, skin checks, and a clear training purpose. A passive session can provide movement practice, but it does not guarantee that active function will return.',
+    ], products: [
+      { name: 'Robotic Rehabilitation Glove', link: 'https://www.amazon.com/dp/B0G633N92L', note: 'Supplied destination. Discuss passive motion, sensation, spasticity, and supervision with an occupational therapist before use.' },
+    ] },
+    { h2: 'Cognitive tools that survivors will actually use', paragraphs: [
+      'Word searches, crosswords, Sudoku, and large-print puzzles are low-cost ways to create short, repeatable cognitive sessions. They are not a replacement for speech-language therapy. Choose large print and an easy level if visual fatigue, aphasia, or attention problems make a harder book discouraging.',
+    ], products: [
+      { name: '399 Games, Puzzles & Trivia for Stroke Recovery', link: 'https://www.amazon.com/dp/0761168257', note: 'Supplied destination. Use the graded difficulty and take breaks before fatigue turns practice into frustration.' },
+      { name: 'Large Print Word Search for Stroke Survivors', link: 'https://www.amazon.com/dp/B0DJ8KQRQN', note: 'Supplied destination. Large print may reduce visual load; it does not treat a visual field deficit.' },
+      { name: 'Easy Crossword Puzzles for Adults', link: 'https://www.amazon.com/dp/B0CVV6KD9W', note: 'Supplied destination. Skip clues and return later; completion is more useful than speed.' },
+    ] },
+    { h2: 'A safer home practice loop', paragraphs: [
+      'Pick one physical and one cognitive target. Set a short timer. Write down repetitions, quality, and fatigue. Stop before form collapses, then bring the log to therapy. This turns a pile of products into information your care team can use.',
+    ] },
+  ],
+  faqs: [
+    { q: 'Can grip trainers fix a stroke-affected hand?', a: 'No tool guarantees recovery. Grip work may be appropriate for some survivors, while others need release, isolated finger, tone, or functional task practice first.' },
+    { q: 'Is therapy putty safe with spasticity?', a: 'It depends on the person and the task. Squeezing can reinforce a clenched pattern for some people. Ask an occupational therapist before starting.' },
+    { q: 'Do brain games replace speech therapy?', a: 'No. They can add enjoyable practice, but aphasia and cognitive rehabilitation should be guided by a qualified speech-language professional when available.' },
+  ],
+  related: [
+    { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools', blurb: 'Compare hand tools by the movement they train.' },
+    { href: '/blog/best-robotic-glove-stroke-recovery', label: 'Robotic glove guide', blurb: 'Questions to ask before buying powered hand equipment.' },
+    { href: '/blog/best-brain-games-books-stroke-cognitive-recovery', label: 'Brain games and books', blurb: 'Build cognitive reps without making promises.' },
+    { href: '/blog/speech-therapy-stroke-recovery', label: 'Speech therapy after stroke', blurb: 'Where games fit—and where professional therapy matters.' },
+  ],
+  publishedDate: '2026-08-21',
+  productCard: { title: 'Supplied hand and brain tools', description: 'Review the current Amazon listings for graded hand practice and large-print cognitive work.', link: 'https://www.amazon.com/dp/B0DL8364Q7', label: 'Check the supplied Amazon listing', note: 'Affiliate disclosure: SRA earns from qualifying purchases at no extra cost to you. Product availability and claims belong to the retailer; review details before buying.' },
+  bookPromo: { title: 'The mindset behind the reps', description: 'Stroked-Out Sasquatch puts daily practice into a survivor-led framework.', link: 'https://amzn.to/4ikLfGH', label: 'Read the book' },
+});
+
+export const POST_STROKE_HOME_SAFETY_ADAPTIVE_GEAR = makeBlogPost({
+  slug: 'stroke-recovery-home-safety-and-adaptive-gear',
+  title: 'Stroke Recovery Home Safety and Adaptive Gear Guide',
+  description: 'Choose safer transfer equipment, shower aids, adaptive utensils, and accessibility tools after stroke with practical caregiver guidance.',
+  h1: 'Stroke recovery home safety and adaptive gear',
+  keyword: 'home safety equipment for stroke survivors',
+  extraKeywords: ['adaptive equipment after stroke', 'caregiver transfer equipment', 'stroke bathroom safety'],
+  subhead: 'Independence is not doing everything without help. It is having the right setup, the right support, and a safer next step.',
+  ctaPrimary: { href: '/blog/complete-stroke-recovery-home-kit', label: 'See the home kit guide' },
+  ctaSecondary: { href: '/recovery/store', label: 'Browse adaptive gear' },
+  image: '/images/blog/adaptive-utensils.jpg',
+  cluster: 'home-safety',
+  takeaways: ['Preventing a fall is more important than testing a device alone.', 'Transfers need training, correct sizing, and caregiver body mechanics.', 'Adaptive utensils can support dignity while skills continue to change.', 'A product listing is not an installation or fitting assessment.'],
+  sections: [
+    { h2: 'Safety starts with the task, not the product', paragraphs: [
+      'Before shopping, walk through the risky moment: getting out of bed, crossing a threshold, showering, reaching a toilet, or eating with one weak hand. Note the surface, lighting, fatigue, footwear, and whether a caregiver is present. The answer may be a layout change, a therapist visit, or equipment—not necessarily the most expensive item.',
+      'Do not use a new lift, transfer aid, or bathroom device for the first time during an emergency. Have a clinician or trained supplier demonstrate it, and keep instructions where the caregiver can find them.',
+    ] },
+    { h2: 'Transfers and caregiver protection', paragraphs: [
+      'A hydraulic patient lift may be appropriate when a survivor cannot safely bear weight, but it is not a casual household appliance. Sling size, attachment points, brake use, clearance, and caregiver training all matter. Never improvise a sling or lift someone by pulling the affected arm.',
+    ], products: [
+      { name: 'Invacare Hydraulic Patient Lift', link: 'https://www.amazon.com/dp/B075JZDSWZ', note: 'Supplied destination. Confirm capacity, sling fit, floor clearance, and hands-on training with a qualified professional.' },
+    ] },
+    { h2: 'Bathroom and nighttime risk', paragraphs: [
+      'A shower chair, properly installed grab bar, non-slip surface, and clear path can matter more than a clever gadget. Suction grab bars are not a substitute for structural installation. Keep frequently used items within reach and consider a plan for nighttime toileting that does not require rushing.',
+    ], products: [
+      { name: 'Drive Medical Premium Shower Chair', link: 'https://www.amazon.com/dp/B013AX88P2', note: 'Supplied destination. Check width, height, floor stability, and whether the bathroom layout allows a safe transfer.' },
+      { name: 'Spill-Proof Portable Urinals', link: 'https://www.amazon.com/dp/B07YMHR8SJ', note: 'Supplied destination. A bedside option may reduce nighttime trips for some people, but discuss hygiene and positioning.' },
+      { name: 'Long-Handle Metal Shoe Horn', link: 'https://www.amazon.com/dp/B01LBLH4FA', note: 'Supplied destination. Helpful for reach and dressing; still check that the shoe is stable and secure.' },
+    ] },
+    { h2: 'Eating with one-sided weakness or tremor', paragraphs: [
+      'Weighted, angled, or built-up-handle utensils can reduce the grip and wrist demands of eating. They do not solve swallowing risk. If coughing, wet voice, pocketing food, or unexplained weight loss is present, contact the appropriate medical or speech-swallowing professional.',
+    ], products: [
+      { name: 'Angled Weighted Adaptive Utensils', link: 'https://www.amazon.com/dp/B0DYV5N6XR', note: 'Supplied destination. Compare weight and angle with the user’s actual wrist control and comfort.' },
+      { name: 'Built-Up-Handle Adaptive Utensils', link: 'https://www.amazon.com/dp/B0C5CYGZDY', note: 'Supplied destination. A thicker handle may reduce pinch demand; test grip without creating wrist strain.' },
+    ] },
+    { h2: 'The caregiver checklist', paragraphs: [
+      'Write down who can help, which transfers require two people, where the equipment is stored, and what “stop” symptoms look like. Recheck the setup after strength, vision, sensation, or walking changes. The safest product is one that remains appropriate as recovery evolves.',
+    ], bullets: ['Lock wheels before a transfer', 'Protect the affected arm and never pull on it', 'Check skin after braces, straps, and prolonged sitting', 'Keep pathways lit and free of cords and loose rugs', 'Call emergency services for sudden new neurological symptoms'] },
+  ],
+  faqs: [
+    { q: 'What is the most important home safety purchase after stroke?', a: 'There is no universal answer. Start with an assessment of the actual fall and transfer risks in the home; a therapist can prioritize equipment and layout changes.' },
+    { q: 'Can one caregiver use a patient lift alone?', a: 'It depends on the lift, person, sling, environment, and training. Follow the manufacturer’s instructions and get hands-on instruction before attempting a transfer.' },
+    { q: 'Do adaptive utensils prevent choking?', a: 'No. They may help with grip or positioning, but swallowing safety needs assessment by a qualified professional.' },
+    { q: 'Are suction grab bars safe?', a: 'They should not be treated as permanent weight-bearing supports. Use properly installed equipment recommended for the wall and the task.' },
+  ],
+  related: [
+    { href: '/blog/shower-safety-stroke-survivor', label: 'Shower safety after stroke', blurb: 'A room-by-room approach to reducing bathroom falls.' },
+    { href: '/blog/complete-stroke-recovery-home-kit', label: 'Complete home kit', blurb: 'A broader checklist from day one through long-term recovery.' },
+    { href: '/blog/best-adaptive-eating-utensils-stroke', label: 'Adaptive eating utensils', blurb: 'Compare handles, angles, and weights.' },
+    { href: '/blog/threshold-ramp-stroke-recovery', label: 'Threshold ramps', blurb: 'Make doorways and transitions easier to evaluate.' },
+  ],
+  publishedDate: '2026-08-21',
+  productCard: { title: 'Supplied home-safety and adaptive picks', description: 'Review the current Amazon listings for transfer, bathroom, dressing, and eating support.', link: 'https://www.amazon.com/dp/B075JZDSWZ', label: 'Check the supplied Amazon listing', note: 'Affiliate disclosure: SRA earns from qualifying purchases at no extra cost to you. Equipment is not medical advice; verify fit, capacity, installation, and training.' },
+  bookPromo: { title: 'Recovery is bigger than equipment', description: 'The survivor-led book connects safer daily living with the long game of rebuilding function and independence.', link: 'https://amzn.to/4ikLfGH', label: 'Read Stroked-Out Sasquatch' },
+});
+
+// =============================================================================
 // Aggregator
 // =============================================================================
 export const ALL_BLOG_POSTS: SsrPageConfig[] = [
@@ -8144,6 +8382,10 @@ export const ALL_BLOG_POSTS: SsrPageConfig[] = [
   POST_GSC_INDEXING,
   POST_ONLINE_COACH,
   POST_BROOKS_SURVIVOR_REVIEW,
+  POST_STROKED_OUT_BOOK_REVIEW,
+  POST_STROKE_CARDIO_MOBILITY_GEAR,
+  POST_STROKE_HAND_BRAIN_TOOLS,
+  POST_STROKE_HOME_SAFETY_ADAPTIVE_GEAR,
 ];
 
 // Inject cross-cluster internal links now that every post is registered

@@ -119,6 +119,10 @@ function tagAmazonLink(url: string): string {
   }
 }
 
+function externalLinkAttrs(url: string): string {
+  return /^https?:\/\//i.test(url) ? ' target="_blank" rel="noopener noreferrer sponsored nofollow"' : '';
+}
+
 function esc(s: string | undefined | null): string {
   if (s == null) return '';
   return String(s)
@@ -798,8 +802,8 @@ ${renderHeader()}
     <h1>${esc(cfg.h1)}</h1>
     <p>${esc(hero.subhead)}</p>
     <div class="sra-cta-row">
-      <a href="${escAttr(tagAmazonLink(ctaPrimary.href))}" class="sra-btn-primary">${esc(ctaPrimary.label)}</a>
-      ${ctaSecondary ? `<a href="${escAttr(tagAmazonLink(ctaSecondary.href))}" class="sra-btn-secondary">${esc(ctaSecondary.label)}</a>` : ''}
+      <a href="${escAttr(tagAmazonLink(ctaPrimary.href))}" class="sra-btn-primary"${externalLinkAttrs(ctaPrimary.href)}>${esc(ctaPrimary.label)}</a>
+      ${ctaSecondary ? `<a href="${escAttr(tagAmazonLink(ctaSecondary.href))}" class="sra-btn-secondary"${externalLinkAttrs(ctaSecondary.href)}>${esc(ctaSecondary.label)}</a>` : ''}
     </div>
   </div>
 
