@@ -408,19 +408,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // SEO: Dynamic Sitemap.xml with all content
-  app.get('/sitemap.xml', async (req, res) => {
-    const baseUrl = 'https://strokerecoveryacademy.com';
-
-    // Derive static sitemap entries from the single-source-of-truth registry
-    // so any route added to shared/seo/routeRegistry.ts auto-appears here.
-    const { getStaticSitemapEntries } = await import('../shared/seo/routeRegistry');
-    const staticRoutes = getStaticSitemapEntries().map((e) => ({
-      path: e.loc,
-      priority: e.priority.toFixed(2),
-      changefreq: e.changefreq,
-    }));
-
-    try {
+  const { registerCrawlerSitemapRoute } = await import('./seo/blogRoutes');
+  registerCrawlerSitemapRoute(app, async () => {
       // Get marketplace listings — safe to skip if table not seeded
       let listingUrls: any[] = [];
       try {
@@ -465,28 +454,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.warn('sitemap.xml: author profiles skipped:', (e as Error).message);
       }
 
-      const allRoutes = [...staticRoutes, ...listingUrls, ...blogUrls, ...authorUrls];
-      const today = new Date().toISOString().split('T')[0];
-      
-      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
-        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
-${allRoutes.map(r => `  <url>
-    <loc>${baseUrl}${r.path}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${r.changefreq}</changefreq>
-    <priority>${r.priority}</priority>
-  </url>`).join('\n')}
-</urlset>`;
-
-      res.set('Content-Type', 'application/xml');
-      res.set('Cache-Control', 'public, max-age=3600'); // Cache for 1 hour
-      res.send(sitemap);
-    } catch (error) {
-      console.error('Sitemap generation error:', error);
-      res.status(500).send('Error generating sitemap');
-    }
+      return [...listingUrls, ...blogUrls, ...authorUrls];
   });
 
   // SEO: Sitemap Index — authoritative entry point for all crawlers

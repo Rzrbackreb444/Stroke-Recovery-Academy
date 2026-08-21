@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
+import { createServer, type Server } from 'node:http';
 import test from 'node:test';
+import express from 'express';
 import { ALL_BLOG_POSTS } from '../server/seo/blogContent';
-import { registerBlogRoutes, getBlogPageUrls } from '../server/seo/blogRoutes';
+import { getBlogPageUrls, registerBlogRoutes, registerCrawlerSitemapRoute } from '../server/seo/blogRoutes';
 
 const GUIDE_SLUGS = [
   '/blog/stroked-out-sasquatch-recovery-book-review',
@@ -55,6 +57,28 @@ test('the four new guides stay registered, render through SSR, and remain in the
     assert.match(html, /"@type":"FAQPage"/);
     assert.match(html, /class="sra-related"/);
     assert.match(html, /Also check out/);
+  }
+});
+
+test('the crawler-facing sitemap endpoint publishes all four recovery guides', async () => {
+  const app = express();
+  registerCrawlerSitemapRoute(app);
+  const server: Server = createServer(app);
+
+  await new Promise<void>((resolve) => server.listen(0, resolve));
+  try {
+    const address = server.address();
+    assert.ok(address && typeof address === 'object');
+    const response = await fetch(`http://127.0.0.1:${address.port}/sitemap.xml`);
+    assert.equal(response.status, 200);
+    assert.match(response.headers.get('content-type') || '', /application\/xml/);
+    const xml = await response.text();
+
+    for (const slug of GUIDE_SLUGS) {
+      assert.match(xml, new RegExp(`<loc>https://strokerecoveryacademy\\.com${slug.replaceAll('/', '\\/')}</loc>`));
+    }
+  } finally {
+    await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
   }
 });
 
