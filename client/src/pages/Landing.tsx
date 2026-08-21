@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLocation, Link } from "wouter";
 import {
   Loader2, ArrowRight, Play, BrainCircuit, CalendarDays,
-  Users, CheckCircle2, ShieldCheck, Activity, Star, Flame,
+  Users, CheckCircle2, ShieldCheck, Activity, Star, Flame, BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RecoveryHeader from "@/components/RecoveryHeader";
@@ -288,6 +288,108 @@ function SasquatchArt() {
   );
 }
 
+function Books() {
+  const books = [
+    {
+      title: "The Ultimate Stroke Recovery Revolution",
+      subtitle: "The complete 314-page battle-tested blueprint",
+      description:
+        "Nick's full recovery manual: daily protocols, the 90-Day Breakthrough Program, survivor case studies, and the mindset to keep rebuilding when the system says you're done.",
+      image: "/book/cover.jpg",
+      imageAlt: "Cover of The Ultimate Stroke Recovery Revolution by Nick Kremers",
+      eyebrow: "Read inside the Academy",
+      primaryLabel: "Read the book",
+      primaryHref: "/book/read",
+      primaryExternal: false,
+      secondaryLabel: "Buy digital or print",
+      secondaryHref: "/book/buy",
+    },
+    {
+      title: "The Stroke Recovery Revolution",
+      subtitle: "The battle-tested blueprint for defying every “never”",
+      description:
+        "The survivor-built guide behind the Sasquatch Method — a practical starting point for survivors and caregivers who need a stronger recovery plan at home.",
+      image: "/book/cover.jpg",
+      imageAlt: "The Stroke Recovery Revolution book by Nick Kremers",
+      eyebrow: "Available on Amazon",
+      primaryLabel: "Buy on Amazon",
+      primaryHref: "https://amzn.to/4glG4DV",
+      primaryExternal: true,
+      secondaryLabel: "Explore the companion",
+      secondaryHref: "/book",
+    },
+  ];
+
+  return (
+    <section id="books" className="bg-[#111] py-28 text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+          <div className="max-w-3xl">
+            <p className="text-sm font-bold tracking-widest uppercase text-gold mb-4">Nick's Books</p>
+            <h2 className="font-display text-4xl md:text-6xl leading-[0.95] mb-5">
+              The recovery plan<br />you can hold onto.
+            </h2>
+            <p className="text-lg text-white/60 leading-relaxed">
+              Read the blueprint, work the reps, and keep the method close when recovery gets hard.
+              Start reading online or choose the edition that belongs on your nightstand.
+            </p>
+          </div>
+          <Link
+            href="/book"
+            className="text-gold font-semibold inline-flex items-center hover:text-gold/80 transition-colors shrink-0"
+            data-testid="link-books-companion"
+          >
+            Open the book companion <ArrowRight className="ml-2 w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-6">
+          {books.map((book, index) => (
+            <article
+              key={book.title}
+              className="group grid sm:grid-cols-[150px_1fr] gap-7 rounded-2xl border border-white/10 bg-white/[0.04] p-6 sm:p-8 hover:border-gold/40 transition-colors"
+              data-testid={`card-home-book-${index}`}
+            >
+              <div className="flex justify-center sm:block">
+                <img
+                  src={book.image}
+                  alt={book.imageAlt}
+                  className="w-36 sm:w-full max-w-[150px] aspect-[0.63] object-cover rounded-md shadow-2xl shadow-black/50"
+                />
+              </div>
+              <div className="flex flex-col">
+                <p className="text-xs font-bold uppercase tracking-widest text-gold mb-3">{book.eyebrow}</p>
+                <h3 className="text-2xl font-bold leading-tight mb-2">{book.title}</h3>
+                <p className="text-sm text-white/50 font-medium mb-4">{book.subtitle}</p>
+                <p className="text-white/60 leading-relaxed mb-7">{book.description}</p>
+                <div className="mt-auto flex flex-col sm:flex-row gap-3">
+                  <Button asChild className="bg-gold text-black font-bold hover:bg-gold/90">
+                    {book.primaryExternal ? (
+                      <a href={book.primaryHref} target="_blank" rel="noopener noreferrer">
+                        <BookOpen className="mr-2 h-4 w-4" /> {book.primaryLabel}
+                      </a>
+                    ) : (
+                      <Link href={book.primaryHref}>
+                        <BookOpen className="mr-2 h-4 w-4" /> {book.primaryLabel}
+                      </Link>
+                    )}
+                  </Button>
+                  <Button asChild variant="outline" className="border-white/20 text-white bg-white/5 hover:bg-white/10">
+                    <Link href={book.secondaryHref}>{book.secondaryLabel}</Link>
+                  </Button>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+        <p className="text-xs text-white/35 mt-6">
+          Amazon links may earn a commission at no additional cost to you. The Academy book checkout supports digital and print editions.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 function Proof() {
   return (
     <section id="proof" className="relative bg-black py-28 text-white overflow-hidden">
@@ -540,6 +642,7 @@ export default function Landing() {
         <StatsStrip />
         <Method />
         <SasquatchArt />
+        <Books />
         <Proof />
         <Features />
         <Caregiver />
