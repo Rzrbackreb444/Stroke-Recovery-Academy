@@ -1,11 +1,12 @@
 import { createRoot } from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
-import App from "./App";
+import WashBizApp from "./washbiz/WashBizApp";
 import "./index.css";
+import "./washbiz/washbiz.css";
 
 createRoot(document.getElementById("root")!).render(
   <HelmetProvider>
-    <App />
+    <WashBizApp />
   </HelmetProvider>
 );
 

@@ -34,3 +34,4 @@
 - [Multi-artifact workspace layout](multi-artifact-workspace.md) — pnpm-workspace.yaml, artifacts/api-server tsconfig paths, @workspace/db alias, frontend vite proxy pattern
 - [Google OAuth wiring](google-oauth-wiring.md) — three-part fix: configurePassport() in setupAuth, callback route, strip conflicting serialize from configurePassport
 - [Deployment image size limit](deployment-image-size.md) — Replit Cloud Run cap is 8 GiB; .migration-backup/ and raw media files are typical culprits; delete before re-publishing
+- [WashBizHub product direction](washbizhub-product-direction.md) — visible app is now Laundromat Mastery Community; preserve the focused WashBizHub experience
