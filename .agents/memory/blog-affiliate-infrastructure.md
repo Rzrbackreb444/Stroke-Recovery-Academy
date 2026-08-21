@@ -12,6 +12,6 @@ description: How product cards and book promos are rendered on SSR blog posts vi
 - Add `bookPromo?: { title, description, link, label }` similarly
 - The `makeBlogPost()` helper passes these through to `SsrPageConfig`
 - `renderSsrPage()` in `ssrShell.ts` renders both sections after the FAQ block
-- The product card uses `target="_blank" rel="noopener noreferrer"` for external links
+- External affiliate links use `target="_blank" rel="sponsored nofollow noopener noreferrer"`; retain a visible FTC note on the corresponding product card
 - The book promo uses a gold border (`style="border-color: var(--sra-gold);"`) for visual distinction
-- All affiliate links must include the `note` field for FTC disclosure
+- Use an internal book/companion destination for Academy-owned editions; do not present it as the same product or format as a separately linked Amazon edition

@@ -131,6 +131,8 @@ const SLUG_TO_CLUSTER: Record<string, string> = {
   'speech-therapy-stroke-recovery': 'recovery-basics',
   'best-brain-games-books-stroke-cognitive-recovery': 'recovery-basics',
   'stroked-out-sasquatch-recovery-book-review': 'recovery-basics',
+  'ultimate-stroke-recovery-revolution-book-90-day-plan': 'recovery-basics',
+  'stroke-recovery-bible-review': 'recovery-basics',
   'stroke-recovery-cardio-and-mobility-gear-guide': 'fitness',
   'stroke-recovery-hand-and-brain-tools-guide': 'upper-limb',
   'stroke-recovery-home-safety-and-adaptive-gear': 'home-safety',
@@ -8139,6 +8141,168 @@ export const POST_STROKED_OUT_BOOK_REVIEW = makeBlogPost({
   bookPromo: { title: 'Build the routine around the ideas', description: 'Use the Sasquatch Method and Daily Routine to turn inspiration into safe, repeatable practice.', link: '/programs/daily-routine', label: 'See the Daily Routine' },
 });
 
+export const POST_ULTIMATE_BOOK_90_DAY_PLAN = makeBlogPost({
+  slug: 'ultimate-stroke-recovery-revolution-book-90-day-plan',
+  title: 'The Ultimate Stroke Recovery Revolution: How to Use the Book and a 90-Day Plan',
+  description: 'How stroke survivors and caregivers can use Nick Kremers’ recovery book with a realistic 90-day plan, daily check-ins, and clinician-guided goals.',
+  h1: 'How to use The Ultimate Stroke Recovery Revolution as a 90-day recovery plan',
+  keyword: 'stroke recovery book 90 day plan',
+  extraKeywords: ['The Ultimate Stroke Recovery Revolution', 'stroke recovery workbook', 'stroke survivor daily routine'],
+  subhead: 'A recovery book is most useful when it gives you one safe action for today—not a reason to try to do everything at once.',
+  ctaPrimary: { href: '/book/buy', label: 'Choose the book edition' },
+  ctaSecondary: { href: '/book/sample.pdf', label: 'Read the free sample' },
+  image: '/book/cover.jpg',
+  cluster: 'recovery-basics',
+  takeaways: [
+    'Start with one chapter and one safe action rather than attempting a complete overhaul.',
+    'A 90-day plan works best when it includes rest, clinician input, and a way to notice small changes.',
+    'Caregivers can support structure without taking over the survivor’s goals or pace.',
+    'The book is survivor-led guidance, not a substitute for medical care or individualized rehabilitation.',
+  ],
+  sections: [
+    {
+      h2: 'What this book is designed to do',
+      paragraphs: [
+        'The Ultimate Stroke Recovery Revolution is a survivor-built manual for the part of recovery that often gets less structure after discharge: showing up consistently. It brings together daily practice, mindset, recovery equipment, and the long-game perspective that helps a survivor stay engaged when progress is uneven.',
+        'It is not a diagnosis, a prescription, or a promise that everyone will recover in the same way. Use it as a practical framework, then adapt every exercise, goal, and schedule with the professionals who understand your health history and current abilities.',
+      ],
+    },
+    {
+      h2: 'Build a 90-day plan from the book',
+      paragraphs: [
+        'The strongest way to use the book is to choose one priority for the next 90 days: hand use, walking confidence, speech practice, endurance, fatigue management, or a safer home routine. A single priority makes it easier to choose a few meaningful actions instead of collecting a long list of things you “should” do.',
+        'Break the 90 days into three simple phases. The first month is for creating a safe baseline and learning what your energy allows. The second month is for repeating the actions that are working and making small, clinician-approved progressions. The third month is for reviewing what changed, keeping what is sustainable, and choosing the next focus.',
+      ],
+      bullets: [
+        'Daily: one planned practice block and one brief check-in about fatigue, pain, mood, or function',
+        'Weekly: review what felt safe, what was too much, and one question to bring to therapy or a medical appointment',
+        'Monthly: compare your current ability with your own starting point—not someone else’s timeline',
+      ],
+    },
+    {
+      h2: 'Use the book-and-template bundle without burning out',
+      paragraphs: [
+        'The companion template is intentionally simple: a daily check-in, a weekly review, and a place to name the next realistic action. It is there to make the book usable in ordinary life, not to turn recovery into a test you can fail.',
+        'If symptoms worsen, new neurological symptoms appear, you develop chest pain, shortness of breath, dizziness, or unusual pain, stop and seek appropriate medical guidance. The best plan is one that protects safety and leaves enough energy to return tomorrow.',
+      ],
+    },
+    {
+      h2: 'A caregiver’s role in the plan',
+      paragraphs: [
+        'Caregivers can make the plan easier to keep by helping remove friction: setting out equipment, protecting a practice time, writing down questions, and celebrating effort. The goal is support, not pressure. Ask the survivor what kind of reminder or help feels useful before stepping in.',
+        'A good plan respects consent, fatigue, and independence. The survivor gets to decide which goal matters most and when a goal needs to change.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Can a stroke recovery book replace therapy?', a: 'No. A book can offer structure and survivor perspective, but it cannot assess safety, diagnose a problem, or replace individualized care from your medical and rehabilitation team.' },
+    { q: 'What is the 90-day recovery template?', a: 'It is a simple companion structure for daily check-ins, weekly reviews, and choosing the next realistic recovery action alongside the ideas in the book.' },
+    { q: 'Is this plan appropriate right after discharge?', a: 'Start only with the activity and restrictions your care team has cleared. Early recovery priorities can include medical stability, rest, and formal therapy rather than adding more activity.' },
+    { q: 'Can caregivers use the template too?', a: 'Yes. It can help a caregiver prepare questions, notice patterns, and support consistency while keeping the survivor in charge of their own goals.' },
+  ],
+  related: [
+    { href: '/blog/stroked-out-sasquatch-recovery-book-review', label: 'Stroked-Out Sasquatch recovery book review', blurb: 'Why a survivor-led framework can help after formal therapy becomes less frequent.' },
+    { href: '/blog/how-long-does-stroke-rehab-take', label: 'How long does stroke rehab take?', blurb: 'Set goals around a real recovery timeline, not a deadline.' },
+    { href: '/blog/online-stroke-recovery-coach', label: 'What to look for in a recovery coach', blurb: 'How to add support without replacing clinical care.' },
+    { href: '/book', label: 'Open the book companion', blurb: 'Find drills, resources, and the Academy tools that support the book.' },
+  ],
+  publishedDate: '2026-08-21',
+  productCard: {
+    title: 'The Ultimate Stroke Recovery Revolution — Academy edition',
+    description: 'The Academy’s 314-page recovery manual, available as a digital PDF or print paperback with the companion resources and free 90-day template.',
+    link: '/book/buy',
+    label: 'Choose the Academy edition',
+  },
+  bookPromo: {
+    title: 'Use the free 90-day template',
+    description: 'Turn the book into a daily and weekly practice with a focused 90-day planning template designed for survivors and caregivers.',
+    link: '/book/90-day-template',
+    label: 'Open the free template',
+  },
+});
+
+export const POST_STROKE_RECOVERY_BIBLE_REVIEW = makeBlogPost({
+  slug: 'stroke-recovery-bible-review',
+  title: 'The Stroke Recovery Bible: Earning My Street Cred P.H.D. — A Survivor-Led Review',
+  description: 'A survivor-led review of The Stroke Recovery Bible by Nicholas Kremers, with practical ways to use its lessons alongside therapy, safety planning, and daily recovery reps.',
+  h1: 'The Stroke Recovery Bible: what a survivor can learn from the hard parts',
+  keyword: 'The Stroke Recovery Bible review',
+  extraKeywords: ['Nicholas Kremers Stroke Recovery Bible', 'stroke survivor book', 'stroke recovery books'],
+  subhead: 'A recovery bible should not promise an easy road. It should help you understand the road you are on—and choose the next safe step.',
+  ctaPrimary: { href: 'https://amzn.to/4cA6fFP', label: 'Find the Bible on Amazon' },
+  ctaSecondary: { href: '/book', label: 'Open the Academy book companion' },
+  image: 'https://m.media-amazon.com/images/I/71mJHUGHRKL._SY342_.jpg',
+  cluster: 'recovery-basics',
+  takeaways: [
+    'The book is survivor perspective and practical encouragement, not individualized medical advice.',
+    'Use one idea at a time and translate it into a safe, measurable action with your care team.',
+    'The strongest reading plan protects rest, dignity, and the survivor’s right to set the pace.',
+    'A book becomes useful when it helps you return to consistent practice—not when it adds pressure.',
+  ],
+  sections: [
+    {
+      h2: 'What makes a survivor-led recovery book different',
+      paragraphs: [
+        'The Stroke Recovery Bible: Earning My Street Cred P.H.D. comes from the lived side of stroke recovery: the confusion after discharge, the frustration of a body that does not respond on command, and the long stretch where progress has to be measured in smaller units than anyone expected.',
+        'That perspective can be valuable because it speaks to the emotional and practical gaps between appointments. It also has a limit: a survivor’s experience is not a universal protocol. Bring any exercise, equipment change, or major routine shift to the clinicians who know your history.',
+      ],
+    },
+    {
+      h2: 'How to read it without turning recovery into pressure',
+      paragraphs: [
+        'Do not treat the book like a test you have to finish before you are allowed to feel hopeful. Read a short section, highlight one idea that fits your current stage, and write down one question or one safe action. Then stop. Recovery needs repetition, but it also needs recovery from the work.',
+        'A caregiver can read alongside the survivor, but the survivor should remain the owner of the goal. Support can mean setting up a quiet practice space, helping track fatigue, or bringing a question to therapy—not forcing a chapter or a workout on a hard day.',
+      ],
+      bullets: [
+        'Choose one theme: movement, mindset, fatigue, communication, or independence',
+        'Turn the theme into one observable action that your care team has cleared',
+        'Record how it felt and what changed, without judging a difficult day',
+        'Review weekly and keep only what is safe, useful, and sustainable',
+      ],
+    },
+    {
+      h2: 'Where it fits next to therapy and the Academy',
+      paragraphs: [
+        'The book can be a bridge between formal therapy sessions and the ordinary hours at home. Pair the ideas with the Academy’s book companion, daily check-ins, and 90-day planning prompts so encouragement has somewhere to land.',
+        'The goal is not to replace physical, occupational, speech, or medical care. The goal is to arrive at those appointments with better questions, clearer observations, and a stronger sense of what you want to keep building.',
+      ],
+    },
+    {
+      h2: 'The honest safety line',
+      paragraphs: [
+        'New or worsening neurological symptoms, chest pain, unusual shortness of breath, severe dizziness, a fall, or a sudden change in function need appropriate medical attention. They are not signs that you need to push harder or prove more.',
+        'A strong recovery mindset includes knowing when to pause. Hope and caution are not opposites; both help protect the chance to keep showing up tomorrow.',
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Who is The Stroke Recovery Bible for?', a: 'It is written for stroke survivors and the people supporting them who want a survivor perspective on persistence, identity, and the practical work of rebuilding. It is not a substitute for clinical care.' },
+    { q: 'Is The Stroke Recovery Bible medical advice?', a: 'No. Treat it as lived experience and general encouragement. Ask your doctor or therapist before changing exercises, equipment, medication, or activity.' },
+    { q: 'Can caregivers read the book?', a: 'Yes. Caregivers may find the perspective useful, especially when they use it to support the survivor’s goals rather than take control of the recovery.' },
+    { q: 'How should I use a stroke recovery book?', a: 'Read one section, choose one safe idea, and discuss it with your care team when needed. Use a simple daily or weekly log to notice patterns without turning recovery into a pass-or-fail test.' },
+  ],
+  related: [
+    { href: '/blog/ultimate-stroke-recovery-revolution-book-90-day-plan', label: 'Use the book with a 90-day plan', blurb: 'Turn reading into a realistic daily and weekly recovery structure.' },
+    { href: '/blog/stroked-out-sasquatch-recovery-book-review', label: 'Stroked-Out Sasquatch book review', blurb: 'Another survivor-led look at consistency after formal therapy.' },
+    { href: '/blog/how-long-does-stroke-rehab-take', label: 'How long does stroke rehab take?', blurb: 'Build hope around a real timeline, not a deadline.' },
+    { href: '/book', label: 'Open the Academy book companion', blurb: 'Find the companion resources, protocols, and 90-day tools.' },
+  ],
+  publishedDate: '2026-08-21',
+  productCard: {
+    title: 'The Stroke Recovery Bible',
+    description: 'Nicholas Kremers’ survivor-led guide to the hard-earned work of rebuilding after stroke.',
+    link: 'https://amzn.to/4cA6fFP',
+    label: 'Find it on Amazon',
+    note: 'Affiliate disclosure: As an Amazon Associate, SRA earns from qualifying purchases at no extra cost to you. This short link is preserved as supplied.',
+  },
+  bookPromo: {
+    title: 'Turn the reading into a routine',
+    description: 'Pair the book with the Academy’s companion and 90-day recovery template for daily check-ins and weekly reviews.',
+    link: '/book',
+    label: 'Open the book companion',
+  },
+});
+
 export const POST_STROKE_CARDIO_MOBILITY_GEAR = makeBlogPost({
   slug: 'stroke-recovery-cardio-and-mobility-gear-guide',
   title: 'Stroke Recovery Cardio and Mobility Gear Guide',
@@ -8383,6 +8547,8 @@ export const ALL_BLOG_POSTS: SsrPageConfig[] = [
   POST_ONLINE_COACH,
   POST_BROOKS_SURVIVOR_REVIEW,
   POST_STROKED_OUT_BOOK_REVIEW,
+  POST_ULTIMATE_BOOK_90_DAY_PLAN,
+  POST_STROKE_RECOVERY_BIBLE_REVIEW,
   POST_STROKE_CARDIO_MOBILITY_GEAR,
   POST_STROKE_HAND_BRAIN_TOOLS,
   POST_STROKE_HOME_SAFETY_ADAPTIVE_GEAR,
