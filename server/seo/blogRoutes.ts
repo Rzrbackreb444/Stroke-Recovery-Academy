@@ -5,8 +5,16 @@
 import type { Express } from 'express';
 import { renderSsrPage } from './ssrShell';
 import { ALL_BLOG_POSTS, BLOG_HUB } from './blogContent';
+import { getStaticSitemapEntries } from '@shared/seo/routeRegistry';
 
 const ALL_BLOG_PAGES = [BLOG_HUB, ...ALL_BLOG_POSTS];
+const SITEMAP_ORIGIN = 'https://strokerecoveryacademy.com';
+
+export type SitemapEntry = {
+  path: string;
+  priority: string;
+  changefreq: string;
+};
 
 export function registerBlogRoutes(app: Express): void {
   for (const page of ALL_BLOG_PAGES) {
@@ -19,6 +27,50 @@ export function registerBlogRoutes(app: Express): void {
       res.send(html);
     });
   }
+}
+
+/**
+ * Register the crawler-facing sitemap. Dynamic entries are supplied by the
+ * application route so this module stays independent of database-backed posts.
+ */
+export function registerCrawlerSitemapRoute(
+  app: Express,
+  getDynamicEntries: () => Promise<SitemapEntry[]> = async () => [],
+): void {
+  app.get('/sitemap.xml', async (_req, res) => {
+    try {
+      const staticRoutes = getStaticSitemapEntries().map((entry) => ({
+        path: entry.loc,
+        priority: entry.priority.toFixed(2),
+        changefreq: entry.changefreq,
+      }));
+      const dynamicRoutes = await getDynamicEntries();
+      const blogRoutes = getBlogPageUrls().map((page) => ({
+        path: page.url,
+        priority: page.priority,
+        changefreq: page.changefreq,
+      }));
+      const today = new Date().toISOString().split('T')[0];
+      const allRoutes = [...staticRoutes, ...blogRoutes, ...dynamicRoutes];
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+${allRoutes.map((route) => `  <url>
+    <loc>${SITEMAP_ORIGIN}${route.path}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${route.changefreq}</changefreq>
+    <priority>${route.priority}</priority>
+  </url>`).join('\n')}
+</urlset>`;
+      res.set('Content-Type', 'application/xml');
+      res.set('Cache-Control', 'public, max-age=3600');
+      res.send(sitemap);
+    } catch (error) {
+      console.error('Sitemap generation error:', error);
+      res.status(500).send('Error generating sitemap');
+    }
+  });
 }
 
 // Used by sitemap-recovery to advertise these URLs to search engines.
