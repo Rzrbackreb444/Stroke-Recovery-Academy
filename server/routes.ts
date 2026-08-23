@@ -12742,6 +12742,27 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
+  app.get('/api/recovery/blog/categories', async (_req, res) => {
+    try {
+      const categories = await db
+        .select({
+          category: recoveryBlogPosts.category,
+          count: count(recoveryBlogPosts.id),
+        })
+        .from(recoveryBlogPosts)
+        .where(eq(recoveryBlogPosts.status, 'published'))
+        .groupBy(recoveryBlogPosts.category)
+        .orderBy(asc(recoveryBlogPosts.category));
+      res.json(categories.map(({ category, count: categoryCount }) => ({
+        category,
+        count: Number(categoryCount),
+      })));
+    } catch (error) {
+      console.error("Error fetching recovery blog categories:", error);
+      res.status(500).json({ message: "Failed to fetch blog categories" });
+    }
+  });
+
   app.get('/api/recovery/blog/:slug', async (req, res) => {
     try {
       const post = await storage.getRecoveryBlogPostBySlug(req.params.slug);
@@ -25199,8 +25220,6 @@ Format as structured JSON with clear sections.`;
   const { registerAvatarRoutes } = await import('./routes/avatarRoutes');
   const { registerCourseStudioExtrasRoutes, seedCourseCategoriesIfEmpty } = await import('./routes/courseStudioExtrasRoutes');
   const { registerForumRoutes, seedForumBoardsIfEmpty } = await import('./routes/forumRoutes');
-  const { registerWashbizRoutes, seedWashbizBoards } = await import('./routes/washbizRoutes');
-  const { registerLaundromatRoutes } = await import('./routes/laundromatRoutes');
   const { registerGroupRoutes, seedGroupsIfEmpty } = await import('./routes/groupRoutes');
   const { registerCohortRoutes } = await import('./routes/cohortRoutes');
   const { registerReviewRoutes } = await import('./routes/reviewRoutes');
@@ -25227,9 +25246,6 @@ Format as structured JSON with clear sections.`;
   registerAvatarRoutes(app, isAuthenticated, uploadsDir);
   registerCourseStudioExtrasRoutes(app, isAuthenticated);
   registerForumRoutes(app, isAuthenticated, uploadsDir);
-  registerWashbizRoutes(app, isAuthenticated);
-  registerLaundromatRoutes(app, isAuthenticated);
-  seedWashbizBoards().catch((error) => console.error("[washbiz] board seed failed", error));
   registerGroupRoutes(app, isAuthenticated, uploadsDir);
   registerCohortRoutes(app, isAuthenticated, uploadsDir);
   registerReviewRoutes(app, isAuthenticated);

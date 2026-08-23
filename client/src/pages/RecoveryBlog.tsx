@@ -36,6 +36,11 @@ interface BlogPost {
   readTime?: number;
 }
 
+interface BlogCategoryCount {
+  category: string;
+  count: number;
+}
+
 const categories = [
   { id: "all", label: "All Posts" },
   { id: "philosophy", label: "Philosophy" },
@@ -43,8 +48,12 @@ const categories = [
   { id: "science", label: "Science" },
   { id: "exercises", label: "Exercises" },
   { id: "caregivers", label: "Caregivers" },
-  { id: "income", label: "Income" },
+  { id: "income", label: "Work & Career" },
 ];
+
+const categoryLabels: Record<string, string> = Object.fromEntries(
+  categories.map((category) => [category.id, category.label]),
+);
 
 const categoryColors: Record<string, string> = {
   philosophy: "bg-purple-500/20 text-purple-400 border-purple-500/30",
@@ -69,6 +78,17 @@ export default function RecoveryBlog() {
       return res.json();
     },
   });
+  const { data: categoryCounts = [] } = useQuery<BlogCategoryCount[]>({
+    queryKey: ['/api/recovery/blog/categories'],
+    queryFn: async () => {
+      const res = await fetch('/api/recovery/blog/categories');
+      if (!res.ok) throw new Error('Failed to fetch blog categories');
+      return res.json();
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+  const categoryCountMap = Object.fromEntries(categoryCounts.map(({ category, count }) => [category, count]));
+  const totalPostCount = categoryCounts.reduce((total, item) => total + item.count, 0);
 
   const filteredPosts = posts.filter(post => {
     const matchesSearch = !searchQuery ||
@@ -153,7 +173,7 @@ export default function RecoveryBlog() {
               className={activeCategory === cat.id ? "bg-[#E2741B] text-black" : "border-[#333] text-gray-300"}
               data-testid={`button-category-${cat.id}`}
             >
-              {cat.label}
+              {cat.label} ({cat.id === "all" ? totalPostCount : categoryCountMap[cat.id] || 0})
             </Button>
           ))}
         </div>
@@ -229,7 +249,7 @@ export default function RecoveryBlog() {
                     )}
                     <div className="p-6">
                       <Badge className={categoryColors[post.category] || "bg-gray-500/20 text-gray-400"}>
-                        {post.category}
+                        {categoryLabels[post.category] || post.category}
                       </Badge>
                       <h3 className="text-xl font-bold mt-3 mb-2 text-white group-hover:text-[#E2741B] transition-colors">
                         {post.title}
@@ -301,7 +321,7 @@ export default function RecoveryBlog() {
                   )}
                   <div className="p-5 flex flex-col flex-1">
                     <Badge className={`${categoryColors[post.category] || "bg-gray-500/20 text-gray-400 border-gray-500/30"} self-start mb-2`}>
-                      {post.category}
+                      {categoryLabels[post.category] || post.category}
                     </Badge>
                     <h3 className="font-bold mb-2 text-white line-clamp-2 group-hover:text-[#E2741B] transition-colors flex-1">
                       {post.title}

@@ -3309,7 +3309,10 @@ export class DatabaseStorage implements IStorage {
       const [result] = await db
         .select()
         .from(recoveryBlogPosts)
-        .where(eq(recoveryBlogPosts.slug, slug))
+        .where(and(
+          eq(recoveryBlogPosts.slug, slug),
+          eq(recoveryBlogPosts.status, 'published'),
+        ))
         .limit(1);
       return result;
     } catch (error) {

@@ -6795,16 +6795,11 @@ export const POST_ONLINE_COACH = makeBlogPost({
       ],
     },
     {
-      h2: 'The business that built the rebuild',
+      h2: 'Rebuilding purpose after stroke',
       paragraphs: [
-        'I run two companies. The first is Kremers Laundry Equipment Company — the third-generation family business I grew up in. The second is WashBizHub, the laundromat franchise I built in Lavaca, Arkansas. The laundromat is not a side hustle. It is the business that funded the recovery, that paid the medical bills the insurance would not cover, that gave me a purpose when the doctors said I would never work again.',
-        'The photo below is the WashBizHub in Lavaca. The gear behind me is the same gear I used to wash the scrubs I wore to physical therapy. The Sasquatch crown is not a gimmick. It is the reminder that recovery is not a medical chart. It is a business you run, a book you write, a song you record, a company you build from the wheelchair they told you to accept.',
+        'After a stroke, work and purpose can feel like distant goals. Rebuilding does not have to begin with a full return to your old routine. It can begin with one useful task, one honest conversation, or one small responsibility that fits your energy today.',
+        'Treat purpose as part of recovery without turning it into pressure. Track what gives you energy, ask your care team about safe ways to increase activity, and build a week around meaningful steps rather than an impossible standard.',
       ],
-      image: {
-        src: '/images/blog/sasquatch-washbizhub.png',
-        alt: 'Nick Kremers at WashBizHub laundromat in Lavaca, Arkansas, wearing the Sasquatch crown amid commercial laundry equipment',
-        caption: 'WashBizHub, Lavaca, Arkansas. The business that built the rebuild. The crown is the reminder: recovery is not a chart. It is a company you build.',
-      },
     },
     {
       h2: 'The frameworks that turned chaos into a system',
