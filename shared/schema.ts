@@ -533,10 +533,22 @@ export const forumReactions = pgTable("forum_reactions", {
   index("idx_forum_reactions_user").on(table.userId),
 ]);
 
-// ============================================================================
-// LEARNING PLATFORM - COURSES
-// ============================================================================
-
+export const laundromatDiscussions = pgTable("laundromat_discussions", {
+  id: serial("id").primaryKey(),
+  authorId: varchar("author_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  space: text("space").notNull(),
+  title: text("title").notNull(),
+  body: text("body").notNull(),
+  status: text("status").notNull().default("visible"),
+  isLocked: boolean("is_locked").notNull().default(false),
+  replyCount: integer("reply_count").notNull().default(0),
+  lastActivityAt: timestamp("last_activity_at").notNull().defaultNow(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => [
+  index("laundromat_discussions_feed_idx").on(table.space, table.status, table.lastActivityAt),
+  index("laundromat_discussions_author_idx").on(table.authorId, table.createdAt),
+]);
 export const courses = pgTable("courses", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
@@ -2758,6 +2770,8 @@ export const insertUserProfileSchema = createInsertSchema(userProfiles).omit({ i
 export const insertForumCategorySchema = createInsertSchema(forumCategories).omit({ id: true, createdAt: true });
 export const insertForumThreadSchema = createInsertSchema(forumThreads).omit({ id: true, createdAt: true, lastActivityAt: true, viewCount: true, replyCount: true });
 export const insertForumPostSchema = createInsertSchema(forumPosts).omit({ id: true, createdAt: true, likeCount: true, isEdited: true, editedAt: true });
+
+export const insertLaundromatDiscussionSchema = createInsertSchema(laundromatDiscussions).omit({ id: true, createdAt: true, updatedAt: true, lastActivityAt: true, replyCount: true });
 export const insertCourseSchema = createInsertSchema(courses).omit({ id: true, createdAt: true, updatedAt: true, enrollmentCount: true });
 export const insertCourseModuleSchema = createInsertSchema(courseModules).omit({ id: true, createdAt: true });
 export const insertCourseLessonSchema = createInsertSchema(courseLessons).omit({ id: true, createdAt: true });
@@ -2831,6 +2845,8 @@ export type ForumThread = typeof forumThreads.$inferSelect;
 export type InsertForumThread = z.infer<typeof insertForumThreadSchema>;
 export type ForumPost = typeof forumPosts.$inferSelect;
 export type InsertForumPost = z.infer<typeof insertForumPostSchema>;
+
+export type LaundromatDiscussion = typeof laundromatDiscussions.$inferSelect;
 export type Course = typeof courses.$inferSelect;
 export type InsertCourse = z.infer<typeof insertCourseSchema>;
 export type CourseModule = typeof courseModules.$inferSelect;
@@ -7313,3 +7329,77 @@ export const insertFreeVideoAnalysisSchema = createInsertSchema(freeVideoAnalyse
   userAgent: true,
 });
 export type InsertFreeVideoAnalysis = z.infer<typeof insertFreeVideoAnalysisSchema>;
+
+export type LaundromatDiscussionReply = typeof laundromatDiscussionReplies.$inferSelect;
+
+export const laundromatEquipmentPlans = pgTable("laundromat_equipment_plans", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  items: jsonb("items").$type<string[]>().notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("laundromat_equipment_plan_name_unique").on(table.userId, table.name),
+  index("laundromat_equipment_plans_user_idx").on(table.userId, table.updatedAt),
+]);
+
+export type LaundromatEquipmentPlan = typeof laundromatEquipmentPlans.$inferSelect;
+
+export type LaundromatSiteScorecard = typeof laundromatSiteScorecards.$inferSelect;
+
+export const laundromatDiscussionReports = pgTable("laundromat_discussion_reports", {
+  id: serial("id").primaryKey(),
+  reporterId: varchar("reporter_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  targetType: text("target_type").notNull(),
+  targetId: integer("target_id").notNull(),
+  reason: text("reason").notNull(),
+  details: text("details"),
+  status: text("status").notNull().default("pending"),
+  moderatorId: varchar("moderator_id").references(() => users.id, { onDelete: "set null" }),
+  moderatorNotes: text("moderator_notes"),
+  resolvedAt: timestamp("resolved_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("laundromat_reporter_target_unique").on(table.reporterId, table.targetType, table.targetId),
+  index("laundromat_reports_queue_idx").on(table.status, table.createdAt),
+]);
+
+export const laundromatSiteScorecards = pgTable("laundromat_site_scorecards", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  address: text("address").notNull(),
+  eveningTraffic: text("evening_traffic").notNull(),
+  competition: text("competition").notNull(),
+  rent: text("rent").notNull(),
+  score: integer("score").notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("laundromat_scorecard_name_unique").on(table.userId, table.name),
+  index("laundromat_scorecards_user_idx").on(table.userId, table.updatedAt),
+]);
+
+export const insertLaundromatSiteScorecardSchema = createInsertSchema(laundromatSiteScorecards).omit({ id: true, createdAt: true, updatedAt: true });
+
+export const laundromatDiscussionReplies = pgTable("laundromat_discussion_replies", {
+  id: serial("id").primaryKey(),
+  discussionId: integer("discussion_id").notNull().references(() => laundromatDiscussions.id, { onDelete: "cascade" }),
+  authorId: varchar("author_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  parentId: integer("parent_id"),
+  body: text("body").notNull(),
+  status: text("status").notNull().default("visible"),
+  editedAt: timestamp("edited_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => [
+  index("laundromat_replies_discussion_idx").on(table.discussionId, table.createdAt),
+  index("laundromat_replies_author_idx").on(table.authorId, table.createdAt),
+]);
+
+export const insertLaundromatDiscussionReplySchema = createInsertSchema(laundromatDiscussionReplies).omit({ id: true, createdAt: true, updatedAt: true, editedAt: true });
+
+export const insertLaundromatEquipmentPlanSchema = createInsertSchema(laundromatEquipmentPlans).omit({ id: true, createdAt: true, updatedAt: true });
