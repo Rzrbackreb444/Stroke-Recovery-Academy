@@ -202,7 +202,8 @@ export default function RecoveryResources() {
                 <TabsTrigger 
                   key={cat.id} 
                   value={cat.id} 
-                  className="data-[state=active]:bg-[#E2741B] text-black"
+                  className="text-gray-300 hover:text-white data-[state=active]:bg-[#E2741B] data-[state=active]:text-black"
+                  style={{ color: activeCategory === cat.id ? "#000000" : "#D1D5DB" }}
                 >
                   <Icon className="h-4 w-4 mr-2" />
                   {cat.label}
