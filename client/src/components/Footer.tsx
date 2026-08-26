@@ -63,7 +63,7 @@ export default function Footer() {
   ];
 
   const communityLinks = [
-    { label: "Dashboard", href: "/recovery/dashboard", icon: Target },
+    { label: "Today", href: "/recovery/today", icon: Target },
     { label: "Community", href: "/recovery/community", icon: Users },
     { label: "Resources", href: "/recovery/resources", icon: BookOpen },
     { label: "Sasquatch Coach", href: "/recovery/sasquatch-coach", icon: Brain },

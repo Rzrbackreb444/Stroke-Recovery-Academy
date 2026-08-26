@@ -695,8 +695,8 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-black overflow-x-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
       <RecoverySEO
-        title="Stroke Recovery Academy — Evidence-Based Rehab by Nick Kremers | 0% to 90% Recovery"
-        description="The #1 stroke recovery platform built by a stroke survivor. Nick Kremers went from 0% to 90% recovery using the Sasquatch Method. Join 50,000+ warriors rebuilding their lives."
+        title="Stroke Recovery Academy — Practical Stroke Recovery Support by Nick Kremers"
+        description="A survivor-built stroke recovery platform from Nick Kremers, with practical methods, guided support, private reflection, and a community for rebuilding at your own pace."
         canonical="/"
         pageType="website"
         keywords={[
@@ -722,7 +722,7 @@ export default function Landing() {
           {
             question: "What is Stroke Recovery Academy?",
             answer:
-              "Stroke Recovery Academy is the world's most comprehensive stroke recovery platform, founded by Nick Kremers — a stroke survivor who achieved 0% to 90% functional recovery using the Sasquatch Method.",
+              "Stroke Recovery Academy is a survivor-built stroke recovery platform founded by Nick Kremers, with practical methods, guided support, private reflection, and community.",
           },
           {
             question: "Can a stroke survivor really go from 0% to 90% recovery?",
