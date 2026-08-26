@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowLeft, ArrowRight, CheckCircle2, Flame, Footprints,
-  HeartPulse, Sparkles, Trophy, Calendar, AlertCircle, ShoppingBag,
-  Mic,
+  HeartPulse, Sparkles, Trophy, Calendar, AlertCircle, Mic,
 } from "lucide-react";
 import {
   LEVELS, getSequentialTasks, personalizeSequence, todayStr,
@@ -17,7 +16,6 @@ import {
 } from "@/lib/recoveryRoutine";
 import { MedicalDisclaimerCard } from "@/components/recovery/MedicalDisclaimerCard";
 import { WalkingCooldown } from "@/components/recovery/WalkingCooldown";
-import { SHOP_CATEGORIES, type ShopCategoryId } from "@/data/survivorShop";
 
 type Reaction = "good" | "hard" | "too_hard";
 type Recommendation = TodayRecommendation;
@@ -150,7 +148,7 @@ export default function RecoveryToday() {
       <div className="min-h-screen bg-[#0D0D0D] text-white">
         <div className="max-w-2xl mx-auto px-4 py-8">
           <button
-            onClick={() => setLocation("/recovery/dashboard")}
+            onClick={() => setLocation("/recovery/today")}
             className="text-gray-500 hover:text-[#E2741B] text-sm mb-6 flex items-center gap-1 transition-colors"
             data-testid="link-back-dashboard"
           >
@@ -162,41 +160,13 @@ export default function RecoveryToday() {
             {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
           </p>
           <h1 className="text-4xl sm:text-5xl font-display text-white mb-2">
-            The Bonfire
+            Today
           </h1>
           <p className="text-gray-400 text-base mb-6">
             Today's session — one rep at a time. We'll listen to your body and adjust as we go.
           </p>
 
           <MedicalDisclaimerCard variant="full" />
-
-          {/* Daily Circuit shortcut — entry point to the multi-station ritual
-              with voice-cloned Nick bridge cues. The Bonfire below is the
-              adaptive single-track session; Circuit is the all-in-one. */}
-          <Link
-            href="/recovery/circuit"
-            className="block rounded-md border border-[#E2741B]/40 bg-gradient-to-br from-[#1a1610] to-[#111] p-4 mt-4 hover-elevate"
-            data-testid="link-daily-circuit"
-            aria-label="Open the Daily Circuit — guided multi-station session"
-          >
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-md bg-[#E2741B]/15 border border-[#E2741B]/40 flex items-center justify-center shrink-0">
-                <Mic className="h-5 w-5 text-[#E2741B]" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <p className="text-white font-bold text-sm">Daily Circuit</p>
-                  <Badge className="bg-[#E2741B]/20 text-[#E2741B] border-0 text-[10px] hover:bg-[#E2741B]/20">
-                    Voice cues
-                  </Badge>
-                </div>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  Brain · breath · dexterity · coach moment, all in one paced session.
-                </p>
-              </div>
-              <ArrowRight className="h-4 w-4 text-[#E2741B] shrink-0" />
-            </div>
-          </Link>
 
           {recLoading && !lvl ? (
             <Card className="bg-[#111] border-[#222] p-8 mt-6 text-center">
@@ -483,21 +453,6 @@ export default function RecoveryToday() {
   const hardCount = Object.values(reactions).filter((r) => r === "hard").length;
   const tooHardCount = Object.values(reactions).filter((r) => r === "too_hard").length;
 
-  // Pick the most relevant Survivor Shop category based on the day's signals.
-  // Heuristic: which task IDs were marked too_hard / hard? Map to a category.
-  const recommendedCategoryId: ShopCategoryId = (() => {
-    const struggled = Object.entries(reactions)
-      .filter(([, r]) => r === "too_hard" || r === "hard")
-      .map(([taskId]) => taskId.toLowerCase());
-    const hits = (kw: string[]) => struggled.some((t) => kw.some((k) => t.includes(k)));
-    if (walkLogged?.reaction === "too_hard" || hits(["walk", "stand", "balance", "step"])) return "mobility";
-    if (hits(["foot", "ankle", "toe", "afo"])) return "footdrop";
-    if (hits(["hand", "grip", "finger", "wrist", "putty"])) return "hand";
-    if (hits(["speech", "word", "language", "swallow", "cognit"])) return "speech";
-    return "bedside";
-  })();
-  const recCategory = SHOP_CATEGORIES.find((c) => c.id === recommendedCategoryId)!;
-
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <div className="max-w-2xl mx-auto px-4 py-8">
@@ -552,43 +507,10 @@ export default function RecoveryToday() {
           </Card>
         )}
 
-        {/* Cross-sell: relevant Survivor Shop category + Motivation Studio CTA */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
-          <Link
-            href={`/recovery/shop?category=${recCategory.id}`}
-            className="block rounded-md border border-[#E2741B]/30 bg-[#1a1610] p-4 hover-elevate text-left"
-            data-testid="link-cross-sell-shop"
-            aria-label={`Open Survivor Shop — ${recCategory.name}`}
-          >
-            <div className="flex items-center gap-2 mb-1">
-              <ShoppingBag className="h-4 w-4 text-[#E2741B]" />
-              <p className="text-[10px] uppercase tracking-[0.2em] text-[#E2741B]">Gear that helps with this</p>
-            </div>
-            <p className="text-white font-semibold text-sm">{recCategory.name}</p>
-            <p className="text-xs text-gray-400 mt-1">{recCategory.bonfireSignal ?? recCategory.blurb}</p>
-            <p className="text-[10px] text-gray-500 mt-2 italic">Survivor picks — not medical advice. Confirm with your therapist.</p>
-            <p className="text-xs text-[#E2741B] mt-2 font-semibold">Browse →</p>
-          </Link>
-          <Link
-            href="/recovery/motivation"
-            className="block rounded-md border border-[#E2741B]/30 bg-[#1a1610] p-4 hover-elevate text-left"
-            data-testid="link-cross-sell-motivation"
-            aria-label="Make tomorrow's anthem in the Motivation Studio"
-          >
-            <div className="flex items-center gap-2 mb-1">
-              <Sparkles className="h-4 w-4 text-[#E2741B]" />
-              <p className="text-[10px] uppercase tracking-[0.2em] text-[#E2741B]">Fuel for tomorrow</p>
-            </div>
-            <p className="text-white font-semibold text-sm">Make tomorrow's anthem</p>
-            <p className="text-xs text-gray-400 mt-1">Turn one affirmation into a 4-line lyric in Sasquatch's voice.</p>
-            <p className="text-xs text-[#E2741B] mt-2 font-semibold">Open Motivation Studio →</p>
-          </Link>
-        </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
-          <Link href="/recovery/dashboard">
+          <Link href="/recovery/today">
             <Button variant="outline" className="w-full" data-testid="button-back-dashboard-complete">
-              <ArrowLeft className="h-4 w-4 mr-1.5" /> Back to Dashboard
+              <ArrowLeft className="h-4 w-4 mr-1.5" /> Back to Today
             </Button>
           </Link>
           <Link href="/recovery/community">

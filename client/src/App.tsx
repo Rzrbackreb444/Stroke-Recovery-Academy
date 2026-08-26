@@ -539,7 +539,7 @@ function Router() {
       <Route path="/recovery" component={StrokeRecoveryLanding} />
       <Route path="/recovery/dashboard">
         <ProtectedRoute>
-          <RecoveryDashboard />
+          <RecoveryToday />
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/academy" component={Academy} />
@@ -595,10 +595,22 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/community" component={RecoveryCommunity} />
-      <Route path="/recovery/campfire" component={RecoveryCampfire} />
+      <Route path="/recovery/campfire">
+        <ProtectedRoute>
+          <RecoveryToday />
+        </ProtectedRoute>
+      </Route>
       <Route path="/recovery/premium" component={RecoveryPremium} />
-      <Route path="/recovery/journey" component={RecoveryJourney} />
-      <Route path="/recovery/welcome" component={RecoveryWelcome} />
+      <Route path="/recovery/journey">
+        <ProtectedRoute>
+          <RecoveryToday />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/recovery/welcome">
+        <ProtectedRoute>
+          <RecoveryToday />
+        </ProtectedRoute>
+      </Route>
       <Route path="/recovery/therapist-marketplace">
         <ProtectedRoute>
           <TherapistMarketplace />
@@ -684,7 +696,11 @@ function Router() {
       <Route path="/sign-in">{() => { window.location.replace("/recovery/login"); return null; }}</Route>
       <Route path="/recovery/onboarding" component={RecoveryOnboarding} />
       <Route path="/recovery/me" component={RecoveryMe} />
-      <Route path="/recovery/routine" component={DailyRoutine} />
+      <Route path="/recovery/routine">
+        <ProtectedRoute>
+          <RecoveryToday />
+        </ProtectedRoute>
+      </Route>
       <Route path="/recovery/today" component={RecoveryToday} />
       <Route path="/recovery/circuit" component={RecoveryCircuit} />
       <Route path="/recovery/circuit/:slug">

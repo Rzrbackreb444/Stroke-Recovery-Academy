@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut, LayoutDashboard, Settings, Heart, ChevronDown, Crown, Sparkles, Check, Flame, Users, BookOpen, ShoppingCart } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, Settings, Heart, ChevronDown, Crown, Sparkles, Check, Flame, Users, BookOpen, ShoppingCart, CalendarDays, MessageCircle, PenLine, Compass } from "lucide-react";
 import {
   HoverCard,
   HoverCardContent,
@@ -32,11 +32,9 @@ import { siteHeaderRegistry } from "./siteHeaderRegistry";
 // daily reps that actually move recovery.
 const primaryNav: { href: string; label: string; icon?: typeof Flame }[] = [
   { href: "/recovery/sasquatch-coach", label: "Coach" },
-  { href: "/recovery/journey", label: "Today" },
-  { href: "/recovery/never-zero", label: "Never Zero", icon: Flame },
-  { href: "/recovery/buddy", label: "Bonfire", icon: Users },
-  { href: "/book", label: "Book", icon: BookOpen },
-  { href: "/recovery/store", label: "Store", icon: ShoppingCart },
+  { href: "/recovery/today", label: "Today", icon: CalendarDays },
+  { href: "/recovery/community", label: "Community", icon: MessageCircle },
+  { href: "/recovery/journal", label: "Journal", icon: PenLine },
 ];
 
 // "More" — grouped megamenu. Four columns now (Practice / Connect / Music /
@@ -73,7 +71,7 @@ const resourcesGroups: { title: string; items: { href: string; label: string; pr
     ],
   },
   {
-    title: "Write",
+    title: "Explore",
     items: [
       { href: "/book-studio", label: "Book Editor" },
       { href: "/book-perfection-suite", label: "Book Polish" },
@@ -218,62 +216,6 @@ export default function RecoveryHeader() {
 
           {/* Right actions */}
           <div className="hidden xl:flex items-center gap-2 shrink-0">
-            {/* Premium nav — always visible, never blocking. Hover popover
-                gives a 4-line free vs premium snapshot. One click → /recovery/premium. */}
-            <HoverCard openDelay={120} closeDelay={120}>
-              <HoverCardTrigger asChild>
-                <Link href="/recovery/premium">
-                  <button
-                    className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-gold hover:text-amber-300 rounded-lg transition-colors whitespace-nowrap"
-                    data-testid="nav-premium"
-                  >
-                    <Sparkles className="h-4 w-4" />
-                    Premium
-                  </button>
-                </Link>
-              </HoverCardTrigger>
-              <HoverCardContent className="bg-[#111] border-[#222] w-72 p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <Crown className="h-4 w-4 text-gold" />
-                  <div className="font-bold text-white text-sm">Sasquatch Premium</div>
-                  <span className="text-xs text-stone-500 ml-auto">7 days free</span>
-                </div>
-                <ul className="space-y-1.5 mb-3 text-xs text-stone-300">
-                  <li className="flex items-start gap-2">
-                    <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
-                    Unlimited Coach (free: 25/day)
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
-                    Unlimited Recovery Anchors (free: 3/mo)
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
-                    Voice Cloning included
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
-                    Premium Campfire circles with Nick
-                  </li>
-                </ul>
-                <Link href="/recovery/premium">
-                  <Button size="sm" className="w-full bg-gold text-black font-semibold" data-testid="nav-premium-cta">
-                    See Premium
-                  </Button>
-                </Link>
-              </HoverCardContent>
-            </HoverCard>
-            <Link href="/recovery/gift">
-              <Button
-                size="sm"
-                variant="outline"
-                className="border-gold/50 text-gold font-semibold text-xs"
-                data-testid="button-nav-gift"
-              >
-                <Heart className="w-3.5 h-3.5 mr-1.5" />
-                Gift a Survivor
-              </Button>
-            </Link>
             {isLoading ? (
               <div className="w-8 h-8 rounded-full bg-[#1a1a1a] animate-pulse" />
             ) : user ? (
@@ -422,16 +364,6 @@ export default function RecoveryHeader() {
               )}
             </div>
             <div className="pt-3 border-t border-[#1e1e1e] flex flex-col gap-2">
-              <Link href="/recovery/gift">
-                <Button
-                  variant="outline"
-                  className="w-full border-gold/50 text-gold justify-start gap-2"
-                  data-testid="mobile-button-gift"
-                >
-                  <Heart className="h-4 w-4" />
-                  Gift a Survivor
-                </Button>
-              </Link>
               {user ? (
                 <>
                   <Link href="/recovery/dashboard">

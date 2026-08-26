@@ -249,6 +249,48 @@ async function initStripe() {
 const RECOVERY_KEYWORDS = ["strokerecovery", "sasquatch"];
 const RECOVERY_DOMAINS = ["strokerecoveryacademy.com"];
 
+const RECOVERY_RETURN_PATHS = [
+  "/recovery/today",
+  "/recovery/onboarding",
+  "/recovery/community",
+  "/recovery/journal",
+  "/recovery/me",
+  "/recovery/dashboard",
+  "/recovery/activity",
+  "/recovery/welcome",
+];
+
+function safeRecoveryReturnTo(value: unknown, fallback = "/recovery/today"): string {
+  if (typeof value !== "string") return fallback;
+  const decoded = value.trim();
+  if (!decoded.startsWith("/") || decoded.startsWith("//") || decoded.includes("\\")) return fallback;
+  return RECOVERY_RETURN_PATHS.some((path) => decoded === path || decoded.startsWith(`${path}?`)) ? decoded : fallback;
+}
+
+async function ensureCommunitySafetyTables() {
+  const { pool } = await import("./db");
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS community_reports (
+      id SERIAL PRIMARY KEY,
+      reporter_id VARCHAR NOT NULL,
+      target_type VARCHAR(30) NOT NULL,
+      target_id VARCHAR(120) NOT NULL,
+      reason VARCHAR(80) NOT NULL,
+      details TEXT,
+      status VARCHAR(20) NOT NULL DEFAULT 'pending',
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+      UNIQUE (reporter_id, target_type, target_id)
+    );
+    CREATE TABLE IF NOT EXISTS user_blocks (
+      blocker_id VARCHAR NOT NULL,
+      blocked_id VARCHAR NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+      PRIMARY KEY (blocker_id, blocked_id),
+      CHECK (blocker_id <> blocked_id)
+    );
+  `);
+}
+
 function detectPlatform(hostname: string): "creator" | "recovery" {
   const lowerHostname = hostname.toLowerCase();
   
@@ -1208,8 +1250,10 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   app.get('/api/community/posts', async (req, res) => {
     try {
       const { pool: dbPool } = await import('./db');
+      await ensureCommunitySafetyTables();
       const limitVal = parseInt(String(req.query.limit || '20'));
       const offsetVal = parseInt(String(req.query.offset || '0'));
+      const viewerId = getUserId(req as any) || (req as any).session?.userId || null;
       const posts = await dbPool.query(
         `SELECT ap.*, u.first_name, u.last_name, u.profile_image_url,
                 us.display_name, us.avatar_url, us.username,
@@ -1222,10 +1266,14 @@ Last updated: ${new Date().toISOString().split('T')[0]}
          LEFT JOIN users u ON u.id = ap.author_id
          LEFT JOIN user_settings us ON us.user_id = ap.author_id
          LEFT JOIN user_personas up ON up.user_id = ap.author_id
-         WHERE ap.visibility = 'public' OR ap.visibility = 'members'
+         WHERE (ap.visibility = 'public' OR (ap.visibility = 'members' AND $3::text IS NOT NULL))
+           AND NOT EXISTS (
+             SELECT 1 FROM user_blocks ub
+             WHERE ub.blocker_id = $3 AND ub.blocked_id = ap.author_id
+           )
          ORDER BY ap.is_pinned DESC, ap.created_at DESC
          LIMIT $1 OFFSET $2`,
-        [limitVal, offsetVal]
+        [limitVal, offsetVal, viewerId]
       );
       res.json(posts.rows);
     } catch (error) {
@@ -1238,6 +1286,20 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   app.get('/api/community/comments/:id', async (req, res) => {
     try {
       const { pool: dbPool } = await import('./db');
+      await ensureCommunitySafetyTables();
+      const viewerId = getUserId(req as any) || (req as any).session?.userId || null;
+      const postAccess = await dbPool.query(
+        "SELECT visibility, author_id FROM activity_posts WHERE id = $1 LIMIT 1",
+        [req.params.id],
+      );
+      const postRow = postAccess.rows[0];
+      if (!postRow) return res.status(404).json({ message: "Post not found" });
+      if (!viewerId && postRow.visibility !== "public") {
+        return res.status(401).json({ message: "Sign in to view this conversation" });
+      }
+      if (postRow.visibility === "private" && postRow.author_id !== viewerId) {
+        return res.status(404).json({ message: "Post not found" });
+      }
       const comments = await dbPool.query(
         `SELECT ac.*, u.first_name, u.last_name, u.profile_image_url,
                 us.display_name, us.avatar_url, us.username,
@@ -1247,8 +1309,12 @@ Last updated: ${new Date().toISOString().split('T')[0]}
          LEFT JOIN user_settings us ON us.user_id = ac.author_id
          LEFT JOIN user_personas up ON up.user_id = ac.author_id
          WHERE ac.post_id = $1
+           AND NOT EXISTS (
+             SELECT 1 FROM user_blocks ub
+             WHERE ub.blocker_id = $2 AND ub.blocked_id = ac.author_id
+           )
          ORDER BY ac.created_at ASC`,
-        [req.params.id]
+        [req.params.id, viewerId]
       );
       res.json(comments.rows);
     } catch (error) {
@@ -1409,15 +1475,15 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   });
 
   // Email/Password Login route
-  app.post('/api/auth/login', async (req: any, res) => {
+  app.post('/api/auth/login', authActionLimiter, async (req: any, res) => {
     try {
       const { email, password } = req.body;
       if (!email || !password) {
         return res.status(400).json({ message: "Email and password are required" });
       }
 
-      const { authenticateLocal } = await import('./multiProviderAuth');
-      const user = await authenticateLocal(email, password);
+      const { authenticateLocal, normalizeEmail } = await import('./multiProviderAuth');
+      const user = await authenticateLocal(normalizeEmail(email), password);
       
       if (!user) {
         return res.status(401).json({ message: "Invalid email or password" });
@@ -1453,8 +1519,9 @@ Last updated: ${new Date().toISOString().split('T')[0]}
         return res.status(400).json({ message: "Password must be at least 8 characters" });
       }
 
-      const { registerLocalUser } = await import('./multiProviderAuth');
-      const user = await registerLocalUser(email, password, firstName, lastName);
+      const { registerLocalUser, normalizeEmail } = await import('./multiProviderAuth');
+      const normalizedEmail = normalizeEmail(email);
+      const user = await registerLocalUser(normalizedEmail, password, firstName, lastName);
       
       if (!user) {
         return res.status(500).json({ message: "Failed to create account" });
@@ -1473,7 +1540,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
         // Fire-and-forget welcome email
         try {
           const { sendWelcomeEmail } = await import('./welcomeEmail');
-          await sendWelcomeEmail(email, firstName);
+          await sendWelcomeEmail(normalizedEmail, firstName);
         } catch (emailErr) {
           console.error("[welcome email] failed:", emailErr);
         }
@@ -1486,22 +1553,24 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   });
 
   // OTP — send 6-digit code via email
-  app.post('/api/auth/otp/send', async (req, res) => {
+  app.post('/api/auth/otp/send', authActionLimiter, async (req, res) => {
     try {
       const { email } = req.body;
       if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         return res.status(400).json({ message: "Valid email is required" });
       }
+      const normalizedEmail = email.trim().toLowerCase();
       const { db: otpDb } = await import('./db');
       const { magicLinkTokens, users: usersTable } = await import('../shared/schema');
       const { eq } = await import('drizzle-orm');
-      const otp = String(Math.floor(100000 + Math.random() * 900000));
+      const { randomInt } = await import("node:crypto");
+      const otp = String(randomInt(100000, 1000000));
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 min
-      await otpDb.insert(magicLinkTokens).values({ email: email.toLowerCase(), token: otp, expiresAt });
+      await otpDb.insert(magicLinkTokens).values({ email: normalizedEmail, token: otp, expiresAt });
       // Look up first name for personalisation
-      const [existingUser] = await otpDb.select().from(usersTable).where(eq(usersTable.email, email.toLowerCase())).limit(1);
+      const [existingUser] = await otpDb.select().from(usersTable).where(eq(usersTable.email, normalizedEmail)).limit(1);
       const { sendOtpEmail } = await import('./welcomeEmail');
-      await sendOtpEmail(email, otp, (existingUser as any)?.firstName);
+      await sendOtpEmail(normalizedEmail, otp, (existingUser as any)?.firstName);
       res.json({ success: true, message: "Code sent to your email" });
     } catch (error: any) {
       console.error("OTP send error:", error);
@@ -1514,22 +1583,26 @@ Last updated: ${new Date().toISOString().split('T')[0]}
     try {
       const { email, otp } = req.body;
       if (!email || !otp) return res.status(400).json({ message: "Email and code are required" });
+      if (typeof otp !== "string" || !/^\d{6}$/.test(otp)) {
+        return res.status(400).json({ message: "Enter the 6-digit code from your email" });
+      }
+      const normalizedEmail = String(email).trim().toLowerCase();
       const { db: otpDb } = await import('./db');
       const { magicLinkTokens, users: usersTable } = await import('../shared/schema');
       const { eq, and, gt, isNull } = await import('drizzle-orm');
       const [tokenRecord] = await otpDb.select().from(magicLinkTokens).where(
-        and(eq(magicLinkTokens.email, email.toLowerCase()), eq(magicLinkTokens.token, otp), gt(magicLinkTokens.expiresAt, new Date()), isNull(magicLinkTokens.usedAt))
+        and(eq(magicLinkTokens.email, normalizedEmail), eq(magicLinkTokens.token, otp), gt(magicLinkTokens.expiresAt, new Date()), isNull(magicLinkTokens.usedAt))
       ).limit(1);
       if (!tokenRecord) return res.status(400).json({ message: "Invalid or expired code" });
       await otpDb.update(magicLinkTokens).set({ usedAt: new Date() }).where(eq(magicLinkTokens.id, tokenRecord.id));
-      let [user] = await otpDb.select().from(usersTable).where(eq(usersTable.email, email.toLowerCase())).limit(1);
+      let [user] = await otpDb.select().from(usersTable).where(eq(usersTable.email, normalizedEmail)).limit(1);
       const isNewUser = !user;
       if (!user) {
-        const [newUser] = await otpDb.insert(usersTable).values({ email: email.toLowerCase(), role: 'member' }).returning();
+        const [newUser] = await otpDb.insert(usersTable).values({ email: normalizedEmail, role: 'member' }).returning();
         user = newUser;
         try {
           const { sendWelcomeEmail } = await import('./welcomeEmail');
-          await sendWelcomeEmail(email);
+          await sendWelcomeEmail(normalizedEmail);
         } catch {}
       }
       req.login({ claims: { sub: user.id, email: user.email }, access_token: null, refresh_token: null, expires_at: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60) }, (err: any) => {
@@ -2178,6 +2251,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
     if (!process.env.GOOGLE_CLIENT_ID) {
       return res.status(503).json({ message: "Google authentication not configured" });
     }
+    (req.session as any).returnTo = safeRecoveryReturnTo(req.query.next);
     passport.authenticate('google', { scope: ['email', 'profile'] })(req, res, next);
   });
 
@@ -2190,9 +2264,25 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
         if (loginErr) {
           return res.redirect('/recovery/login?error=google');
         }
-        const returnTo = (req.session as any)?.returnTo || '/recovery/dashboard';
-        delete (req.session as any).returnTo;
-        res.redirect(returnTo);
+        void (async () => {
+          const returnTo = safeRecoveryReturnTo((req.session as any)?.returnTo);
+          delete (req.session as any).returnTo;
+          // A first-time Google member must finish the saved assessment before
+          // landing in the daily experience. Returning members keep their
+          // requested destination.
+          try {
+            const { db: authDb } = await import("./db");
+            const { survivorPlans } = await import("../shared/schema");
+            const { eq } = await import("drizzle-orm");
+            const [plan] = await authDb.select({ id: survivorPlans.id })
+              .from(survivorPlans)
+              .where(eq(survivorPlans.userId, user.id))
+              .limit(1);
+            res.redirect(plan ? returnTo : "/recovery/onboarding");
+          } catch {
+            res.redirect(returnTo);
+          }
+        })();
       });
     })(req, res, next);
   });
@@ -10435,7 +10525,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     try {
       const { db: dbInst } = await import('./db');
       const { spotlights } = await import('../shared/schema');
-      const { eq, desc } = await import('drizzle-orm');
+      const { eq, desc, and } = await import('drizzle-orm');
       const [current] = await dbInst
         .select()
         .from(spotlights)
@@ -10751,9 +10841,16 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         .orderBy(desc(survivorPlans.generatedAt))
         .limit(1);
 
-      const hasOnboarded = !!latestAssessment;
+      const hasAssessment = !!latestAssessment;
+      const hasPlan = !!latestPlan?.plan;
+      const hasGoals = goals.length > 0;
+      const hasOnboarded = hasAssessment && hasPlan;
       res.json({
         hasOnboarded,
+        hasAssessment,
+        hasGoals,
+        hasPlan,
+        onboardingStatus: !hasAssessment ? "not_started" : hasPlan ? "ready" : "assessment_saved",
         latestAssessment: latestAssessment || null,
         history,
         goals,
@@ -11138,9 +11235,24 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       }
       const { db: dbInst } = await import('./db');
       const { sasquatchAssessments } = await import('../shared/schema');
+      const { and, desc, gte, eq } = await import('drizzle-orm');
+      const [existing] = await dbInst.select().from(sasquatchAssessments)
+        .where(and(
+          eq(sasquatchAssessments.userId, userId),
+          eq(sasquatchAssessments.physical, physical),
+          eq(sasquatchAssessments.cognitive, cognitive),
+          eq(sasquatchAssessments.speech, speech),
+          eq(sasquatchAssessments.emotional, emotional),
+          eq(sasquatchAssessments.memory, memory),
+          gte(sasquatchAssessments.takenAt, new Date(Date.now() - 24 * 60 * 60 * 1000)),
+        ))
+        .orderBy(desc(sasquatchAssessments.takenAt))
+        .limit(1);
+      const normalizedNotes = notes ? String(notes).slice(0, 1000) : null;
+      if (existing && (existing.notes || null) === normalizedNotes) return res.json(existing);
       const [row] = await dbInst.insert(sasquatchAssessments).values({
         userId, physical, cognitive, speech, emotional, memory,
-        notes: notes ? String(notes).slice(0, 1000) : null,
+        notes: normalizedNotes,
       }).returning();
       res.json(row);
     } catch (error) {
@@ -11154,8 +11266,8 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     try {
       const userId = getUserId(req)!;
       const goals = Array.isArray(req.body?.goals) ? req.body.goals : [];
-      if (goals.length === 0 || goals.length > 10) {
-        return res.status(400).json({ message: 'Provide 1–10 goals' });
+      if (goals.length > 10) {
+        return res.status(400).json({ message: 'Provide no more than 10 goals' });
       }
       const validHorizons = new Set(['short', 'long']);
       const validDomains = new Set(['physical', 'cognitive', 'speech', 'emotional', 'memory', 'other']);
@@ -11170,6 +11282,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       const { survivorGoals } = await import('../shared/schema');
       const { eq } = await import('drizzle-orm');
       await dbInst.delete(survivorGoals).where(eq(survivorGoals.userId, userId));
+      if (goals.length === 0) return res.json([]);
       const inserted = await dbInst.insert(survivorGoals).values(
         goals.map((g: any) => ({
           userId,
@@ -11191,7 +11304,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       const userId = getUserId(req)!;
       const { db: dbInst } = await import('./db');
       const { sasquatchAssessments, survivorGoals, survivorPlans } = await import('../shared/schema');
-      const { eq, desc } = await import('drizzle-orm');
+      const { eq, desc, and } = await import('drizzle-orm');
 
       const [assessment] = await dbInst
         .select()
@@ -11202,6 +11315,16 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
 
       if (!assessment) {
         return res.status(400).json({ message: 'Take the Sasquatch Scale first.' });
+      }
+
+      const [existingPlan] = await dbInst
+        .select()
+        .from(survivorPlans)
+        .where(and(eq(survivorPlans.userId, userId), eq(survivorPlans.assessmentId, assessment.id)))
+        .orderBy(desc(survivorPlans.generatedAt))
+        .limit(1);
+      if (existingPlan?.plan) {
+        return res.json({ plan: existingPlan.plan, generatedAt: existingPlan.generatedAt, reused: true });
       }
 
       const goals = await dbInst
@@ -13391,6 +13514,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   app.get('/api/activity', async (req: any, res) => {
     try {
       const { limit, offset, visibility, podId, authorId } = req.query;
+      const viewerId = getUserId(req);
       const posts = await storage.getActivityPosts({
         limit: limit ? parseInt(limit) : 20,
         offset: offset ? parseInt(offset) : 0,
@@ -13398,7 +13522,20 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
         podId: podId ? parseInt(podId) : undefined,
         authorId: authorId as string,
       });
-      res.json(posts);
+      await ensureCommunitySafetyTables();
+      const { pool: activityPool } = await import("./db");
+      const blocks = viewerId
+        ? await activityPool.query("SELECT blocked_id FROM user_blocks WHERE blocker_id = $1", [viewerId])
+        : { rows: [] as Array<{ blocked_id: string }> };
+      const blocked = new Set(blocks.rows.map((row) => row.blocked_id));
+      const visible = posts.filter((post) => {
+        if (blocked.has(post.authorId)) return false;
+        if (post.visibility === "public") return true;
+        if (!viewerId) return false;
+        if (post.visibility === "members") return true;
+        return post.visibility === "private" && post.authorId === viewerId;
+      });
+      res.json(visible);
     } catch (error) {
       console.error("Error fetching activity posts:", error);
       res.status(500).json({ message: "Failed to fetch activity" });
@@ -13411,6 +13548,28 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       if (!post) {
         return res.status(404).json({ message: "Post not found" });
       }
+      const viewerId = getUserId(req as any);
+      if (post.visibility === "private" && post.authorId !== viewerId) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+      if (post.visibility === "pod") {
+        if (!viewerId) return res.status(404).json({ message: "Post not found" });
+        const { db: activityDb } = await import("./db");
+        const { podMembers } = await import("../shared/schema");
+        const { and, eq } = await import("drizzle-orm");
+        const [membership] = await activityDb.select().from(podMembers).where(and(
+          eq(podMembers.podId, post.podId as number),
+          eq(podMembers.userId, viewerId),
+        )).limit(1);
+        if (!membership) return res.status(404).json({ message: "Post not found" });
+      }
+      await ensureCommunitySafetyTables();
+      const { pool: activityPool } = await import("./db");
+      const blocked = await activityPool.query(
+        "SELECT 1 FROM user_blocks WHERE blocker_id = $1 AND blocked_id = $2 LIMIT 1",
+        [viewerId || "", post.authorId],
+      );
+      if (blocked.rowCount) return res.status(404).json({ message: "Post not found" });
       const media = await storage.getActivityMedia(post.id);
       const reactions = await storage.getActivityReactions(post.id);
       const comments = await storage.getActivityComments(post.id);
@@ -13424,6 +13583,15 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     try {
       const userId = getUserId(req)!;
       const { content, postType, visibility, podId, media } = req.body;
+      if (!content || typeof content !== "string" || !content.trim()) {
+        return res.status(400).json({ message: "Write something before posting." });
+      }
+      if (!["public", "members", "pod", "private"].includes(visibility || "public")) {
+        return res.status(400).json({ message: "Choose a supported visibility." });
+      }
+      if (visibility === "pod" && !podId) {
+        return res.status(400).json({ message: "Choose a pod for pod-only posts." });
+      }
       
       const post = await storage.createActivityPost({
         authorId: userId,
@@ -13443,7 +13611,14 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
         }
       }
       
-      res.json(post);
+      const crisis = detectCrisis(content);
+      res.json({
+        ...post,
+        crisis: crisis.detected,
+        crisisMessage: crisis.detected
+          ? "This community is not a clinical service. If you may be in immediate danger, call 911 or call/text 988 in the U.S."
+          : undefined,
+      });
     } catch (error) {
       console.error("Error creating post:", error);
       res.status(500).json({ message: "Failed to create post" });
@@ -13467,6 +13642,18 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   app.post('/api/activity/:id/react', isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req)!;
+      const post = await storage.getActivityPost(parseInt(req.params.id));
+      if (!post) return res.status(404).json({ message: "Post not found" });
+      if (post.visibility === "private" && post.authorId !== userId) {
+        return res.status(403).json({ message: "You can't react to this post." });
+      }
+      await ensureCommunitySafetyTables();
+      const { pool: reactionPool } = await import("./db");
+      const blocked = await reactionPool.query(
+        "SELECT 1 FROM user_blocks WHERE blocker_id = $1 AND blocked_id = $2 LIMIT 1",
+        [userId, post.authorId],
+      );
+      if (blocked.rowCount) return res.status(404).json({ message: "Post not found" });
       const { reactionType } = req.body;
       const result = await storage.toggleActivityReaction(parseInt(req.params.id), userId, reactionType || 'like');
       res.json(result);
@@ -13478,7 +13665,22 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   app.post('/api/activity/:id/comment', isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req)!;
+      const post = await storage.getActivityPost(parseInt(req.params.id));
+      if (!post) return res.status(404).json({ message: "Post not found" });
+      if (post.visibility === "private" && post.authorId !== userId) {
+        return res.status(403).json({ message: "You can't comment on this post." });
+      }
+      await ensureCommunitySafetyTables();
+      const { pool: commentPool } = await import("./db");
+      const blocked = await commentPool.query(
+        "SELECT 1 FROM user_blocks WHERE blocker_id = $1 AND blocked_id = $2 LIMIT 1",
+        [userId, post.authorId],
+      );
+      if (blocked.rowCount) return res.status(404).json({ message: "Post not found" });
       const { content, parentId } = req.body;
+      if (!content || typeof content !== "string" || !content.trim()) {
+        return res.status(400).json({ message: "Comment cannot be empty." });
+      }
       const comment = await storage.createActivityComment({
         postId: parseInt(req.params.id),
         authorId: userId,
@@ -13489,6 +13691,60 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     } catch (error) {
       res.status(500).json({ message: "Failed to add comment" });
     }
+  });
+
+  // One safety contract for activity, forum, and group surfaces.
+  app.post('/api/community/report', isAuthenticated, authActionLimiter, async (req: any, res) => {
+    try {
+      const reporterId = getUserId(req)!;
+      const targetType = String(req.body?.targetType || "").trim();
+      const targetId = String(req.body?.targetId || "").trim();
+      const reason = String(req.body?.reason || "").trim();
+      const details = req.body?.details ? String(req.body.details).trim().slice(0, 2000) : null;
+      if (!["activity", "comment", "forum_thread", "forum_post", "group_post"].includes(targetType) || !targetId || !reason) {
+        return res.status(400).json({ message: "Choose what to report and why." });
+      }
+      await ensureCommunitySafetyTables();
+      const { pool: moderationPool } = await import("./db");
+      await moderationPool.query(
+        `INSERT INTO community_reports (reporter_id, target_type, target_id, reason, details)
+         VALUES ($1,$2,$3,$4,$5)
+         ON CONFLICT (reporter_id, target_type, target_id) DO NOTHING`,
+        [reporterId, targetType, targetId, reason.slice(0, 80), details],
+      );
+      res.status(201).json({ ok: true, message: "Thanks. Our moderation team will review this." });
+    } catch (error) {
+      console.error("Community report error:", error);
+      res.status(500).json({ message: "We couldn't submit that report. Please try again." });
+    }
+  });
+
+  app.post('/api/community/block', isAuthenticated, async (req: any, res) => {
+    try {
+      const blockerId = getUserId(req)!;
+      const blockedId = String(req.body?.userId || "").trim();
+      if (!blockedId || blockedId === blockerId) return res.status(400).json({ message: "Choose another member." });
+      await ensureCommunitySafetyTables();
+      const { pool: blockPool } = await import("./db");
+      await blockPool.query(
+        "INSERT INTO user_blocks (blocker_id, blocked_id) VALUES ($1,$2) ON CONFLICT DO NOTHING",
+        [blockerId, blockedId],
+      );
+      res.json({ ok: true, message: "Member blocked. Their posts are hidden from you." });
+    } catch (error) {
+      console.error("Community block error:", error);
+      res.status(500).json({ message: "We couldn't block that member." });
+    }
+  });
+
+  app.delete('/api/community/block/:userId', isAuthenticated, async (req: any, res) => {
+    await ensureCommunitySafetyTables();
+    const { pool: blockPool } = await import("./db");
+    await blockPool.query("DELETE FROM user_blocks WHERE blocker_id = $1 AND blocked_id = $2", [
+      getUserId(req)!,
+      String(req.params.userId),
+    ]);
+    res.json({ ok: true });
   });
 
   // ============================================================================

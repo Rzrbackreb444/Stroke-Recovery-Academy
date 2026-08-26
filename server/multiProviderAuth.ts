@@ -28,6 +28,11 @@ export function verifyPassword(password: string, stored: string): boolean {
   return hash === verifyHash;
 }
 
+/** Email addresses are identifiers, not display text. Keep auth lookups stable. */
+export function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
 // Generate secure tokens
 export function generateToken(): string {
   return crypto.randomBytes(32).toString("hex");
@@ -73,7 +78,7 @@ export const oauthProviders = {
 
 // Find or create user from OAuth
 export async function findOrCreateOAuthUser(profile: OAuthProfile) {
-  const email = profile.emails?.[0]?.value;
+  const email = profile.emails?.[0]?.value ? normalizeEmail(profile.emails[0].value) : undefined;
   const providerId = `${profile.provider}:${profile.id}`;
   
   // Try to find existing user by OAuth ID or email
@@ -126,7 +131,7 @@ export async function findOrCreateOAuthUser(profile: OAuthProfile) {
 
 // Email/Password authentication
 export async function authenticateLocal(email: string, password: string) {
-  const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  const [user] = await db.select().from(users).where(eq(users.email, normalizeEmail(email))).limit(1);
   
   if (!user || !user.passwordHash) {
     return null;
@@ -141,6 +146,7 @@ export async function authenticateLocal(email: string, password: string) {
 
 // Register with email/password
 export async function registerLocalUser(email: string, password: string, firstName?: string, lastName?: string) {
+  email = normalizeEmail(email);
   // Check if user exists
   const [existing] = await db.select().from(users).where(eq(users.email, email)).limit(1);
   
