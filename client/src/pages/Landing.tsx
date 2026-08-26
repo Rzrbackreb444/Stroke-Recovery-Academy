@@ -68,7 +68,7 @@ function Hero() {
             </h1>
 
             <p className="text-lg text-white/50 mb-8 leading-relaxed">
-              Nick Kremers built the system that didn't exist — from a Hoyer lift to 90% recovery, across 90,000+ survivors worldwide. This is the Sasquatch Method.
+              Nick Kremers built the Sasquatch Method from his own recovery — a survivor-built system for finding your next practical rep.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-5">
@@ -91,7 +91,7 @@ function Hero() {
               </Button>
             </div>
 
-            <p className="text-sm text-white/35 mb-10">Join 50,000+ survivors rebuilding daily — free to start.</p>
+            <p className="text-sm text-white/35 mb-10">Survivor-built guidance. Free to begin.</p>
 
             <div className="grid grid-cols-4 gap-4 border-t border-white/10 pt-8">
               {stats.map((stat) => (
@@ -139,10 +139,10 @@ function Hero() {
 
 function StatsStrip() {
   const stats = [
-    { n: "50,000+", l: "Survivors" },
-    { n: "0% → 90%", l: "Function restored" },
-    { n: "365", l: "Days of reps" },
-    { n: "7", l: "Years of proof" },
+    { n: "Today", l: "One place to start" },
+    { n: "Community", l: "Peer connection" },
+    { n: "Journal", l: "Private reflection" },
+    { n: "Coach", l: "Guided support" },
   ];
   return (
     <section className="bg-gold">
@@ -659,7 +659,7 @@ function FinalCTA() {
       <div className="relative z-10 max-w-3xl mx-auto px-4">
         <h2 className="font-display text-white text-5xl md:text-7xl mb-8 leading-[0.9]">Time to put in the reps.</h2>
         <p className="text-xl text-white/60 mb-12">
-          Join 50,000+ survivors rebuilding their lives — at whatever pace recovery takes. Start when you're ready.
+          Start with one practical rep, at whatever pace recovery takes. Begin when you're ready.
         </p>
         <Button
           size="lg"

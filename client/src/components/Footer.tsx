@@ -128,9 +128,8 @@ export default function Footer() {
               From 0% to 90% Recovery
             </p>
             <p className="text-gray-400 mb-6 leading-relaxed text-sm">
-              The world's most comprehensive stroke recovery platform — built by a survivor,
-              for survivors. Evidence-based methods, AI coaching, and a community of 50,000+
-              warriors refusing to accept limitations.
+              A survivor-built stroke recovery platform with practical methods, guided coaching,
+              private reflection, and a community for people rebuilding at their own pace.
             </p>
             <div className="space-y-3">
               <div className="text-sm font-semibold uppercase tracking-wide text-gray-300">

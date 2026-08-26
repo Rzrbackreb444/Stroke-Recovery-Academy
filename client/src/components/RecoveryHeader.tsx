@@ -224,7 +224,7 @@ export default function RecoveryHeader() {
                     <p className="text-xs text-gray-500">{user.email}</p>
                   </div>
                   <DropdownMenuItem asChild>
-                    <Link href="/recovery/dashboard" className="cursor-pointer">
+                    <Link href="/recovery/today" className="cursor-pointer">
                       <LayoutDashboard className="w-4 h-4 mr-2 text-gold" />
                       Today
                     </Link>
@@ -359,7 +359,7 @@ export default function RecoveryHeader() {
             <div className="pt-3 border-t border-[#1e1e1e] flex flex-col gap-2">
               {user ? (
                 <>
-                  <Link href="/recovery/dashboard">
+                  <Link href="/recovery/today">
                     <Button variant="outline" className="w-full border-[#333] text-white justify-start gap-2">
                       <LayoutDashboard className="h-4 w-4 text-gold" />
                        Today
