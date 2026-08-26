@@ -125,9 +125,9 @@ export default function RecoveryToday() {
       <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center p-6">
         <Card className="bg-[#111] border-[#222] p-8 max-w-sm w-full text-center">
           <Flame className="h-10 w-10 text-[#E2741B] mx-auto mb-4" />
-          <h2 className="text-white font-bold text-xl mb-2">Sign In to Light the Bonfire</h2>
+          <h2 className="text-white font-bold text-xl mb-2">Sign in to keep your place</h2>
           <p className="text-gray-500 text-sm mb-6">
-            Your daily session adapts to how yesterday went — sign in so we remember.
+            Your daily rep adapts to how yesterday went — sign in so we can remember.
           </p>
           <Button
             size="lg"
