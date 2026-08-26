@@ -32,7 +32,7 @@ export function registerGroupRoutes(app: Express, isAuthenticated: any, uploadsD
     try {
       const type = (req.query.type as string) || undefined;
       const search = ((req.query.search as string) || "").trim().toLowerCase();
-      const uid = (req as any).user?.claims?.sub;
+      const uid = getUserId(req);
 
       const rows = await db.select().from(groups).orderBy(desc(groups.memberCount));
       let list = rows;
@@ -200,7 +200,7 @@ export function registerGroupRoutes(app: Express, isAuthenticated: any, uploadsD
   // Feed (private groups require membership to read posts)
   app.get("/api/groups/:id/posts", async (req: any, res) => {
     try {
-      const uid = req.user?.claims?.sub;
+      const uid = getUserId(req);
       const gid = parseInt(req.params.id, 10);
       if (!Number.isFinite(gid)) return res.status(400).json({ error: "Invalid id" });
       const g = (await db.select().from(groups).where(eq(groups.id, gid)).limit(1))[0];

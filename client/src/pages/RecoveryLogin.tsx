@@ -18,6 +18,11 @@ export default function RecoveryLogin() {
   // Detect ?tab= and ?error= params
   const params = new URLSearchParams(window.location.search);
   const initialTab = (params.get("tab") === "signup" ? "signup" : "signin") as Tab;
+  const [forgotOpen, setForgotOpen] = useState(params.get("forgot") === "1");
+  const requestedNext = params.get("next") || "/recovery/today";
+  const safeNext = requestedNext.startsWith("/recovery/") && !requestedNext.startsWith("//")
+    ? requestedNext
+    : "/recovery/today";
 
   const [tab, setTab] = useState<Tab>(initialTab);
 
@@ -47,6 +52,7 @@ export default function RecoveryLogin() {
 
   // OTP fields
   const [otpCode, setOtpCode] = useState("");
+  const [forgotEmail, setForgotEmail] = useState("");
 
   // ── Mutations ──────────────────────────────────────────────────────────────
   // Brand-new accounts → onboarding. Returning users with a plan → dashboard.
@@ -56,7 +62,7 @@ export default function RecoveryLogin() {
       if (res.ok) {
         const state = await res.json();
         if (state?.hasOnboarded) {
-          window.location.href = "/recovery/dashboard";
+          window.location.href = safeNext;
           return;
         }
       }
@@ -76,7 +82,7 @@ export default function RecoveryLogin() {
   const signUpMut = useMutation({
     mutationFn: (data: { email: string; password: string; firstName: string; lastName: string }) =>
       apiRequest("POST", "/api/auth/register", data),
-    onSuccess: () => { window.location.href = "/recovery/onboarding"; },
+    onSuccess: () => { window.location.href = safeNext === "/recovery/today" ? "/recovery/onboarding" : safeNext; },
     onError: (e: any) => toast({ title: "Sign up failed", description: e.message, variant: "destructive" }),
   });
 
@@ -94,6 +100,11 @@ export default function RecoveryLogin() {
     mutationFn: (data: { email: string; otp: string }) => apiRequest("POST", "/api/auth/otp/verify", data),
     onSuccess: () => { routeAfterAuth(); },
     onError: (e: any) => toast({ title: "Invalid code", description: e.message, variant: "destructive" }),
+  });
+  const forgotMut = useMutation({
+    mutationFn: (email: string) => apiRequest("POST", "/api/email-auth/forgot-password", { email }),
+    onSuccess: () => toast({ title: "Check your email", description: "If an account exists, we sent password reset instructions." }),
+    onError: (e: any) => toast({ title: "Couldn't send reset email", description: e.message, variant: "destructive" }),
   });
 
   // ── Handlers ──────────────────────────────────────────────────────────────
@@ -187,7 +198,7 @@ export default function RecoveryLogin() {
           {tab !== "otp" && (
             <>
               <a
-                href="/api/auth/google"
+                href={`/api/auth/google?next=${encodeURIComponent(safeNext)}`}
                 className="flex items-center justify-center gap-3 w-full py-2.5 rounded-md text-sm font-semibold transition-opacity hover:opacity-90"
                 style={{ background: "#fff", color: "#1a1a1a", border: "1px solid #ddd" }}
                 data-testid="button-google-signin"
@@ -257,6 +268,35 @@ export default function RecoveryLogin() {
               >
                 {signInMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Sign In <ArrowRight className="h-4 w-4 ml-1" /></>}
               </Button>
+
+              <button
+                type="button"
+                onClick={() => setForgotOpen((open) => !open)}
+                className="block w-full text-center text-xs underline underline-offset-4"
+                style={{ color: "#999" }}
+                data-testid="link-forgot-password"
+              >
+                Forgot your password?
+              </button>
+              {forgotOpen && (
+                <form
+                  className="rounded-md border border-[#333] bg-[#151515] p-3 space-y-2"
+                  onSubmit={(e) => { e.preventDefault(); forgotMut.mutate(forgotEmail.trim()); }}
+                >
+                  <p className="text-xs text-gray-400">Enter your email and we’ll send a reset link if the account exists.</p>
+                  <Input
+                    type="email"
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    required
+                    aria-label="Email for password recovery"
+                  />
+                  <Button type="submit" variant="outline" className="w-full" disabled={forgotMut.isPending}>
+                    {forgotMut.isPending ? "Sending…" : "Email reset link"}
+                  </Button>
+                </form>
+              )}
 
               <div className="relative flex items-center gap-3 my-2">
                 <div className="flex-1 h-px" style={{ background: "#333" }} />

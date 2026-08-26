@@ -430,11 +430,12 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
 
   const postMutation = useMutation({
     mutationFn: async () => {
-      const post = await apiRequest("POST", "/api/activity", {
+      const response = await apiRequest("POST", "/api/activity", {
         postType,
         content,
         visibility: "public",
       });
+      const post = await response.json();
       const postId = (post as any).id;
       for (const m of media) {
         await apiRequest("POST", `/api/activity/${postId}/media`, {
@@ -444,13 +445,18 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
       }
       return post;
     },
-    onSuccess: () => {
+    onSuccess: (post: any) => {
       qc.invalidateQueries({ queryKey: ["/api/community/posts"] });
       setContent("");
       setMedia([]);
       setPostType("update");
       setExpanded(false);
-      toast({ title: "Posted to the community!" });
+      toast({
+        title: post?.crisis ? "Posted — please reach out for support" : "Posted to the community!",
+        description: post?.crisis
+          ? "If you may be in immediate danger, call 911. You can also call or text 988 in the U.S."
+          : undefined,
+      });
     },
     onError: () => toast({ title: "Failed to post", variant: "destructive" }),
   });
@@ -689,6 +695,14 @@ function CommentThread({ postId, currentUser, settings }: { postId: number; curr
 
   return (
     <div className="border-t border-[#2a2a2a] pt-3 mt-2 space-y-3">
+      {!currentUser && (
+        <a
+          href={`/recovery/login?next=${encodeURIComponent("/recovery/community")}`}
+          className="block rounded-md border border-[#E2741B]/30 bg-[#E2741B]/10 px-3 py-2 text-xs text-[#F3B27A]"
+        >
+          Sign in to join this conversation.
+        </a>
+      )}
       {isLoading ? (
         <p className="text-xs text-gray-500 pl-2">Loading comments...</p>
       ) : topLevel.length === 0 ? (
@@ -722,7 +736,7 @@ function CommentThread({ postId, currentUser, settings }: { postId: number; curr
         </div>
       )}
 
-      <div className="flex gap-2 pt-1">
+      {currentUser && <div className="flex gap-2 pt-1">
         <Avatar className="w-7 h-7 border border-[#333] flex-shrink-0">
           <AvatarImage src={avatarSrc} />
           <AvatarFallback className="bg-[#2a2a2a] text-[#E2741B] text-xs">
@@ -749,7 +763,7 @@ function CommentThread({ postId, currentUser, settings }: { postId: number; curr
             <Send className="w-4 h-4" />
           </Button>
         </div>
-      </div>
+      </div>}
     </div>
   );
 }
@@ -760,8 +774,10 @@ function PostCard({ post, currentUser, settings }: { post: EnrichedPost; current
   const qc = useQueryClient();
   const [showComments, setShowComments] = useState(false);
   const [showReactions, setShowReactions] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportReason, setReportReason] = useState("Harassment or bullying");
 
-  const userId = currentUser?.claims?.sub || "";
+  const userId = currentUser?.claims?.sub || currentUser?.id || "";
   const myReaction = post.reactions?.find((r) => r.userId === userId)?.reactionType;
   const reactionCounts = REACTIONS.map((r) => ({
     ...r,
@@ -775,6 +791,24 @@ function PostCard({ post, currentUser, settings }: { post: EnrichedPost; current
       apiRequest("POST", `/api/activity/${post.id}/react`, { reactionType }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["/api/community/posts"] }),
     onError: () => toast({ title: "Failed to react", variant: "destructive" }),
+  });
+  const reportMutation = useMutation({
+    mutationFn: () => apiRequest("POST", "/api/community/report", {
+      targetType: "activity", targetId: String(post.id), reason: reportReason,
+    }),
+    onSuccess: () => {
+      setReportOpen(false);
+      toast({ title: "Report sent", description: "Our moderation team will review this." });
+    },
+    onError: () => toast({ title: "Couldn't send report", variant: "destructive" }),
+  });
+  const blockMutation = useMutation({
+    mutationFn: () => apiRequest("POST", "/api/community/block", { userId: post.authorId }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["/api/community/posts"] });
+      toast({ title: "Member blocked", description: "Their posts are now hidden from you." });
+    },
+    onError: () => toast({ title: "Couldn't block member", variant: "destructive" }),
   });
 
   const typeBadge = postTypeBadge(post.postType);
@@ -885,7 +919,13 @@ function PostCard({ post, currentUser, settings }: { post: EnrichedPost; current
               return (
                 <button
                   key={r.type}
-                  onClick={() => reactMutation.mutate(r.type)}
+                  onClick={() => {
+                    if (!currentUser) {
+                      window.location.href = `/recovery/login?next=${encodeURIComponent("/recovery/community")}`;
+                      return;
+                    }
+                    reactMutation.mutate(r.type);
+                  }}
                   disabled={reactMutation.isPending}
                   className={`flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border transition-all ${
                     isMe
@@ -916,9 +956,50 @@ function PostCard({ post, currentUser, settings }: { post: EnrichedPost; current
           </div>
         </div>
 
+        <div className="flex justify-end gap-3 text-xs">
+          {currentUser && currentUser?.id !== post.authorId && (
+            <button
+              className="text-gray-500 hover:text-gray-300"
+              onClick={() => blockMutation.mutate()}
+              disabled={blockMutation.isPending}
+            >
+              {blockMutation.isPending ? "Blocking…" : "Block member"}
+            </button>
+          )}
+          {currentUser ? (
+            <button className="text-gray-500 hover:text-gray-300" onClick={() => setReportOpen(true)}>
+              Report
+            </button>
+          ) : (
+            <a href={`/recovery/login?next=${encodeURIComponent("/recovery/community")}`} className="text-[#E2741B]">
+              Sign in to interact
+            </a>
+          )}
+        </div>
+
         {showComments && (
           <CommentThread postId={post.id} currentUser={currentUser} settings={settings} />
         )}
+        <Dialog open={reportOpen} onOpenChange={setReportOpen}>
+          <DialogContent className="bg-[#1a1a1a] border-[#333] text-white">
+            <DialogHeader><DialogTitle>Report this post</DialogTitle></DialogHeader>
+            <p className="text-sm text-gray-400">Tell us what needs attention. This platform is not a clinical service.</p>
+            <select
+              value={reportReason}
+              onChange={(e) => setReportReason(e.target.value)}
+              className="w-full rounded-md bg-[#222] border border-[#444] p-2 text-sm"
+            >
+              <option>Harassment or bullying</option>
+              <option>Unsafe medical claim</option>
+              <option>Privacy concern</option>
+              <option>Spam or scam</option>
+              <option>Something else</option>
+            </select>
+            <Button onClick={() => reportMutation.mutate()} disabled={reportMutation.isPending} className="bg-[#E2741B] text-black">
+              {reportMutation.isPending ? "Sending…" : "Send report"}
+            </Button>
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );
@@ -987,7 +1068,19 @@ function FeedTab({ user, settings }: { user: any; settings: any }) {
       </div>
 
       <div className="lg:col-span-3 space-y-4">
-        {user && <PostComposer user={user} settings={settings} />}
+        {user ? <PostComposer user={user} settings={settings} /> : (
+          <Card className="bg-[#1a1a1a] border-[#E2741B]/30">
+            <CardContent className="p-4 flex items-center justify-between gap-3">
+              <div>
+                <p className="text-white font-semibold">Have a question or a small win?</p>
+                <p className="text-xs text-gray-400 mt-1">Sign in to share an update, question, or recovery story.</p>
+              </div>
+              <Button asChild className="bg-[#E2741B] text-black shrink-0">
+                <a href={`/recovery/login?next=${encodeURIComponent("/recovery/community")}`}>Sign in to post</a>
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         {isLoading ? (
           <div className="space-y-4">
@@ -1272,8 +1365,8 @@ export default function RecoveryCommunity() {
       <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-white">Survivor Community</h1>
-            <p className="text-sm text-gray-400 mt-0.5">Your people. Your progress. Your proof.</p>
+            <h1 className="text-2xl font-bold text-white">Community</h1>
+            <p className="text-sm text-gray-400 mt-0.5">One place to share a small win, ask a question, or encourage another survivor.</p>
           </div>
           <div className="flex gap-2">
             {isAuthenticated && (
@@ -1304,10 +1397,6 @@ export default function RecoveryCommunity() {
               <Radio className="w-4 h-4 mr-1.5" />
               Live
             </TabsTrigger>
-            <TabsTrigger value="classroom" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black text-gray-400" data-testid="tab-classroom">
-              <Star className="w-4 h-4 mr-1.5" />
-              Classroom
-            </TabsTrigger>
           </TabsList>
           </div>
 
@@ -1323,38 +1412,6 @@ export default function RecoveryCommunity() {
             <LiveTab isAdmin={isAdmin} />
           </TabsContent>
 
-          <TabsContent value="classroom" className="mt-4">
-            <div className="space-y-4">
-              <h3 className="text-lg font-bold text-white">Recovery Classroom</h3>
-              <p className="text-gray-400">Access your recovery education modules.</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[
-                  { title: "Physical Recovery", desc: "Upper extremity, gait & balance", href: "/recovery/university", color: "#4A90E2" },
-                  { title: "Cognitive Recovery", desc: "Memory, focus & brain plasticity", href: "/recovery/university", color: "#E2741B" },
-                  { title: "Speech Recovery", desc: "Aphasia, dysarthria & communication", href: "/recovery/university", color: "#A8D8A8" },
-                  { title: "Emotional Recovery", desc: "Depression, anxiety & mental health", href: "/recovery/university", color: "#E2556A" },
-                ].map((c) => (
-                  <a key={c.title} href={c.href}>
-                    <Card className="bg-[#1a1a1a] border-[#333] hover-elevate cursor-pointer">
-                      <CardContent className="p-4 flex items-center gap-3">
-                        <div className="w-2 h-12 rounded-full flex-shrink-0" style={{ backgroundColor: c.color }} />
-                        <div>
-                          <p className="font-semibold text-white">{c.title}</p>
-                          <p className="text-sm text-gray-400">{c.desc}</p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </a>
-                ))}
-              </div>
-              <a href="/recovery/university">
-                <Button className="bg-[#E2741B] text-black font-bold gap-2 mt-2">
-                  <Star className="w-4 h-4" />
-                  Go to Recovery University
-                </Button>
-              </a>
-            </div>
-          </TabsContent>
         </Tabs>
       </div>
     </div>

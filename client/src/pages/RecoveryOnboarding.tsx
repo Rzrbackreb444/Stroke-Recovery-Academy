@@ -106,6 +106,32 @@ export default function RecoveryOnboarding() {
     domain: "physical",
     goal: "",
   });
+  const [draftLoaded, setDraftLoaded] = useState(false);
+
+  // The browser draft is deliberately kept until the plan has been saved. This
+  // lets a guest authenticate with any supported provider and resume safely.
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("onboarding_draft");
+      if (raw) {
+        const draft = JSON.parse(raw);
+        if (draft.scores) setScores((current) => ({ ...current, ...draft.scores }));
+        if (typeof draft.notes === "string") setNotes(draft.notes);
+        if (draft.shortGoal) setShortGoal((current) => ({ ...current, ...draft.shortGoal }));
+        if (draft.longGoal) setLongGoal((current) => ({ ...current, ...draft.longGoal }));
+        if (typeof draft.step === "number") setStep(Math.max(0, Math.min(totalSteps - 2, draft.step)));
+      }
+    } catch {
+      sessionStorage.removeItem("onboarding_draft");
+    } finally {
+      setDraftLoaded(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!draftLoaded) return;
+    sessionStorage.setItem("onboarding_draft", JSON.stringify({ scores, notes, shortGoal, longGoal, step }));
+  }, [draftLoaded, scores, notes, shortGoal, longGoal, step]);
 
   const totalSteps = DOMAINS.length + 3; // welcome + 5 domains + goals + generating
   const progressPct = Math.round((step / (totalSteps - 1)) * 100);
@@ -126,9 +152,10 @@ export default function RecoveryOnboarding() {
       return { assessment, plan: planData };
     },
     onSuccess: () => {
+      sessionStorage.removeItem("onboarding_draft");
       queryClient.invalidateQueries({ queryKey: ["/api/recovery/me/state"] });
       toast({ title: "Plan ready.", description: "Welcome to your recovery OS." });
-      setLocation("/recovery/me");
+      setLocation("/recovery/today");
     },
     onError: (err: any) => {
       toast({
@@ -143,11 +170,6 @@ export default function RecoveryOnboarding() {
   function next() {
     if (step === totalSteps - 2) {
       if (!isAuthenticated) {
-        // Save quiz progress so it survives the login redirect
-        sessionStorage.setItem(
-          "onboarding_draft",
-          JSON.stringify({ scores, notes, shortGoal, longGoal })
-        );
         setShowLoginPrompt(true);
         return;
       }
@@ -169,9 +191,9 @@ export default function RecoveryOnboarding() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
           <div className="bg-[#111] border border-[#E2741B]/30 rounded-xl p-8 max-w-md w-full text-center shadow-2xl">
             <Sparkles className="mx-auto h-10 w-10 mb-4" style={{ color: "#E2741B" }} strokeWidth={1.5} />
-            <h2 className="text-2xl font-bold text-white mb-2">Your plan is ready.</h2>
+              <h2 className="text-2xl font-bold text-white mb-2">Save your answers</h2>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              Create your free account to save your results and unlock your personalised recovery program.
+              Create your free account to save your answers and continue to your first daily action.
               It takes 30 seconds — no credit card.
             </p>
             <div className="flex flex-col gap-3">
@@ -295,11 +317,10 @@ export default function RecoveryOnboarding() {
                 onClick={next}
                 className="text-black"
                 style={{ backgroundColor: "#E2741B" }}
-                disabled={
-                  step === DOMAINS.length + 1 &&
-                  (shortGoal.goal.trim().length < 3 ||
-                    longGoal.goal.trim().length < 3)
-                }
+                  disabled={
+                    step === DOMAINS.length + 1 &&
+                    shortGoal.goal.trim().length < 3
+                  }
                 data-testid="button-onboarding-next"
               >
                 {step === DOMAINS.length + 1 ? "Generate my plan" : "Next"}
@@ -423,14 +444,14 @@ function GoalsStep({
             Goals
           </p>
           <h2 className="font-serif text-2xl sm:text-3xl">
-            What are you hammering toward?
+                    What would feel useful next?
           </h2>
         </div>
       </div>
 
       <p className="text-gray-400 leading-relaxed">
-        One target for the next 30 days, one for the next year. Specific beats
-        big — "walk to the mailbox unassisted" beats "get better."
+        A small target can help us make today useful. A longer-term target is
+        optional — you can add it when it feels right.
       </p>
 
       <GoalCard
@@ -440,7 +461,7 @@ function GoalsStep({
         placeholder="e.g. Stand up from chair 10x without using my hand"
       />
       <GoalCard
-        title="1-year target"
+        title="Longer-term target (optional)"
         goal={longGoal}
         onChange={onLongChange}
         placeholder="e.g. Walk a full mile outside, conversation pace"

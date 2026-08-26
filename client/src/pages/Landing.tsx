@@ -680,7 +680,7 @@ export default function Landing() {
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      setLocation("/recovery/dashboard");
+      setLocation("/recovery/today");
     }
   }, [isLoading, isAuthenticated, setLocation]);
 

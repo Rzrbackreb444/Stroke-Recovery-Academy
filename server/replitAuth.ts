@@ -113,7 +113,16 @@ export async function setupAuth(app: Express) {
   passport.serializeUser((user: Express.User, cb) => cb(null, user));
   passport.deserializeUser((user: Express.User, cb) => cb(null, user));
 
+  const safeReturnTo = (value: unknown) => {
+    if (typeof value !== "string" || !value.startsWith("/") || value.startsWith("//") || value.includes("\\")) {
+      return "/recovery/today";
+    }
+    const allowed = ["/recovery/today", "/recovery/onboarding", "/recovery/community", "/recovery/journal", "/recovery/me"];
+    return allowed.some((path) => value === path || value.startsWith(`${path}?`)) ? value : "/recovery/today";
+  };
+
   app.get("/api/login", (req, res, next) => {
+    (req.session as any).returnTo = safeReturnTo(req.query.returnTo || req.query.next);
     ensureStrategy(req.hostname);
     passport.authenticate(`replitauth:${req.hostname}`, {
       prompt: "login consent",

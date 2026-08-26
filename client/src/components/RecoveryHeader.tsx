@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut, LayoutDashboard, Settings, Heart, ChevronDown, Crown, Sparkles, Check, Flame, Users, BookOpen, ShoppingCart } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, Settings, Heart, ChevronDown, Crown, Sparkles, Check, Flame, Users, BookOpen, ShoppingCart, CalendarDays, MessageCircle, PenLine, Compass } from "lucide-react";
 import {
   HoverCard,
   HoverCardContent,
@@ -23,68 +23,41 @@ import sraEmblem from "@assets/sra-emblem.png";
 // and GlobalHeader both), so legacy per-page header mounts are suppressed.
 import { siteHeaderRegistry } from "./siteHeaderRegistry";
 
-// Accountability-focused primary nav (May 2026 refocus pass): every primary
-// slot is now a daily-action surface. Coach = the conversation. Today = the
-// daily funnel. Never Zero = the streak-protection check-in (THE moat).
-// Bonfire = the survivor accountability buddy. Music demoted to a column
-// inside the More megamenu — survivors who want it can still reach it in
-// two clicks, but it no longer competes for primary attention with the
-// daily reps that actually move recovery.
+// Keep the first choice set small: Today is the starting point, while
+// Community, Journal, and Coach support the day without competing with it.
 const primaryNav: { href: string; label: string; icon?: typeof Flame }[] = [
+  { href: "/recovery/today", label: "Today", icon: CalendarDays },
+  { href: "/recovery/community", label: "Community", icon: MessageCircle },
+  { href: "/recovery/journal", label: "Journal", icon: PenLine },
   { href: "/recovery/sasquatch-coach", label: "Coach" },
-  { href: "/recovery/journey", label: "Today" },
-  { href: "/recovery/never-zero", label: "Never Zero", icon: Flame },
-  { href: "/recovery/buddy", label: "Bonfire", icon: Users },
-  { href: "/book", label: "Book", icon: BookOpen },
-  { href: "/recovery/store", label: "Store", icon: ShoppingCart },
 ];
 
-// "More" — grouped megamenu. Four columns now (Practice / Connect / Music /
-// Earn) ordered by recovery progression. Music joined the megamenu in the
-// accountability refocus pass — still discoverable, no longer dominant.
+// Keep specialist tools available without making them part of the first
+// decision. The full directory remains available from the last item.
 const resourcesGroups: { title: string; items: { href: string; label: string; pro?: boolean }[] }[] = [
   {
-    title: "Practice",
+    title: "Learn",
     items: [
       { href: "/recovery/academy", label: "Learn" },
       { href: "/recovery/exercises", label: "Exercises" },
-      { href: "/recovery/routine", label: "Daily Routine" },
-      { href: "/recovery/brain-gym", label: "Brain Gym" },
-      { href: "/recovery/challenge", label: "66-Day Challenge" },
+      { href: "/recovery/university", label: "Recovery University" },
+      { href: "/blog", label: "Blog" },
     ],
   },
   {
     title: "Connect",
     items: [
-      { href: "/recovery/community", label: "Community" },
       { href: "/recovery/campfire", label: "Campfire (Live)" },
       { href: "/recovery/spotlight", label: "Spotlight" },
       { href: "/groups", label: "Groups" },
-      { href: "/blog", label: "Blog" },
     ],
   },
   {
-    title: "Music",
+    title: "Tools",
     items: [
+      { href: "/recovery/brain-gym", label: "Brain Gym" },
+      { href: "/recovery/challenge", label: "66-Day Challenge" },
       { href: "/recovery/motivation", label: "Anchor Studio", pro: true },
-      { href: "/recovery/lyrics", label: "Lyrics Studio", pro: true },
-      { href: "/recovery/anthem/build", label: "Anthem Builder" },
-      { href: "/recovery/radio", label: "Sasquatch Radio" },
-    ],
-  },
-  {
-    title: "Write",
-    items: [
-      { href: "/book-studio", label: "Book Editor" },
-      { href: "/book-perfection-suite", label: "Book Polish" },
-      { href: "/puzzle-studio", label: "Puzzle Studio" },
-    ],
-  },
-  {
-    title: "Earn",
-    items: [
-      { href: "/recovery/survivor-income", label: "Earn Income" },
-      { href: "/marketplace", label: "Marketplace" },
       { href: "/recovery/pricing", label: "Pricing" },
     ],
   },
@@ -182,8 +155,8 @@ export default function RecoveryHeader() {
                   More <ChevronDown className="h-3.5 w-3.5" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="bg-[#111] border-[#222] p-3 w-[680px]">
-                <div className="grid grid-cols-4 gap-4">
+              <DropdownMenuContent align="start" className="bg-[#111] border-[#222] p-3 w-[520px]">
+                <div className="grid grid-cols-3 gap-4">
                   {resourcesGroups.map((group) => (
                     <div key={group.title}>
                       <div className="text-[11px] font-bold uppercase tracking-wider text-gold/80 px-2 pb-1.5 mb-1 border-b border-[#222]">
@@ -212,68 +185,22 @@ export default function RecoveryHeader() {
                     </div>
                   ))}
                 </div>
+                <DropdownMenuSeparator className="bg-[#222] my-3" />
+                <DropdownMenuItem asChild>
+                  <Link
+                    href="/recovery/resources"
+                    className="px-2 py-1.5 text-sm text-gold rounded cursor-pointer"
+                    data-testid="nav-more-all-resources"
+                  >
+                    Explore all recovery tools →
+                  </Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </nav>
 
           {/* Right actions */}
           <div className="hidden xl:flex items-center gap-2 shrink-0">
-            {/* Premium nav — always visible, never blocking. Hover popover
-                gives a 4-line free vs premium snapshot. One click → /recovery/premium. */}
-            <HoverCard openDelay={120} closeDelay={120}>
-              <HoverCardTrigger asChild>
-                <Link href="/recovery/premium">
-                  <button
-                    className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-gold hover:text-amber-300 rounded-lg transition-colors whitespace-nowrap"
-                    data-testid="nav-premium"
-                  >
-                    <Sparkles className="h-4 w-4" />
-                    Premium
-                  </button>
-                </Link>
-              </HoverCardTrigger>
-              <HoverCardContent className="bg-[#111] border-[#222] w-72 p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <Crown className="h-4 w-4 text-gold" />
-                  <div className="font-bold text-white text-sm">Sasquatch Premium</div>
-                  <span className="text-xs text-stone-500 ml-auto">7 days free</span>
-                </div>
-                <ul className="space-y-1.5 mb-3 text-xs text-stone-300">
-                  <li className="flex items-start gap-2">
-                    <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
-                    Unlimited Coach (free: 25/day)
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
-                    Unlimited Recovery Anchors (free: 3/mo)
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
-                    Voice Cloning included
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-3.5 w-3.5 text-green-400 mt-0.5 flex-shrink-0" />
-                    Premium Campfire circles with Nick
-                  </li>
-                </ul>
-                <Link href="/recovery/premium">
-                  <Button size="sm" className="w-full bg-gold text-black font-semibold" data-testid="nav-premium-cta">
-                    See Premium
-                  </Button>
-                </Link>
-              </HoverCardContent>
-            </HoverCard>
-            <Link href="/recovery/gift">
-              <Button
-                size="sm"
-                variant="outline"
-                className="border-gold/50 text-gold font-semibold text-xs"
-                data-testid="button-nav-gift"
-              >
-                <Heart className="w-3.5 h-3.5 mr-1.5" />
-                Gift a Survivor
-              </Button>
-            </Link>
             {isLoading ? (
               <div className="w-8 h-8 rounded-full bg-[#1a1a1a] animate-pulse" />
             ) : user ? (
@@ -299,7 +226,7 @@ export default function RecoveryHeader() {
                   <DropdownMenuItem asChild>
                     <Link href="/recovery/dashboard" className="cursor-pointer">
                       <LayoutDashboard className="w-4 h-4 mr-2 text-gold" />
-                      My Dashboard
+                      Today
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
@@ -418,26 +345,24 @@ export default function RecoveryHeader() {
                       </div>
                     </div>
                   ))}
+                  <Link href="/recovery/resources">
+                    <button
+                      className="w-full text-left px-4 py-2.5 text-sm rounded-lg text-gold hover:bg-[#1a1a1a]"
+                      data-testid="mobile-nav-all-resources"
+                    >
+                      Explore all recovery tools →
+                    </button>
+                  </Link>
                 </div>
               )}
             </div>
             <div className="pt-3 border-t border-[#1e1e1e] flex flex-col gap-2">
-              <Link href="/recovery/gift">
-                <Button
-                  variant="outline"
-                  className="w-full border-gold/50 text-gold justify-start gap-2"
-                  data-testid="mobile-button-gift"
-                >
-                  <Heart className="h-4 w-4" />
-                  Gift a Survivor
-                </Button>
-              </Link>
               {user ? (
                 <>
                   <Link href="/recovery/dashboard">
                     <Button variant="outline" className="w-full border-[#333] text-white justify-start gap-2">
                       <LayoutDashboard className="h-4 w-4 text-gold" />
-                      My Dashboard
+                       Today
                     </Button>
                   </Link>
                   <Button
