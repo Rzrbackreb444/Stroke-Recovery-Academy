@@ -557,9 +557,7 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/activity">
-        <ProtectedRoute>
-          <Activity />
-        </ProtectedRoute>
+        <RecoveryCommunity />
       </Route>
       <Route path="/recovery/exercises">
         <Exercises />

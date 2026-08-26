@@ -29,6 +29,7 @@ export default function RecoveryToday() {
   const [taskIdx, setTaskIdx] = useState(0);
   const [reactions, setReactions] = useState<Record<string, Reaction>>({});
   const [showWalkModal, setShowWalkModal] = useState(false);
+  const [showLevelPicker, setShowLevelPicker] = useState(false);
   const [walkLogged, setWalkLogged] = useState<null | {
     seconds: number;
     reaction: "good" | "hard" | "too_hard" | "skipped";
@@ -148,11 +149,11 @@ export default function RecoveryToday() {
       <div className="min-h-screen bg-[#0D0D0D] text-white">
         <div className="max-w-2xl mx-auto px-4 py-8">
           <button
-            onClick={() => setLocation("/recovery/today")}
+            onClick={() => setLocation("/recovery")}
             className="text-gray-500 hover:text-[#E2741B] text-sm mb-6 flex items-center gap-1 transition-colors"
-            data-testid="link-back-dashboard"
+            data-testid="link-back-recovery"
           >
-            <ArrowLeft className="h-3.5 w-3.5" /> Back to Dashboard
+            <ArrowLeft className="h-3.5 w-3.5" /> Back to Recovery
           </button>
 
           <p className="text-xs text-gray-600 uppercase tracking-widest mb-2 flex items-center gap-1">
@@ -163,7 +164,7 @@ export default function RecoveryToday() {
             Today
           </h1>
           <p className="text-gray-400 text-base mb-6">
-            Today's session — one rep at a time. We'll listen to your body and adjust as we go.
+            One gentle recovery rep. Start where you are, and stop when you need to.
           </p>
 
           <MedicalDisclaimerCard variant="full" />
@@ -187,9 +188,9 @@ export default function RecoveryToday() {
                   </p>
                 </div>
               )}
-              <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">
+               <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">
                 <Sparkles className="h-3 w-3 inline mr-1 text-[#E2741B]" />
-                Recommended for today
+                 Your starting point
               </p>
               <div className="flex items-center gap-4 mb-3">
                 <div
@@ -207,33 +208,42 @@ export default function RecoveryToday() {
                 {rec?.reason}
               </p>
 
-              {/* Adjust level */}
-              <div className="mt-5">
-                <p className="text-xs text-gray-500 uppercase tracking-widest mb-2">
-                  Want to adjust? Pick a different level
-                </p>
-                <div className="grid grid-cols-5 gap-2">
-                  {LEVELS.map((l) => {
-                    const Icon = l.icon;
-                    const active = chosenLevel === l.id;
-                    return (
-                      <button
-                        key={l.id}
-                        onClick={() => setChosenLevel(l.id)}
-                        data-testid={`button-pick-level-${l.id}`}
-                        className={`flex flex-col items-center gap-1.5 p-2 rounded-md border transition-all ${
-                          active ? `${l.accent} bg-[#191919]` : "border-[#1e1e1e] bg-[#0a0a0a] hover-elevate"
-                        }`}
-                      >
-                        <Icon className="h-4 w-4" style={{ color: active ? l.color : "#555" }} />
-                        <span className="text-[9px] font-bold uppercase leading-none text-center" style={{ color: active ? l.color : "#666" }}>
-                          {l.code}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+               {/* The recommendation is the default. Keep the full selector available,
+                   but don't make a new survivor choose from five options first. */}
+               <div className="mt-5">
+                 <button
+                   type="button"
+                   onClick={() => setShowLevelPicker((open) => !open)}
+                   className="text-xs text-gray-500 hover:text-gray-300 underline underline-offset-4"
+                   aria-expanded={showLevelPicker}
+                   data-testid="button-toggle-level-picker"
+                 >
+                   {showLevelPicker ? "Keep this starting point" : "Need to adjust the starting point?"}
+                 </button>
+                 {showLevelPicker && (
+                   <div className="grid grid-cols-5 gap-2 mt-3">
+                     {LEVELS.map((l) => {
+                       const Icon = l.icon;
+                       const active = chosenLevel === l.id;
+                       return (
+                         <button
+                           key={l.id}
+                           onClick={() => { setChosenLevel(l.id); setShowLevelPicker(false); }}
+                           data-testid={`button-pick-level-${l.id}`}
+                           className={`flex flex-col items-center gap-1.5 p-2 rounded-md border transition-all ${
+                             active ? `${l.accent} bg-[#191919]` : "border-[#1e1e1e] bg-[#0a0a0a] hover-elevate"
+                           }`}
+                         >
+                           <Icon className="h-4 w-4" style={{ color: active ? l.color : "#555" }} />
+                           <span className="text-[9px] font-bold uppercase leading-none text-center" style={{ color: active ? l.color : "#666" }}>
+                             {l.code}
+                           </span>
+                         </button>
+                       );
+                     })}
+                   </div>
+                 )}
+               </div>
 
               <Button
                 size="lg"
@@ -241,8 +251,8 @@ export default function RecoveryToday() {
                 className="w-full mt-6 bg-[#E2741B] text-black font-bold"
                 data-testid="button-begin-bonfire"
               >
-                <Flame className="h-4 w-4 mr-1.5" />
-                Light the Bonfire — Begin {lvl.name}
+                 <Flame className="h-4 w-4 mr-1.5" />
+                 Start today's rep
               </Button>
               <p className="text-xs text-gray-600 text-center mt-2">
                 {sequence.length} steps · about {Math.max(5, Math.round(sequence.length * 1.5))} minutes
