@@ -61,6 +61,7 @@ export default function RecoveryJournal() {
 
   // Composer state
   const [entryMode, setEntryMode] = useState<"free" | "haiku" | "photo" | "voice">("free");
+  const [showMoreModes, setShowMoreModes] = useState(false);
   const [entrySubType, setEntrySubType] = useState<"triumph" | "pitfall">("triumph");
   const [moodLabel, setMoodLabel] = useState<"good" | "okay" | "hard">("okay");
   const [energy, setEnergy] = useState<number>(3);
@@ -180,7 +181,10 @@ export default function RecoveryJournal() {
         if (typeof d.freeText === "string") setFreeText(d.freeText);
         if (Array.isArray(d.haikuLines)) setHaikuLines(d.haikuLines);
         if (typeof d.photoCaption === "string") setPhotoCaption(d.photoCaption);
-        if (d.entryMode) setEntryMode(d.entryMode);
+        if (d.entryMode) {
+          setEntryMode(d.entryMode);
+          if (d.entryMode !== "free") setShowMoreModes(true);
+        }
         if (d.entrySubType) setEntrySubType(d.entrySubType);
         if (d.moodLabel) setMoodLabel(d.moodLabel);
         if (typeof d.energy === "number") setEnergy(d.energy);
@@ -476,13 +480,32 @@ export default function RecoveryJournal() {
         <Card className="bg-[#15120F] border-[#2A2621] p-1 rounded-3xl overflow-hidden shadow-2xl">
           <div className="p-5 sm:p-8 space-y-8">
 
-            {/* Mode Chooser */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {/* Keep the lowest-friction path prominent. Other formats remain
+                available without making a new survivor choose one first. */}
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs text-[#5A5650] font-bold uppercase tracking-widest">A quick reflection</p>
+                <p className="text-sm text-[#8A867D] mt-1">One sentence is enough. You can add more if you want.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowMoreModes((open) => !open)}
+                className="shrink-0 text-xs font-bold text-[#E2741B] hover:text-[#F3F2EE] underline underline-offset-4"
+                aria-expanded={showMoreModes}
+                data-testid="button-toggle-reflection-formats"
+              >
+                {showMoreModes ? "Hide formats" : "Other formats"}
+              </button>
+            </div>
+
+            <div className={`grid gap-3 ${showMoreModes ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-1"}`}>
               {[
                 { id: "free", label: "Free Write", icon: PenTool },
-                { id: "haiku", label: "Haiku", icon: Feather },
-                { id: "photo", label: "Photo", icon: Camera },
-                { id: "voice", label: "Voice", icon: Mic2 },
+                ...(showMoreModes ? [
+                  { id: "haiku", label: "Haiku", icon: Feather },
+                  { id: "photo", label: "Photo", icon: Camera },
+                  { id: "voice", label: "Voice", icon: Mic2 },
+                ] : []),
               ].map((m) => {
                 const isSelected = entryMode === (m.id as any);
                 return (
@@ -496,7 +519,7 @@ export default function RecoveryJournal() {
                     }`}
                     data-testid={`button-mode-${m.id}`}
                   >
-                    <m.icon className="w-6 h-6" />
+                    <m.icon className={showMoreModes ? "w-6 h-6" : "w-5 h-5"} />
                     <span className="text-xs font-bold uppercase tracking-wider">{m.label}</span>
                   </button>
                 );
@@ -716,7 +739,13 @@ export default function RecoveryJournal() {
             )}
 
             {/* SHARED LOWER CONTROLS */}
-            <div className="space-y-8 pt-6 border-t border-[#2A2621]">
+            <details className="pt-6 border-t border-[#2A2621] group">
+              <summary className="cursor-pointer list-none flex items-center justify-between gap-4 text-sm font-bold text-[#8A867D] hover:text-[#F3F2EE]">
+                <span>Optional details</span>
+                <span className="text-xs text-[#5A5650] group-open:hidden">Mood, themes, and sharing</span>
+                <span className="hidden text-xs text-[#5A5650] group-open:inline">Hide details</span>
+              </summary>
+              <div className="space-y-8 pt-6">
               {/* Triumph / Pitfall */}
               <div className="flex bg-[#1C1915] p-1.5 rounded-2xl border-2 border-[#2A2621]">
                 <button
@@ -842,7 +871,8 @@ export default function RecoveryJournal() {
                   className="data-[state=checked]:bg-[#E2741B] scale-125 origin-right"
                 />
               </div>
-            </div>
+              </div>
+            </details>
 
             <Button
               onClick={handleSave}
