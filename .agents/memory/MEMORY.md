@@ -35,4 +35,4 @@
 - [Google OAuth wiring](google-oauth-wiring.md) — three-part fix: configurePassport() in setupAuth, callback route, strip conflicting serialize from configurePassport
 - [Deployment image size limit](deployment-image-size.md) — Replit Cloud Run cap is 8 GiB; .migration-backup/ and raw media files are typical culprits; delete before re-publishing
 - [WashBizHub product direction](washbizhub-product-direction.md) — visible app is now Laundromat Mastery Community; preserve the focused WashBizHub experience
-- [Recovery SEO surfaces](recovery-seo-surfaces.md) — public recovery metadata is emitted by both React and server-side SEO paths
+- [Recovery durability testing](recovery-durability-testing.md) — local disposable Postgres needs node-postgres and explicit URL credentials
