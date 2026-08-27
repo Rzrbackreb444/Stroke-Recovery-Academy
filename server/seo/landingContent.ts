@@ -41,7 +41,7 @@ export const PAGE_FOR_SURVIVORS: SsrPageConfig = {
     ctaSecondary: { href: '/learn', label: 'Browse all guides' },
   },
   keywords: ['stroke survivor resources', 'stroke recovery program', 'sasquatch method', 'stroke recovery at home'],
-  schemaType: 'MedicalWebPage',
+  schemaType: 'WebPage',
   breadcrumbs: [
     { name: 'Home', href: '/' },
     { name: 'For survivors', href: '/for/stroke-survivors' },
@@ -550,7 +550,7 @@ export const PAGE_NEUROPLASTICITY: SsrPageConfig = {
     ctaSecondary: { href: '/programs/daily-routine', label: 'Get the daily routine' },
   },
   keywords: ['neuroplasticity after stroke', 'brain rewiring stroke', 'neuroplasticity exercises', 'stroke recovery brain'],
-  schemaType: 'MedicalWebPage',
+  schemaType: 'WebPage',
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'Learn', href: '/learn/neuroplasticity-after-stroke' }, { name: 'Neuroplasticity', href: '/learn/neuroplasticity-after-stroke' }],
   sections: [
     {
@@ -618,7 +618,7 @@ export const PAGE_HEMIPARESIS: SsrPageConfig = {
     ctaSecondary: { href: '/learn/stroke-recovery-exercises-at-home', label: 'See home exercises' },
   },
   keywords: ['hemiparesis recovery', 'stroke weak side', 'hemiplegia stroke', 'left side weakness stroke'],
-  schemaType: 'MedicalWebPage',
+  schemaType: 'WebPage',
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'Learn', href: '/learn/hemiparesis-recovery' }],
   sections: [
     {
@@ -689,7 +689,7 @@ export const PAGE_HOME_EXERCISES: SsrPageConfig = {
     ctaSecondary: { href: '/learn/stroke-recovery-timeline', label: 'Read the timeline' },
   },
   keywords: ['stroke exercises at home', 'home stroke recovery', 'stroke exercises no equipment', 'stroke rehabilitation exercises'],
-  schemaType: 'MedicalWebPage',
+  schemaType: 'WebPage',
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'Learn', href: '/learn/stroke-recovery-exercises-at-home' }],
   sections: [
     {
@@ -769,7 +769,7 @@ export const PAGE_APHASIA: SsrPageConfig = {
     ctaSecondary: { href: '/api/login', label: 'Try Sasquatch Coach' },
   },
   keywords: ['aphasia recovery', 'aphasia after stroke', 'speech therapy stroke', 'aphasia exercises'],
-  schemaType: 'MedicalWebPage',
+  schemaType: 'WebPage',
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'Learn', href: '/learn/aphasia-recovery' }],
   sections: [
     {
@@ -842,7 +842,7 @@ export const PAGE_DEPRESSION: SsrPageConfig = {
     ctaSecondary: { href: '/programs/daily-routine', label: 'Open the daily routine' },
   },
   keywords: ['depression after stroke', 'post-stroke depression', 'stroke mental health', 'PSD treatment'],
-  schemaType: 'MedicalWebPage',
+  schemaType: 'WebPage',
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'Learn', href: '/learn/depression-after-stroke' }],
   sections: [
     {
@@ -911,7 +911,7 @@ export const PAGE_TIMELINE: SsrPageConfig = {
     ctaSecondary: { href: '/programs/sasquatch-method', label: 'Read the doctrine' },
   },
   keywords: ['stroke recovery timeline', 'stroke recovery stages', 'how long does stroke recovery take', 'stroke recovery year by year'],
-  schemaType: 'MedicalWebPage',
+  schemaType: 'WebPage',
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'Learn', href: '/learn/stroke-recovery-timeline' }],
   sections: [
     {

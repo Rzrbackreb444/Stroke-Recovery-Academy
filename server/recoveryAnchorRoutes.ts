@@ -22,6 +22,8 @@ import { sasquatchSpeak, isElevenLabsConfigured } from "./elevenlabs";
 
 const FREE_RENDER_LIMIT = 3;
 const PREMIUM_TIERS = new Set(["creator", "pro", "enterprise"]);
+export const PUBLIC_ANCHOR_TTL_DAYS = 30;
+const PUBLIC_ANCHOR_TTL_MS = PUBLIC_ANCHOR_TTL_DAYS * 24 * 60 * 60 * 1000;
 
 const inputSchema = z.object({
   anchorType: z.enum(ANCHOR_TYPES),
@@ -118,8 +120,20 @@ function lyricsForVoice(result: Extract<EngineResult, { shape: "anchor" }>): str
 }
 
 function mintShareId(): string {
-  // 12-char URL-safe slug. Collision risk effectively zero at our scale.
-  return crypto.randomBytes(9).toString("base64url");
+  // Keep the token opaque while carrying an expiration. Revocation is still
+  // enforced by clearing isShared/shareId in the database.
+  const expiresAt = Date.now() + PUBLIC_ANCHOR_TTL_MS;
+  return `${crypto.randomBytes(9).toString("base64url")}.${expiresAt.toString(36)}`;
+}
+
+function shareExpiry(shareId: string, createdAt: Date | string): number {
+  const encodedExpiry = shareId.includes(".") ? shareId.split(".").pop() ?? "" : "";
+  const tokenExpiry = encodedExpiry ? Number.parseInt(encodedExpiry, 36) : Number.NaN;
+  // Older links did not carry an expiry; expire them from their creation date
+  // instead of leaving existing public links open-ended.
+  return Number.isFinite(tokenExpiry) && tokenExpiry > 0
+    ? tokenExpiry
+    : new Date(createdAt).getTime() + PUBLIC_ANCHOR_TTL_MS;
 }
 
 async function syncStreakOnRender(userId: string, anchorId: number): Promise<void> {
@@ -409,8 +423,17 @@ export function registerRecoveryAnchorRoutes(app: Express) {
       const id = Number(req.params.id);
       if (!Number.isFinite(id)) return res.status(400).json({ error: "bad_id" });
 
-      const desired = z.object({ isShared: z.boolean() }).safeParse(req.body ?? {});
+      const desired = z.object({
+        isShared: z.boolean(),
+        confirmPublicShare: z.boolean().optional(),
+      }).safeParse(req.body ?? {});
       if (!desired.success) return res.status(400).json({ error: "bad_input" });
+      if (desired.data.isShared && desired.data.confirmPublicShare !== true) {
+        return res.status(400).json({
+          error: "share_consent_required",
+          message: "Confirm that anyone with the link may view this anchor before sharing it.",
+        });
+      }
 
       const [anchor] = await db
         .select()
@@ -420,7 +443,7 @@ export function registerRecoveryAnchorRoutes(app: Express) {
       if (!anchor) return res.status(404).json({ error: "not_found" });
 
       let nextShareId = anchor.shareId;
-      if (desired.data.isShared && !nextShareId) {
+      if (desired.data.isShared && (!nextShareId || shareExpiry(nextShareId, anchor.createdAt) <= Date.now())) {
         nextShareId = mintShareId();
       }
 
@@ -435,6 +458,9 @@ export function registerRecoveryAnchorRoutes(app: Express) {
       return res.json({
         isShared: desired.data.isShared,
         shareId: desired.data.isShared ? nextShareId : null,
+        expiresAt: desired.data.isShared
+          ? new Date(shareExpiry(nextShareId!, anchor.createdAt)).toISOString()
+          : null,
       });
     } catch (e: any) {
       console.error("[anchor] share toggle error:", e?.message ?? e);
@@ -454,6 +480,8 @@ export function registerRecoveryAnchorRoutes(app: Express) {
 
   app.get("/api/recovery/anchor/share/:shareId", anchorShareLimiter, async (req: Request, res: Response) => {
     try {
+      res.setHeader("Cache-Control", "no-store");
+      res.setHeader("X-Robots-Tag", "noindex, nofollow");
       const shareId = String(req.params.shareId || "");
       if (!shareId || shareId.length > 64) return res.status(404).json({ error: "not_found" });
       const [row] = await db
@@ -468,7 +496,9 @@ export function registerRecoveryAnchorRoutes(app: Express) {
         .where(and(eq(recoveryAnchors.shareId, shareId), eq(recoveryAnchors.isShared, true)))
         .limit(1);
       if (!row) return res.status(404).json({ error: "not_found" });
-      return res.json(row);
+      const expiresAt = shareExpiry(shareId, row.createdAt);
+      if (expiresAt <= Date.now()) return res.status(404).json({ error: "expired" });
+      return res.json({ ...row, expiresAt: new Date(expiresAt).toISOString() });
     } catch (e: any) {
       console.error("[anchor] public share error:", e?.message ?? e);
       return res.status(500).json({ error: "share_fetch_failed" });

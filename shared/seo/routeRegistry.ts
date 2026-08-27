@@ -404,7 +404,7 @@ export const ROUTES: RouteEntry[] = [
     canonical: "/recovery",
     category: "recovery-landing",
     intent: "informational",
-    schemaType: "MedicalWebPage",
+    schemaType: "WebPage",
     title: `${SITE}: Daily Routines, AI Coach, Survivor Community`,
     description:
       "The operating system for stroke survivors. Daily routines, neuroplasticity exercises, AI coach, 66-day challenge, survivor community — by Nick Kremers.",
@@ -418,7 +418,7 @@ export const ROUTES: RouteEntry[] = [
     canonical: "/recovery/academy",
     category: "recovery-landing",
     intent: "informational",
-    schemaType: "MedicalWebPage",
+    schemaType: "WebPage",
     title: "Recovery Academy: Free Stroke Survivor Education Hub",
     description:
       "Free survivor-led courses on neuroplasticity, daily routines, communication, mobility, and the 66-day Sasquatch transformation.",
@@ -432,7 +432,7 @@ export const ROUTES: RouteEntry[] = [
     canonical: "/recovery/sasquatch-coach",
     category: "recovery-landing",
     intent: "informational",
-    schemaType: "MedicalWebPage",
+    schemaType: "WebPage",
     title: "Sasquatch Coach: Free 24/7 AI Stroke Recovery Companion",
     description:
       "Free AI recovery coach trained on Nick Kremers' 7-year survivor playbook. Ask anything about stroke recovery, exercises, motivation. 24/7. No login.",
@@ -446,10 +446,10 @@ export const ROUTES: RouteEntry[] = [
     canonical: "/recovery/sasch",
     category: "recovery-landing",
     intent: "informational",
-    schemaType: "MedicalWebPage",
-    title: "Sasquatch Method: From 0% to 90% Stroke Recovery",
+    schemaType: "WebPage",
+    title: "Sasquatch Method: Survivor-Led Recovery Practice",
     description:
-      "The repetition-based neuroplasticity protocol Nick Kremers used to go from total paralysis to 90% recovery. Free overview, no email required.",
+      "A survivor-led framework for building practical routines, reflection, and peer-supported recovery habits. Free overview, no email required.",
     keywords: ["Sasquatch Method", "stroke recovery method", "neuroplasticity protocol"],
     author: "nick",
     changefreq: "monthly",
@@ -477,7 +477,7 @@ export const ROUTES: RouteEntry[] = [
     schemaType: "AboutPage",
     title: "Nick Kremers: Stroke Survivor & Sasquatch Method Founder",
     description:
-      "Nick Kremers had a hemorrhagic stroke at 35. Seven years later he's at 90% recovery. This is the playbook he wishes he'd had on day one.",
+      "Nick Kremers shares the lived experience and practical recovery framework behind Stroke Recovery Academy.",
     keywords: ["Nick Kremers", "stroke survivor founder", "Sasquatch Method origin"],
     author: "nick",
     changefreq: "monthly",
@@ -552,7 +552,7 @@ export const ROUTES: RouteEntry[] = [
     canonical: "/recovery/protocols",
     category: "recovery-landing",
     intent: "informational",
-    schemaType: "MedicalWebPage",
+    schemaType: "WebPage",
     title: "Stroke Recovery Protocols: Daily, Weekly, 66-Day Plans",
     description:
       "Structured daily, weekly, and 66-day recovery protocols — built around repetition and neuroplasticity. Free to view and adapt.",
@@ -594,7 +594,7 @@ export const ROUTES: RouteEntry[] = [
     canonical: "/recovery/forge",
     category: "recovery-landing",
     intent: "informational",
-    schemaType: "MedicalWebPage",
+    schemaType: "WebPage",
     title: "Forge Your Beast: Stroke Recovery Strength Protocol",
     description:
       "The Forge Your Beast strength + neuroplasticity protocol for stroke survivors who want to come back stronger. Free overview.",
@@ -608,7 +608,7 @@ export const ROUTES: RouteEntry[] = [
     canonical: "/recovery/today",
     category: "recovery-landing",
     intent: "informational",
-    schemaType: "MedicalWebPage",
+    schemaType: "WebPage",
     title: "The Bonfire: Today's Adaptive Stroke Recovery Session",
     description:
       "Your daily Bonfire — a 5-minute recovery session that adapts to how you feel today. Cognition, mobility, speech, breath. Free.",
@@ -706,7 +706,7 @@ export const ROUTES: RouteEntry[] = [
     canonical: "/recovery/challenge",
     category: "recovery-landing",
     intent: "informational",
-    schemaType: "MedicalWebPage",
+    schemaType: "WebPage",
     title: "66-Day Sasquatch Stroke Recovery Transformation Challenge",
     description:
       "Free 66-day stroke recovery challenge built on neuroplasticity research. Daily routine, weekly milestones, survivor community check-ins.",
@@ -804,7 +804,7 @@ export const ROUTES: RouteEntry[] = [
     canonical: "/recovery/brain-gym",
     category: "recovery-landing",
     intent: "informational",
-    schemaType: "MedicalWebPage",
+    schemaType: "WebPage",
     title: "Brain Gym: Stroke Cognitive Recovery Exercises",
     description:
       "Brain Gym — daily cognitive recovery exercises for stroke survivors. Memory, attention, executive function. Free, survivor-led, science-backed.",
@@ -916,7 +916,7 @@ export const ROUTES: RouteEntry[] = [
     canonical: "/recovery/never-zero",
     category: "recovery-landing",
     intent: "informational",
-    schemaType: "MedicalWebPage",
+    schemaType: "WebPage",
     title: "Never Zero: The Stroke Recovery Streak System",
     description:
       "Never Zero — the streak system that keeps stroke survivors moving every single day. One minute counts. The streak matters more than the minutes.",

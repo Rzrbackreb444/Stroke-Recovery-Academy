@@ -180,7 +180,7 @@ function makeBlogPost(p: BlogPostInput): SsrPageConfig {
     related: p.related,
     takeaways: p.takeaways,
     keywords: [p.keyword, 'stroke recovery', 'sasquatch method', ...(p.extraKeywords || [])],
-    schemaType: 'MedicalWebPage',
+    schemaType: 'Article',
     breadcrumbs: [
       { name: 'Home', href: '/' },
       { name: 'Blog', href: '/blog' },

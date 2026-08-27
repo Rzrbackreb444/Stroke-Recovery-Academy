@@ -17,6 +17,7 @@ interface PublicAnchor {
   };
   audioUrl: string | null;
   createdAt: string;
+  expiresAt: string;
 }
 
 export default function AnchorShare() {
@@ -39,6 +40,7 @@ export default function AnchorShare() {
       <SEO
         title={data?.anchorData?.title ? `${data.anchorData.title} · Stroke Recovery Academy` : "A survivor's anchor"}
         description="A musical recovery anchor made by a stroke survivor on Stroke Recovery Academy."
+        noindex
       />
       <main className="flex-1 flex items-center justify-center px-4 py-10">
         <div className="w-full max-w-md">
@@ -114,6 +116,12 @@ export default function AnchorShare() {
               )}
 
               <div className="border-t border-amber-900/30 pt-4">
+                <p className="text-xs text-amber-100/60 leading-relaxed mb-3">
+                  This is a public link shared by its creator. Do not enter or repeat
+                  private health, medication, appointment, or contact details here.
+                  The link expires {new Date(data.expiresAt).toLocaleDateString()} and
+                  may be revoked by the creator at any time.
+                </p>
                 <p className="text-[11px] uppercase tracking-widest text-amber-300/70 mb-2">
                   Made on Stroke Recovery Academy
                 </p>

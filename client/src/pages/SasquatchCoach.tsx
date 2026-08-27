@@ -36,7 +36,7 @@ export default function SasquatchCoach() {
   const persona = personaData?.persona ?? null;
   const safeAccent = safeAccentForDark(persona?.accentColor);
   const buildWelcome = (name: string) =>
-    `Hey ${name}. I'm Sasquatch — your round-the-clock recovery coach. I've been through what you're going through, and I'm here to push you when you need pushing and steady you when you need steadying. Heads up — I'm here for accountability and reps, not diagnosis. New symptoms or anything that feels medical go to your doctor; the daily work goes to me. What's on your mind today?`;
+    `Hey ${name}. I'm Sasquatch — your recovery accountability companion. I've been through a stroke too, and I'm here to help you reflect, plan, and find a manageable next step. Heads up — I'm not a clinician and I don't diagnose or treat. New symptoms or anything medical belongs with your healthcare team; I can help you prepare questions for them. What's on your mind today?`;
   const [messages, setMessages] = useState<Message[]>([
     { role: "coach", content: buildWelcome("warrior") },
   ]);
@@ -355,7 +355,7 @@ export default function SasquatchCoach() {
                         {msg.content}
                       </p>
                       <p className="text-xs italic text-gray-400 leading-relaxed mb-3">
-                        Built by a 7-year survivor — not textbook theory, lived experience and real feedback baked in. I learned from the doctors, experimented, failed, then recovered. I'll give you the blueprint. The work is on you.
+                        Built from one survivor's lived experience and feedback — not clinical care or a promise about your outcome. I'll help you reflect and choose a manageable next step; your healthcare team guides medical decisions.
                       </p>
                       <p className="text-xs text-gray-500 leading-relaxed mb-3">
                         Sign in unlocks <span className="text-[#E2741B] font-semibold">Sasquatch's actual voice replies</span>, <span className="text-[#E2741B] font-semibold">push-to-talk</span> so you can speak instead of type, <span className="text-[#E2741B] font-semibold">unlimited Coach turns</span>, and a thread that resumes where you left off. 7 days free, then cancel anytime — no card needed to start.

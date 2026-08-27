@@ -384,7 +384,7 @@ export default function SurvivorIntake() {
         </div>
 
         <p className="mt-6 text-[11px] text-gray-500 flex items-center justify-center gap-1.5">
-          <ShieldCheck className="w-3 h-3" /> Private to you. Used only to personalize your recovery.
+          <ShieldCheck className="w-3 h-3" /> Stored in your account to personalize recovery. See our Privacy Policy for AI processing, retention, deletion, and support access.
         </p>
       </div>
     </div>
@@ -406,7 +406,7 @@ function WelcomeStep({ userName }: { userName?: string }) {
       </h1>
       <p className="text-gray-400 max-w-md mx-auto leading-relaxed">
         Five minutes here gives every screen, exercise, and Coach reply something to work with.
-        Nothing leaves your account. Skip anything that doesn't feel right.
+        Your answers are saved to your account. When you use the AI Coach, the information you choose to share may be processed by our AI provider to generate a reply. Support staff may access account information when needed to provide support, safety, or prevent abuse. You can skip anything that doesn't feel right.
       </p>
       <div className="mt-6 grid grid-cols-3 gap-3 text-xs">
         <Stat label="Total time" value="~5 min" />

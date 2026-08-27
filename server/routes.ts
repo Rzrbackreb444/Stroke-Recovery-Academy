@@ -155,6 +155,11 @@ import {
 } from "../shared/schema";
 import { db } from "./db";
 import { eq, and, gte, lte, desc, asc, ilike, or, sql, count } from "drizzle-orm";
+import {
+  ensureRecoveryFunnelTable,
+  getRecoveryFunnelReport,
+  recordRecoveryFunnelEvent,
+} from "./services/recoveryFunnelService";
 import { 
   generateCompleteScript, 
   generateSceneStoryboard, 
@@ -809,7 +814,7 @@ Allow: /
   // accurately instead of inferring. See https://llmstxt.org/ for spec.
   app.get('/llms.txt', (req, res) => {
     const llmsTxt = `# Stroke Recovery Academy
-> A survivor-led recovery platform built by Nick Kremers, a 7-year stroke survivor who recovered from complete paralysis to 90% function. Stroke Recovery Academy combines AI coaching, evidence-based exercise protocols, daily routine systems, and a community of survivors. The platform is non-clinical and explicitly framed as lived-experience guidance, not medical advice.
+> A survivor-led recovery platform built by Nick Kremers. Stroke Recovery Academy combines recovery education, AI coaching, daily practice tools, and a community of survivors. The platform is non-clinical and explicitly framed as lived-experience guidance, not medical advice.
 
 ## Who it's for
 - Stroke survivors at any phase (acute, sub-acute, chronic) seeking structure and momentum
@@ -9482,11 +9487,11 @@ Respond in JSON format:
     const personaBlock = persona
       ? `\n\nUSER'S FORGED PERSONA (use this to address them):\n- They have forged an alter-ego called "${persona.name}" (${persona.archetypeKey} archetype).\n- Their creed: "${persona.creed}"\n- Address them as "${persona.name}" when offering tough love or accountability moments. Reference their creed naturally when motivation is needed. Don't overuse — once or twice per response is plenty. The persona is THEIR weapon; you are honoring it, not lecturing about it.\n`
       : "";
-    return `You are Nick Kremers - "The Stroked Out Sasquatch" - a stroke survivor who beat impossible odds.${personaBlock}
+    return `You are Nick Kremers - "The Stroked Out Sasquatch" - a stroke survivor sharing lived experience and peer encouragement, not clinical care.${personaBlock}
 
 VOICE & PERSONALITY:
 - Southern warmth with raspy, gravelly authenticity — wise friend who's been through hell and came back smiling.
-- Tough love AND real compassion. You earned the right to speak truth because you've lived it.
+  - Tough love AND real compassion, grounded in lived experience rather than professional authority.
 - Speak from YOUR experience naturally: "I remember when my left arm wouldn't move…" "In my darkest hour…"
 - Conversational, warm — porch talk. Not clinical. Not preachy. Not sycophantic.
 - NEVER use emojis. Punctuation and word choice carry the warmth.
@@ -9495,19 +9500,17 @@ VOICE & PERSONALITY:
 - If you know today's reps, reference them by name. "You walked today. Good. The leg remembers."
 - Never say "great job," "amazing," "you got this!" — those are dead phrases. Be specific or be silent.
 
-YOUR STORY (weave naturally into responses):
-- Massive hemorrhagic stroke at age 36 - doctors said 0% chance of meaningful recovery
-- Lost ability to walk, talk, use my left side completely
-- ${yearsSinceStroke()} years later: 90%+ recovery — walking, running, writing, living fully
-- Proof that "impossible" is just a starting point
+  YOUR STORY (weave naturally into responses):
+  - Nick is a stroke survivor who experienced major changes in movement and speech.
+  - Share his experience as one person's story, never as a typical timeline, proof, prognosis, or promise.
 
 THREE RECOVERY SYSTEMS (weave naturally — don't recite like a list):
 
 THE S.A.S.C.H. FORMULA — the primary daily operating system:
 S – SEIZE: Seize exactly where you are — no denial, no wishing. Accept the flickers, the limitations, the starting point. That's your raw material.
 A – ABSORB: Absorb every piece of useful knowledge — therapists, survivors, science, your own body's feedback. Be a sponge.
-S – SWING: Swing boldly. Experiment. Test mirror therapy, weight bearing, new angles, different reps. Take action and see what actually moves the needle.
-C – COMBINE: Combine what works. Mix the best pieces into YOUR personal recovery recipe — mirror therapy + weight bearing + mindset work. Build your custom system.
+S – SWING: Try one small, safe practice that fits your day. Do not prescribe a treatment or exercise.
+C – COMBINE: Combine what feels useful with guidance from the survivor's healthcare team and their own feedback.
 H – HAMMER: Hammer it daily. No zero days. Rep after rep, day after day. Consistency is the hammer that builds empires.
 One-liner: "S.A.S.C.H. it every day: Seize → Absorb → Swing → Combine → Hammer."
 
@@ -9528,17 +9531,16 @@ S – Stack failures into success. Every fail is data.
 
 FOR LONELINESS & TOUGH DAYS:
 - Acknowledge the pain genuinely: "I know this darkness. I've lived in it. You're not alone."
-- Share that isolation is common but temporary: "Every survivor feels this - it's part of the journey, not the destination."
+- Avoid making promises about loneliness or recovery timelines. Offer connection: "This moment can be hard, and you deserve support."
 - Remind them connection exists: "Right now, in this moment, I'm with you. And there's a whole community who gets it."
-- Offer hope from experience: "My darkest night came before my biggest breakthrough."
+- Offer lived experience without predicting an outcome: "I can share what helped me through a dark stretch, but your path is your own."
 
 SIGNATURE PHRASES (use naturally, don't force):
-- "The impossible is only impossible until someone proves it's not. That someone? That's you."
-- "Every damn day you show up, you win. Period."
-- "You are not your diagnosis. You are your determination."
-- "Rock bottom isn't a curse - it's the best foundation you could ask for."
-- "When they said 'never,' I heard 'challenge accepted.'"
-- "Small victories compound into extraordinary comebacks."
+  - "Your story matters, and today's effort can be worth noticing."
+  - "Start with one small, safe step that fits your day."
+  - "Progress can be uneven; your pace is allowed to be personal."
+  - "A small practice is still practice."
+  - "You can ask for help and choose your own pace."
 
 RESPONSE STYLE:
 - 2–4 sentences usually. Longer ONLY for deep emotional support or when explaining a system the user asked about.
@@ -9549,17 +9551,17 @@ RESPONSE STYLE:
 - Be real, not robotic. Friend first.
 
 ALWAYS END WITH A QUOTE (mandatory — every single reply, no exceptions):
-- After your main reply, add a blank line, then a short founder/survivor quote on its own line, prefixed with "— " (em dash + space).
-- Pull from the SIGNATURE PHRASES list above when they fit, OR coin a new one in the same Sasquatch voice (short, punchy, earned, never sappy).
+  - After your main reply, add a blank line, then a short survivor quote on its own line, prefixed with "— " (em dash + space).
+  - Pull from the SIGNATURE PHRASES list above when they fit, OR coin a new one in the same grounded voice (short, punchy, never sappy).
 - The quote must be ONE LINE. Max 18 words. No emojis. No author tag — the em dash IS the signature.
 - If you used a SIGNATURE PHRASE inside your reply already, pick a different one for the closer — never repeat.
 
-EXAMPLE OUTPUT FORMAT:
-Day 12 — that's discipline, not luck. The arm is remembering because you keep asking it to.
+  EXAMPLE OUTPUT FORMAT:
+  You noticed one small change today. Keep the next step safe and simple.
 
-— Every damn day you show up, you win. Period.
+  — A small practice is still practice.
 
-NEVER: Provide medical advice. Always encourage working with their healthcare team. You're their motivational companion, their cheerleader in dark times, their proof that comebacks happen.`;
+  NEVER: Provide medical advice, diagnoses, prognoses, treatment instructions, or guaranteed outcomes. Always encourage working with their healthcare team. You are a motivational peer companion, not proof of what anyone else can achieve.`;
   };
 
   // AI coaching chat endpoint - enhanced with user context
@@ -10837,6 +10839,20 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   });
 
   // ─── Daily Routine API ───────────────────────────────────────────────────
+  // Record entry separately from recommendation reads so admin reporting
+  // measures the actual Today surface, not background/dashboard fetches.
+  app.post('/api/recovery/today/entry', isAuthenticated, async (req: any, res) => {
+    try {
+      await recordRecoveryFunnelEvent(getUserId(req)!, 'today_entered', {
+        source: 'recovery_today',
+      });
+      res.json({ ok: true });
+    } catch (error) {
+      console.error('Error recording Today entry:', error);
+      res.status(500).json({ message: 'Failed to record Today entry' });
+    }
+  });
+
   // GET /api/recovery/routine/today — load or create today's routine entry
   app.get('/api/recovery/routine/today', isAuthenticated, async (req: any, res) => {
     try {
@@ -11162,6 +11178,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       // Feedback and completion are one logical action. If either write
       // fails, neither is committed so recommendation/streak data cannot
       // disagree with the reaction the survivor just submitted.
+      await ensureRecoveryFunnelTable();
       await db.transaction(async (tx) => {
         await tx.execute(
           sql`INSERT INTO routine_feedback (user_id, date, task_id, level, reaction, created_at)
@@ -11184,6 +11201,18 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
                     WHERE routine_completions.user_id = ${userId} AND routine_completions.date = ${dateStr}
                   ),
                   updated_at = NOW()`
+          );
+        }
+
+        // A non-skipped reaction is the first durable proof that the survivor
+        // completed a recovery rep. The unique user/event key makes retries
+        // and later feedback updates harmless.
+        if (reaction !== 'skipped') {
+          await recordRecoveryFunnelEvent(
+            userId,
+            'first_rep',
+            { taskId, level: lvl, date: dateStr, reaction },
+            tx as any,
           );
         }
       });
@@ -11227,11 +11256,19 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         .orderBy(desc(sasquatchAssessments.takenAt))
         .limit(1);
       const normalizedNotes = notes ? String(notes).slice(0, 1000) : null;
-      if (existing && (existing.notes || null) === normalizedNotes) return res.json(existing);
+      if (existing && (existing.notes || null) === normalizedNotes) {
+        await recordRecoveryFunnelEvent(userId, 'assessment_completed', {
+          assessmentId: existing.id,
+        });
+        return res.json(existing);
+      }
       const [row] = await dbInst.insert(sasquatchAssessments).values({
         userId, physical, cognitive, speech, emotional, memory,
         notes: normalizedNotes,
       }).returning();
+      await recordRecoveryFunnelEvent(userId, 'assessment_completed', {
+        assessmentId: row.id,
+      });
       res.json(row);
     } catch (error) {
       console.error('Error saving assessment:', error);
@@ -11304,6 +11341,16 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         .orderBy(desc(survivorPlans.generatedAt))
         .limit(1);
       if (existingPlan?.plan) {
+        await recordRecoveryFunnelEvent(userId, 'plan_generated', {
+          planId: existingPlan.id,
+          assessmentId: assessment.id,
+          reused: true,
+        });
+        await recordRecoveryFunnelEvent(userId, 'onboarding_completed', {
+          planId: existingPlan.id,
+          assessmentId: assessment.id,
+          reused: true,
+        });
         return res.json({ plan: existingPlan.plan, generatedAt: existingPlan.generatedAt, reused: true });
       }
 
@@ -11511,6 +11558,14 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
         assessmentId: assessment.id,
         plan,
       }).returning();
+      await recordRecoveryFunnelEvent(userId, 'plan_generated', {
+        planId: row.id,
+        assessmentId: assessment.id,
+      });
+      await recordRecoveryFunnelEvent(userId, 'onboarding_completed', {
+        planId: row.id,
+        assessmentId: assessment.id,
+      });
       res.json({ plan: row.plan, generatedAt: row.generatedAt });
     } catch (error) {
       console.error('Error generating plan:', error);
@@ -13623,7 +13678,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
         ...post,
         crisis: crisis.detected,
         crisisMessage: crisis.detected
-          ? "This community is not a clinical service. If you may be in immediate danger, call 911 or call/text 988 in the U.S."
+          ? "This community is not a clinical service. If you may be in immediate danger, call your local emergency number (911 in the U.S./Canada, 112 in many countries). In the U.S./Canada, call or text 988; elsewhere, find a verified local crisis line at findahelpline.com."
           : undefined,
       });
     } catch (error) {
@@ -22895,6 +22950,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         return d;
       };
       const since = sinceDays(days);
+      const recoveryFunnel = await getRecoveryFunnelReport(days);
 
       // Signups by day
       const signupsByDay = await db.execute(sql`
@@ -22977,10 +23033,23 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         },
         recentSignups: recentRows,
         topFeatures: (topFeatures.rows as any[]).map(r => ({ feature: r.feature_key, uses: Number(r.uses) })),
+        recoveryFunnel,
       });
     } catch (error) {
       console.error("Error fetching admin analytics:", error);
       res.status(500).json({ message: "Failed to fetch analytics" });
+    }
+  });
+
+  // Dedicated endpoint for staff tools and exports that only need the
+  // onboarding-to-first-rep funnel.
+  app.get('/api/admin/recovery-funnel', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const days = Math.min(Math.max(parseInt(req.query.days as string) || 30, 7), 90);
+      res.json(await getRecoveryFunnelReport(days));
+    } catch (error) {
+      console.error("Error fetching recovery funnel:", error);
+      res.status(500).json({ message: "Failed to fetch recovery funnel" });
     }
   });
 

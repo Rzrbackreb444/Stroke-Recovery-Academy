@@ -53,6 +53,15 @@ export default function RecoveryToday() {
     }
   }, [rec, recError, chosenLevel]);
 
+  // This is intentionally a durable server event rather than a browser-only
+  // analytics call. Strict mode, refreshes, and retries are safe server-side.
+  useEffect(() => {
+    if (!user) return;
+    void apiRequest("POST", "/api/recovery/today/entry").catch(() => {
+      // Entry telemetry must not block a survivor from starting today's rep.
+    });
+  }, [user]);
+
   const feedbackMutation = useMutation({
     mutationFn: (payload: { taskId: string; level: number; reaction: Reaction | "skipped"; date: string }) =>
       apiRequest("POST", "/api/recovery/today/feedback", payload),

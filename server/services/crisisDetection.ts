@@ -37,6 +37,16 @@ const SUICIDE_PHRASES: RegExp[] = [
   /\bbetter off dead\b/,
   /\bno (point|reason) (in|to) liv/,
   /\bnothing to live for\b/,
+  /\b(can'?t|cannot|don'?t) go on\b/,
+  /\b(done|finished) with (my )?life\b/,
+  /\bwant (everything|it all|this) to end\b/,
+  /\bwant to disappear\b/,
+  /\bwish i (was|were) dead\b/,
+  /\bwish i wasn'?t here\b/,
+  /\bnot worth living\b/,
+  /\bno way out\b/,
+  /\bmake it stop\b/,
+  /\bsuicide attempt\b/,
   /\bplan(ning)? to (kill|hurt) myself\b/,
   /\boverdose\b.*\b(myself|on purpose|to die)\b/,
   /\bhang myself\b/,
@@ -51,11 +61,19 @@ const SELF_HARM_PHRASES: RegExp[] = [
   /\bself[- ]harm\b/,
   /\bself[- ]injury\b/,
   /\bburn myself\b/,
+  /\binjure myself\b/,
+  /\bharm myself\b/,
+  /\bhurt myself or someone\b/,
+  /\btake too many\b/,
+  /\bcutting\b.*\bmyself\b/,
 ];
 
 const VIOLENCE_PHRASES: RegExp[] = [
   /\bkill (him|her|them|my (wife|husband|spouse|partner|kid|child|mom|dad))\b/,
   /\bhurt (him|her|them|someone)\b/,
+  /\bhurt (other people|others|everyone)\b/,
+  /\bkill everyone\b/,
+  /\bviolence against\b/,
   /\bshoot (up|him|her|them)\b/,
 ];
 
@@ -64,6 +82,12 @@ const ABUSE_PHRASES: RegExp[] = [
   /\babus(ing|es|ed)? me\b/,
   /\bhit(ting|s)? me\b/,
   /\bnot safe at home\b/,
+  /\bbeing abused\b/,
+  /\bthreaten(ing|s)? me\b/,
+  /\bcontrol(ling)? me\b/,
+  /\bforced sex\b/,
+  /\bsexual(ly)? abus/,
+  /\bfinancial(ly)? abus/,
 ];
 
 function scan(message: string, patterns: RegExp[]): string | null {
@@ -132,9 +156,14 @@ export function buildCrisisResponse(category: CrisisCategory): {
       action: { type: "tel" as const, value: "988" },
     },
     {
-      label: "If you're in immediate danger",
-      detail: "Call 911 or go to your nearest emergency room.",
+      label: "Immediate danger",
+      detail: "Call your local emergency number (911 in the U.S./Canada, 112 in many countries) or go to an emergency room.",
       action: { type: "tel" as const, value: "911" },
+    },
+    {
+      label: "Find help where you are",
+      detail: "Find a verified local crisis line at findahelpline.com.",
+      action: { type: "url" as const, value: "https://findahelpline.com/" },
     },
   ];
 
@@ -151,8 +180,13 @@ export function buildCrisisResponse(category: CrisisCategory): {
     },
     {
       label: "If you're in immediate danger",
-      detail: "Call 911 or go to your nearest emergency room.",
+      detail: "Call your local emergency number (911 in the U.S./Canada, 112 in many countries) or go to an emergency room.",
       action: { type: "tel" as const, value: "911" },
+    },
+    {
+      label: "Find help where you are",
+      detail: "Find a verified local crisis and safety service at findahelpline.com.",
+      action: { type: "url" as const, value: "https://findahelpline.com/" },
     },
   ];
 

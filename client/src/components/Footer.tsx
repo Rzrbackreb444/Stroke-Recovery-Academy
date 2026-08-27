@@ -125,7 +125,7 @@ export default function Footer() {
               />
             </div>
             <p className="text-sm font-semibold uppercase tracking-widest text-gold mb-2">
-              From 0% to 90% Recovery
+              Survivor-Led Recovery Education
             </p>
             <p className="text-gray-400 mb-6 leading-relaxed text-sm">
               A survivor-built stroke recovery platform with practical methods, guided coaching,

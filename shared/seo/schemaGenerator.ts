@@ -70,7 +70,7 @@ export function generateNickPersonSchema() {
     url: `${SITE_URL}/recovery/about-nick`,
     jobTitle: "Founder & Stroke Recovery Coach",
     description:
-      "7-year stroke survivor who recovered from complete paralysis to 90% function. Founder of Stroke Recovery Academy and creator of the Sasquatch Method.",
+      "Stroke survivor, author, and founder who shares lived experience, recovery education, and peer support through Stroke Recovery Academy.",
     knowsAbout: [
       "stroke recovery",
       "neuroplasticity",
@@ -137,14 +137,10 @@ export function generatePageSchema(entry: RouteEntry, fullUrl: string): object {
     case "MedicalWebPage":
       return {
         ...common,
-        about: { "@type": "MedicalCondition", name: "Stroke" },
-        audience: { "@type": "MedicalAudience", audienceType: "Patient" },
+        "@type": "WebPage",
         author,
-        reviewedBy: { "@id": ID_NICK },
-        lastReviewed: today,
         datePublished: "2024-01-01",
         dateModified: today,
-        specialty: "Neurology",
       };
     case "AboutPage":
       return { ...common, mainEntity: author };
