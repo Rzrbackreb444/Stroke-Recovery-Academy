@@ -1,5 +1,7 @@
 import { Pool, neonConfig } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
+import { Pool as NodePool } from 'pg';
+import { drizzle as drizzleNode } from 'drizzle-orm/node-postgres';
 import ws from "ws";
 import * as schema from "@shared/schema";
 
@@ -11,14 +13,41 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  connectionTimeoutMillis: 10000,
-  idleTimeoutMillis: 30000,
-  max: 10,
-});
+// The disposable recovery durability suite uses a local PostgreSQL cluster.
+// Neon's WebSocket client intentionally cannot speak to a local TCP server;
+// keep this switch test-only so deployed/dev Neon connections remain unchanged.
+const useNodePostgres = process.env.RECOVERY_DURABILITY_DB === "1";
+const localConnection = useNodePostgres
+  ? (() => {
+      const parsed = new URL(process.env.DATABASE_URL!);
+      return {
+        connectionString: process.env.DATABASE_URL,
+        host: parsed.hostname,
+        port: parsed.port ? Number(parsed.port) : 5432,
+        database: decodeURIComponent(parsed.pathname.slice(1)),
+        user: decodeURIComponent(parsed.username),
+        password: parsed.password ? decodeURIComponent(parsed.password) : undefined,
+      };
+    })()
+  : null;
 
-export const db = drizzle({ client: pool, schema });
+export const pool = useNodePostgres
+  ? new NodePool({
+      ...localConnection,
+      connectionTimeoutMillis: 10000,
+      idleTimeoutMillis: 30000,
+      max: 10,
+    })
+  : new Pool({
+      connectionString: process.env.DATABASE_URL,
+      connectionTimeoutMillis: 10000,
+      idleTimeoutMillis: 30000,
+      max: 10,
+    });
+
+export const db = (useNodePostgres
+  ? drizzleNode({ client: pool as NodePool, schema })
+  : drizzle({ client: pool as Pool, schema })) as unknown as ReturnType<typeof drizzle>;
 
 /**
  * Retry a database operation with exponential backoff.
