@@ -1302,18 +1302,18 @@ export default function RecoveryDashboard() {
               <div className="flex-1">
                 <h3 className="text-xl font-bold text-white mb-2">Gift the Rebuild</h3>
                 <p className="text-gray-400 text-sm">
-                  Every donation to The Stroke Recovery Academy funds coaching for a survivor who needs a builder's blueprint.
-                  Gift a survivor one-on-one accountability coaching, motivation, and nutrition-focused advice from the Stroked-Out Sasquatch himself.
+                  A gift through Stroke Lyfe Inc. helps a survivor access the Academy when cost is a barrier.
+                  If you want to work directly with Nick, paid coaching is available separately through Stroked-Out Sasquatch.
                 </p>
               </div>
               <div className="flex gap-3">
-                <a href="https://strokelyfe.org" target="_blank" rel="noopener noreferrer">
+                 <a href="/recovery/gift">
                   <Button className="bg-[#E2741B] text-black font-bold" data-testid="button-donate">
                     <Heart className="w-4 h-4 mr-2" />
-                    Donate Now
+                     Gift a Survivor
                   </Button>
                 </a>
-                <a href="https://strokerecoveryacademy.com" target="_blank" rel="noopener noreferrer">
+                 <a href="/recovery/coaching">
                   <Button variant="outline" className="border-[#E2741B]/50 text-[#E2741B]" data-testid="button-coaching">
                     Book Coaching
                   </Button>

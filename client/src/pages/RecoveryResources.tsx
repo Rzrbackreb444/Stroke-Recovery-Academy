@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -264,9 +265,11 @@ export default function RecoveryResources() {
               <Users className="h-4 w-4 mr-2" />
               Join Community
             </Button>
-            <Button className="bg-[#E2741B] text-black">
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Book Coaching
+             <Button asChild className="bg-[#E2741B] text-black">
+               <Link href="/recovery/coaching">
+                 <MessageCircle className="h-4 w-4 mr-2" />
+                 Book Coaching
+               </Link>
             </Button>
           </div>
         </Card>

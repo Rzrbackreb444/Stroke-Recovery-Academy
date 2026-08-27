@@ -71,10 +71,10 @@ const GIFT_TIERS = [
 ];
 
 const IMPACT_STATS = [
-  { value: "1 in 4", label: "Survivors can't afford rehab" },
-  { value: "$47", label: "One month changes everything" },
-  { value: "50K+", label: "Warriors in the community" },
-  { value: "Year 7", label: "Nick still recovering, still sharing" },
+  { value: "1 month", label: "A direct gift of Academy access" },
+  { value: "3 months", label: "A longer runway for daily practice" },
+  { value: "1 year", label: "Support for the long recovery" },
+  { value: "Your choice", label: "Gift directly or support the fund" },
 ];
 
 export default function GiftSurvivor() {
@@ -82,13 +82,21 @@ export default function GiftSurvivor() {
   const { toast } = useToast();
 
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
-  const [recipientMode, setRecipientMode] = useState<"specific" | "fund">("specific");
+  const [recipientMode, setRecipientMode] = useState<"specific" | "fund">(() =>
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("mode") === "fund"
+      ? "fund"
+      : "specific"
+  );
   const [recipientEmail, setRecipientEmail] = useState("");
   const [donorName, setDonorName] = useState("");
   const [donorEmail, setDonorEmail] = useState("");
   const [message, setMessage] = useState("");
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState(() =>
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("donated") === "success"
+  );
 
   const giftMutation = useMutation({
     mutationFn: (data: any) => apiRequest("POST", "/api/recovery/payments/gift-scholarship", data),
@@ -144,13 +152,13 @@ export default function GiftSurvivor() {
           <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="h-10 w-10 text-green-400" />
           </div>
-          <h1 className="text-3xl font-black text-white mb-3">Gift Sent.</h1>
+           <h1 className="text-3xl font-black text-white mb-3">Thank you for the gift.</h1>
           <p className="text-gray-400 mb-6">
             {recipientMode === "fund"
-              ? "Your donation to the Stroke Lyfe Survivor Fund has been received. A survivor who couldn't afford recovery will get access because of you."
-              : `Your gift has been sent to ${recipientEmail}. They'll receive an email with access instructions. You just changed a warrior's trajectory.`}
+               ? "Your payment is complete. Stroke Lyfe Inc. will apply your contribution to the Survivor Fund and use it to help provide Academy access."
+               : "Your payment is complete. Stroke Lyfe Inc. has the recipient details from your gift and will follow up with access instructions."}
           </p>
-          <p className="text-xs text-gray-600 mb-6">A tax receipt will be sent to {donorEmail}. Stroke Lyfe Inc. is a registered 501(c)(3) nonprofit.</p>
+           <p className="text-xs text-gray-600 mb-6">Your Stripe receipt will be sent to the donor email entered at checkout. Stroke Lyfe Inc. is a registered 501(c)(3) nonprofit.</p>
           <Button className="bg-[#E2741B] text-black font-black" onClick={() => window.location.href = "/recovery"}>
             Back to Recovery OS
           </Button>
@@ -203,9 +211,8 @@ export default function GiftSurvivor() {
           </h1>
 
           <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-6 leading-relaxed">
-            One in four stroke survivors can't afford rehabilitation. The Warrior system — 
-            accountability, protocols, AI Coach, community — costs $47 a month. 
-            Your gift gives someone what the insurance system won't.
+             The Warrior system — accountability, protocols, AI Coach, and community —
+             gives a survivor a practical place to keep doing the work. Your gift helps make that access possible.
           </p>
 
           <p className="text-sm text-gray-500 italic">
