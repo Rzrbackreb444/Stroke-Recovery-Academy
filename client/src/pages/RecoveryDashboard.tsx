@@ -149,7 +149,9 @@ export default function RecoveryDashboard() {
       }
     },
     onError: (e: any) => {
-      const msg = e?.message?.includes("Already checked in") ? "You already checked in today. Come back tomorrow." : "Could not save check-in";
+      const msg = e?.message?.includes("Already checked in")
+        ? "You already checked in today. Come back tomorrow."
+        : "Could not save check-in. Nothing was marked complete — try again.";
       toast({ title: "Check-in", description: msg, variant: "destructive" });
     },
   });
@@ -160,6 +162,9 @@ export default function RecoveryDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/recovery/dashboard"] });
+    },
+    onError: () => {
+      toast({ title: "Habit", description: "Could not save that habit. Nothing was marked complete — try again.", variant: "destructive" });
     },
   });
 

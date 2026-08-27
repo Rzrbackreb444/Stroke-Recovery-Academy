@@ -49,26 +49,28 @@ export async function initSasquatchSchema(): Promise<void> {
         PRIMARY KEY (user_id, usage_date)
       )
     `);
-  })();
+  })().catch((error) => {
+    // A failed startup must not poison the cached promise forever. The next
+    // coach request should be able to retry schema setup.
+    schemaReady = null;
+    throw error;
+  });
   return schemaReady;
 }
 
-// Best-effort persist — never throws. Coach chat must respond even if persist fails.
+// A coach turn is not successful until both messages are durably stored.
+// One INSERT statement makes the user/reply pair atomic.
 export async function persistChatTurn(
   userId: string,
   userMessage: string,
   coachReply: string,
 ): Promise<void> {
-  try {
-    await initSasquatchSchema();
-    await db.execute(sql`
-      INSERT INTO sasquatch_chat_messages (user_id, role, content)
-      VALUES (${userId}, 'user', ${userMessage}),
-             (${userId}, 'coach', ${coachReply})
-    `);
-  } catch (err: any) {
-    console.warn('[sasquatch-history] persist failed:', err?.message ?? err);
-  }
+  await initSasquatchSchema();
+  await db.execute(sql`
+    INSERT INTO sasquatch_chat_messages (user_id, role, content)
+    VALUES (${userId}, 'user', ${userMessage}),
+           (${userId}, 'coach', ${coachReply})
+  `);
 }
 
 export async function getChatHistory(

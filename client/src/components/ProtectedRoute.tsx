@@ -6,15 +6,19 @@ import DashboardSkeleton from "@/components/DashboardSkeleton";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  loginReturnPath?: string;
 }
 
 const PREV_AUTH_KEY = "prevAuthState";
 const AUTH_INITIALIZED_KEY = "authInitialized";
 
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+export default function ProtectedRoute({ children, loginReturnPath }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const loginHref = loginReturnPath
+    ? `/recovery/login?next=${encodeURIComponent(loginReturnPath)}`
+    : "/api/login";
 
   // Handle session expiry: only redirect on true→false transitions after initialization
   // Use two-flag mechanism to survive page refreshes
@@ -43,8 +47,17 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
       // Wait for toast to be fully visible before redirecting
       (async () => {
         await new Promise<void>((resolve) => setTimeout(resolve, 3600));
-        window.location.assign("/api/login");
+      window.location.assign(loginHref);
       })();
+      return;
+    }
+
+    // The Today session has its own survivor sign-in handoff. Unlike the
+    // creator routes, never send an unauthenticated survivor to the landing
+    // page and lose the session they were trying to start.
+    if (loginReturnPath && !isAuthenticated) {
+      writeFlags(false);
+      setLocation(loginHref);
       return;
     }
 
@@ -57,7 +70,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
     // Update flags for current auth state
     writeFlags(!!isAuthenticated);
-  }, [isAuthenticated, isLoading, setLocation, toast]);
+  }, [isAuthenticated, isLoading, loginHref, loginReturnPath, setLocation, toast]);
 
   // Show reusable dashboard skeleton loader while checking auth
   if (isLoading) {

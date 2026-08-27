@@ -56,6 +56,7 @@ import {
   recoveryPrograms, programModules, programLessons,
   userEnrollments, dailyCheckins, userStreaks,
   userHabits, habitLogs, recoveryHabits,
+  creditWallets, creditLedger,
   recoveryMilestones, userMilestoneLogs,
   userProfiles,
   accountabilityPods, podMembers,
@@ -82,6 +83,13 @@ import {
 import { db } from "./db";
 import { eq, desc, and, sql, count, ilike, or, gte, lt } from "drizzle-orm";
 import { textArraySql } from "./neverZeroAuditSql";
+
+export class DailyCheckinAlreadyExistsError extends Error {
+  constructor() {
+    super("Already checked in today");
+    this.name = "DailyCheckinAlreadyExistsError";
+  }
+}
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -143,12 +151,18 @@ export interface IStorage {
   updateUserEnrollment(id: number, updates: any): Promise<any | undefined>;
   getDailyCheckin(userId: string, date: Date): Promise<any | undefined>;
   createDailyCheckin(checkin: any): Promise<any>;
+  createDailyCheckinWithRewards(checkin: any): Promise<{
+    checkin: any;
+    streak: { current: number; longest: number };
+    creditsEarned: number;
+    streakBonusLabel: string | null;
+  }>;
   getRecentCheckins(userId: string, days: number): Promise<any[]>;
   getUserStreak(userId: string): Promise<any | undefined>;
   createOrUpdateUserStreak(userId: string, data: any): Promise<any>;
   getUserHabits(userId: string): Promise<any[]>;
   createUserHabit(habit: any): Promise<any>;
-  logHabitCompletion(userHabitId: number, date: Date, notes?: string): Promise<any>;
+  logHabitCompletion(userHabitId: number, date: Date, notes: string | undefined, userId: string): Promise<any>;
   getRecoveryMilestones(): Promise<any[]>;
   getUserMilestones(userId: string): Promise<any[]>;
   awardMilestone(userId: string, milestoneId: number, notes?: string): Promise<any>;
@@ -757,6 +771,124 @@ export class DatabaseStorage implements IStorage {
     return newCheckin;
   }
 
+  /**
+   * Persist a check-in, its streak, and its reward as one unit. The advisory
+   * lock closes the race between two clicks before the check-in row exists;
+   * the transaction makes any reward/streak failure roll the check-in back too.
+   */
+  async createDailyCheckinWithRewards(checkin: any): Promise<{
+    checkin: any;
+    streak: { current: number; longest: number };
+    creditsEarned: number;
+    streakBonusLabel: string | null;
+  }> {
+    const startOfDay = new Date(checkin.checkinDate);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(checkin.checkinDate);
+    endOfDay.setHours(23, 59, 59, 999);
+    const yesterday = new Date(startOfDay);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const lockKey = `daily-checkin:${checkin.userId}:${startOfDay.toISOString()}`;
+
+    return db.transaction(async (tx) => {
+      await tx.execute(sql`
+        SELECT pg_advisory_xact_lock(hashtextextended(${lockKey}, 0))
+      `);
+
+      const [existing] = await tx.select().from(dailyCheckins).where(and(
+        eq(dailyCheckins.userId, checkin.userId),
+        gte(dailyCheckins.checkinDate, startOfDay),
+        sql`${dailyCheckins.checkinDate} <= ${endOfDay}`,
+      ));
+      if (existing) {
+        throw new DailyCheckinAlreadyExistsError();
+      }
+
+      const [savedCheckin] = await tx.insert(dailyCheckins).values(checkin).returning();
+      const streakRows = await tx.execute(sql`
+        SELECT current_streak, longest_streak, last_activity_date, total_active_days
+        FROM user_streaks
+        WHERE user_id = ${checkin.userId}
+        FOR UPDATE
+      `);
+      const previous = (streakRows.rows[0] as any) || null;
+      const lastActivity = previous?.last_activity_date
+        ? new Date(previous.last_activity_date)
+        : null;
+      if (lastActivity) lastActivity.setHours(0, 0, 0, 0);
+
+      const current = lastActivity?.getTime() === yesterday.getTime()
+        ? Number(previous.current_streak || 0) + 1
+        : 1;
+      const longest = Math.max(current, Number(previous?.longest_streak || 0));
+      const totalActiveDays = Number(previous?.total_active_days || 0) + 1;
+
+      await tx.execute(sql`
+        INSERT INTO user_streaks
+          (user_id, current_streak, longest_streak, last_activity_date, total_active_days, updated_at)
+        VALUES
+          (${checkin.userId}, ${current}, ${longest}, ${checkin.checkinDate}, ${totalActiveDays}, NOW())
+        ON CONFLICT (user_id) DO UPDATE SET
+          current_streak = ${current},
+          longest_streak = ${longest},
+          last_activity_date = ${checkin.checkinDate},
+          total_active_days = ${totalActiveDays},
+          updated_at = NOW()
+      `);
+
+      let creditsEarned = 10;
+      let streakBonusLabel: string | null = null;
+      if (current === 7) {
+        creditsEarned += 25;
+        streakBonusLabel = '7-day Streak';
+      } else if (current === 30) {
+        creditsEarned += 50;
+        streakBonusLabel = '30-day Streak';
+      } else if (current === 66) {
+        creditsEarned += 100;
+        streakBonusLabel = '66-day Transformation';
+      }
+
+      // Keep wallet creation, balance update, and ledger entry in this same
+      // transaction. This also avoids the read/modify/write race in addCredits.
+      await tx.execute(sql`
+        INSERT INTO credit_wallets
+          (user_id, balance, bonus_credits, lifetime_earned, lifetime_spent)
+        VALUES (${checkin.userId}, 500, 0, 500, 0)
+        ON CONFLICT (user_id) DO NOTHING
+      `);
+      const walletRows = await tx.execute(sql`
+        UPDATE credit_wallets
+        SET bonus_credits = bonus_credits + ${creditsEarned},
+            lifetime_earned = lifetime_earned + ${creditsEarned},
+            updated_at = NOW()
+        WHERE user_id = ${checkin.userId}
+        RETURNING balance + bonus_credits AS total
+      `);
+      const newTotal = Number((walletRows.rows[0] as any)?.total ?? creditsEarned);
+      await tx.execute(sql`
+        INSERT INTO credit_ledger
+          (user_id, transaction_type, amount, balance_after, description, feature_key, metadata)
+        VALUES (
+          ${checkin.userId},
+          'bonus',
+          ${creditsEarned},
+          ${newTotal},
+          ${`Daily check-in${streakBonusLabel ? ` + ${streakBonusLabel}` : ''}`},
+          'bonus',
+          ${JSON.stringify({ streak: current })}::jsonb
+        )
+      `);
+
+      return {
+        checkin: savedCheckin,
+        streak: { current, longest },
+        creditsEarned,
+        streakBonusLabel,
+      };
+    });
+  }
+
   async getRecentCheckins(userId: string, days: number): Promise<any[]> {
     const daysAgo = new Date();
     daysAgo.setDate(daysAgo.getDate() - days);
@@ -825,45 +957,56 @@ export class DatabaseStorage implements IStorage {
     return newHabit;
   }
 
-  async logHabitCompletion(userHabitId: number, date: Date, notes?: string): Promise<any> {
+  async logHabitCompletion(userHabitId: number, date: Date, notes: string | undefined, userId: string): Promise<any> {
     const startOfDay = new Date(date);
     startOfDay.setHours(0, 0, 0, 0);
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
-    
-    const [existing] = await db.select().from(habitLogs)
-      .where(and(
-        eq(habitLogs.userHabitId, userHabitId),
-        gte(habitLogs.logDate, startOfDay),
-        sql`${habitLogs.logDate} <= ${endOfDay}`
-      ));
-    
-    if (existing) {
-      const [log] = await db.update(habitLogs)
-        .set({ isCompleted: !existing.isCompleted, notes })
-        .where(eq(habitLogs.id, existing.id))
+    const lockKey = `habit-log:${userId}:${userHabitId}:${startOfDay.toISOString()}`;
+
+    return db.transaction(async (tx) => {
+      await tx.execute(sql`
+        SELECT pg_advisory_xact_lock(hashtextextended(${lockKey}, 0))
+      `);
+      const [ownedHabit] = await tx.select({ id: userHabits.id })
+        .from(userHabits)
+        .where(and(eq(userHabits.id, userHabitId), eq(userHabits.userId, userId)));
+      if (!ownedHabit) {
+        throw new Error("Habit not found");
+      }
+
+      const [existing] = await tx.select().from(habitLogs)
+        .where(and(
+          eq(habitLogs.userHabitId, userHabitId),
+          gte(habitLogs.logDate, startOfDay),
+          sql`${habitLogs.logDate} <= ${endOfDay}`,
+        ));
+
+      if (existing) {
+        const [log] = await tx.update(habitLogs)
+          .set({ isCompleted: !existing.isCompleted, notes })
+          .where(eq(habitLogs.id, existing.id))
+          .returning();
+
+        await tx.update(userHabits)
+          .set({
+            totalCompletions: log.isCompleted
+              ? sql`${userHabits.totalCompletions} + 1`
+              : sql`GREATEST(${userHabits.totalCompletions} - 1, 0)`,
+          })
+          .where(eq(userHabits.id, userHabitId));
+        return log;
+      }
+
+      const [log] = await tx.insert(habitLogs)
+        .values({ userHabitId, logDate: date, isCompleted: true, notes })
         .returning();
-      
-      await db.update(userHabits)
-        .set({ 
-          totalCompletions: log.isCompleted 
-            ? sql`${userHabits.totalCompletions} + 1`
-            : sql`GREATEST(${userHabits.totalCompletions} - 1, 0)`
-        })
+
+      await tx.update(userHabits)
+        .set({ totalCompletions: sql`${userHabits.totalCompletions} + 1` })
         .where(eq(userHabits.id, userHabitId));
-      
       return log;
-    }
-    
-    const [log] = await db.insert(habitLogs)
-      .values({ userHabitId, logDate: date, isCompleted: true, notes })
-      .returning();
-    
-    await db.update(userHabits)
-      .set({ totalCompletions: sql`${userHabits.totalCompletions} + 1` })
-      .where(eq(userHabits.id, userHabitId));
-    
-    return log;
+    });
   }
 
   async getRecoveryMilestones(): Promise<any[]> {

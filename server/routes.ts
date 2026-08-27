@@ -6,7 +6,7 @@ import path from "path";
 import { generateBookPDF, type BookExportData } from "./exportService";
 import multer from "multer";
 import fs from "fs";
-import { storage } from "./storage";
+import { storage, DailyCheckinAlreadyExistsError } from "./storage";
 import { yearsSinceStroke } from "@shared/strokeAnniversary";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { publicPostLimiter, authActionLimiter } from "./middleware/publicRateLimit";
@@ -9564,6 +9564,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
 
   // AI coaching chat endpoint - enhanced with user context
   app.post('/api/coach/chat', coachIpLimiter, async (req: any, res) => {
+    let quotaReserved = false;
     try {
       const { message, history, skipAudio } = req.body;
 
@@ -9593,6 +9594,11 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
           matched: crisis.matchedPhrase,
         }));
         const crisisPayload = buildCrisisResponse(crisis.category);
+        const crisisUserId = getUserId(req);
+        if (crisisUserId) {
+          const { persistChatTurn } = await import('./sasquatchHistoryService');
+          await persistChatTurn(crisisUserId, message, crisisPayload.response);
+        }
         return res.json(crisisPayload);
       }
 
@@ -9635,6 +9641,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
               upgradeUrl: '/recovery/premium',
             });
           }
+          quotaReserved = true;
           quotaInfo = { used: reservation.used, limit: reservation.limit, premium: false };
         }
       }
@@ -9766,15 +9773,13 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         anonInfo = { used: newCount, limit: ANON_COACH_LIMIT };
       }
 
-      // Best-effort persist of the turn so survivors can resume the thread.
-      // Never blocks the response — persist failure is logged only. Uses the
+      // A successful response means the complete turn is durable. Uses the
       // cross-strategy identity helper so BOTH Replit OIDC sessions
       // (req.user.claims.sub) AND multi-provider sessions (req.user.id) persist.
       const persistUserId = getUserId(req);
       if (persistUserId) {
-        import('./sasquatchHistoryService')
-          .then(({ persistChatTurn }) => persistChatTurn(persistUserId, message, finalResponse))
-          .catch((e) => console.warn('[coach] persist skipped:', e?.message ?? e));
+        const { persistChatTurn } = await import('./sasquatchHistoryService');
+        await persistChatTurn(persistUserId, message, finalResponse);
       }
 
       res.json({ response: finalResponse, audioBase64, quota: quotaInfo, anon: anonInfo });
@@ -9783,7 +9788,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       // Refund the daily-cap reservation so a Gemini outage doesn't burn
       // a free survivor's daily quota on a non-response.
       const refundUserId = getUserId(req);
-      if (refundUserId) {
+      if (refundUserId && quotaReserved) {
         try {
           const { refundCoachMessage } = await import('./sasquatchHistoryService');
           await refundCoachMessage(refundUserId);
@@ -10042,13 +10047,8 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     try {
       const userId = getUserId(req)!;
       const { moodScore, energyScore, painScore, effortScore, winsToday, challengesToday, gratitude } = req.body;
-      
-      const existing = await storage.getDailyCheckin(userId, new Date());
-      if (existing) {
-        return res.status(400).json({ message: "Already checked in today", alreadyCheckedIn: true });
-      }
-      
-      const checkin = await storage.createDailyCheckin({
+
+      const result = await storage.createDailyCheckinWithRewards({
         userId,
         checkinDate: new Date(),
         moodScore,
@@ -10059,52 +10059,22 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         challengesToday,
         gratitude,
       });
-      
-      const streak = await storage.getUserStreak(userId);
-      const today = new Date();
-      const yesterday = new Date(today);
-      yesterday.setDate(yesterday.getDate() - 1);
-      
-      let newCurrentStreak = 1;
-      if (streak?.lastActivityDate) {
-        const lastDate = new Date(streak.lastActivityDate);
-        lastDate.setHours(0, 0, 0, 0);
-        yesterday.setHours(0, 0, 0, 0);
-        if (lastDate.getTime() === yesterday.getTime()) {
-          newCurrentStreak = (streak.currentStreak || 0) + 1;
-        }
-      }
-      
-      await storage.createOrUpdateUserStreak(userId, {
-        currentStreak: newCurrentStreak,
-        longestStreak: Math.max(newCurrentStreak, streak?.longestStreak || 0),
-        lastActivityDate: today,
-        totalActiveDays: (streak?.totalActiveDays || 0) + 1,
-      });
-
-      // Credit reward: 10 base + streak milestones (7 / 30 / 66 days)
-      let creditsEarned = 10;
-      let streakBonusLabel: string | null = null;
-      if (newCurrentStreak === 7)  { creditsEarned += 25;  streakBonusLabel = '7-day Streak'; }
-      if (newCurrentStreak === 30) { creditsEarned += 50;  streakBonusLabel = '30-day Streak'; }
-      if (newCurrentStreak === 66) { creditsEarned += 100; streakBonusLabel = '66-day Transformation'; }
-      try {
-        const { addCredits } = await import('./creditService');
-        await addCredits(userId, creditsEarned, 'bonus', `Daily check-in${streakBonusLabel ? ' + ' + streakBonusLabel : ''}`, { streak: newCurrentStreak });
-      } catch (e) { console.error('[checkin] credit award failed', e); }
 
       // Sasquatch quote reward
       const { pickSasquatchQuote } = await import('./sasquatchQuotes');
       const quote = pickSasquatchQuote();
 
       res.json({
-        checkin,
-        streak: { current: newCurrentStreak, longest: Math.max(newCurrentStreak, streak?.longestStreak || 0) },
-        creditsEarned,
-        streakBonusLabel,
+        checkin: result.checkin,
+        streak: result.streak,
+        creditsEarned: result.creditsEarned,
+        streakBonusLabel: result.streakBonusLabel,
         quote,
       });
     } catch (error) {
+      if (error instanceof DailyCheckinAlreadyExistsError) {
+        return res.status(409).json({ message: error.message, alreadyCheckedIn: true });
+      }
       console.error("Error creating checkin:", error);
       res.status(500).json({ message: "Failed to create checkin" });
     }
@@ -10164,10 +10134,13 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       const userHabitId = parseInt(req.params.id);
       const { notes } = req.body;
       
-      const log = await storage.logHabitCompletion(userHabitId, new Date(), notes);
+      const log = await storage.logHabitCompletion(userHabitId, new Date(), notes, getUserId(req)!);
       res.json(log);
     } catch (error) {
       console.error("Error logging habit:", error);
+      if (error instanceof Error && error.message === "Habit not found") {
+        return res.status(404).json({ message: "Habit not found" });
+      }
       res.status(500).json({ message: "Failed to log habit" });
     }
   });
@@ -11186,29 +11159,34 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       const lvl = typeof level === 'number' ? Math.max(0, Math.min(4, level)) : 2;
       const dateStr = typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : today;
 
-      await db.execute(
-        sql`INSERT INTO routine_feedback (user_id, date, task_id, level, reaction, created_at)
-            VALUES (${userId}, ${dateStr}, ${taskId}, ${lvl}, ${reaction}, NOW())
-            ON CONFLICT (user_id, date, task_id)
-            DO UPDATE SET reaction = ${reaction}, level = ${lvl}, created_at = NOW()`
-      );
-
-      // Also mark the task complete in routine_completions for streak/dashboard parity.
-      if (reaction !== 'skipped' && taskId !== 'walk_cooldown') {
-        await db.execute(
-          sql`INSERT INTO routine_completions (user_id, date, level, completed_tasks, updated_at)
-              VALUES (${userId}, ${dateStr}, ${lvl}, ARRAY[${taskId}]::text[], NOW())
-              ON CONFLICT (user_id, date)
-              DO UPDATE SET
-                level = ${lvl},
-                completed_tasks = (
-                  SELECT ARRAY(SELECT DISTINCT unnest(routine_completions.completed_tasks || ARRAY[${taskId}]::text[]))
-                  FROM routine_completions
-                  WHERE routine_completions.user_id = ${userId} AND routine_completions.date = ${dateStr}
-                ),
-                updated_at = NOW()`
+      // Feedback and completion are one logical action. If either write
+      // fails, neither is committed so recommendation/streak data cannot
+      // disagree with the reaction the survivor just submitted.
+      await db.transaction(async (tx) => {
+        await tx.execute(
+          sql`INSERT INTO routine_feedback (user_id, date, task_id, level, reaction, created_at)
+              VALUES (${userId}, ${dateStr}, ${taskId}, ${lvl}, ${reaction}, NOW())
+              ON CONFLICT (user_id, date, task_id)
+              DO UPDATE SET reaction = ${reaction}, level = ${lvl}, created_at = NOW()`
         );
-      }
+
+        // Also mark the task complete in routine_completions for streak/dashboard parity.
+        if (reaction !== 'skipped' && taskId !== 'walk_cooldown') {
+          await tx.execute(
+            sql`INSERT INTO routine_completions (user_id, date, level, completed_tasks, updated_at)
+                VALUES (${userId}, ${dateStr}, ${lvl}, ARRAY[${taskId}]::text[], NOW())
+                ON CONFLICT (user_id, date)
+                DO UPDATE SET
+                  level = ${lvl},
+                  completed_tasks = (
+                    SELECT ARRAY(SELECT DISTINCT unnest(routine_completions.completed_tasks || ARRAY[${taskId}]::text[]))
+                    FROM routine_completions
+                    WHERE routine_completions.user_id = ${userId} AND routine_completions.date = ${dateStr}
+                  ),
+                  updated_at = NOW()`
+          );
+        }
+      });
 
       res.json({ ok: true });
     } catch (err) {
@@ -11281,16 +11259,18 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       const { db: dbInst } = await import('./db');
       const { survivorGoals } = await import('../shared/schema');
       const { eq } = await import('drizzle-orm');
-      await dbInst.delete(survivorGoals).where(eq(survivorGoals.userId, userId));
-      if (goals.length === 0) return res.json([]);
-      const inserted = await dbInst.insert(survivorGoals).values(
-        goals.map((g: any) => ({
-          userId,
-          horizon: g.horizon,
-          domain: g.domain,
-          goal: String(g.goal).trim().slice(0, 240),
-        }))
-      ).returning();
+      const inserted = await dbInst.transaction(async (tx) => {
+        await tx.delete(survivorGoals).where(eq(survivorGoals.userId, userId));
+        if (goals.length === 0) return [];
+        return tx.insert(survivorGoals).values(
+          goals.map((g: any) => ({
+            userId,
+            horizon: g.horizon,
+            domain: g.domain,
+            goal: String(g.goal).trim().slice(0, 240),
+          }))
+        ).returning();
+      });
       res.json(inserted);
     } catch (error) {
       console.error('Error saving goals:', error);
