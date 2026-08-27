@@ -2273,15 +2273,23 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
           // requested destination.
           try {
             const { db: authDb } = await import("./db");
-            const { survivorPlans } = await import("../shared/schema");
+            const { sasquatchAssessments, survivorPlans } = await import("../shared/schema");
             const { eq } = await import("drizzle-orm");
-            const [plan] = await authDb.select({ id: survivorPlans.id })
-              .from(survivorPlans)
-              .where(eq(survivorPlans.userId, user.id))
-              .limit(1);
-            res.redirect(plan ? returnTo : "/recovery/onboarding");
+            const [[assessment], [plan]] = await Promise.all([
+              authDb.select({ id: sasquatchAssessments.id })
+                .from(sasquatchAssessments)
+                .where(eq(sasquatchAssessments.userId, user.id))
+                .limit(1),
+              authDb.select({ id: survivorPlans.id })
+                .from(survivorPlans)
+                .where(eq(survivorPlans.userId, user.id))
+                .limit(1),
+            ]);
+            res.redirect(assessment && plan ? returnTo : "/recovery/onboarding");
           } catch {
-            res.redirect(returnTo);
+            // If the completion check is unavailable, fail closed so a new
+            // survivor cannot bypass the assessment on a transient DB error.
+            res.redirect("/recovery/onboarding");
           }
         })();
       });

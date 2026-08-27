@@ -11,8 +11,9 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const [serverApp, clientApp, recoveryLogin, recoveryToday] = await Promise.all([
+const [serverApp, serverRoutes, clientApp, recoveryLogin, recoveryToday] = await Promise.all([
   readFile(new URL("../server/app.ts", import.meta.url), "utf8"),
+  readFile(new URL("../server/routes.ts", import.meta.url), "utf8"),
   readFile(new URL("../client/src/App.tsx", import.meta.url), "utf8"),
   readFile(new URL("../client/src/pages/RecoveryLogin.tsx", import.meta.url), "utf8"),
   readFile(new URL("../client/src/pages/RecoveryToday.tsx", import.meta.url), "utf8"),
@@ -86,6 +87,51 @@ test("new-account signup always enters onboarding, ignoring the public destinati
     /safeNext/,
     "signup must not skip onboarding by using the requested destination",
   );
+});
+
+test("Google auth sends new survivors to onboarding and completed survivors to next", () => {
+  const googleCallback = sourceBetween(
+    serverRoutes,
+    "app.get('/api/auth/google/callback'",
+    "app.get('/api/auth/facebook'",
+  );
+
+  assert.match(googleCallback, /const returnTo = safeRecoveryReturnTo/);
+  assert.match(googleCallback, /const \[\[assessment\], \[plan\]\] = await Promise\.all/);
+  assert.match(googleCallback, /sasquatchAssessments\.userId, user\.id/);
+  assert.match(googleCallback, /survivorPlans\.userId, user\.id/);
+  assert.match(
+    googleCallback,
+    /res\.redirect\(assessment && plan \? returnTo : "\/recovery\/onboarding"\)/,
+  );
+  assert.match(
+    googleCallback,
+    /catch \{\s*\/\/ If the completion check is unavailable[\s\S]*?res\.redirect\("\/recovery\/onboarding"\)/,
+  );
+  assert.match(
+    recoveryLogin,
+    /href=\{`\/api\/auth\/google\?next=\$\{encodeURIComponent\(safeNext\)\}`\}/,
+  );
+});
+
+test("OTP auth uses the same new-versus-onboarded routing contract", () => {
+  const postAuthRouting = sourceBetween(
+    recoveryLogin,
+    "async function routeAfterAuth()",
+    "const signInMut = useMutation",
+  );
+  const otpVerification = sourceBetween(
+    recoveryLogin,
+    "const otpVerifyMut = useMutation",
+    "const forgotMut = useMutation",
+  );
+
+  assert.match(postAuthRouting, /fetch\("\/api\/recovery\/me\/state", \{ credentials: "include" \}\)/);
+  assert.match(postAuthRouting, /if \(state\?\.hasOnboarded\)/);
+  assert.match(postAuthRouting, /window\.location\.href = safeNext/);
+  assert.match(postAuthRouting, /window\.location\.href = "\/recovery\/onboarding"/);
+  assert.match(otpVerification, /apiRequest\("POST", "\/api\/auth\/otp\/verify", data\)/);
+  assert.match(otpVerification, /onSuccess: \(\) => \{ routeAfterAuth\(\); \}/);
 });
 
 test("a completed Today reaction posts feedback and exposes the next-action state", () => {
