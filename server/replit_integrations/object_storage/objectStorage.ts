@@ -55,6 +55,8 @@ export class ObjectUploadIntentError extends Error {
   }
 }
 
+const CONTENT_SNIFF_BYTES = 64;
+
 export const UPLOAD_INTENT_CLEANUP_BATCH_SIZE = 100;
 export const UPLOAD_INTENT_CLEANUP_INTERVAL_MS = 15 * 60 * 1000;
 
@@ -393,6 +395,7 @@ export class ObjectStorageService {
       ) {
         throw new ObjectUploadIntentError("Uploaded file metadata does not match the issued upload.");
       }
+      await validateObjectContentType(objectFile, intent.contentType);
     }
     await setObjectAclPolicy(objectFile, aclPolicy);
     if (intent && options.consumeUploadIntent !== false) {
@@ -503,6 +506,15 @@ export class ObjectStorageService {
   }
 }
 
+function hasBytes(
+  bytes: Uint8Array,
+  expected: readonly number[],
+  offset = 0,
+): boolean {
+  return expected.every(
+    (value, index) => bytes[offset + index] === value,
+  );
+}
 function parseObjectPath(path: string): {
   bucketName: string;
   objectName: string;
@@ -562,3 +574,120 @@ async function signObjectURL({
   return signedURL;
 }
 
+
+/**
+ * Read only enough of an uploaded object to validate its declared type.
+ */
+export async function validateObjectContentType(
+  file: File,
+  contentType: string,
+): Promise<void> {
+  const [bytes] = await file.download({
+    start: 0,
+    end: CONTENT_SNIFF_BYTES - 1,
+    validation: false,
+  });
+  if (!matchesObjectContentType(bytes, contentType)) {
+    throw new ObjectUploadIntentError(
+      "Uploaded file contents do not match the declared type.",
+    );
+  }
+}
+
+function isHeifContainer(bytes: Uint8Array): boolean {
+  if (!isIsoBmffContainer(bytes)) return false;
+
+  const heifBrands = new Set([
+    "heic",
+    "heix",
+    "hevc",
+    "hevx",
+    "heif",
+    "mif1",
+    "msf1",
+  ]);
+  const brands = [ascii(bytes, 8, 4)];
+  for (let offset = 16; offset + 4 <= bytes.length; offset += 4) {
+    brands.push(ascii(bytes, offset, 4));
+  }
+  return brands.some((brand) => heifBrands.has(brand));
+}
+
+function isIsoBmffContainer(bytes: Uint8Array): boolean {
+  // An ISO Base Media File Format file starts with a box whose type is ftyp.
+  return hasAscii(bytes, 4, "ftyp") && bytes.length >= 12;
+}
+
+/**
+ * Check the small set of file signatures supported by the upload policy.
+ * This is intentionally a lightweight content check, not a full parser or
+ * malware scan. Container formats such as WebM and MP4 cannot distinguish
+ * audio from video from their leading bytes alone, so their shared container
+ * signature is the strongest check available here.
+ */
+export function matchesObjectContentType(
+  bytes: Uint8Array,
+  contentType: string,
+): boolean {
+  const normalizedType = contentType.split(";", 1)[0].trim().toLowerCase();
+
+  switch (normalizedType) {
+    case "image/jpeg":
+      return bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+    case "image/png":
+      return hasBytes(bytes, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+    case "image/gif":
+      return hasAscii(bytes, 0, "GIF87a") || hasAscii(bytes, 0, "GIF89a");
+    case "image/webp":
+      return hasAscii(bytes, 0, "RIFF") && hasAscii(bytes, 8, "WEBP");
+    case "image/heic":
+    case "image/heif":
+      return isHeifContainer(bytes);
+    case "audio/webm":
+    case "video/webm":
+      return hasBytes(bytes, [0x1a, 0x45, 0xdf, 0xa3]);
+    case "audio/mpeg":
+    case "audio/mp3":
+      return (
+        hasAscii(bytes, 0, "ID3") ||
+        (bytes.length >= 2 &&
+          bytes[0] === 0xff &&
+          (bytes[1] & 0xe0) === 0xe0 &&
+          (bytes[1] & 0x06) !== 0)
+      );
+    case "audio/wav":
+    case "audio/x-wav":
+      return hasAscii(bytes, 0, "RIFF") && hasAscii(bytes, 8, "WAVE");
+    case "audio/ogg":
+      return hasAscii(bytes, 0, "OggS");
+    case "audio/mp4":
+    case "audio/x-m4a":
+    case "video/mp4":
+      return isIsoBmffContainer(bytes);
+    case "audio/aac":
+      return (
+        bytes.length >= 2 &&
+        bytes[0] === 0xff &&
+        (bytes[1] & 0xf6) === 0xf0
+      );
+    case "application/pdf":
+      return hasAscii(bytes, 0, "%PDF-");
+    default:
+      return false;
+  }
+}
+
+function ascii(bytes: Uint8Array, offset: number, length: number): string {
+  return String.fromCharCode(...bytes.slice(offset, offset + length));
+}
+
+function hasAscii(
+  bytes: Uint8Array,
+  offset: number,
+  expected: string,
+): boolean {
+  if (bytes.length < offset + expected.length) return false;
+  return expected.split("").every(
+    (character, index) => bytes[offset + index] === character.charCodeAt(0),
+  );
+}
