@@ -8,6 +8,84 @@ import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
 
+const RECOVERY_RETURN_PATHS = [
+  "/recovery/today",
+  "/recovery/onboarding",
+  "/recovery/community",
+  "/recovery/journal",
+  "/recovery/me",
+  "/recovery/dashboard",
+  "/recovery/activity",
+  "/recovery/welcome",
+];
+
+export function safeRecoveryReturnTo(value: unknown, fallback = "/recovery/today"): string {
+  if (typeof value !== "string") return fallback;
+  const decoded = value.trim();
+  if (!decoded.startsWith("/") || decoded.startsWith("//") || decoded.includes("\\")) return fallback;
+  return RECOVERY_RETURN_PATHS.some((path) => decoded === path || decoded.startsWith(`${path}?`))
+    ? decoded
+    : fallback;
+}
+
+/**
+ * Recovery is complete only after both the survivor assessment and the
+ * generated plan exist. If the check cannot be read, keep the survivor in
+ * onboarding rather than allowing a transient database failure to bypass it.
+ */
+export async function getRecoveryAuthRedirect(userId: string, requestedReturnTo: unknown): Promise<string> {
+  const returnTo = safeRecoveryReturnTo(requestedReturnTo);
+
+  try {
+    const { db: authDb } = await import("./db");
+    const { sasquatchAssessments, survivorPlans } = await import("../shared/schema");
+    const { eq } = await import("drizzle-orm");
+    const [[assessment], [plan]] = await Promise.all([
+      authDb.select({ id: sasquatchAssessments.id })
+        .from(sasquatchAssessments)
+        .where(eq(sasquatchAssessments.userId, userId))
+        .limit(1),
+      authDb.select({ id: survivorPlans.id })
+        .from(survivorPlans)
+        .where(eq(survivorPlans.userId, userId))
+        .limit(1),
+    ]);
+
+    return assessment && plan ? returnTo : "/recovery/onboarding";
+  } catch {
+    return "/recovery/onboarding";
+  }
+}
+
+/**
+ * Finish any social provider callback with the same recovery-first routing
+ * contract. Provider callbacks should only be responsible for verifying the
+ * provider response and finding/creating the local user.
+ */
+export function completeRecoverySocialLogin(
+  req: any,
+  res: any,
+  user: { id?: string; claims?: { sub?: string } },
+  failureRedirect: string,
+): void {
+  const userId = user.id || user.claims?.sub;
+  if (!userId) {
+    return res.redirect(failureRedirect);
+  }
+
+  req.logIn(user, (loginErr: any) => {
+    if (loginErr) {
+      return res.redirect(failureRedirect);
+    }
+
+    void (async () => {
+      const requestedReturnTo = (req.session as any)?.returnTo;
+      delete (req.session as any).returnTo;
+      res.redirect(await getRecoveryAuthRedirect(userId, requestedReturnTo));
+    })();
+  });
+}
+
 const getOidcConfig = memoize(
   async () => {
     return await client.discovery(
@@ -133,8 +211,12 @@ export async function setupAuth(app: Express) {
   app.get("/api/callback", (req, res, next) => {
     ensureStrategy(req.hostname);
     passport.authenticate(`replitauth:${req.hostname}`, {
-      successReturnToOrRedirect: "/",
       failureRedirect: "/api/login",
+    }, (err: any, user: any) => {
+      if (err || !user) {
+        return res.redirect("/api/login");
+      }
+      completeRecoverySocialLogin(req, res, user, "/api/login");
     })(req, res, next);
   });
 

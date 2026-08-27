@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Response } from "express";
 import { createServer, type Server } from "http";
 import express from "express";
 import passport from "passport";
@@ -9,7 +9,12 @@ import fs from "fs";
 import { storage, DailyCheckinAlreadyExistsError } from "./storage";
 import { replaceSurvivorGoals, saveRoutineFeedback } from "./recoveryDurabilityService";
 import { yearsSinceStroke } from "@shared/strokeAnniversary";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import {
+  setupAuth,
+  isAuthenticated,
+  completeRecoverySocialLogin,
+  safeRecoveryReturnTo,
+} from "./replitAuth";
 import { publicPostLimiter, authActionLimiter } from "./middleware/publicRateLimit";
 import {
   ANON_COACH_LIMIT,
@@ -20,6 +25,7 @@ import {
 import { redactEmail } from "./lib/redact";
 import { requireAdmin } from "./middleware/requireAdmin";
 import { getUserId, getUserEmail } from "./lib/authUtils";
+import { findOrCreateOAuthUser } from "./multiProviderAuth";
 import emailAuthRoutes from "./emailAuthRoutes";
 import luluRoutes from "./luluRoutes";
 import puzzleRoutes from "./puzzleRoutes";
@@ -250,22 +256,108 @@ async function initStripe() {
 const RECOVERY_KEYWORDS = ["strokerecovery", "sasquatch"];
 const RECOVERY_DOMAINS = ["strokerecoveryacademy.com"];
 
-const RECOVERY_RETURN_PATHS = [
-  "/recovery/today",
-  "/recovery/onboarding",
-  "/recovery/community",
-  "/recovery/journal",
-  "/recovery/me",
-  "/recovery/dashboard",
-  "/recovery/activity",
-  "/recovery/welcome",
-];
+function socialCallbackUrl(req: any, provider: string): string {
+  return `${req.protocol}://${req.get("host")}/api/auth/${provider}/callback`;
+}
 
-function safeRecoveryReturnTo(value: unknown, fallback = "/recovery/today"): string {
-  if (typeof value !== "string") return fallback;
-  const decoded = value.trim();
-  if (!decoded.startsWith("/") || decoded.startsWith("//") || decoded.includes("\\")) return fallback;
-  return RECOVERY_RETURN_PATHS.some((path) => decoded === path || decoded.startsWith(`${path}?`)) ? decoded : fallback;
+async function readOAuthJson(response: globalThis.Response): Promise<any> {
+  if (!response.ok) {
+    throw new Error(`OAuth provider returned ${response.status}`);
+  }
+  return response.json();
+}
+
+async function getFacebookOAuthProfile(req: any, code: string) {
+  const tokenUrl = new URL("https://graph.facebook.com/v18.0/oauth/access_token");
+  tokenUrl.search = new URLSearchParams({
+    client_id: process.env.FACEBOOK_APP_ID!,
+    client_secret: process.env.FACEBOOK_APP_SECRET!,
+    redirect_uri: socialCallbackUrl(req, "facebook"),
+    code,
+  }).toString();
+  const token = await readOAuthJson(await fetch(tokenUrl));
+  if (!token.access_token) throw new Error("Facebook did not return an access token");
+
+  const profileUrl = new URL("https://graph.facebook.com/me");
+  profileUrl.search = new URLSearchParams({
+    fields: "id,name,email,picture",
+    access_token: token.access_token,
+  }).toString();
+  const profile = await readOAuthJson(await fetch(profileUrl));
+  return {
+    id: String(profile.id),
+    displayName: profile.name,
+    emails: profile.email ? [{ value: profile.email }] : [],
+    photos: profile.picture?.data?.url ? [{ value: profile.picture.data.url }] : [],
+    provider: "facebook",
+  };
+}
+
+async function getGitHubOAuthProfile(req: any, code: string) {
+  const tokenResponse = await fetch("https://github.com/login/oauth/access_token", {
+    method: "POST",
+    headers: { Accept: "application/json", "Content-Type": "application/json" },
+    body: JSON.stringify({
+      client_id: process.env.GITHUB_CLIENT_ID,
+      client_secret: process.env.GITHUB_CLIENT_SECRET,
+      code,
+      redirect_uri: socialCallbackUrl(req, "github"),
+    }),
+  });
+  const token = await readOAuthJson(tokenResponse);
+  if (!token.access_token) throw new Error("GitHub did not return an access token");
+
+  const headers = {
+    Accept: "application/vnd.github+json",
+    Authorization: `Bearer ${token.access_token}`,
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
+  const profile = await readOAuthJson(await fetch("https://api.github.com/user", { headers }));
+  let email = profile.email;
+  if (!email) {
+    const emails = await readOAuthJson(await fetch("https://api.github.com/user/emails", { headers }));
+    email = emails.find((candidate: any) => candidate.primary && candidate.verified)?.email
+      || emails.find((candidate: any) => candidate.verified)?.email;
+  }
+  return {
+    id: String(profile.id),
+    displayName: profile.name || profile.login,
+    emails: email ? [{ value: email }] : [],
+    photos: profile.avatar_url ? [{ value: profile.avatar_url }] : [],
+    provider: "github",
+  };
+}
+
+function decodeAppleIdentityToken(idToken: string): { sub?: string; email?: string } {
+  const [, encodedPayload] = idToken.split(".");
+  if (!encodedPayload) throw new Error("Apple did not return a valid identity token");
+  const payload = JSON.parse(Buffer.from(encodedPayload, "base64url").toString("utf8"));
+  return { sub: payload.sub, email: payload.email };
+}
+
+async function getAppleOAuthProfile(req: any, code: string) {
+  const tokenResponse = await fetch("https://appleid.apple.com/auth/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      client_id: process.env.APPLE_CLIENT_ID!,
+      client_secret: process.env.APPLE_CLIENT_SECRET!,
+      code,
+      grant_type: "authorization_code",
+      redirect_uri: socialCallbackUrl(req, "apple"),
+    }),
+  });
+  const token = await readOAuthJson(tokenResponse);
+  if (!token.id_token) throw new Error("Apple did not return an identity token");
+  const identity = decodeAppleIdentityToken(token.id_token);
+  if (!identity.sub) throw new Error("Apple identity token has no subject");
+  return {
+    id: identity.sub,
+    displayName: undefined,
+    emails: identity.email ? [{ value: identity.email }] : [],
+    photos: [],
+    provider: "apple",
+  };
 }
 
 async function ensureCommunitySafetyTables() {
@@ -2261,38 +2353,7 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
       if (err || !user) {
         return res.redirect('/recovery/login?error=google');
       }
-      req.logIn(user, (loginErr) => {
-        if (loginErr) {
-          return res.redirect('/recovery/login?error=google');
-        }
-        void (async () => {
-          const returnTo = safeRecoveryReturnTo((req.session as any)?.returnTo);
-          delete (req.session as any).returnTo;
-          // A first-time Google member must finish the saved assessment before
-          // landing in the daily experience. Returning members keep their
-          // requested destination.
-          try {
-            const { db: authDb } = await import("./db");
-            const { sasquatchAssessments, survivorPlans } = await import("../shared/schema");
-            const { eq } = await import("drizzle-orm");
-            const [[assessment], [plan]] = await Promise.all([
-              authDb.select({ id: sasquatchAssessments.id })
-                .from(sasquatchAssessments)
-                .where(eq(sasquatchAssessments.userId, user.id))
-                .limit(1),
-              authDb.select({ id: survivorPlans.id })
-                .from(survivorPlans)
-                .where(eq(survivorPlans.userId, user.id))
-                .limit(1),
-            ]);
-            res.redirect(assessment && plan ? returnTo : "/recovery/onboarding");
-          } catch {
-            // If the completion check is unavailable, fail closed so a new
-            // survivor cannot bypass the assessment on a transient DB error.
-            res.redirect("/recovery/onboarding");
-          }
-        })();
-      });
+      completeRecoverySocialLogin(req, res, user, '/recovery/login?error=google');
     })(req, res, next);
   });
 
@@ -2300,22 +2361,60 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
     if (!process.env.FACEBOOK_APP_ID) {
       return res.status(503).json({ message: "Facebook authentication not configured" });
     }
-    res.redirect(`https://www.facebook.com/v18.0/dialog/oauth?client_id=${process.env.FACEBOOK_APP_ID}&redirect_uri=${encodeURIComponent(req.protocol + '://' + req.get('host') + '/api/auth/facebook/callback')}&scope=email,public_profile`);
+    (req.session as any).returnTo = safeRecoveryReturnTo(req.query.next);
+    res.redirect(`https://www.facebook.com/v18.0/dialog/oauth?client_id=${encodeURIComponent(process.env.FACEBOOK_APP_ID)}&redirect_uri=${encodeURIComponent(socialCallbackUrl(req, "facebook"))}&scope=email,public_profile`);
+  });
+
+  app.get('/api/auth/facebook/callback', async (req, res) => {
+    try {
+      const code = typeof req.query.code === "string" ? req.query.code : "";
+      if (!code || !process.env.FACEBOOK_APP_SECRET) throw new Error("Facebook OAuth is not configured");
+      const user = await findOrCreateOAuthUser(await getFacebookOAuthProfile(req, code));
+      completeRecoverySocialLogin(req, res, user, '/recovery/login?error=facebook');
+    } catch {
+      res.redirect('/recovery/login?error=facebook');
+    }
   });
 
   app.get('/api/auth/github', (req, res) => {
     if (!process.env.GITHUB_CLIENT_ID) {
       return res.status(503).json({ message: "GitHub authentication not configured" });
     }
-    res.redirect(`https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(req.protocol + '://' + req.get('host') + '/api/auth/github/callback')}&scope=user:email`);
+    (req.session as any).returnTo = safeRecoveryReturnTo(req.query.next);
+    res.redirect(`https://github.com/login/oauth/authorize?client_id=${encodeURIComponent(process.env.GITHUB_CLIENT_ID)}&redirect_uri=${encodeURIComponent(socialCallbackUrl(req, "github"))}&scope=user:email`);
+  });
+
+  app.get('/api/auth/github/callback', async (req, res) => {
+    try {
+      const code = typeof req.query.code === "string" ? req.query.code : "";
+      if (!code || !process.env.GITHUB_CLIENT_SECRET) throw new Error("GitHub OAuth is not configured");
+      const user = await findOrCreateOAuthUser(await getGitHubOAuthProfile(req, code));
+      completeRecoverySocialLogin(req, res, user, '/recovery/login?error=github');
+    } catch {
+      res.redirect('/recovery/login?error=github');
+    }
   });
 
   app.get('/api/auth/apple', (req, res) => {
     if (!process.env.APPLE_CLIENT_ID) {
       return res.status(503).json({ message: "Apple authentication not configured" });
     }
-    res.redirect(`https://appleid.apple.com/auth/authorize?client_id=${process.env.APPLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(req.protocol + '://' + req.get('host') + '/api/auth/apple/callback')}&response_type=code%20id_token&scope=name%20email&response_mode=form_post`);
+    (req.session as any).returnTo = safeRecoveryReturnTo(req.query.next);
+    res.redirect(`https://appleid.apple.com/auth/authorize?client_id=${encodeURIComponent(process.env.APPLE_CLIENT_ID)}&redirect_uri=${encodeURIComponent(socialCallbackUrl(req, "apple"))}&response_type=code%20id_token&scope=name%20email&response_mode=form_post`);
   });
+
+  const appleCallback = async (req: any, res: any) => {
+    try {
+      const code = typeof req.body?.code === "string" ? req.body.code : typeof req.query.code === "string" ? req.query.code : "";
+      if (!code || !process.env.APPLE_CLIENT_SECRET) throw new Error("Apple OAuth is not configured");
+      const user = await findOrCreateOAuthUser(await getAppleOAuthProfile(req, code));
+      completeRecoverySocialLogin(req, res, user, '/recovery/login?error=apple');
+    } catch {
+      res.redirect('/recovery/login?error=apple');
+    }
+  };
+  app.post('/api/auth/apple/callback', appleCallback);
+  app.get('/api/auth/apple/callback', appleCallback);
 
   // Stripe routes
   app.get('/api/stripe/publishable-key', async (req, res) => {

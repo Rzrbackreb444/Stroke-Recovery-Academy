@@ -11,9 +11,10 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const [serverApp, serverRoutes, clientApp, recoveryLogin, recoveryToday] = await Promise.all([
+const [serverApp, serverRoutes, authModule, clientApp, recoveryLogin, recoveryToday] = await Promise.all([
   readFile(new URL("../server/app.ts", import.meta.url), "utf8"),
   readFile(new URL("../server/routes.ts", import.meta.url), "utf8"),
+  readFile(new URL("../server/replitAuth.ts", import.meta.url), "utf8"),
   readFile(new URL("../client/src/App.tsx", import.meta.url), "utf8"),
   readFile(new URL("../client/src/pages/RecoveryLogin.tsx", import.meta.url), "utf8"),
   readFile(new URL("../client/src/pages/RecoveryToday.tsx", import.meta.url), "utf8"),
@@ -89,29 +90,78 @@ test("new-account signup always enters onboarding, ignoring the public destinati
   );
 });
 
-test("Google auth sends new survivors to onboarding and completed survivors to next", () => {
+test("shared social auth handoff requires assessment and plan, failing closed", () => {
+  const recoveryHandoff = sourceBetween(
+    authModule,
+    "export async function getRecoveryAuthRedirect",
+    "export function completeRecoverySocialLogin",
+  );
+
+  assert.match(recoveryHandoff, /const returnTo = safeRecoveryReturnTo/);
+  assert.match(recoveryHandoff, /const \[\[assessment\], \[plan\]\] = await Promise\.all/);
+  assert.match(recoveryHandoff, /sasquatchAssessments\.userId, userId/);
+  assert.match(recoveryHandoff, /survivorPlans\.userId, userId/);
+  assert.match(
+    recoveryHandoff,
+    /return assessment && plan \? returnTo : "\/recovery\/onboarding"/,
+  );
+  assert.match(
+    recoveryHandoff,
+    /catch \{\s*return "\/recovery\/onboarding";\s*\}/,
+  );
+  assert.match(
+    authModule,
+    /res\.redirect\(await getRecoveryAuthRedirect\(userId, requestedReturnTo\)\)/,
+  );
+});
+
+test("Replit OIDC callback uses the same recovery handoff", () => {
+  const oidcCallback = sourceBetween(
+    authModule,
+    'app.get("/api/callback"',
+    "  });\n\n  app.get(\"/api/logout\"",
+  );
+
+  assert.match(oidcCallback, /failureRedirect: "\/api\/login"/);
+  assert.doesNotMatch(oidcCallback, /successReturnToOrRedirect/);
+  assert.match(oidcCallback, /completeRecoverySocialLogin\(req, res, user, "\/api\/login"\)/);
+});
+
+test("every enabled social callback uses the shared recovery handoff", () => {
   const googleCallback = sourceBetween(
     serverRoutes,
     "app.get('/api/auth/google/callback'",
     "app.get('/api/auth/facebook'",
   );
 
-  assert.match(googleCallback, /const returnTo = safeRecoveryReturnTo/);
-  assert.match(googleCallback, /const \[\[assessment\], \[plan\]\] = await Promise\.all/);
-  assert.match(googleCallback, /sasquatchAssessments\.userId, user\.id/);
-  assert.match(googleCallback, /survivorPlans\.userId, user\.id/);
-  assert.match(
-    googleCallback,
-    /res\.redirect\(assessment && plan \? returnTo : "\/recovery\/onboarding"\)/,
-  );
-  assert.match(
-    googleCallback,
-    /catch \{\s*\/\/ If the completion check is unavailable[\s\S]*?res\.redirect\("\/recovery\/onboarding"\)/,
-  );
+  assert.match(googleCallback, /completeRecoverySocialLogin\(req, res, user, '\/recovery\/login\?error=google'\)/);
   assert.match(
     recoveryLogin,
     /href=\{`\/api\/auth\/google\?next=\$\{encodeURIComponent\(safeNext\)\}`\}/,
   );
+
+  for (const provider of ["facebook", "github"]) {
+    const callback = sourceBetween(
+      serverRoutes,
+      `app.get('/api/auth/${provider}/callback'`,
+      `app.get('/api/auth/${provider === "facebook" ? "github" : "apple"}'`,
+    );
+    assert.match(callback, new RegExp(`completeRecoverySocialLogin\\(req, res, user, '/recovery/login\\?error=${provider}'\\)`));
+    assert.match(callback, /catch \{\s*res\.redirect\('\/recovery\/login\?error=/);
+  }
+
+  const appleCallback = sourceBetween(serverRoutes, "const appleCallback =", "// Stripe routes");
+  assert.match(appleCallback, /completeRecoverySocialLogin\(req, res, user, '\/recovery\/login\?error=apple'\)/);
+  assert.match(appleCallback, /catch \{\s*res\.redirect\('\/recovery\/login\?error=apple'\)/);
+
+  for (const provider of ["facebook", "github", "apple"]) {
+    const entry = sourceBetween(
+      serverRoutes,
+      `app.get('/api/auth/${provider}'`,
+      provider === "apple" ? "const appleCallback =" : `app.get('/api/auth/${provider}/callback'`,
+    );
+    assert.match(entry, /\(req\.session as any\)\.returnTo = safeRecoveryReturnTo/);
+  }
 });
 
 test("OTP auth uses the same new-versus-onboarded routing contract", () => {
