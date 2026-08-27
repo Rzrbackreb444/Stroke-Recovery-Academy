@@ -155,6 +155,11 @@ import {
 } from "../shared/schema";
 import { db } from "./db";
 import { eq, and, gte, lte, desc, asc, ilike, or, sql, count } from "drizzle-orm";
+import {
+  ensureRecoveryFunnelTable,
+  getRecoveryFunnelReport,
+  recordRecoveryFunnelEvent,
+} from "./services/recoveryFunnelService";
 import { 
   generateCompleteScript, 
   generateSceneStoryboard, 
@@ -10834,6 +10839,20 @@ ALWAYS END WITH A QUOTE (mandatory — every single reply, no exceptions):
   });
 
   // ─── Daily Routine API ───────────────────────────────────────────────────
+  // Record entry separately from recommendation reads so admin reporting
+  // measures the actual Today surface, not background/dashboard fetches.
+  app.post('/api/recovery/today/entry', isAuthenticated, async (req: any, res) => {
+    try {
+      await recordRecoveryFunnelEvent(getUserId(req)!, 'today_entered', {
+        source: 'recovery_today',
+      });
+      res.json({ ok: true });
+    } catch (error) {
+      console.error('Error recording Today entry:', error);
+      res.status(500).json({ message: 'Failed to record Today entry' });
+    }
+  });
+
   // GET /api/recovery/routine/today — load or create today's routine entry
   app.get('/api/recovery/routine/today', isAuthenticated, async (req: any, res) => {
     try {
@@ -11159,6 +11178,7 @@ ALWAYS END WITH A QUOTE (mandatory — every single reply, no exceptions):
       // Feedback and completion are one logical action. If either write
       // fails, neither is committed so recommendation/streak data cannot
       // disagree with the reaction the survivor just submitted.
+      await ensureRecoveryFunnelTable();
       await db.transaction(async (tx) => {
         await tx.execute(
           sql`INSERT INTO routine_feedback (user_id, date, task_id, level, reaction, created_at)
@@ -11181,6 +11201,18 @@ ALWAYS END WITH A QUOTE (mandatory — every single reply, no exceptions):
                     WHERE routine_completions.user_id = ${userId} AND routine_completions.date = ${dateStr}
                   ),
                   updated_at = NOW()`
+          );
+        }
+
+        // A non-skipped reaction is the first durable proof that the survivor
+        // completed a recovery rep. The unique user/event key makes retries
+        // and later feedback updates harmless.
+        if (reaction !== 'skipped') {
+          await recordRecoveryFunnelEvent(
+            userId,
+            'first_rep',
+            { taskId, level: lvl, date: dateStr, reaction },
+            tx as any,
           );
         }
       });
@@ -11224,11 +11256,19 @@ ALWAYS END WITH A QUOTE (mandatory — every single reply, no exceptions):
         .orderBy(desc(sasquatchAssessments.takenAt))
         .limit(1);
       const normalizedNotes = notes ? String(notes).slice(0, 1000) : null;
-      if (existing && (existing.notes || null) === normalizedNotes) return res.json(existing);
+      if (existing && (existing.notes || null) === normalizedNotes) {
+        await recordRecoveryFunnelEvent(userId, 'assessment_completed', {
+          assessmentId: existing.id,
+        });
+        return res.json(existing);
+      }
       const [row] = await dbInst.insert(sasquatchAssessments).values({
         userId, physical, cognitive, speech, emotional, memory,
         notes: normalizedNotes,
       }).returning();
+      await recordRecoveryFunnelEvent(userId, 'assessment_completed', {
+        assessmentId: row.id,
+      });
       res.json(row);
     } catch (error) {
       console.error('Error saving assessment:', error);
@@ -11301,6 +11341,16 @@ ALWAYS END WITH A QUOTE (mandatory — every single reply, no exceptions):
         .orderBy(desc(survivorPlans.generatedAt))
         .limit(1);
       if (existingPlan?.plan) {
+        await recordRecoveryFunnelEvent(userId, 'plan_generated', {
+          planId: existingPlan.id,
+          assessmentId: assessment.id,
+          reused: true,
+        });
+        await recordRecoveryFunnelEvent(userId, 'onboarding_completed', {
+          planId: existingPlan.id,
+          assessmentId: assessment.id,
+          reused: true,
+        });
         return res.json({ plan: existingPlan.plan, generatedAt: existingPlan.generatedAt, reused: true });
       }
 
@@ -11508,6 +11558,14 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
         assessmentId: assessment.id,
         plan,
       }).returning();
+      await recordRecoveryFunnelEvent(userId, 'plan_generated', {
+        planId: row.id,
+        assessmentId: assessment.id,
+      });
+      await recordRecoveryFunnelEvent(userId, 'onboarding_completed', {
+        planId: row.id,
+        assessmentId: assessment.id,
+      });
       res.json({ plan: row.plan, generatedAt: row.generatedAt });
     } catch (error) {
       console.error('Error generating plan:', error);
@@ -22892,6 +22950,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         return d;
       };
       const since = sinceDays(days);
+      const recoveryFunnel = await getRecoveryFunnelReport(days);
 
       // Signups by day
       const signupsByDay = await db.execute(sql`
@@ -22974,10 +23033,23 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         },
         recentSignups: recentRows,
         topFeatures: (topFeatures.rows as any[]).map(r => ({ feature: r.feature_key, uses: Number(r.uses) })),
+        recoveryFunnel,
       });
     } catch (error) {
       console.error("Error fetching admin analytics:", error);
       res.status(500).json({ message: "Failed to fetch analytics" });
+    }
+  });
+
+  // Dedicated endpoint for staff tools and exports that only need the
+  // onboarding-to-first-rep funnel.
+  app.get('/api/admin/recovery-funnel', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const days = Math.min(Math.max(parseInt(req.query.days as string) || 30, 7), 90);
+      res.json(await getRecoveryFunnelReport(days));
+    } catch (error) {
+      console.error("Error fetching recovery funnel:", error);
+      res.status(500).json({ message: "Failed to fetch recovery funnel" });
     }
   });
 

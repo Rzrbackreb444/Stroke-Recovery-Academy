@@ -6296,6 +6296,26 @@ export const insertSurvivorPlanSchema = createInsertSchema(survivorPlans).omit({
 export type SurvivorPlan = typeof survivorPlans.$inferSelect;
 export type InsertSurvivorPlan = z.infer<typeof insertSurvivorPlanSchema>;
 
+// Durable milestones for the survivor onboarding-to-first-rep funnel.
+// Each milestone is recorded once per survivor; retries must not inflate counts.
+export const recoveryFunnelEvents = pgTable("recovery_funnel_events", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  eventType: text("event_type").notNull(), // assessment_completed | plan_generated | onboarding_completed | today_entered | first_rep
+  metadata: jsonb("metadata").notNull().default({}),
+  occurredAt: timestamp("occurred_at").notNull().defaultNow(),
+}, (t) => ({
+  userEventUnique: uniqueIndex("recovery_funnel_user_event_unique").on(t.userId, t.eventType),
+  eventOccurredIdx: index("recovery_funnel_event_occurred_idx").on(t.eventType, t.occurredAt),
+}));
+
+export const insertRecoveryFunnelEventSchema = createInsertSchema(recoveryFunnelEvents).omit({
+  id: true,
+  occurredAt: true,
+});
+export type RecoveryFunnelEvent = typeof recoveryFunnelEvents.$inferSelect;
+export type InsertRecoveryFunnelEvent = z.infer<typeof insertRecoveryFunnelEventSchema>;
+
 // Real evidence-based exercise catalog (seeded from Nick's authored protocols)
 export const recoveryExercises = pgTable("recovery_exercises", {
   id: serial("id").primaryKey(),

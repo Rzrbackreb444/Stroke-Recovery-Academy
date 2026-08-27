@@ -571,6 +571,23 @@ interface AnalyticsData {
     isLikelyTest: boolean;
   }>;
   topFeatures: Array<{ feature: string; uses: number }>;
+  recoveryFunnel: {
+    rangeDays: number;
+    totals: {
+      assessment_completed: number;
+      plan_generated: number;
+      onboarding_completed: number;
+      today_entered: number;
+      first_rep: number;
+    };
+    stages: Array<{
+      eventType: string;
+      label: string;
+      count: number;
+      percentOfAssessments: number;
+      dropOffFromPrevious: number | null;
+    }>;
+  };
 }
 
 function AnalyticsTab() {
@@ -597,7 +614,7 @@ function AnalyticsTab() {
     );
   }
 
-  const { totals, signupsByDay, recentSignups, topFeatures } = data;
+  const { totals, signupsByDay, recentSignups, topFeatures, recoveryFunnel } = data;
   const realRecent = recentSignups.filter((u) => !u.isLikelyTest);
   const testRecent = recentSignups.filter((u) => u.isLikelyTest);
 
@@ -650,6 +667,36 @@ function AnalyticsTab() {
           subtitle="of last 25 signups"
         />
       </div>
+
+      <Card data-testid="card-recovery-funnel">
+        <CardHeader>
+          <CardTitle className="text-base">Recovery onboarding funnel (last {recoveryFunnel.rangeDays} days)</CardTitle>
+          <p className="text-sm text-gray-400">
+            Counts are unique survivors, so refreshes and repeated submissions do not inflate the drop-off view.
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            {[
+              ["assessment_completed", "Assessment completed"],
+              ["plan_generated", "Plan generated"],
+              ["onboarding_completed", "Onboarding complete"],
+              ["today_entered", "Entered Today"],
+              ["first_rep", "First non-skipped rep"],
+            ].map(([key, label]) => (
+              <div key={key} className="rounded-md border border-[#333] p-3" data-testid={`funnel-${key}`}>
+                <div className="text-xs text-gray-400">{label}</div>
+                <div className="text-2xl font-bold mt-1">{recoveryFunnel.totals[key as keyof typeof recoveryFunnel.totals].toLocaleString()}</div>
+                {key !== "assessment_completed" && (
+                  <div className="text-xs text-gray-500 mt-1">
+                    {recoveryFunnel.stages.find((stage) => stage.eventType === key)?.percentOfAssessments ?? 0}% of assessments
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
