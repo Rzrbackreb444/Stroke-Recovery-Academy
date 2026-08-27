@@ -1,6 +1,52 @@
 import type { Express } from "express";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 import { getObjectAclPolicy, ObjectPermission } from "./objectAcl";
+import { isAuthenticated } from "../../replitAuth";
+import { getUserId } from "../../lib/authUtils";
+import {
+  normalizeUploadMetadata,
+  UploadMetadataValidationError,
+} from "./uploadPolicy";
+
+const uploadRateLimitStore = new Map<
+  string,
+  { count: number; resetAt: number }
+>();
+const UPLOAD_RATE_LIMIT_MAX = 30;
+const UPLOAD_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+
+function uploadRequestRateLimit(req: any, res: any, next: any): void {
+  const userId = getUserId(req) || "anonymous";
+  const ip = (
+    (req.headers["x-forwarded-for"] as string) ||
+    req.socket?.remoteAddress ||
+    "unknown"
+  )
+    .split(",")[0]
+    .trim();
+  const key = `${userId}:${ip}`;
+  const now = Date.now();
+  const entry = uploadRateLimitStore.get(key);
+  if (!entry || now > entry.resetAt) {
+    uploadRateLimitStore.set(key, {
+      count: 1,
+      resetAt: now + UPLOAD_RATE_LIMIT_WINDOW_MS,
+    });
+    return next();
+  }
+  entry.count += 1;
+  if (entry.count > UPLOAD_RATE_LIMIT_MAX) {
+    res.setHeader(
+      "Retry-After",
+      Math.max(1, Math.ceil((entry.resetAt - now) / 1000)),
+    );
+    res.status(429).json({
+      error: "Too many upload requests. Please wait before trying again.",
+    });
+    return;
+  }
+  next();
+}
 
 /**
  * Register object storage routes for file uploads.
@@ -36,32 +82,38 @@ export function registerObjectStorageRoutes(app: Express): void {
    * IMPORTANT: The client should NOT send the file to this endpoint.
    * Send JSON metadata only, then upload the file directly to uploadURL.
    */
-  app.post("/api/uploads/request-url", async (req, res) => {
-    try {
-      const { name, size, contentType } = req.body;
-
-      if (!name) {
-        return res.status(400).json({
-          error: "Missing required field: name",
+  app.post(
+    "/api/uploads/request-url",
+    isAuthenticated,
+    uploadRequestRateLimit,
+    async (req: any, res) => {
+      try {
+        const ownerId = getUserId(req);
+        if (!ownerId) return res.status(401).json({ error: "Unauthorized" });
+        const metadata = normalizeUploadMetadata(req.body);
+        const uploadURL = await objectStorageService.getObjectEntityUploadURL({
+          ownerId,
+          metadata,
         });
+
+        // Extract object path from the presigned URL for later reference
+        const objectPath =
+          objectStorageService.normalizeObjectEntityPath(uploadURL);
+
+        res.json({
+          uploadURL,
+          objectPath,
+          metadata,
+        });
+      } catch (error) {
+        if (error instanceof UploadMetadataValidationError) {
+          return res.status(error.statusCode).json({ error: error.message });
+        }
+        console.error("Error generating upload URL:", error);
+        res.status(500).json({ error: "Failed to generate upload URL" });
       }
-
-      const uploadURL = await objectStorageService.getObjectEntityUploadURL();
-
-      // Extract object path from the presigned URL for later reference
-      const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
-
-      res.json({
-        uploadURL,
-        objectPath,
-        // Echo back the metadata for client convenience
-        metadata: { name, size, contentType },
-      });
-    } catch (error) {
-      console.error("Error generating upload URL:", error);
-      res.status(500).json({ error: "Failed to generate upload URL" });
-    }
-  });
+    },
+  );
 
   /**
    * Serve uploaded objects.
@@ -89,6 +141,16 @@ export function registerObjectStorageRoutes(app: Express): void {
         });
         if (!allowed) {
           // 404 (not 403) to avoid leaking object existence.
+          return res.status(404).json({ error: "Object not found" });
+        }
+      } else if (!aclPolicy) {
+        // A just-uploaded object has not received its ACL metadata yet. An
+        // upload intent closes that otherwise-public gap without changing
+        // access to legacy objects that predate the intent table.
+        const userId = getUserId(req);
+        const issuedUploadAccess =
+          await objectStorageService.canAccessIssuedUpload(req.path, userId);
+        if (issuedUploadAccess === false) {
           return res.status(404).json({ error: "Object not found" });
         }
       }

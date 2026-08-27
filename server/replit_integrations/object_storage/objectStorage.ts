@@ -1,6 +1,7 @@
 import { Storage, File } from "@google-cloud/storage";
 import { Response } from "express";
 import { randomUUID } from "crypto";
+import { sql } from "drizzle-orm";
 import {
   ObjectAclPolicy,
   ObjectPermission,
@@ -8,6 +9,14 @@ import {
   getObjectAclPolicy,
   setObjectAclPolicy,
 } from "./objectAcl";
+import { db } from "../../db";
+import { objectUploadIntents } from "@shared/schema";
+import { and, eq, isNull, gt } from "drizzle-orm";
+import {
+  normalizeUploadMetadata,
+  type UploadMetadata,
+  UPLOAD_INTENT_TTL_SECONDS,
+} from "./uploadPolicy";
 
 const REPLIT_SIDECAR_ENDPOINT = "http://127.0.0.1:1106";
 
@@ -38,9 +47,41 @@ export class ObjectNotFoundError extends Error {
   }
 }
 
+export class ObjectUploadIntentError extends Error {
+  constructor(message = "Upload reference is invalid or expired") {
+    super(message);
+    this.name = "ObjectUploadIntentError";
+    Object.setPrototypeOf(this, ObjectUploadIntentError.prototype);
+  }
+}
+
 // The object storage service is used to interact with the object storage service.
 export class ObjectStorageService {
+  private static uploadIntentTableReady: Promise<void> | null = null;
+
   constructor() {}
+
+  /**
+   * The migration is the source of truth, while this additive initializer
+   * keeps existing development databases usable until they run the migration.
+   */
+  private async ensureUploadIntentTable(): Promise<void> {
+    if (!ObjectStorageService.uploadIntentTableReady) {
+      ObjectStorageService.uploadIntentTableReady = db.execute(sql`
+        CREATE TABLE IF NOT EXISTS object_upload_intents (
+          object_path TEXT PRIMARY KEY NOT NULL,
+          owner_id VARCHAR NOT NULL,
+          original_name TEXT NOT NULL,
+          declared_size INTEGER NOT NULL,
+          content_type TEXT NOT NULL,
+          expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+          consumed_at TIMESTAMP WITH TIME ZONE,
+          created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+        )
+      `).then(() => undefined);
+    }
+    await ObjectStorageService.uploadIntentTableReady;
+  }
 
   // Gets the public object search paths.
   getPublicObjectSearchPaths(): Array<string> {
@@ -130,8 +171,16 @@ export class ObjectStorageService {
     }
   }
 
-  // Gets the upload URL for an object entity.
-  async getObjectEntityUploadURL(): Promise<string> {
+  // Gets an owner-bound upload URL for an object entity.
+  async getObjectEntityUploadURL({
+    ownerId,
+    metadata,
+  }: {
+    ownerId: string;
+    metadata: UploadMetadata;
+  }): Promise<string> {
+    const normalizedMetadata = normalizeUploadMetadata(metadata);
+    await this.ensureUploadIntentTable();
     const privateObjectDir = this.getPrivateObjectDir();
     if (!privateObjectDir) {
       throw new Error(
@@ -145,13 +194,24 @@ export class ObjectStorageService {
 
     const { bucketName, objectName } = parseObjectPath(fullPath);
 
-    // Sign URL for PUT method with TTL
-    return signObjectURL({
+    // Sign URL for PUT method with TTL.
+    const uploadURL = await signObjectURL({
       bucketName,
       objectName,
       method: "PUT",
-      ttlSec: 900,
+      ttlSec: UPLOAD_INTENT_TTL_SECONDS,
     });
+    const objectPath = this.normalizeObjectEntityPath(uploadURL);
+    const expiresAt = new Date(Date.now() + UPLOAD_INTENT_TTL_SECONDS * 1000);
+    await db.insert(objectUploadIntents).values({
+      objectPath,
+      ownerId,
+      originalName: normalizedMetadata.name,
+      declaredSize: normalizedMetadata.size,
+      contentType: normalizedMetadata.contentType,
+      expiresAt,
+    });
+    return uploadURL;
   }
 
   // Gets the object entity file from the object path.
@@ -209,7 +269,11 @@ export class ObjectStorageService {
   // Tries to set the ACL policy for the object entity and return the normalized path.
   async trySetObjectEntityAclPolicy(
     rawPath: string,
-    aclPolicy: ObjectAclPolicy
+    aclPolicy: ObjectAclPolicy,
+    options: {
+      requireUploadIntent?: boolean;
+      consumeUploadIntent?: boolean;
+    } = {},
   ): Promise<string> {
     const normalizedPath = this.normalizeObjectEntityPath(rawPath);
     if (!normalizedPath.startsWith("/")) {
@@ -217,8 +281,92 @@ export class ObjectStorageService {
     }
 
     const objectFile = await this.getObjectEntityFile(normalizedPath);
+    let intent: typeof objectUploadIntents.$inferSelect | undefined;
+    if (options.requireUploadIntent) {
+      intent = await this.getUploadIntent(normalizedPath, aclPolicy.owner);
+      const [metadata] = await objectFile.getMetadata();
+      const actualSize = Number(metadata.size);
+      const actualContentType = String(metadata.contentType || "")
+        .split(";", 1)[0]
+        .trim()
+        .toLowerCase();
+      if (
+        !Number.isSafeInteger(actualSize) ||
+        actualSize > intent.declaredSize ||
+        actualContentType !== intent.contentType
+      ) {
+        throw new ObjectUploadIntentError("Uploaded file metadata does not match the issued upload.");
+      }
+    }
     await setObjectAclPolicy(objectFile, aclPolicy);
+    if (intent && options.consumeUploadIntent !== false) {
+      const claimed = await db
+        .update(objectUploadIntents)
+        .set({ consumedAt: new Date() })
+        .where(
+          and(
+            eq(objectUploadIntents.objectPath, normalizedPath),
+            eq(objectUploadIntents.ownerId, aclPolicy.owner),
+            isNull(objectUploadIntents.consumedAt),
+            gt(objectUploadIntents.expiresAt, new Date()),
+          ),
+        )
+        .returning({ objectPath: objectUploadIntents.objectPath });
+      if (claimed.length === 0) {
+        throw new ObjectUploadIntentError();
+      }
+    }
     return normalizedPath;
+  }
+
+  private async getUploadIntent(
+    objectPath: string,
+    ownerId: string,
+  ): Promise<typeof objectUploadIntents.$inferSelect> {
+    await this.ensureUploadIntentTable();
+    const [intent] = await db
+      .select()
+      .from(objectUploadIntents)
+      .where(
+        and(
+          eq(objectUploadIntents.objectPath, objectPath),
+          eq(objectUploadIntents.ownerId, ownerId),
+          isNull(objectUploadIntents.consumedAt),
+          gt(objectUploadIntents.expiresAt, new Date()),
+        ),
+      )
+      .limit(1);
+    if (!intent) throw new ObjectUploadIntentError();
+    return intent;
+  }
+
+  /**
+   * Missing ACL metadata remains publicly readable for legacy objects. Newly
+   * issued objects are the exception: until their ACL is written, an active
+   * upload intent is enough to keep the object owner-only.
+   *
+   * Returns null when the path was not issued by this flow, so callers can
+   * retain the existing legacy-object behavior.
+   */
+  async canAccessIssuedUpload(
+    objectPath: string,
+    userId?: string,
+  ): Promise<boolean | null> {
+    await this.ensureUploadIntentTable();
+    const [intent] = await db
+      .select({
+        ownerId: objectUploadIntents.ownerId,
+        expiresAt: objectUploadIntents.expiresAt,
+      })
+      .from(objectUploadIntents)
+      .where(eq(objectUploadIntents.objectPath, objectPath))
+      .limit(1);
+    if (!intent) return null;
+    return Boolean(
+      userId &&
+        intent.ownerId === userId &&
+        intent.expiresAt.getTime() > Date.now(),
+    );
   }
 
   // Checks if the user can access the object entity.

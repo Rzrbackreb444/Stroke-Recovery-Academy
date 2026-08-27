@@ -13269,10 +13269,31 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     for (const mediaPath of [entry?.photoUrl ?? entry?.photo_url, entry?.voiceUrl ?? entry?.voice_url]) {
       if (typeof mediaPath === 'string' && mediaPath.startsWith('/objects/')) {
         try {
-          await objectStorage.trySetObjectEntityAclPolicy(mediaPath, { owner: ownerId, visibility });
+          // Existing journal media may predate upload intents. Preserve the
+          // share/unshare lifecycle for those objects; new attachments are
+          // required to pass the owner-bound intent check at finalization.
+          await objectStorage.trySetObjectEntityAclPolicy(
+            mediaPath,
+            { owner: ownerId, visibility },
+            { requireUploadIntent: false },
+          );
         } catch (e) {
           console.error('Failed to sync journal media ACL for entry', entry?.id, e);
         }
+      }
+    }
+  };
+  const secureNewJournalMedia = async (data: any, ownerId: string) => {
+    const objectStorage = new JournalMediaObjectStorage();
+    for (const mediaPath of [data?.photoUrl, data?.voiceUrl]) {
+      if (typeof mediaPath === 'string' && mediaPath.startsWith('/objects/')) {
+        await objectStorage.trySetObjectEntityAclPolicy(
+          mediaPath,
+          // Keep an object private until the journal row exists. The
+          // post-insert ACL sync makes an explicitly shared entry public.
+          { owner: ownerId, visibility: 'private' },
+          { requireUploadIntent: true },
+        );
       }
     }
   };
@@ -13295,12 +13316,19 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       if (!validated.success) {
         return res.status(400).json({ message: "Invalid journal entry", details: validated.error.issues });
       }
+      // Do not allow a client to attach an arbitrary existing object path.
+      // The upload intent is claimed only here, when the protected journal
+      // record is about to persist the media reference.
+      await secureNewJournalMedia(validated.data, userId);
       const entry = await storage.createJournalEntry(userId, validated.data);
       if (entry?.isShared ?? entry?.is_shared) {
         await syncJournalMediaAcl(entry, userId);
       }
       res.json(entry);
     } catch (error) {
+      if (error instanceof Error && error.name === "ObjectUploadIntentError") {
+        return res.status(400).json({ message: "Invalid or expired upload reference." });
+      }
       console.error("Error creating journal entry:", error);
       res.status(500).json({ message: "Failed to save journal entry" });
     }
@@ -13430,17 +13458,25 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
       const { ObjectStorageService } = await import('./replit_integrations/object_storage/objectStorage');
       const objectStorage = new ObjectStorageService();
-      const uploadURL = await objectStorage.getObjectEntityUploadURL();
+      const uploadURL = await objectStorage.getObjectEntityUploadURL({
+        ownerId: userId,
+        metadata: {
+          name: "reflections.pdf",
+          size: pdfBuffer.length,
+          contentType: "application/pdf",
+        },
+      });
       const putRes = await fetch(uploadURL, {
         method: 'PUT',
         body: pdfBuffer,
         headers: { 'Content-Type': 'application/pdf' },
       });
       if (!putRes.ok) throw new Error(`Object PUT failed: ${putRes.status}`);
-      const personalizedPdfUrl = await objectStorage.trySetObjectEntityAclPolicy(uploadURL, {
-        owner: userId,
-        visibility: 'private',
-      });
+      const personalizedPdfUrl = await objectStorage.trySetObjectEntityAclPolicy(
+        uploadURL,
+        { owner: userId, visibility: 'private' },
+        { requireUploadIntent: true },
+      );
 
       let customerId = user.stripeCustomerId;
       if (!customerId) {

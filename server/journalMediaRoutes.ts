@@ -14,6 +14,7 @@ import path from "path";
 import { ObjectStorageService } from "./replit_integrations/object_storage/objectStorage";
 import { transcribeVideo } from "./videoTranscription";
 import { getUserId } from "./lib/authUtils";
+import { UploadMetadataValidationError } from "./replit_integrations/object_storage/uploadPolicy";
 
 const PHOTO_MAX_BYTES = 10 * 1024 * 1024; // 10MB
 const VOICE_MAX_BYTES = 25 * 1024 * 1024; // 25MB — Whisper hard limit
@@ -46,10 +47,25 @@ export function registerJournalMediaRoutes(
     try {
       const userId = getUserId(req);
       if (!userId) return res.status(401).json({ message: "Sign in to add a photo." });
-      const uploadURL = await objectStorage.getObjectEntityUploadURL();
+      const contentType = String(req.body?.contentType || "").trim().toLowerCase();
+      const size = Number(req.body?.size);
+      const name = String(req.body?.name || "");
+      if (!contentType.startsWith("image/")) {
+        return res.status(415).json({ message: "That file isn't an image." });
+      }
+      if (size > PHOTO_MAX_BYTES) {
+        return res.status(413).json({ message: "Photo is over 10MB — pick a smaller one." });
+      }
+      const uploadURL = await objectStorage.getObjectEntityUploadURL({
+        ownerId: userId,
+        metadata: { name, size, contentType },
+      });
       const objectPath = objectStorage.normalizeObjectEntityPath(uploadURL);
       res.json({ uploadURL, objectPath });
     } catch (error) {
+      if (error instanceof UploadMetadataValidationError) {
+        return res.status(error.statusCode).json({ message: error.message });
+      }
       console.error("Error creating journal photo upload URL:", error);
       res.status(500).json({ message: "Couldn't start the upload — try again." });
     }
@@ -81,12 +97,16 @@ export function registerJournalMediaRoutes(
         return res.status(413).json({ message: "Photo is over 10MB — pick a smaller one." });
       }
 
-      await objectStorage.trySetObjectEntityAclPolicy(objectPath, {
-        owner: userId,
-        visibility: "private",
-      });
+      await objectStorage.trySetObjectEntityAclPolicy(
+        objectPath,
+        { owner: userId, visibility: "private" },
+        { requireUploadIntent: true, consumeUploadIntent: false },
+      );
       res.json({ photoUrl: objectPath });
     } catch (error) {
+      if (error instanceof Error && error.name === "ObjectUploadIntentError") {
+        return res.status(400).json({ message: "Invalid or expired upload reference." });
+      }
       console.error("Error finalizing journal photo:", error);
       res.status(500).json({ message: "Couldn't save that photo — try again." });
     }
@@ -124,7 +144,14 @@ export function registerJournalMediaRoutes(
         }
 
         const buffer = await fs.promises.readFile(tempPath);
-        const uploadURL = await objectStorage.getObjectEntityUploadURL();
+        const uploadURL = await objectStorage.getObjectEntityUploadURL({
+          ownerId: userId,
+          metadata: {
+            name: String(req.file.originalname || "voice.webm"),
+            size: req.file.size,
+            contentType: req.file.mimetype || "audio/webm",
+          },
+        });
         const putRes = await fetch(uploadURL, {
           method: "PUT",
           body: buffer,
@@ -132,10 +159,11 @@ export function registerJournalMediaRoutes(
         });
         if (!putRes.ok) throw new Error(`Object PUT failed: ${putRes.status}`);
 
-        const voiceUrl = await objectStorage.trySetObjectEntityAclPolicy(uploadURL, {
-          owner: userId,
-          visibility: "private",
-        });
+        const voiceUrl = await objectStorage.trySetObjectEntityAclPolicy(
+          uploadURL,
+          { owner: userId, visibility: "private" },
+          { requireUploadIntent: true, consumeUploadIntent: false },
+        );
 
         res.json({ voiceUrl, transcript, duration, transcriptionFailed });
       } catch (error) {

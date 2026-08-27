@@ -307,6 +307,30 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// A short-lived, owner-bound record for every presigned object upload. The
+// object path is the primary key so an issued path can never be claimed by a
+// second account or reused after attachment.
+export const objectUploadIntents = pgTable("object_upload_intents", {
+  objectPath: text("object_path").primaryKey(),
+  ownerId: varchar("owner_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  originalName: text("original_name").notNull(),
+  declaredSize: integer("declared_size").notNull(),
+  contentType: text("content_type").notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  consumedAt: timestamp("consumed_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  index("object_upload_intents_owner_idx").on(table.ownerId, table.createdAt),
+  index("object_upload_intents_expiry_idx").on(table.expiresAt),
+]);
+
+export const insertObjectUploadIntentSchema = createInsertSchema(objectUploadIntents).omit({
+  createdAt: true,
+  consumedAt: true,
+});
+export type ObjectUploadIntent = typeof objectUploadIntents.$inferSelect;
+export type InsertObjectUploadIntent = z.infer<typeof insertObjectUploadIntentSchema>;
+
 // Power Points — purchased by family/friends/therapists, gifted to a survivor
 // with a motivational message. Delivered as bonus credits + persistent inbox entry.
 export const powerPointGifts = pgTable("power_point_gifts", {

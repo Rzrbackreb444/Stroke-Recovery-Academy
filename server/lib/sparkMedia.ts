@@ -9,7 +9,14 @@ export async function uploadSparkMedia(
   ownerId: string,
 ): Promise<string> {
   const svc = new ObjectStorageService();
-  const uploadUrl = await svc.getObjectEntityUploadURL();
+  const uploadUrl = await svc.getObjectEntityUploadURL({
+    ownerId,
+    metadata: {
+      name: contentType.startsWith("audio/") ? "spark-media.mp3" : "spark-media",
+      size: buffer.length,
+      contentType,
+    },
+  });
 
   const put = await fetch(uploadUrl, {
     method: "PUT",
@@ -20,8 +27,9 @@ export async function uploadSparkMedia(
     throw new Error(`Spark media upload failed: ${put.status} ${put.statusText}`);
   }
 
-  return svc.trySetObjectEntityAclPolicy(uploadUrl, {
-    owner: ownerId,
-    visibility: "public",
-  });
+  return svc.trySetObjectEntityAclPolicy(
+    uploadUrl,
+    { owner: ownerId, visibility: "public" },
+    { requireUploadIntent: true },
+  );
 }
