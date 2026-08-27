@@ -22,6 +22,7 @@ interface Message {
   id: string;
   role: "user" | "coach";
   content: string;
+  status?: "pending" | "sent" | "error";
   audioBase64?: string;
   upsell?: { used: number; limit: number };
 }
@@ -127,22 +128,27 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
   };
 
   const chatMutation = useMutation({
-    mutationFn: async (message: string) => {
+    mutationFn: async ({ content }: { id: string; content: string }) => {
       const history = messages.slice(-10).map((m) => ({
         role: m.role === "coach" ? "assistant" : "user",
         content: m.content,
       }));
       
       const response = await apiRequest("POST", "/api/coach/chat", {
-        message,
+        message: content,
         history,
         includeAudio: autoVoice,
       });
       const data = await response.json();
       return { ...data, _status: response.status };
     },
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       if (data?.quota) setQuota(data.quota as CoachQuota);
+      setMessages((prev) =>
+        prev.map((message) =>
+          message.id === variables.id ? { ...message, status: "sent" } : message,
+        ),
+      );
       const newMessage: Message = {
         id: Date.now().toString(),
         role: "coach",
@@ -156,8 +162,15 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
         playAudioFromBase64(data.audioBase64, newMessage.id);
       }
     },
-    onError: async (err: any) => {
+    onError: async (err: any, variables) => {
       setIsLoading(false);
+      if (variables?.id) {
+        setMessages((prev) =>
+          prev.map((message) =>
+            message.id === variables.id ? { ...message, status: "error" } : message,
+          ),
+        );
+      }
       // The shared apiRequest helper throws "<status>: <body>" on non-2xx —
       // try to parse the body so a 429 can render the upsell card instead of
       // the generic "I hit a bump" line. If parsing fails, fall back.
@@ -193,7 +206,8 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
         {
           id: Date.now().toString(),
           role: "coach",
-          content: "Sorry warrior, I hit a bump. Try again - we don't give up that easy!",
+          status: "error",
+          content: "I couldn't save that turn, so it is not part of your history. Try sending it again.",
         },
       ]);
     },
@@ -241,12 +255,13 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
       id: Date.now().toString(),
       role: "user",
       content: input.trim(),
+      status: "pending",
     };
 
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
-    chatMutation.mutate(userMessage.content);
+    chatMutation.mutate({ id: userMessage.id, content: userMessage.content });
   };
 
   const handleQuickPrompt = (prompt: string) => {
@@ -256,11 +271,12 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
       id: Date.now().toString(),
       role: "user",
       content: prompt,
+      status: "pending",
     };
 
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
-    chatMutation.mutate(prompt);
+    chatMutation.mutate({ id: userMessage.id, content: userMessage.content });
   };
 
   const stopAudio = () => {
@@ -413,6 +429,12 @@ export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchCh
                   }`}
                 >
                   <p className="text-sm leading-relaxed">{message.content}</p>
+                  {message.status === "pending" && (
+                    <div className="mt-1 text-[11px] opacity-70">Saving…</div>
+                  )}
+                  {message.status === "error" && (
+                    <div className="mt-1 text-[11px] text-red-300">Not saved — try again</div>
+                  )}
                   {message.upsell && (
                     <a
                       href="/recovery/premium"
