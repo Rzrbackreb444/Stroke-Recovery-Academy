@@ -1,5 +1,10 @@
 import type { Express } from "express";
-import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
+import {
+  ObjectStorageService,
+  ObjectNotFoundError,
+  UPLOAD_INTENT_CLEANUP_BATCH_SIZE,
+  UPLOAD_INTENT_CLEANUP_INTERVAL_MS,
+} from "./objectStorage";
 import { getObjectAclPolicy, ObjectPermission } from "./objectAcl";
 import { isAuthenticated } from "../../replitAuth";
 import { getUserId } from "../../lib/authUtils";
@@ -62,6 +67,32 @@ function uploadRequestRateLimit(req: any, res: any, next: any): void {
  */
 export function registerObjectStorageRoutes(app: Express): void {
   const objectStorageService = new ObjectStorageService();
+  let cleanupInFlight = false;
+  const cleanupExpiredUploads = () => {
+    if (cleanupInFlight) return;
+    cleanupInFlight = true;
+    void objectStorageService
+      .cleanupExpiredUploadIntents(UPLOAD_INTENT_CLEANUP_BATCH_SIZE)
+      .then((result) => {
+        if (result.intentsDeleted > 0 || result.failures > 0) {
+          console.info(
+            `[object-storage] upload cleanup: ${result.intentsDeleted} intents removed, ` +
+              `${result.objectsDeleted} objects removed, ${result.failures} failures`,
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("[object-storage] upload cleanup failed:", error);
+      })
+      .finally(() => {
+        cleanupInFlight = false;
+      });
+  };
+  const cleanupTimer = setInterval(
+    cleanupExpiredUploads,
+    UPLOAD_INTENT_CLEANUP_INTERVAL_MS,
+  );
+  cleanupTimer.unref?.();
 
   /**
    * Request a presigned URL for file upload.

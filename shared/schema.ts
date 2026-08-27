@@ -322,6 +322,9 @@ export const objectUploadIntents = pgTable("object_upload_intents", {
 }, (table) => [
   index("object_upload_intents_owner_idx").on(table.ownerId, table.createdAt),
   index("object_upload_intents_expiry_idx").on(table.expiresAt),
+  index("object_upload_intents_unconsumed_expiry_idx")
+    .on(table.expiresAt)
+    .where(sql`${table.consumedAt} IS NULL`),
 ]);
 
 export const insertObjectUploadIntentSchema = createInsertSchema(objectUploadIntents).omit({

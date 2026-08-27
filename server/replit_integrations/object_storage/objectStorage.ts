@@ -11,7 +11,7 @@ import {
 } from "./objectAcl";
 import { db } from "../../db";
 import { objectUploadIntents } from "@shared/schema";
-import { and, eq, isNull, gt } from "drizzle-orm";
+import { and, asc, eq, isNull, gt, lte } from "drizzle-orm";
 import {
   normalizeUploadMetadata,
   type UploadMetadata,
@@ -55,6 +55,16 @@ export class ObjectUploadIntentError extends Error {
   }
 }
 
+export const UPLOAD_INTENT_CLEANUP_BATCH_SIZE = 100;
+export const UPLOAD_INTENT_CLEANUP_INTERVAL_MS = 15 * 60 * 1000;
+
+export interface UploadIntentCleanupResult {
+  scanned: number;
+  objectsDeleted: number;
+  intentsDeleted: number;
+  failures: number;
+}
+
 // The object storage service is used to interact with the object storage service.
 export class ObjectStorageService {
   private static uploadIntentTableReady: Promise<void> | null = null;
@@ -78,7 +88,15 @@ export class ObjectStorageService {
           consumed_at TIMESTAMP WITH TIME ZONE,
           created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
         )
-      `).then(() => undefined);
+      `)
+        .then(async () => {
+          await db.execute(sql`
+            CREATE INDEX IF NOT EXISTS object_upload_intents_unconsumed_expiry_idx
+              ON object_upload_intents (expires_at)
+              WHERE consumed_at IS NULL
+          `);
+        })
+        .then(() => undefined);
     }
     await ObjectStorageService.uploadIntentTableReady;
   }
@@ -216,29 +234,107 @@ export class ObjectStorageService {
 
   // Gets the object entity file from the object path.
   async getObjectEntityFile(objectPath: string): Promise<File> {
-    if (!objectPath.startsWith("/objects/")) {
-      throw new ObjectNotFoundError();
-    }
-
-    const parts = objectPath.slice(1).split("/");
-    if (parts.length < 2) {
-      throw new ObjectNotFoundError();
-    }
-
-    const entityId = parts.slice(1).join("/");
-    let entityDir = this.getPrivateObjectDir();
-    if (!entityDir.endsWith("/")) {
-      entityDir = `${entityDir}/`;
-    }
-    const objectEntityPath = `${entityDir}${entityId}`;
-    const { bucketName, objectName } = parseObjectPath(objectEntityPath);
-    const bucket = objectStorageClient.bucket(bucketName);
-    const objectFile = bucket.file(objectName);
+    const objectFile = this.getObjectEntityFileReference(objectPath);
     const [exists] = await objectFile.exists();
     if (!exists) {
       throw new ObjectNotFoundError();
     }
     return objectFile;
+  }
+
+  /**
+   * Delete an object issued through the /objects upload namespace.
+   *
+   * Missing objects are treated as already cleaned up. Other storage errors
+   * are allowed to reach the caller so the corresponding intent stays in the
+   * database and can be retried on the next cleanup pass.
+   */
+  async deleteObjectEntity(objectPath: string): Promise<void> {
+    const objectFile = this.getObjectEntityFileReference(objectPath);
+    try {
+      await objectFile.delete();
+    } catch (error) {
+      if ((error as { code?: number })?.code !== 404) {
+        throw error;
+      }
+    }
+  }
+
+  /**
+   * Remove expired upload intents in a bounded batch.
+   *
+   * Consumed intents are metadata only after attachment and can be removed
+   * once expired. An unconsumed intent still owns a potentially abandoned
+   * object, so its object is deleted before the intent row is removed. If
+   * storage deletion fails, the row is retained for a later retry.
+   */
+  async cleanupExpiredUploadIntents(
+    batchSize = UPLOAD_INTENT_CLEANUP_BATCH_SIZE,
+  ): Promise<UploadIntentCleanupResult> {
+    await this.ensureUploadIntentTable();
+    const requestedBatchSize = Number.isFinite(batchSize)
+      ? Math.floor(batchSize)
+      : UPLOAD_INTENT_CLEANUP_BATCH_SIZE;
+    const limit = Math.max(
+      1,
+      Math.min(requestedBatchSize, UPLOAD_INTENT_CLEANUP_BATCH_SIZE),
+    );
+    const now = new Date();
+    const intents = await db
+      .select()
+      .from(objectUploadIntents)
+      .where(lte(objectUploadIntents.expiresAt, now))
+      .orderBy(asc(objectUploadIntents.expiresAt))
+      .limit(limit);
+
+    const result: UploadIntentCleanupResult = {
+      scanned: intents.length,
+      objectsDeleted: 0,
+      intentsDeleted: 0,
+      failures: 0,
+    };
+
+    for (const intent of intents) {
+      if (intent.consumedAt === null) {
+        try {
+          await this.deleteObjectEntity(intent.objectPath);
+          result.objectsDeleted += 1;
+        } catch (error) {
+          result.failures += 1;
+          console.error(
+            `[object-storage] failed to delete abandoned upload ${intent.objectPath}:`,
+            error,
+          );
+          continue;
+        }
+      }
+
+      try {
+        const deleted = await db
+          .delete(objectUploadIntents)
+          .where(
+            and(
+              eq(objectUploadIntents.objectPath, intent.objectPath),
+              lte(objectUploadIntents.expiresAt, now),
+              intent.consumedAt === null
+                ? isNull(objectUploadIntents.consumedAt)
+                : eq(objectUploadIntents.consumedAt, intent.consumedAt),
+            ),
+          )
+          .returning({ objectPath: objectUploadIntents.objectPath });
+        if (deleted.length > 0) {
+          result.intentsDeleted += 1;
+        }
+      } catch (error) {
+        result.failures += 1;
+        console.error(
+          `[object-storage] failed to remove expired upload intent ${intent.objectPath}:`,
+          error,
+        );
+      }
+    }
+
+    return result;
   }
 
   normalizeObjectEntityPath(
@@ -384,6 +480,26 @@ export class ObjectStorageService {
       objectFile,
       requestedPermission: requestedPermission ?? ObjectPermission.READ,
     });
+  }
+
+  private getObjectEntityFileReference(objectPath: string): File {
+    if (!objectPath.startsWith("/objects/")) {
+      throw new ObjectNotFoundError();
+    }
+
+    const parts = objectPath.slice(1).split("/");
+    if (parts.length < 2 || !parts.slice(1).join("/")) {
+      throw new ObjectNotFoundError();
+    }
+
+    const entityId = parts.slice(1).join("/");
+    let entityDir = this.getPrivateObjectDir();
+    if (!entityDir.endsWith("/")) {
+      entityDir = `${entityDir}/`;
+    }
+    const objectEntityPath = `${entityDir}${entityId}`;
+    const { bucketName, objectName } = parseObjectPath(objectEntityPath);
+    return objectStorageClient.bucket(bucketName).file(objectName);
   }
 }
 
