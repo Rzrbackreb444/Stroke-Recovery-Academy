@@ -1,7 +1,7 @@
 import { db } from './db';
 import { powerPointGifts, users } from '@shared/schema';
 import { and, desc, eq, sql } from 'drizzle-orm';
-import { addCredits } from './creditService';
+import { addCreditsInTransaction } from './creditService';
 import { getRecoveryStripeClient } from './recoveryStripeClient';
 
 export type PowerPointPackageKey = 'cheer' | 'spark' | 'boost' | 'surge' | 'beast';
@@ -94,29 +94,46 @@ export async function deliverPowerPoints(session: any) {
     console.error('[powerPoints] missing giftId in metadata; cannot deliver');
     return;
   }
-  const [gift] = await db.select().from(powerPointGifts).where(eq(powerPointGifts.id, giftId)).limit(1);
-  if (!gift) {
-    console.error('[powerPoints] gift not found', giftId);
-    return;
-  }
-  if (gift.status === 'delivered') return; // idempotent
+  await db.transaction(async (tx) => {
+    // Claiming the pending row and changing its status is part of the same
+    // transaction as the wallet mutation. A concurrent webhook waits for
+    // this row update, then observes no pending gift and does no work.
+    const [gift] = await tx.update(powerPointGifts)
+      .set({
+        status: 'delivered',
+        deliveredAt: new Date(),
+        stripePaymentId: session.payment_intent || null,
+      })
+      .where(and(
+        eq(powerPointGifts.id, giftId),
+        eq(powerPointGifts.status, 'pending'),
+      ))
+      .returning();
 
-  // Credit the receiver as bonus credits (kept distinct from earned/purchased)
-  await addCredits(
-    gift.receiverId,
-    gift.points,
-    'bonus',
-    `Power Points received${gift.isAnonymous ? '' : gift.senderId ? ` from supporter` : ''}`,
-    { giftId: gift.id, senderId: gift.senderId, packageKey: gift.packageKey },
-  );
+    if (!gift) {
+      const [existing] = await tx.select({ id: powerPointGifts.id })
+        .from(powerPointGifts)
+        .where(eq(powerPointGifts.id, giftId))
+        .limit(1);
+      if (!existing) {
+        console.error('[powerPoints] gift not found', giftId);
+      }
+      return;
+    }
 
-  await db.update(powerPointGifts)
-    .set({
-      status: 'delivered',
-      deliveredAt: new Date(),
-      stripePaymentId: session.payment_intent || null,
-    })
-    .where(eq(powerPointGifts.id, gift.id));
+    // Credit the receiver as bonus credits (kept distinct from earned/purchased).
+    // The gift id is stored on the ledger for an auditable, one-to-one trail.
+    await addCreditsInTransaction(
+      tx,
+      gift.receiverId,
+      gift.points,
+      'bonus',
+      `Power Points received${gift.isAnonymous ? '' : gift.senderId ? ` from supporter` : ''}`,
+      { giftId: gift.id, senderId: gift.senderId, packageKey: gift.packageKey },
+      'power_point_gift',
+      String(gift.id),
+    );
+  });
 }
 
 export async function getReceivedGifts(receiverId: string, limit = 50) {

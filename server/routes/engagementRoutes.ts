@@ -4,8 +4,8 @@ import type { Express } from 'express';
 import { z } from 'zod';
 import { db } from '../db';
 import { users, powerPointGifts } from '@shared/schema';
-import { and, eq } from 'drizzle-orm';
-import { addCredits } from '../creditService';
+import { and, eq, isNull, lte, or } from 'drizzle-orm';
+import { addCreditsInTransaction } from '../creditService';
 import { getUserId } from '../lib/authUtils';
 
 const DAILY_GIFT_POINTS = 25; // one free "Cheer" tier every 24h
@@ -18,6 +18,23 @@ const sendSchema = z.object({
 
 function sanitizeMsg(s: string) {
   return s.trim().slice(0, 280);
+}
+
+export class DailyGiftCooldownError extends Error {
+  constructor(public readonly nextAvailableAt: string) {
+    super("You've already passed the power today. Come back tomorrow.");
+    this.name = 'DailyGiftCooldownError';
+  }
+}
+
+export class DailyGiftRecipientError extends Error {
+  constructor(
+    public readonly statusCode: 404 | 403,
+    message: string,
+  ) {
+    super(message);
+    this.name = 'DailyGiftRecipientError';
+  }
 }
 
 export function registerEngagementRoutes(app: Express, isAuthenticated: any) {
@@ -48,41 +65,77 @@ export function registerEngagementRoutes(app: Express, isAuthenticated: any) {
         return res.status(400).json({ error: "You can't gift this to yourself — it's meant to support someone else" });
       }
 
-      // Cooldown check (24h rolling)
-      const [sender] = await db.select({ lastAt: users.lastDailyGiftAt }).from(users).where(eq(users.id, senderId)).limit(1);
-      const last = sender?.lastAt ? new Date(sender.lastAt).getTime() : 0;
-      if (Date.now() - last < GIFT_COOLDOWN_MS) {
-        const nextAt = new Date(last + GIFT_COOLDOWN_MS).toISOString();
-        return res.status(429).json({ error: "You've already passed the power today. Come back tomorrow.", nextAvailableAt: nextAt });
-      }
+      const now = new Date();
+      const cooldownCutoff = new Date(now.getTime() - GIFT_COOLDOWN_MS);
+      const gift = await db.transaction(async (tx) => {
+        // Validate the recipient in the transaction, before reserving the
+        // cooldown, so rejected requests never consume the daily gift.
+        const [receiver] = await tx.select({
+          id: users.id,
+          accepts: users.acceptsPowerPoints,
+        }).from(users).where(eq(users.id, receiverId)).limit(1);
+        if (!receiver) {
+          throw new DailyGiftRecipientError(404, 'Recipient not found');
+        }
+        if (!receiver.accepts) {
+          throw new DailyGiftRecipientError(403, "This survivor isn't accepting Power Points right now");
+        }
 
-      // Receiver must exist + accept gifts
-      const [receiver] = await db.select({ id: users.id, accepts: users.acceptsPowerPoints })
-        .from(users).where(eq(users.id, receiverId)).limit(1);
-      if (!receiver) return res.status(404).json({ error: 'Recipient not found' });
-      if (!receiver.accepts) return res.status(403).json({ error: "This survivor isn't accepting Power Points right now" });
+        // This conditional update is the concurrency gate. PostgreSQL locks
+        // the sender row for the update, so only one simultaneous request can
+        // reserve a given 24-hour window.
+        const [reserved] = await tx.update(users)
+          .set({ lastDailyGiftAt: now })
+          .where(and(
+            eq(users.id, senderId),
+            or(isNull(users.lastDailyGiftAt), lte(users.lastDailyGiftAt, cooldownCutoff)),
+          ))
+          .returning({ id: users.id });
 
-      // Stamp the cooldown FIRST to prevent double-sends on double-click
-      await db.update(users).set({ lastDailyGiftAt: new Date() }).where(eq(users.id, senderId));
+        if (!reserved) {
+          const [sender] = await tx.select({ lastAt: users.lastDailyGiftAt })
+            .from(users).where(eq(users.id, senderId)).limit(1);
+          const last = sender?.lastAt ? new Date(sender.lastAt).getTime() : now.getTime();
+          throw new DailyGiftCooldownError(new Date(last + GIFT_COOLDOWN_MS).toISOString());
+        }
 
-      // Credit the recipient (bonus credits, no Stripe charge)
-      await addCredits(receiverId, DAILY_GIFT_POINTS, 'bonus', 'Free daily Pass-the-Power gift', { fromUserId: senderId });
+        // Insert first only to obtain a durable gift id for the ledger
+        // reference. Any later failure rolls back both this row and the
+        // cooldown reservation, allowing the survivor to retry.
+        const [gift] = await tx.insert(powerPointGifts).values({
+          senderId,
+          receiverId,
+          packageKey: 'daily_free',
+          points: DAILY_GIFT_POINTS,
+          amountCents: 0,
+          message: message ? sanitizeMsg(message) : null,
+          isAnonymous: false,
+          status: 'delivered',
+          deliveredAt: now,
+        }).returning();
 
-      // Record the gift as delivered, zero-dollar, so inbox + totals light up
-      const [gift] = await db.insert(powerPointGifts).values({
-        senderId,
-        receiverId,
-        packageKey: 'daily_free',
-        points: DAILY_GIFT_POINTS,
-        amountCents: 0,
-        message: message ? sanitizeMsg(message) : null,
-        isAnonymous: false,
-        status: 'delivered',
-        deliveredAt: new Date(),
-      }).returning();
+        await addCreditsInTransaction(
+          tx,
+          receiverId,
+          DAILY_GIFT_POINTS,
+          'bonus',
+          'Free daily Pass-the-Power gift',
+          { fromUserId: senderId, giftId: gift.id },
+          'power_point_gift',
+          String(gift.id),
+        );
 
-      res.json({ ok: true, gift, pointsSent: DAILY_GIFT_POINTS, nextAvailableAt: new Date(Date.now() + GIFT_COOLDOWN_MS).toISOString() });
+        return gift;
+      });
+
+      res.json({ ok: true, gift, pointsSent: DAILY_GIFT_POINTS, nextAvailableAt: new Date(now.getTime() + GIFT_COOLDOWN_MS).toISOString() });
     } catch (err: any) {
+      if (err instanceof DailyGiftCooldownError) {
+        return res.status(429).json({ error: err.message, nextAvailableAt: err.nextAvailableAt });
+      }
+      if (err instanceof DailyGiftRecipientError) {
+        return res.status(err.statusCode).json({ error: err.message });
+      }
       console.error('[engagement/daily-gift] error', err);
       res.status(500).json({ error: err?.message || 'Failed to send' });
     }

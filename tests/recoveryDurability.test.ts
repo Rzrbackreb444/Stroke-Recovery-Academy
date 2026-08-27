@@ -175,7 +175,9 @@ async function createRecoverySchema(pool: Pool): Promise<void> {
     CREATE TABLE users (
       id varchar PRIMARY KEY,
       email varchar UNIQUE,
-      role text NOT NULL DEFAULT 'member'
+      role text NOT NULL DEFAULT 'member',
+      accepts_power_points boolean NOT NULL DEFAULT true,
+      last_daily_gift_at timestamp
     );
     CREATE TABLE recovery_habits (
       id serial PRIMARY KEY,
@@ -255,6 +257,21 @@ async function createRecoverySchema(pool: Pool): Promise<void> {
       reference_type text,
       reference_id text,
       metadata jsonb,
+      created_at timestamp NOT NULL DEFAULT now()
+    );
+    CREATE TABLE power_point_gifts (
+      id serial PRIMARY KEY,
+      sender_id varchar REFERENCES users(id) ON DELETE SET NULL,
+      receiver_id varchar NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      package_key text NOT NULL,
+      points integer NOT NULL,
+      amount_cents integer NOT NULL,
+      message text,
+      is_anonymous boolean NOT NULL DEFAULT false,
+      stripe_payment_id text,
+      status text NOT NULL DEFAULT 'pending',
+      delivered_at timestamp,
+      read_at timestamp,
       created_at timestamp NOT NULL DEFAULT now()
     );
     CREATE TABLE routine_completions (
@@ -376,13 +393,26 @@ if (integrationEnabled) {
     const originalDatabaseUrl = process.env.DATABASE_URL;
     const originalDriverFlag = process.env.RECOVERY_DURABILITY_DB;
 
+      const [
+        { storage: recoveryStorage, pool: appPool },
+        { saveRoutineFeedback, replaceSurvivorGoals },
+        creditService,
+        powerPointsService,
+        engagementRoutes,
+      ] =
+        await Promise.all([
+          import("../server/storage"),
+          import("../server/recoveryDurabilityService"),
+          import("../server/creditService"),
+          import("../server/powerPointsService"),
+          import("../server/routes/engagementRoutes"),
+        ]);
+
     const controlPool = new Pool(postgresConnectionOptions(testDatabase.url));
       const userId = `${recoveryUserPrefix}owner`;
       const otherUserId = `${recoveryUserPrefix}other`;
-      await testDatabase.pool.query(
-        "INSERT INTO users (id, email) VALUES ($1, $2), ($3, $4)",
-        [userId, `${userId}@example.test`, otherUserId, `${otherUserId}@example.test`],
-      );
+
+      const creditUserId = `${recoveryUserPrefix}credit-user`;
       const habitResult = await testDatabase.pool.query(
         "INSERT INTO recovery_habits (name, category) VALUES ($1, 'recovery') RETURNING id",
         [recoveryTestHabitName],
@@ -398,13 +428,24 @@ if (integrationEnabled) {
       );
       const ownHabitId = Number(ownHabitResult.rows[0].id);
       const otherHabitId = Number(otherHabitResult.rows[0].id);
-
-      await t.test("one of two simultaneous check-ins wins all reward writes", async () => {
         const input = { userId, date: "2026-08-29", taskId: "reach", level: 2, reaction: "good" };
         const results = await Promise.allSettled([
           recoveryStorage.createDailyCheckinWithRewards(input),
           recoveryStorage.createDailyCheckinWithRewards(input),
         ]);
+
+        const storedGift = await testDatabase.pool.query(
+          "SELECT status, stripe_payment_id FROM power_point_gifts WHERE id = $1",
+          [giftId],
+        );
+
+        const dailyGiftCount = async () => {
+          const result = await testDatabase.pool.query(
+            "SELECT COUNT(*)::int AS count FROM power_point_gifts WHERE sender_id = $1",
+            [dailySenderId],
+          );
+          return Number(result.rows[0].count);
+        };
         assert.equal(results.filter((result) => result.status === "fulfilled").length, 1);
         assert.equal(results.filter((result) => result.status === "rejected").length, 1);
         assert.equal(await countRows(testDatabase.pool, "daily_checkins", userId), 1);
@@ -415,11 +456,18 @@ if (integrationEnabled) {
           "SELECT bonus_credits, lifetime_earned FROM credit_wallets WHERE user_id = $1",
           [userId],
         );
+
+        const ledger = await testDatabase.pool.query(
+          "SELECT amount, balance_after FROM credit_ledger WHERE user_id = $1 ORDER BY id",
+          [creditUserId],
+        );
         assert.deepEqual(wallet.rows[0], { bonus_credits: 10, lifetime_earned: 510 });
       });
 
       await t.test("a reward failure rolls back the check-in and retry can succeed", async () => {
         const trigger = ["survivor_goals", "fail_goal_trigger", "fail_goal_write"];
+
+        const failedDelivery = await callDailyGift(dailySenderId, dailyReceiverId);
         await installFailureTrigger(testDatabase.pool, ...trigger);
         const failedDate = new Date("2026-08-28T12:00:00.000Z");
         await assert.rejects(
@@ -473,6 +521,8 @@ if (integrationEnabled) {
 
       await t.test("a routine completion failure rolls feedback back", async () => {
         const trigger = ["survivor_goals", "fail_goal_trigger", "fail_goal_write"];
+
+        const failedDelivery = await callDailyGift(dailySenderId, dailyReceiverId);
         await installFailureTrigger(testDatabase.pool, ...trigger);
         const date = new Date("2026-09-01T12:00:00.000Z");
         await assert.rejects(saveRoutineFeedback({
@@ -498,6 +548,8 @@ if (integrationEnabled) {
       await t.test("goal replacement rolls back to the prior set on insert failure", async () => {
         await replaceSurvivorGoals(userId, [{ horizon: "short", domain: "physical", goal: "Walk farther" }]);
         const trigger = ["survivor_goals", "fail_goal_trigger", "fail_goal_write"];
+
+        const failedDelivery = await callDailyGift(dailySenderId, dailyReceiverId);
         await installFailureTrigger(testDatabase.pool, ...trigger);
         await assert.rejects(replaceSurvivorGoals(userId, [
           { horizon: "long", domain: "speech", goal: "Speak with confidence" },
@@ -710,3 +762,66 @@ async function removeConnectionDropTrigger(
         const habitDate = new Date("2026-09-04T12:00:00.000Z");
 
         const dropHabitId = Number(dropHabitResult.rows[0].id);
+
+        const dailyWallet = await testDatabase.pool.query(
+          "SELECT balance, bonus_credits, lifetime_earned FROM credit_wallets WHERE user_id = $1",
+          [dailyReceiverId],
+        );
+
+        const restored = await testDatabase.pool.query(
+          "SELECT last_daily_gift_at FROM users WHERE id = $1",
+          [dailySenderId],
+        );
+
+      const giftSenderId = `${recoveryUserPrefix}gift-sender`;
+
+      const callDailyGift = async (sender: string, receiver: string) => {
+        let statusCode = 200;
+        let body: any;
+        const res: any = {
+          status(code: number) { statusCode = code; return res; },
+          json(value: any) { body = value; return res; },
+        };
+        await routeHandlers["POST /api/engagement/daily-gift"](
+          { user: { id: sender }, body: { receiverId: receiver, message: "You’ve got this" } },
+          res,
+        );
+        return { statusCode, body };
+      };
+
+        let expectedBalance = 500;
+
+      const dailyReceiverId = `${recoveryUserPrefix}daily-receiver`;
+
+      const testApp = {
+        get(path: string, ...handlers: any[]) { routeHandlers[`GET ${path}`] = handlers.at(-1); },
+        post(path: string, ...handlers: any[]) { routeHandlers[`POST ${path}`] = handlers.at(-1); },
+      };
+
+        const receiverLedger = await testDatabase.pool.query(
+          "SELECT amount, reference_type, reference_id FROM credit_ledger " +
+          "WHERE user_id = $1 ORDER BY id",
+          [giftReceiverId],
+        );
+
+      const routeHandlers: Record<string, any> = {};
+
+      const giftReceiverId = `${recoveryUserPrefix}gift-receiver`;
+
+        const retry = await callDailyGift(dailySenderId, dailyReceiverId);
+
+        const session = {
+          payment_intent: "pi_durability_test",
+          metadata: { giftId: String(giftId), type: "power_points" },
+        };
+
+        const gift = await testDatabase.pool.query(
+          "INSERT INTO power_point_gifts " +
+          "(sender_id, receiver_id, package_key, points, amount_cents) " +
+          "VALUES ($1, $2, 'cheer', 25, 100) RETURNING id",
+          [giftSenderId, giftReceiverId],
+        );
+
+        const giftId = Number(gift.rows[0].id);
+
+      const dailySenderId = `${recoveryUserPrefix}daily-sender`;
