@@ -34,6 +34,7 @@ const localConnection = useNodePostgres
 export const pool = useNodePostgres
   ? new NodePool({
       ...localConnection,
+      application_name: "recovery-durability",
       connectionTimeoutMillis: 10000,
       idleTimeoutMillis: 30000,
       max: 10,
@@ -44,6 +45,17 @@ export const pool = useNodePostgres
       idleTimeoutMillis: 30000,
       max: 10,
     });
+
+if (useNodePostgres) {
+  (pool as NodePool).on("connect", (client) => {
+    client.on("error", (error) => {
+      console.warn(`[db] recovery durability client error: ${error.message}`);
+    });
+  });
+  (pool as NodePool).on("error", (error) => {
+    console.warn(`[db] recovery durability pool client error: ${error.message}`);
+  });
+}
 
 export const db = (useNodePostgres
   ? drizzleNode({ client: pool as NodePool, schema })

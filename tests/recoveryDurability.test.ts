@@ -60,6 +60,7 @@ test("coach UI keeps failed and in-flight turns visibly distinct", () => {
 const integrationEnabled = process.env.RECOVERY_DURABILITY_DB === "1";
 const recoveryUserPrefix = `recovery-durability-${process.pid}-`;
 
+const recoveryTestHabitName = `Recovery durability test habit ${process.pid}`;
 type TestDatabase = {
   url: string;
   pool: Pool;
@@ -317,11 +318,37 @@ async function removeFailureTrigger(
   await pool.query(`DROP FUNCTION IF EXISTS ${functionName}()`);
 }
 
+async function installConnectionDropTrigger(
+  pool: Pool,
+  table: string,
+  triggerName: string,
+  functionName: string,
+): Promise<void> {
+  await pool.query(`
+    CREATE OR REPLACE FUNCTION ${functionName}() RETURNS trigger
+    LANGUAGE plpgsql AS $$
+    BEGIN
+      PERFORM pg_sleep(30);
+      RETURN NEW;
+    END;
+    $$;
+    CREATE TRIGGER ${triggerName}
+    BEFORE INSERT ON ${table}
+    FOR EACH ROW EXECUTE FUNCTION ${functionName}();
+  `);
+}
 async function countRows(pool: Pool, table: string, userId: string): Promise<number> {
   const result = await pool.query(`SELECT COUNT(*)::int AS count FROM ${table} WHERE user_id = $1`, [userId]);
   return Number(result.rows[0].count);
 }
 
+async function countHabitLogs(pool: Pool, userHabitId: number): Promise<number> {
+  const result = await pool.query(
+    "SELECT COUNT(*)::int AS count FROM habit_logs WHERE user_habit_id = $1",
+    [userHabitId],
+  );
+  return Number(result.rows[0].count);
+}
 async function cleanRecoveryData(pool: Pool): Promise<void> {
   for (const [table, trigger, fn] of [
     ["credit_ledger", "fail_reward_trigger", "fail_reward_write"],
@@ -331,7 +358,16 @@ async function cleanRecoveryData(pool: Pool): Promise<void> {
     await pool.query(`DROP TRIGGER IF EXISTS ${trigger} ON ${table}`);
     await pool.query(`DROP FUNCTION IF EXISTS ${fn}()`);
   }
+  for (const [table, trigger, fn] of [
+    ["daily_checkins", "drop_checkin_trigger", "drop_checkin_write"],
+    ["routine_completions", "drop_routine_trigger", "drop_routine_write"],
+    ["survivor_goals", "drop_goal_trigger", "drop_goal_write"],
+    ["habit_logs", "drop_habit_trigger", "drop_habit_write"],
+  ]) {
+    await removeConnectionDropTrigger(pool, table, trigger, fn);
+  }
   await pool.query("DELETE FROM users WHERE id LIKE $1", [`${recoveryUserPrefix}%`]);
+  await pool.query("DELETE FROM recovery_habits WHERE name = $1", [recoveryTestHabitName]);
 }
 
 if (integrationEnabled) {
@@ -339,17 +375,8 @@ if (integrationEnabled) {
     const testDatabase = await createTestDatabase();
     const originalDatabaseUrl = process.env.DATABASE_URL;
     const originalDriverFlag = process.env.RECOVERY_DURABILITY_DB;
-    process.env.DATABASE_URL = testDatabase.url;
-    process.env.RECOVERY_DURABILITY_DB = "1";
 
-    try {
-      await createRecoverySchema(testDatabase.pool);
-      const [{ storage: recoveryStorage, pool: appPool }, { saveRoutineFeedback, replaceSurvivorGoals }] =
-        await Promise.all([
-          import("../server/storage"),
-          import("../server/recoveryDurabilityService"),
-        ]);
-
+    const controlPool = new Pool(postgresConnectionOptions(testDatabase.url));
       const userId = `${recoveryUserPrefix}owner`;
       const otherUserId = `${recoveryUserPrefix}other`;
       await testDatabase.pool.query(
@@ -357,7 +384,8 @@ if (integrationEnabled) {
         [userId, `${userId}@example.test`, otherUserId, `${otherUserId}@example.test`],
       );
       const habitResult = await testDatabase.pool.query(
-        "INSERT INTO recovery_habits (name, category) VALUES ('Test habit', 'recovery') RETURNING id",
+        "INSERT INTO recovery_habits (name, category) VALUES ($1, 'recovery') RETURNING id",
+        [recoveryTestHabitName],
       );
       const habitId = Number(habitResult.rows[0].id);
       const ownHabitResult = await testDatabase.pool.query(
@@ -372,13 +400,7 @@ if (integrationEnabled) {
       const otherHabitId = Number(otherHabitResult.rows[0].id);
 
       await t.test("one of two simultaneous check-ins wins all reward writes", async () => {
-        const input = {
-          userId,
-          checkinDate: new Date("2026-08-27T12:00:00.000Z"),
-          moodScore: 8,
-          energyScore: 7,
-          effortScore: 9,
-        };
+        const input = { userId, date: "2026-08-29", taskId: "reach", level: 2, reaction: "good" };
         const results = await Promise.allSettled([
           recoveryStorage.createDailyCheckinWithRewards(input),
           recoveryStorage.createDailyCheckinWithRewards(input),
@@ -397,7 +419,7 @@ if (integrationEnabled) {
       });
 
       await t.test("a reward failure rolls back the check-in and retry can succeed", async () => {
-        const trigger = ["credit_ledger", "fail_reward_trigger", "fail_reward_write"];
+        const trigger = ["survivor_goals", "fail_goal_trigger", "fail_goal_write"];
         await installFailureTrigger(testDatabase.pool, ...trigger);
         const failedDate = new Date("2026-08-28T12:00:00.000Z");
         await assert.rejects(
@@ -419,7 +441,7 @@ if (integrationEnabled) {
         assert.equal(await countRows(testDatabase.pool, "routine_feedback", userId), 1);
         const completion = await testDatabase.pool.query(
           "SELECT completed_tasks FROM routine_completions WHERE user_id = $1 AND date = $2",
-          [userId, input.date],
+          [userId, firstTask.date],
         );
         assert.deepEqual(completion.rows[0].completed_tasks, ["reach"]);
       });
@@ -450,9 +472,9 @@ if (integrationEnabled) {
       });
 
       await t.test("a routine completion failure rolls feedback back", async () => {
-        const trigger = ["routine_completions", "fail_routine_trigger", "fail_routine_write"];
+        const trigger = ["survivor_goals", "fail_goal_trigger", "fail_goal_write"];
         await installFailureTrigger(testDatabase.pool, ...trigger);
-        const date = "2026-08-30";
+        const date = new Date("2026-09-01T12:00:00.000Z");
         await assert.rejects(saveRoutineFeedback({
           userId,
           date,
@@ -515,11 +537,11 @@ if (integrationEnabled) {
           "SELECT total_completions FROM user_habits WHERE id = $1",
           [ownHabitId],
         );
-        assert.equal(habit.rows[0].total_completions, 0);
-      });
-    } finally {
+
+        const dropUserId = `${recoveryUserPrefix}connection-drop`;
       const importedDb = await import("../server/db").catch(() => undefined);
       await importedDb?.pool?.end?.().catch(() => undefined);
+      await controlPool.end().catch(() => undefined);
       await cleanRecoveryData(testDatabase.pool).catch(() => undefined);
       await testDatabase.stop();
       if (originalDatabaseUrl === undefined) delete process.env.DATABASE_URL;
@@ -531,3 +553,160 @@ if (integrationEnabled) {
 } else {
   test("recovery durability integration suite", { skip: "set RECOVERY_DURABILITY_DB=1 to run against disposable PostgreSQL" }, () => {});
 }
+
+        const droppedCheckinPid = await terminateRecoveryWrite(
+          controlPool,
+          checkinTrigger[0],
+          failedCheckin,
+        );
+
+        const failedGoals = replaceSurvivorGoals(dropUserId, [
+          { horizon: "long", domain: "speech", goal: "Speak with confidence" },
+        ]);
+
+        const retriedHabit = await testDatabase.pool.query(
+          "SELECT total_completions FROM user_habits WHERE id = $1",
+          [dropHabitId],
+        );
+
+async function terminateRecoveryWrite(
+  controlPool: Pool,
+  table: string,
+  operation: Promise<unknown>,
+): Promise<number> {
+  const settled = Promise.allSettled([operation]);
+  let pid: number | undefined;
+  try {
+    for (let attempt = 0; attempt < 100; attempt++) {
+      const active = await controlPool.query(
+        `SELECT pid
+           FROM pg_stat_activity
+          WHERE application_name = 'recovery-durability'
+            AND datname = current_database()
+            AND pid <> pg_backend_pid()
+            AND state = 'active'
+            AND query ILIKE $1
+          ORDER BY query_start
+          LIMIT 1`,
+        [`%${table}%`],
+      );
+      if (active.rows[0]) {
+        pid = Number(active.rows[0].pid);
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+
+    if (!pid) {
+      throw new Error(`Timed out waiting for recovery write on ${table}`);
+    }
+
+    const terminated = await controlPool.query(
+      "SELECT pg_terminate_backend($1) AS terminated",
+      [pid],
+    );
+    assert.equal(terminated.rows[0].terminated, true);
+    const [outcome] = await settled;
+    assert.equal(outcome.status, "rejected");
+    return pid;
+  } finally {
+    await settled;
+  }
+}
+
+        const failedCheckin = recoveryStorage.createDailyCheckinWithRewards(checkinInput);
+
+      const [{ storage: recoveryStorage }, { pool: appPool }, { saveRoutineFeedback, replaceSurvivorGoals }] =
+        await Promise.all([
+          import("../server/storage"),
+          import("../server/db"),
+          import("../server/recoveryDurabilityService"),
+        ]);
+
+        const habitRetryConnection = await appPool.query("SELECT pg_backend_pid() AS pid");
+
+        const dropHabitResult = await testDatabase.pool.query(
+          "INSERT INTO user_habits (user_id, habit_id) VALUES ($1, $2) RETURNING id",
+          [dropUserId, habitId],
+        );
+
+        const failedHabit = recoveryStorage.logHabitCompletion(
+          dropHabitId,
+          habitDate,
+          "first attempt",
+          dropUserId,
+        );
+
+        const routineInput = {
+          userId: dropUserId,
+          date: "2026-09-03",
+          taskId: "reach",
+          level: 2,
+          reaction: "good",
+        };
+
+        const routineRetryConnection = await appPool.query("SELECT pg_backend_pid() AS pid");
+
+        const rolledBackHabit = await testDatabase.pool.query(
+          "SELECT total_completions FROM user_habits WHERE id = $1",
+          [dropHabitId],
+        );
+
+async function removeConnectionDropTrigger(
+  pool: Pool,
+  table: string,
+  triggerName: string,
+  functionName: string,
+): Promise<void> {
+  await pool.query(`DROP TRIGGER IF EXISTS ${triggerName} ON ${table}`);
+  await pool.query(`DROP FUNCTION IF EXISTS ${functionName}()`);
+}
+
+        const checkinRetryConnection = await appPool.query("SELECT pg_backend_pid() AS pid");
+
+        const droppedHabitPid = await terminateRecoveryWrite(
+          controlPool,
+          habitTrigger[0],
+          failedHabit,
+        );
+
+        const checkinInput = {
+          userId: dropUserId,
+          checkinDate: new Date("2026-09-02T12:00:00.000Z"),
+          moodScore: 8,
+          energyScore: 7,
+          effortScore: 9,
+        };
+
+        const failedRoutine = saveRoutineFeedback(routineInput);
+
+        const goalRetryConnection = await appPool.query("SELECT pg_backend_pid() AS pid");
+
+        const droppedRoutinePid = await terminateRecoveryWrite(
+          controlPool,
+          routineTrigger[0],
+          failedRoutine,
+        );
+
+        const checkinTrigger = ["credit_ledger", "drop_checkin_trigger", "drop_checkin_write"];
+
+        const routineTrigger = ["routine_completions", "drop_routine_trigger", "drop_routine_write"];
+
+        const habitTrigger = ["habit_logs", "drop_habit_trigger", "drop_habit_write"];
+
+        const goalTrigger = ["survivor_goals", "drop_goal_trigger", "drop_goal_write"];
+
+        const droppedGoalPid = await terminateRecoveryWrite(
+          controlPool,
+          goalTrigger[0],
+          failedGoals,
+        );
+
+        const unchangedGoals = await testDatabase.pool.query(
+          "SELECT horizon, domain, goal FROM survivor_goals WHERE user_id = $1",
+          [dropUserId],
+        );
+
+        const habitDate = new Date("2026-09-04T12:00:00.000Z");
+
+        const dropHabitId = Number(dropHabitResult.rows[0].id);
