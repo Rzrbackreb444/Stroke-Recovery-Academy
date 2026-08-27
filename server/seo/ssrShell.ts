@@ -101,7 +101,7 @@ export interface SsrPageConfig {
 const SITE_URL = 'https://strokerecoveryacademy.com';
 const AUTHOR = {
   name: 'Nick Kremers',
-  bio: '7-year stroke survivor who went from complete paralysis to 90% recovery. Founder of Stroke Recovery Academy and creator of the Sasquatch Method.',
+  bio: 'Stroke survivor, author, and founder sharing lived experience, recovery education, and peer support through Stroke Recovery Academy.',
   url: `${SITE_URL}/recovery/about-nick`,
   image: `${SITE_URL}/images/blog/nick-author-bio.jpg`,
 };
@@ -168,7 +168,7 @@ function buildArticleSchema(cfg: SsrPageConfig): object {
   const imageAlt = cfg.imageAlt || cfg.title;
   return {
     '@context': 'https://schema.org',
-    '@type': cfg.schemaType === 'MedicalWebPage' ? 'MedicalWebPage' : 'Article',
+    '@type': cfg.schemaType === 'MedicalWebPage' ? 'WebPage' : cfg.schemaType === 'WebPage' ? 'WebPage' : 'Article',
     headline: cfg.h1,
     description: cfg.description,
     url,
@@ -200,10 +200,6 @@ function buildArticleSchema(cfg: SsrPageConfig): object {
       caption: imageAlt,
     },
     ...(cfg.keywords && cfg.keywords.length > 0 ? { keywords: cfg.keywords.join(', ') } : {}),
-    ...(cfg.schemaType === 'MedicalWebPage' ? {
-      medicalAudience: { '@type': 'MedicalAudience', audienceType: 'Patient' },
-      lastReviewed: modified,
-    } : {}),
     // Word count and reading time for rich snippet eligibility
     wordCount: cfg.sections.reduce((a, s) => {
       let w = 0;

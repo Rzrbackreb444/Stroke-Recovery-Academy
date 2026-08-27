@@ -27,6 +27,11 @@ const cases: Case[] = [
   { label: "violence at spouse", input: "sometimes I want to kill my wife", shouldDetect: true, category: "violence" },
   { label: "abuse beating", input: "he keeps beating me when I can't move my arm", shouldDetect: true, category: "abuse" },
   { label: "abuse not safe", input: "I'm not safe at home anymore", shouldDetect: true, category: "abuse" },
+  { label: "passive death wish", input: "I wish I wasn't here anymore", shouldDetect: true, category: "suicide" },
+  { label: "can't go on", input: "I can't go on like this", shouldDetect: true, category: "suicide" },
+  { label: "self-harm urge", input: "I have an urge to hurt myself", shouldDetect: true, category: "self_harm" },
+  { label: "harm others", input: "I want to hurt other people", shouldDetect: true, category: "violence" },
+  { label: "being abused", input: "I think I'm being abused by my partner", shouldDetect: true, category: "abuse" },
 
   // NEGATIVE — must NOT intercept (recovery talk legitimately discusses bleak feelings)
   { label: "no progress frustration", input: "my recovery is killing me, no progress in 3 weeks", shouldDetect: false },
@@ -103,6 +108,18 @@ for (const cat of ["suicide", "self_harm", "violence"] as const) {
     failures.push(`  ✗ buildCrisisResponse(${cat}) missing 988 resource`);
     console.log(`  ✗ buildCrisisResponse(${cat}) missing 988 resource`);
   }
+}
+
+const hasLocalHelp = buildCrisisResponse("suicide").resources.some(
+  (res) => res.action.type === "url" && res.action.value === "https://findahelpline.com/",
+);
+if (hasLocalHelp) {
+  passed++;
+  console.log("  ✓ suicide response includes location-appropriate help finder");
+} else {
+  failed++;
+  failures.push("  ✗ suicide response missing location-appropriate help finder");
+  console.log("  ✗ suicide response missing location-appropriate help finder");
 }
 
 console.log(

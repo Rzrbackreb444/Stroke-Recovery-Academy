@@ -60,7 +60,7 @@ export default function PrivacyPolicy() {
             Privacy Policy
           </h1>
           <p className="text-lg text-gray-400" data-testid="text-last-updated">
-            Last updated: December 26, 2025
+            Last updated: August 27, 2026
           </p>
         </header>
 
@@ -100,6 +100,8 @@ export default function PrivacyPolicy() {
               <li><strong className="text-foreground">Payment Information:</strong> Billing address, bank account details (processed securely by Stripe)</li>
               <li><strong className="text-foreground">Content:</strong> Books, music, videos, courses, images, and other creative works you upload</li>
               <li><strong className="text-foreground">Communications:</strong> Messages, support requests, and feedback you send us</li>
+              <li><strong className="text-foreground">Recovery profile:</strong> Stroke history, symptoms you choose to describe, goals, routines, accessibility preferences, caregiver details, and personal story entries used to personalize the survivor experience</li>
+              <li><strong className="text-foreground">Coach and check-in content:</strong> Prompts, AI-generated replies, daily logs, and recovery activity you choose to save</li>
             </ul>
 
             <h3 className="text-xl font-semibold text-foreground mb-3">Information Collected Automatically</h3>
@@ -135,6 +137,8 @@ export default function PrivacyPolicy() {
               <li>Monitor and analyze trends, usage, and activities on our platform</li>
               <li>Detect, investigate, and prevent fraudulent transactions and abuse</li>
               <li>Personalize your experience and provide content recommendations</li>
+              <li>Use the recovery profile and saved check-ins to tailor screens, routines, and coaching</li>
+              <li>Process the information you choose to send to the AI Coach through our AI service provider to generate a response. AI replies may be inaccurate; the Coach is not a clinician and does not diagnose, treat, or replace your healthcare team.</li>
               <li>Comply with legal obligations and enforce our terms of service</li>
             </ul>
           </section>
@@ -153,6 +157,10 @@ export default function PrivacyPolicy() {
                 <li className="flex items-start gap-3">
                   <span className="text-[#E2741B] font-semibold min-w-[100px]">Stripe</span>
                   <span>Payment processing, creator payouts, and financial compliance</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-[#E2741B] font-semibold min-w-[100px]">AI provider</span>
+                  <span>Processes prompts and the relevant context you submit to generate Coach responses. Do not submit information you do not want processed by an AI service.</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-[#E2741B] font-semibold min-w-[100px]">Analytics</span>
@@ -303,10 +311,18 @@ export default function PrivacyPolicy() {
               <li>Comply with legal obligations (tax records, dispute resolution)</li>
               <li>Resolve disputes and enforce our agreements</li>
               <li>Maintain business records as required by law</li>
+              <li>Keep your recovery profile and saved Coach history available while your account remains active, unless you delete it sooner</li>
             </ul>
             <p className="text-gray-400 leading-relaxed">
               When your account is deleted, we will delete or anonymize your personal information within 
               90 days, except where we are required to retain it for legal or regulatory purposes.
+            </p>
+            <p className="text-gray-400 leading-relaxed mt-4">
+              You can ask us to delete individual saved recovery content or your account. Some backups,
+              fraud-prevention records, payment records, or legal records may remain for the period required
+              by law. Authorized administrators and support staff may access account data only when needed to
+              operate the service, respond to support requests, investigate safety or abuse reports, or meet
+              legal obligations.
             </p>
           </section>
 

@@ -6,17 +6,17 @@ const KREAITE_BASE_URL = "https://strokerecoveryacademy.com";
 const TODAY = new Date().toISOString().split("T")[0];
 
 export const NICK_KREMERS_SCHEMA = {
-  "@type": ["Person", "Patient"],
+  "@type": "Person",
   "@id": `${RECOVERY_BASE_URL}/recovery/about-nick#nick-kremers`,
   name: "Nick Kremers",
   alternateName: "The Stroked Out Sasquatch",
   description:
-    "Nick Kremers is a stroke survivor who recovered from 0% to 90% functional ability through relentless rehabilitation, neuroplasticity-based training, and the Sasquatch Method. Founder of Stroke Recovery Academy and author of three stroke recovery books.",
+    "Nick Kremers is a stroke survivor, author, and founder who shares lived experience, recovery education, and peer support through Stroke Recovery Academy.",
   url: `${RECOVERY_BASE_URL}/recovery/about-nick`,
   image: `${RECOVERY_BASE_URL}/images/nick-kremers.jpg`,
   jobTitle: "Stroke Recovery Coach, Author & Platform Founder",
   worksFor: {
-    "@type": "MedicalOrganization",
+    "@type": "Organization",
     name: "Stroke Recovery Academy",
     url: RECOVERY_BASE_URL,
   },
@@ -38,10 +38,10 @@ export const NICK_KREMERS_SCHEMA = {
     "@type": "EducationalOccupationalCredential",
     credentialCategory: "Personal Experience",
     description:
-      "First-hand stroke survivor with documented recovery from 0% to 90% functional ability, author of three comprehensive stroke recovery books",
+    "Personal experience as a stroke survivor and author of recovery education resources",
   },
   award: [
-    "Stroke survivor — 0% to 90% recovery achievement",
+    "Stroke survivor and peer recovery educator",
     "Author of The Stroked Out Sasquatch",
     "Author of The Ultimate Stroke Recovery Revolution",
     "Creator of the S.A.S.C.H. Formula (Seize-Absorb-Swing-Combine-Hammer)",
@@ -66,7 +66,7 @@ export const NICK_KREMERS_SCHEMA = {
 };
 
 export const STROKE_RECOVERY_ORG_SCHEMA = {
-  "@type": "MedicalOrganization",
+  "@type": "EducationalOrganization",
   "@id": `${RECOVERY_BASE_URL}/#organization`,
   name: "Stroke Recovery Academy",
   alternateName: ["StrokeRecoveryAcademy.com", "Sasquatch Recovery Academy"],
@@ -78,29 +78,17 @@ export const STROKE_RECOVERY_ORG_SCHEMA = {
     height: 100,
   },
   description:
-    "Stroke Recovery Academy is the world's most comprehensive stroke recovery platform, offering evidence-based rehabilitation protocols, AI-powered coaching, a 33-chapter curriculum, and a global community of stroke survivors. Founded by Nick Kremers, a stroke survivor who went from 0% to 90% functional recovery.",
-  medicalSpecialty: [
-    "Neurology",
-    "Physical Medicine and Rehabilitation",
-    "Occupational Therapy",
-    "Speech-Language Pathology",
-    "Neuropsychology",
-  ],
+    "Stroke Recovery Academy provides recovery education, peer support, daily practice tools, and AI coaching for stroke survivors and caregivers. It is not a medical provider or therapy practice.",
   areaServed: { "@type": "Country", name: "Worldwide" },
   founder: NICK_KREMERS_SCHEMA,
   foundingDate: "2023",
   slogan: "Never Zero. Always Forward. Rebuild. Rewire. Rise.",
   knowsAbout: [
-    "Stroke recovery",
+    "Stroke recovery education",
     "Neuroplasticity",
-    "Rehabilitation medicine",
-    "Physical therapy",
-    "Occupational therapy",
-    "Speech-language therapy",
-    "Cognitive rehabilitation",
-    "Post-stroke depression",
-    "Mirror therapy",
-    "Constraint-induced movement therapy",
+    "Peer support",
+    "Recovery coaching",
+    "Caregiver education",
   ],
   sameAs: [
     "https://www.tiktok.com/@nickkremers",
@@ -115,16 +103,10 @@ export const STROKE_RECOVERY_ORG_SCHEMA = {
     email: "info@strokerecoveryacademy.com",
     availableLanguage: ["English"],
   },
-  hasCredential: {
-    "@type": "EducationalOccupationalCredential",
-    credentialCategory: "Healthcare Platform",
-    description:
-      "Evidence-based stroke recovery content developed by a stroke survivor with clinical research support",
-  },
 };
 
 export const STROKE_CONDITION_SCHEMA = {
-  "@type": "MedicalCondition",
+  "@type": "Thing",
   name: "Stroke",
   alternateName: [
     "Cerebrovascular Accident",
@@ -134,93 +116,29 @@ export const STROKE_CONDITION_SCHEMA = {
     "Hemorrhagic Stroke",
   ],
   description:
-    "A stroke occurs when blood supply to part of the brain is cut off, causing brain cells to die. Stroke is the leading cause of long-term disability in the United States. Recovery is possible through neuroplasticity-based rehabilitation.",
-  code: {
-    "@type": "MedicalCode",
-    codeValue: "I63",
-    codingSystem: "ICD-10",
-  },
-  associatedAnatomy: {
-    "@type": "AnatomicalStructure",
-    name: "Brain",
-    description: "The central nervous system organ affected by stroke",
-  },
-  possibleTreatment: [
-    {
-      "@type": "MedicalTherapy",
-      name: "Physical Therapy",
-      description:
-        "Exercise-based rehabilitation to restore movement and strength",
-    },
-    {
-      "@type": "MedicalTherapy",
-      name: "Occupational Therapy",
-      description: "Training to regain daily living skills and fine motor function",
-    },
-    {
-      "@type": "MedicalTherapy",
-      name: "Speech-Language Therapy",
-      description:
-        "Treatment for aphasia, dysphagia, and communication difficulties",
-    },
-    {
-      "@type": "MedicalTherapy",
-      name: "Neuroplasticity Training",
-      description:
-        "Targeted repetitive exercises that rewire neural pathways to bypass damaged brain tissue",
-    },
-    {
-      "@type": "MedicalTherapy",
-      name: "Mirror Therapy",
-      description:
-        "Visual feedback therapy using a mirror to improve arm and hand function after stroke",
-    },
-    {
-      "@type": "MedicalTherapy",
-      name: "Constraint-Induced Movement Therapy (CIMT)",
-      description:
-        "Restricting the unaffected limb to force use of the affected limb, accelerating motor recovery",
-    },
-  ],
-  signOrSymptom: [
-    { "@type": "MedicalSymptom", name: "Sudden weakness or numbness on one side" },
-    { "@type": "MedicalSymptom", name: "Facial drooping" },
-    { "@type": "MedicalSymptom", name: "Speech difficulty or slurring" },
-    { "@type": "MedicalSymptom", name: "Vision problems" },
-    { "@type": "MedicalSymptom", name: "Severe headache" },
-    { "@type": "MedicalSymptom", name: "Loss of balance or coordination" },
-  ],
-  primaryPrevention: [
-    "Blood pressure management",
-    "Healthy diet",
-    "Regular exercise",
-    "Smoking cessation",
-    "Limiting alcohol",
-    "Managing diabetes and cholesterol",
-  ],
+    "Stroke is the subject of survivor-led education and peer support on Stroke Recovery Academy. For diagnosis, treatment, or urgent symptoms, contact a qualified local healthcare professional.",
+  subjectOf: "Survivor-led recovery education and peer support",
 };
 
 export const SASQUATCH_METHOD_SCHEMA = {
-  "@type": "MedicalTherapy",
+  "@type": "Course",
   name: "The Sasquatch Method",
   alternateName: "66-Day Recovery Revolution",
   description:
-    "A comprehensive 3-phase, 66-day stroke recovery methodology developed by Nick Kremers based on his personal journey from 0% to 90%+ recovery. The Method runs on three integrated systems: S.A.S.C.H. (daily formula — Seize, Absorb, Swing, Combine, Hammer), S.O.S. (daily reset — Survive, Organize, Strive), and C.O.M.P.A.S.S. (7-pillar long-game navigation — Control, Own, Mutate, Patience, Anger, Small Wins, Stack). It combines neuroplasticity science, mindset mastery, physical rehabilitation, and community support.",
-  relevantSpecialty: [
-    "Physical Medicine and Rehabilitation",
-    "Neurology",
-    "Neuropsychology",
-  ],
-  procedureType: "Therapeutic",
+    "A 3-phase, 66-day survivor education and coaching program developed from Nick Kremers' lived experience. It offers reflection, daily practice, mindset tools, and peer support; it is not medical treatment.",
+  audience: {
+    "@type": "Audience",
+    audienceType: "Stroke survivors and caregivers",
+  },
   followup: "Daily check-ins, streak tracking, and AI-powered coaching",
   recognizingAuthority: {
-    "@type": "MedicalOrganization",
+    "@type": "Organization",
     name: "Stroke Recovery Academy",
   },
   study: {
-    "@type": "MedicalObservationalStudy",
+    "@type": "CreativeWork",
     description:
-      "Personal recovery case study: 0% to 90% functional recovery through systematic rehabilitation over 2+ years",
+      "Personal recovery story shared as lived experience, not as a promise or typical outcome",
   },
 };
 
@@ -336,7 +254,7 @@ export default function RecoverySEO({
 
   const webPageSchema = {
     "@context": "https://schema.org",
-    "@type": pageType === "medical" ? "MedicalWebPage" : "WebPage",
+    "@type": "WebPage",
     name: fullTitle,
     description,
     url: canonicalUrl,
@@ -358,19 +276,11 @@ export default function RecoverySEO({
     dateModified: modifiedTime || TODAY,
     ...(publishedTime && { datePublished: publishedTime }),
     ...(pageType === "medical" && {
-      medicalAudience: {
-        "@type": "MedicalAudience",
-        audienceType: "Patient",
-        healthCondition: {
-          "@type": "MedicalCondition",
-          name: "Stroke",
-        },
-      },
       lastReviewed: TODAY,
       reviewedBy: {
         "@type": "Person",
         name: "Nick Kremers",
-        description: "Stroke survivor and recovery specialist",
+        description: "Stroke survivor and peer recovery educator",
       },
     }),
   };
@@ -423,10 +333,10 @@ export default function RecoverySEO({
       <meta name="geo.position" content="38.8951;-77.0364" />
       <meta name="ICBM" content="38.8951, -77.0364" />
 
-      <meta name="expertise" content="Stroke recovery, neuroplasticity, rehabilitation medicine" />
-      <meta name="experience" content="First-hand stroke survivor recovery from 0% to 90% — documented multi-year journey" />
+      <meta name="expertise" content="Stroke recovery education, peer support, and coaching" />
+      <meta name="experience" content="First-hand stroke survivor experience shared through recovery education and peer support" />
       <meta name="authoritativeness" content="Founded by Nick Kremers, stroke survivor and author of three comprehensive recovery books" />
-      <meta name="trustworthiness" content="Evidence-based content, medical disclaimer provided, transparent methodology, survivor-built platform" />
+      <meta name="trustworthiness" content="Transparent methodology, clear non-clinical boundaries, survivor-built platform" />
 
       {medicalDisclaimer && (
         <meta
@@ -507,7 +417,7 @@ export function createRecoveryCourseSchema(course: {
     description: course.description,
     url: `${RECOVERY_BASE_URL}${course.url}`,
     provider: {
-      "@type": "MedicalOrganization",
+      "@type": "Organization",
       name: "Stroke Recovery Academy",
       url: RECOVERY_BASE_URL,
     },
@@ -515,7 +425,7 @@ export function createRecoveryCourseSchema(course: {
       "@type": "Person",
       name: "Nick Kremers",
       "@id": `${RECOVERY_BASE_URL}/recovery/about-nick#nick-kremers`,
-      description: "Stroke survivor, 0% to 90% recovery, author and founder",
+      description: "Stroke survivor, peer recovery educator, author, and founder",
     },
     educationalLevel: course.level,
     numberOfCredits: course.numberOfLessons,
@@ -531,8 +441,8 @@ export function createRecoveryCourseSchema(course: {
       category: course.free ? "Free" : "Subscription",
     },
     about: {
-      "@type": "MedicalCondition",
-      name: "Stroke Recovery",
+      "@type": "Thing",
+      name: "Stroke recovery education",
     },
     hasCourseInstance: {
       "@type": "CourseInstance",
@@ -599,7 +509,7 @@ export function createRecoveryProductSchema(product: {
     ...(product.image && { image: product.image }),
     category: product.category,
     brand: {
-      "@type": "MedicalOrganization",
+      "@type": "Organization",
       name: "Stroke Recovery Academy",
       "@id": `${RECOVERY_BASE_URL}/#organization`,
     },
@@ -618,7 +528,7 @@ export function createRecoveryProductSchema(product: {
         availability: `https://schema.org/${product.availability || "InStock"}`,
         url,
         seller: {
-          "@type": "MedicalOrganization",
+          "@type": "Organization",
           name: "Stroke Recovery Academy",
           "@id": `${RECOVERY_BASE_URL}/#organization`,
         },
@@ -661,12 +571,8 @@ export function createRecoveryExerciseSchema(exercise: {
       "@type": "AnatomicalStructure",
       name: exercise.bodyLocation,
     },
-    relevantCondition: {
-      "@type": "MedicalCondition",
-      name: "Stroke",
-    },
     ...(exercise.benefits?.length && {
-      result: exercise.benefits.map((b) => ({ "@type": "MedicalTherapy", name: b })),
+      result: exercise.benefits.map((b) => ({ "@type": "DefinedTerm", name: b })),
     }),
   };
 }
@@ -682,7 +588,7 @@ export function createRecoveryArticleSchema(article: {
 }) {
   return {
     "@context": "https://schema.org",
-    "@type": ["Article", "MedicalWebPage"],
+    "@type": "Article",
     headline: article.headline,
     description: article.description,
     url: `${RECOVERY_BASE_URL}${article.url}`,
@@ -696,7 +602,7 @@ export function createRecoveryArticleSchema(article: {
       url: `${RECOVERY_BASE_URL}/recovery/about-nick`,
     },
     publisher: {
-      "@type": "MedicalOrganization",
+      "@type": "Organization",
       name: "Stroke Recovery Academy",
       url: RECOVERY_BASE_URL,
       logo: {
@@ -705,18 +611,14 @@ export function createRecoveryArticleSchema(article: {
       },
     },
     about: {
-      "@type": "MedicalCondition",
-      name: "Stroke",
-    },
-    medicalAudience: {
-      "@type": "MedicalAudience",
-      audienceType: "Patient",
+      "@type": "Thing",
+      name: "Stroke recovery education",
     },
     lastReviewed: article.dateModified || article.datePublished,
     reviewedBy: {
       "@type": "Person",
       name: "Nick Kremers",
-      description: "Stroke survivor and recovery specialist",
+      description: "Stroke survivor and peer recovery educator",
     },
     ...(article.topics?.length && {
       keywords: article.topics.join(", "),
@@ -750,7 +652,7 @@ export function createRecoveryHowToSchema(howTo: {
       }),
     })),
     about: {
-      "@type": "MedicalCondition",
+      "@type": "Thing",
       name: "Stroke Recovery",
     },
   };
@@ -769,7 +671,7 @@ export function createLocalBusinessSchema(location: {
 }) {
   return {
     "@context": "https://schema.org",
-    "@type": ["MedicalOrganization", "LocalBusiness"],
+    "@type": ["Organization", "LocalBusiness"],
     name: location.name,
     description: location.description,
     url: RECOVERY_BASE_URL,

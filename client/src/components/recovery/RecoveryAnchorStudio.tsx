@@ -97,8 +97,8 @@ const ANCHOR_TYPE_META: Array<{
   {
     id: "memory",
     label: "Memory",
-    description: "Encode names, addresses, medication times, daily routines into a sung mnemonic.",
-    placeholder: 'e.g. "Pills at 8am: aspirin, statin, blood-pressure. Therapy Tuesday at 2pm with Sara."',
+    description: "Encode a private memory or routine into a sung mnemonic.",
+    placeholder: 'e.g. "My morning routine: water, breakfast, and a walk."',
     Icon: Brain,
   },
 ];
@@ -176,9 +176,9 @@ export default function RecoveryAnchorStudio() {
           Recovery Anchor Studio
         </CardTitle>
         <CardDescription className="text-amber-100/70 leading-relaxed">
-          A musical-mnemonic encoder for the words, phrases, and facts your stroke tried to take.
-          Inspired by Melodic Intonation Therapy and Rhythmic Auditory Stimulation — built for use
-          between your real clinical sessions, not in place of them.
+          A creative musical-mnemonic practice for words, phrases, and memories that matter to you.
+          It uses rhythm and repetition ideas, but it is not medical treatment or a replacement
+          for guidance from your healthcare team.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -406,13 +406,15 @@ function RenderedAnchor({
   const [isShared, setIsShared] = useState(result.isShared);
   const [shareId, setShareId] = useState<string | null>(result.shareId);
   const [copied, setCopied] = useState(false);
+  const [shareConfirmed, setShareConfirmed] = useState(false);
 
   const shareToggle = useMutation({
     mutationFn: async (next: boolean) => {
       const res = await apiRequest("POST", `/api/recovery/anchor/${result.id}/share`, {
         isShared: next,
+        confirmPublicShare: next,
       });
-      return (await res.json()) as { isShared: boolean; shareId: string | null };
+      return (await res.json()) as { isShared: boolean; shareId: string | null; expiresAt: string | null };
     },
     onSuccess: (data) => {
       setIsShared(data.isShared);
@@ -420,7 +422,7 @@ function RenderedAnchor({
       toast({
         title: data.isShared ? "Shared publicly" : "Made private",
         description: data.isShared
-          ? "Anyone with the link can hear your anchor."
+          ? "Anyone with the link can view or hear this anchor for 30 days."
           : "Your anchor is private again.",
       });
     },
@@ -580,8 +582,25 @@ function RenderedAnchor({
             <div>
               <p className="text-xs font-semibold text-amber-100">Share publicly</p>
               <p className="text-[11px] text-amber-100/50 leading-relaxed mt-0.5">
-                Off by default. Toggling on mints a private link anyone can open.
+                Off by default. Sharing creates a public link. Anyone who gets it may
+                view or hear this anchor, including personal details you put in it.
+                It expires after 30 days and you can revoke it here.
               </p>
+              {!isShared && (
+                <label className="mt-2 flex items-start gap-2 text-[11px] text-amber-100/70 leading-relaxed">
+                  <input
+                    type="checkbox"
+                    checked={shareConfirmed}
+                    onChange={(event) => setShareConfirmed(event.target.checked)}
+                    className="mt-0.5 accent-amber-500"
+                    data-testid="checkbox-share-consent"
+                  />
+                  <span>
+                    I understand this link is public. I will not include medication,
+                    appointment, address, or other details I do not want shared.
+                  </span>
+                </label>
+              )}
             </div>
             <Button
               size="sm"
@@ -592,7 +611,7 @@ function RenderedAnchor({
                   : "border-amber-700 text-amber-200"
               }
               onClick={() => shareToggle.mutate(!isShared)}
-              disabled={shareToggle.isPending}
+              disabled={shareToggle.isPending || (!isShared && !shareConfirmed)}
               data-testid="button-share-toggle"
             >
               <Share2 className="h-3.5 w-3.5 mr-1.5" /> {isShared ? "Shared" : "Share"}

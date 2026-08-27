@@ -152,7 +152,7 @@ async function renderExerciseHtml(slug: string): Promise<string | null> {
       `${ex.level || "beginner"} stroke recovery`,
       ...(Array.isArray(ex.targets) ? (ex.targets as string[]).slice(0, 3).map((t) => `${t.replace(/_/g, " ")} stroke`) : []),
     ],
-    schemaType: "MedicalWebPage",
+    schemaType: "WebPage",
     breadcrumbs: [
       { name: "Home", href: "/" },
       { name: "Recovery", href: "/recovery" },
@@ -294,7 +294,7 @@ function renderWeekHtml(n: number): string | null {
       `stroke recovery week ${n}`,
       `${phase.label.toLowerCase()} stroke recovery`,
     ],
-    schemaType: "MedicalWebPage",
+    schemaType: "WebPage",
     breadcrumbs: [
       { name: "Home", href: "/" },
       { name: "Recovery", href: "/recovery" },
@@ -396,7 +396,7 @@ function renderStateHubHtml(stateCode: string): string | null {
       `neurologist ${stateName} stroke`,
       ...metrosInState.slice(0, 5).map(m => `stroke rehab ${m.city}`),
     ],
-    schemaType: "MedicalWebPage",
+    schemaType: "WebPage",
     breadcrumbs: [
       { name: "Home", href: "/" },
       { name: "Recovery", href: "/recovery" },
