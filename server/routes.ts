@@ -12537,7 +12537,14 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
   app.post('/api/recovery/payments/gift-scholarship', paymentCheckoutRateLimit, async (req, res) => {
     try {
       const { getRecoveryStripeClient, isRecoveryStripeConfigured } = await import('./recoveryStripeClient');
-      const { tierId, recipientEmail, message } = req.body;
+      const {
+        tierId,
+        recipientEmail,
+        donorName,
+        donorEmail,
+        message,
+        survivorFund,
+      } = req.body;
       
       if (!isRecoveryStripeConfigured()) {
         return res.status(503).json({ message: 'Payment processing not configured' });
@@ -12553,6 +12560,19 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
       if (!scholarship) {
         return res.status(400).json({ message: 'Invalid scholarship tier' });
       }
+
+      const normalizedDonorEmail = typeof donorEmail === 'string' ? donorEmail.trim() : '';
+      const normalizedRecipientEmail = typeof recipientEmail === 'string' ? recipientEmail.trim() : '';
+      const normalizedMessage = typeof message === 'string' ? message.trim().slice(0, 500) : '';
+      const isSurvivorFund = survivorFund === true;
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedDonorEmail)) {
+        return res.status(400).json({ message: 'A valid donor email is required for the receipt.' });
+      }
+
+      if (!isSurvivorFund && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedRecipientEmail)) {
+        return res.status(400).json({ message: 'A valid survivor email is required for a direct gift.' });
+      }
       
       const stripe = getRecoveryStripeClient();
       const session = await stripe.checkout.sessions.create({
@@ -12561,7 +12581,7 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
           price_data: {
             currency: 'usd',
             product_data: {
-              name: `Gift: ${scholarship.name}`,
+              name: scholarship.name,
               description: scholarship.description,
             },
             unit_amount: scholarship.amount,
@@ -12569,14 +12589,21 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
           quantity: 1,
         }],
         mode: 'payment',
-        success_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/gift?donated=success`,
+        customer_email: normalizedDonorEmail,
+        payment_intent_data: {
+          receipt_email: normalizedDonorEmail,
+        },
+        success_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/gift?donated=success&mode=${isSurvivorFund ? 'fund' : 'specific'}`,
         cancel_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/gift`,
         metadata: {
           type: 'scholarship_gift',
           tierId,
-          recipientEmail,
-          giftMessage: message || '',
-          platform: 'stroke_recovery_academy',
+          recipientEmail: normalizedRecipientEmail,
+          donorName: typeof donorName === 'string' ? donorName.trim().slice(0, 200) : '',
+          donorEmail: normalizedDonorEmail,
+          giftMessage: normalizedMessage,
+          survivorFund: isSurvivorFund ? 'true' : 'false',
+          platform: 'stroke_lyfe_inc',
         },
       });
       
@@ -12652,13 +12679,13 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
           quantity: 1,
         }],
         mode: pkg.mode,
-        success_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/strokelyfe?coaching=success`,
-        cancel_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/strokelyfe`,
+        success_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/coaching?coaching=success`,
+        cancel_url: `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/coaching`,
         metadata: {
           type: 'coaching_package',
           packageId,
           userId,
-          platform: 'stroke_recovery_academy',
+          platform: 'stroked_out_sasquatch',
         },
       };
       

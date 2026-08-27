@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -21,27 +20,15 @@ import {
   Calendar,
   CheckCircle,
   ArrowRight,
-  Sparkles,
-  Shield,
-  Clock,
   Award,
-  Phone,
   Mail,
   MapPin,
   Building,
   DollarSign,
   GraduationCap,
-  Brain,
-  Zap,
-  Star,
-  MessageCircle,
-  Video,
-  FileText,
   Compass,
-  Mountain,
 } from "lucide-react";
 import strokeLyfeLogo from "@assets/Untitled_design_1776789083877.png";
-import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 
 const donationAmounts = [25, 50, 100, 250, 500, 1000];
 
@@ -89,73 +76,7 @@ const scholarshipTiers = [
   },
 ];
 
-const coachingPackages = [
-  {
-    id: "accountability-monthly",
-    name: "Monthly Accountability",
-    price: 197,
-    interval: "month",
-    description: "Weekly check-ins to keep you on track",
-    features: [
-      "4 weekly accountability calls (30 min)",
-      "Custom goal setting & tracking",
-      "Progress reporting",
-      "Email support between calls",
-    ],
-    icon: Target,
-  },
-  {
-    id: "recovery-intensive",
-    name: "Recovery Intensive",
-    price: 497,
-    interval: "one-time",
-    description: "Deep dive into your recovery journey",
-    features: [
-      "2-hour strategy session with Nick",
-      "Personalized recovery plan",
-      "66-Day roadmap creation",
-      "30-day follow-up call",
-      "Sasquatch Formula implementation",
-    ],
-    icon: Zap,
-    popular: true,
-  },
-  {
-    id: "transformation",
-    name: "66-Day Transformation",
-    price: 1997,
-    interval: "one-time",
-    description: "Complete guided transformation program",
-    features: [
-      "Full 66-day 1-on-1 coaching",
-      "Daily accountability tracking",
-      "Weekly strategy sessions",
-      "Custom nutrition & exercise plan",
-      "Supplement guidance (Squatch Mix)",
-      "Direct phone/text access to Nick",
-    ],
-    icon: Mountain,
-  },
-  {
-    id: "elite-annual",
-    name: "Elite Annual Coaching",
-    price: 4997,
-    interval: "year",
-    description: "Year-long transformation with Nick",
-    features: [
-      "Monthly 1-on-1 sessions (12 total)",
-      "Weekly group coaching access",
-      "Unlimited email support",
-      "Quarterly strategy reviews",
-      "VIP retreat access",
-      "Stroke Lyfe Ambassador status",
-    ],
-    icon: Star,
-  },
-];
-
 export default function StrokeLyfeOrg() {
-  const { user } = useAuth();
   const { toast } = useToast();
   const [, navigate] = useLocation();
   const [selectedDonation, setSelectedDonation] = useState<number>(100);
@@ -202,25 +123,6 @@ export default function StrokeLyfeOrg() {
     },
   });
 
-  const coachingMutation = useMutation({
-    mutationFn: async (data: { packageId: string }) => {
-      const response = await apiRequest("POST", "/api/recovery/payments/coaching-package", data);
-      return response.json();
-    },
-    onSuccess: (data) => {
-      if (data.url) {
-        window.location.href = data.url;
-      }
-    },
-    onError: () => {
-      toast({
-        title: "Checkout Failed",
-        description: "There was an error. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
   const handleDonate = () => {
     let amount = selectedDonation;
     if (customDonation && customDonation.trim() !== "") {
@@ -256,23 +158,11 @@ export default function StrokeLyfeOrg() {
     });
   };
 
-  const handleCoachingCheckout = (packageId: string) => {
-    if (!user) {
-      toast({
-        title: "Sign In Required",
-        description: "Please sign in to purchase coaching",
-      });
-      navigate("/auth");
-      return;
-    }
-    coachingMutation.mutate({ packageId });
-  };
-
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
       <RecoverySEO
         title="Stroke Lyfe Inc. — 501(c)(3) Stroke Recovery Nonprofit"
-        description="Stroke Lyfe Inc. is Nick Kremers' nonprofit organization providing stroke survivors with scholarships, coaching, and recovery resources. Donate, gift a survivor's membership, or apply for assistance. Rebuild. Rewire. Rise."
+        description="Stroke Lyfe Inc. is Nick Kremers' nonprofit organization supporting stroke survivors through donations, scholarships, and survivor access programs."
         canonical="/recovery/strokelyfe-org"
         keywords={["stroke nonprofit", "stroke recovery charity", "Stroke Lyfe Inc", "stroke survivor scholarship", "stroke recovery donation", "501c3 stroke", "Nick Kremers nonprofit"]}
         breadcrumbs={[{ name: "Stroke Lyfe Inc.", url: "/recovery/strokelyfe-org" }]}
@@ -291,7 +181,6 @@ export default function StrokeLyfeOrg() {
         }}
       />
       <NonprofitHeader />
-      <SasquatchChatWidget />
       
       <section className="relative py-20 px-4 bg-gradient-to-br from-[#E2741B] via-[#2D5A4A] to-[#E2741B] overflow-hidden">
         <div className="absolute inset-0 opacity-10">
@@ -353,22 +242,22 @@ export default function StrokeLyfeOrg() {
       <section className="py-16 px-4 bg-white border-b">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-4xl font-bold text-[#E2741B] mb-2">1,200+</div>
-              <div className="text-gray-600">Survivors Helped</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-[#E2741B] mb-2">$250K+</div>
-              <div className="text-gray-600">Scholarships Awarded</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-[#E2741B] mb-2">50+</div>
-              <div className="text-gray-600">Countries Reached</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-[#E2741B] mb-2">85%</div>
-              <div className="text-gray-600">Completion Rate</div>
-            </div>
+             <div>
+               <div className="text-2xl font-bold text-[#E2741B] mb-2">Direct gifts</div>
+               <div className="text-gray-600">Support a survivor you know</div>
+             </div>
+             <div>
+               <div className="text-2xl font-bold text-[#E2741B] mb-2">Scholarships</div>
+               <div className="text-gray-600">Help fund access for someone in need</div>
+             </div>
+             <div>
+               <div className="text-2xl font-bold text-[#E2741B] mb-2">Survivor-led</div>
+               <div className="text-gray-600">Built from lived experience</div>
+             </div>
+             <div>
+               <div className="text-2xl font-bold text-[#E2741B] mb-2">Open access</div>
+               <div className="text-gray-600">Support programs for the recovery journey</div>
+             </div>
           </div>
         </div>
       </section>
@@ -382,7 +271,7 @@ export default function StrokeLyfeOrg() {
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               Every stroke survivor deserves access to proven recovery methods. 
-              Your support helps us provide scholarships, coaching, and resources to those who can't afford them.
+               Your support helps us provide scholarships and recovery access to survivors who cannot afford them.
             </p>
           </div>
           
@@ -404,9 +293,9 @@ export default function StrokeLyfeOrg() {
                 <div className="w-12 h-12 bg-[#E2741B]/10 rounded-lg flex items-center justify-center mb-4">
                   <Target className="w-6 h-6 text-[#E2741B]" />
                 </div>
-                <CardTitle className="text-[#E2741B]">Accountability Coaching</CardTitle>
+                 <CardTitle className="text-[#E2741B]">Survivor Support</CardTitle>
                 <CardDescription>
-                  Weekly check-ins and goal tracking to keep survivors on their recovery path
+                   Community programs and practical resources that help survivors stay connected
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -621,95 +510,30 @@ export default function StrokeLyfeOrg() {
         </div>
       </section>
 
-      <section id="coaching" className="py-16 px-4 bg-white">
+       <section id="coaching" className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <Badge className="bg-[#E2741B]/10 text-[#E2741B] mb-4">
-              <Target className="w-3 h-3 mr-1" />
-              Accountability Coaching
-            </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#E2741B] mb-4 font-serif">
-              Big Ticket Coaching Packages
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Work directly with Nick Kremers, stroke survivor and recovery coach. 
-              Get personalized accountability to transform your recovery.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {coachingPackages.map((pkg) => (
-              <Card 
-                key={pkg.id} 
-                className={`border-[#E2741B]/20 hover-elevate relative ${pkg.popular ? 'ring-2 ring-[#E2741B]' : ''}`}
-              >
-                {pkg.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <Badge className="bg-[#E2741B] text-white">Best Value</Badge>
-                  </div>
-                )}
-                <CardHeader>
-                  <div className="w-12 h-12 bg-[#E2741B]/10 rounded-lg flex items-center justify-center mb-4">
-                    <pkg.icon className="w-6 h-6 text-[#E2741B]" />
-                  </div>
-                  <CardTitle className="text-[#E2741B] text-lg">{pkg.name}</CardTitle>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-bold text-[#E2741B]">${pkg.price.toLocaleString()}</span>
-                    <span className="text-sm text-gray-500">
-                      {pkg.interval === "month" && "/mo"}
-                      {pkg.interval === "year" && "/yr"}
-                    </span>
-                  </div>
-                  <CardDescription className="text-sm">{pkg.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 mb-6">
-                    {pkg.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm">
-                        <CheckCircle className="w-4 h-4 text-[#E2741B] mt-0.5 flex-shrink-0" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button
-                    className="w-full bg-[#E2741B] hover:bg-[#2D5A4A]"
-                    onClick={() => handleCoachingCheckout(pkg.id)}
-                    disabled={coachingMutation.isPending}
-                    data-testid={`button-coaching-${pkg.id}`}
-                  >
-                    Get Started
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          
-          <div className="mt-12 text-center">
-            <Card className="inline-block border-[#E2741B]/30 bg-[#E2741B]/5 max-w-2xl">
-              <CardContent className="py-6">
-                <div className="flex flex-col md:flex-row items-center gap-6">
-                  <div className="flex-shrink-0">
-                    <div className="w-20 h-20 bg-[#E2741B] rounded-full flex items-center justify-center">
-                      <Phone className="w-8 h-8 text-white" />
-                    </div>
-                  </div>
-                  <div className="text-left">
-                    <h3 className="text-xl font-bold text-[#E2741B] mb-2">
-                      Not Sure Which Package Is Right?
-                    </h3>
-                    <p className="text-gray-600 mb-4">
-                      Book a free 15-minute discovery call with Nick to discuss your recovery goals.
-                    </p>
-                    <Button variant="outline" className="border-[#E2741B] text-[#E2741B]" data-testid="button-book-call">
-                      <Video className="w-4 h-4 mr-2" />
-                      Schedule Free Call
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+           <div className="max-w-3xl mx-auto text-center">
+             <Badge className="bg-[#E2741B]/10 text-[#E2741B] mb-4">
+               <Heart className="w-3 h-3 mr-1" />
+               Keep the brands clear
+             </Badge>
+             <h2 className="text-3xl md:text-4xl font-bold text-[#E2741B] mb-4 font-serif">
+               Looking for Nick's coaching?
+             </h2>
+             <p className="text-lg text-gray-600 mb-8">
+               Stroke Lyfe Inc. focuses on nonprofit access and scholarships.
+               Nick's paid coaching and the Sasquatch method live separately under Stroked-Out Sasquatch.
+             </p>
+             <Button
+               size="lg"
+               className="bg-[#E2741B] hover:bg-[#2D5A4A]"
+               onClick={() => navigate("/recovery/coaching")}
+               data-testid="button-sasquatch-coaching"
+             >
+               Visit Stroked-Out Sasquatch Coaching
+               <ArrowRight className="w-4 h-4 ml-2" />
+             </Button>
+           </div>
         </div>
       </section>
 
@@ -761,7 +585,7 @@ export default function StrokeLyfeOrg() {
               <ul className="space-y-2 text-sm text-gray-400">
                 <li>Recovery Academy</li>
                 <li>Scholarship Fund</li>
-                <li>Coaching Programs</li>
+                 <li>Survivor Support</li>
                 <li>Community Support</li>
               </ul>
             </div>
