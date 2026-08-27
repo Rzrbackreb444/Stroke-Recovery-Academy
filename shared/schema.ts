@@ -2376,6 +2376,7 @@ export const neverZeroAudits = pgTable("never_zero_audits", {
   // turn for authenticated users + every Never Zero page load. Composite
   // index covers the exact-match lookup with no scan.
   index("never_zero_audits_user_date_idx").on(t.userId, t.auditDate),
+  uniqueIndex("never_zero_audits_user_date_uq").on(t.userId, t.auditDate),
 ]);
 
 // ============================================================================
