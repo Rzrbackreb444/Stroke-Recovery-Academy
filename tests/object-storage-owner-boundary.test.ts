@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { Readable } from "node:stream";
+import { Writable } from "node:stream";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import { db } from "../server/db";
@@ -119,36 +120,57 @@ ObjectStorageService.prototype.getObjectEntityFile = async function (objectPath)
   if (!file || file.deleted) throw new ObjectNotFoundError();
   return file as any;
 };
-ObjectStorageService.prototype.downloadObject = async function (_file, res) {
-  (res as any).served = true;
-};
 
-function makeResponse() {
-  const response: any = {
-    statusCode: 200,
-    headers: {} as Record<string, string>,
-    served: false,
-    setHeader(name: string, value: string) {
-      this.headers[name] = value;
-    },
-    set(values: Record<string, string | number>) {
-      Object.assign(this.headers, values);
-    },
-    status(code: number) {
-      this.statusCode = code;
-      return this;
-    },
-    json(body: unknown) {
-      this.body = body;
-      return this;
-    },
-  };
-  return response;
+class TestResponse extends Writable {
+  statusCode = 200;
+  headers: Record<string, string | number> = {};
+  served = false;
+  bodyChunks: Buffer[] = [];
+  body: unknown;
+
+  _write(
+    chunk: any,
+    _encoding: BufferEncoding,
+    callback: (error?: Error | null) => void,
+  ): void {
+    this.served = true;
+    this.bodyChunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+    callback();
+  }
+
+  setHeader(name: string, value: string): void {
+    this.headers[name] = value;
+  }
+
+  set(values: Record<string, string | number>): void {
+    Object.assign(this.headers, values);
+  }
+
+  status(code: number): this {
+    this.statusCode = code;
+    return this;
+  }
+
+  json(body: unknown): this {
+    this.body = body;
+    return this;
+  }
+}
+
+function makeResponse(): TestResponse {
+  return new TestResponse();
 }
 
 async function invoke(handler: any, request: any) {
   const response = makeResponse();
   await Promise.resolve(handler(request, response, () => undefined));
+  if (
+    response.statusCode === 200 &&
+    response.headers["Content-Type"] &&
+    !response.writableFinished
+  ) {
+    await new Promise<void>((resolve) => response.once("finish", resolve));
+  }
   return response;
 }
 
@@ -243,6 +265,47 @@ test("legacy objects without an upload intent remain readable, but finalized obj
   });
   assert.equal(otherResponse.statusCode, 404);
   assert.equal(otherResponse.served, false);
+});
+
+test("revoking journal sharing restores owner-only access and private caching", async () => {
+  const file = new MemoryFile("uploads/journal-photo");
+  objects.set(OBJECT_PATH, file);
+  const objectStorage = new ObjectStorageService();
+
+  // Sharing makes the media readable to an anonymous community viewer.
+  await objectStorage.trySetObjectEntityAclPolicy(
+    OBJECT_PATH,
+    { owner: OWNER_ID, visibility: "public" },
+    { requireUploadIntent: false },
+  );
+  const sharedResponse = await invoke(objectHandler, {
+    path: OBJECT_PATH,
+  });
+  assert.equal(sharedResponse.statusCode, 200);
+  assert.equal(sharedResponse.served, true);
+  assert.equal(sharedResponse.headers["Cache-Control"], "public, max-age=3600");
+
+  // The same share lifecycle writes private metadata when sharing is revoked.
+  await objectStorage.trySetObjectEntityAclPolicy(
+    OBJECT_PATH,
+    { owner: OWNER_ID, visibility: "private" },
+    { requireUploadIntent: false },
+  );
+  const otherResponse = await invoke(objectHandler, {
+    path: OBJECT_PATH,
+    user: { id: OTHER_ID },
+  });
+  assert.equal(otherResponse.statusCode, 404);
+  assert.equal(otherResponse.served, false);
+  assert.deepEqual(otherResponse.body, { error: "Object not found" });
+
+  const ownerResponse = await invoke(objectHandler, {
+    path: OBJECT_PATH,
+    user: { id: OWNER_ID },
+  });
+  assert.equal(ownerResponse.statusCode, 200);
+  assert.equal(ownerResponse.served, true);
+  assert.equal(ownerResponse.headers["Cache-Control"], "private, max-age=3600");
 });
 
 test("upload intent lookup distinguishes the owner, expiry, and unknown paths", async () => {
