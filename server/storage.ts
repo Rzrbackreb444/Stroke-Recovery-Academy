@@ -81,6 +81,7 @@ import {
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql, count, ilike, or, gte, lt } from "drizzle-orm";
+import { textArraySql } from "./neverZeroAuditSql";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -2980,7 +2981,7 @@ export class DatabaseStorage implements IStorage {
           stood_out, missing, verdict, tomorrow, raw_message
         ) VALUES (
           ${payload.userId}, ${payload.auditDate}, ${payload.streak}, ${payload.todayCount},
-          ${payload.categoriesCovered}, ${payload.categoriesMissed},
+          ${textArraySql(payload.categoriesCovered)}, ${textArraySql(payload.categoriesMissed)},
           ${payload.stoodOut}, ${payload.missing}, ${payload.verdict}, ${payload.tomorrow}, ${payload.rawMessage}
         )
         ON CONFLICT (user_id, audit_date) DO UPDATE SET

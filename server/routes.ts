@@ -2432,9 +2432,9 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // STRIPE CONNECT - Creator Onboarding & Payouts
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Create Connect account and get onboarding link
   app.post('/api/stripe/connect/onboard', isAuthenticated, async (req: any, res) => {
@@ -2901,9 +2901,9 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // STROKE LYFE MUSIC STUDIO API
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Generate lyrics using Gemini
   app.post('/api/music/generate-lyrics', isAuthenticated, async (req: any, res) => {
@@ -2998,9 +2998,9 @@ Include recovery metaphors and triumphant imagery.`;
     });
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // GOOGLE WORKSPACE INTEGRATION API
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Check Google Workspace configuration status
   app.get('/api/workspace/status', async (req, res) => {
@@ -3108,9 +3108,9 @@ Include recovery metaphors and triumphant imagery.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // TEXT-TO-SPEECH / AUDIOBOOK NARRATION API
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Get available narrator voices
   app.get('/api/tts/voices', async (req, res) => {
@@ -3165,7 +3165,7 @@ Include recovery metaphors and triumphant imagery.`;
     }
   });
 
-  // ============ BOOK STUDIO CHUNKED PROCESSING (200K+ WORDS) ============
+  // ------------ BOOK STUDIO CHUNKED PROCESSING (200K+ WORDS) ------------
 
   // Parse document into logical chunks (chapters/sections)
   app.post('/api/book-studio/chunk-plan', async (req, res) => {
@@ -3543,7 +3543,7 @@ Respond helpfully as a book development assistant.`;
     }
   });
 
-  // ============ BOOK STUDIO CHAT ANALYSIS ROUTES ============
+  // ------------ BOOK STUDIO CHAT ANALYSIS ROUTES ------------
   
   // Interactive AI chat for manuscript analysis
   app.post('/api/book/chat-analyze', async (req, res) => {
@@ -3878,7 +3878,7 @@ DO NOT include any text - the title will be added separately.`;
     }
   });
 
-  // ============ BOOK STUDIO IMAGE ROUTES ============
+  // ------------ BOOK STUDIO IMAGE ROUTES ------------
 
   // Get all book images for user
   app.get('/api/book/images', isAuthenticated, async (req: any, res) => {
@@ -4020,9 +4020,9 @@ Clean composition, artistic, evocative. No text or words in the image.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // BOOK PROJECTS API - Full CRUD for book project management
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Create new book project
   app.post('/api/book-projects', isAuthenticated, async (req: any, res) => {
@@ -4217,9 +4217,9 @@ Clean composition, artistic, evocative. No text or words in the image.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // AI LEARNING SYSTEM - Extract knowledge from conversations
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Extract facts and update accumulated knowledge after each conversation
   app.post('/api/book-projects/:id/learn', isAuthenticated, async (req: any, res) => {
@@ -4386,9 +4386,9 @@ Only include genuinely new information. Return empty arrays if nothing new was l
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // WORKFLOW MARKETPLACE API - Sellable automation templates with smart search
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Get all workflow categories
   app.get('/api/workflows/categories', async (req, res) => {
@@ -4607,9 +4607,9 @@ Only include genuinely new information. Return empty arrays if nothing new was l
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // BOOK PROJECT SECTIONS API
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Add section/chapter to book project
   app.post('/api/book-projects/:id/sections', isAuthenticated, async (req: any, res) => {
@@ -4795,9 +4795,9 @@ Only include genuinely new information. Return empty arrays if nothing new was l
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // BOOK IMAGE PLACEMENTS API
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Add image placement
   app.post('/api/book-projects/:id/image-placements', isAuthenticated, async (req: any, res) => {
@@ -4915,9 +4915,9 @@ Only include genuinely new information. Return empty arrays if nothing new was l
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // AUTHOR PROFILES API
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Get user's author profiles
   app.get('/api/author-profiles', isAuthenticated, async (req: any, res) => {
@@ -5063,9 +5063,9 @@ Only include genuinely new information. Return empty arrays if nothing new was l
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // PUBLISHING READINESS ANALYSIS
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Analyze manuscript for publication readiness
   app.post('/api/book-projects/:id/analyze', isAuthenticated, async (req: any, res) => {
@@ -5338,7 +5338,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
     }
   });
 
-  // ============ DOCUMENT IMPORT/PARSE ============
+  // ------------ DOCUMENT IMPORT/PARSE ------------
   
   // Parse uploaded document for Book Studio import
   app.post('/api/documents/parse', isAuthenticated, async (req: any, res) => {
@@ -5366,7 +5366,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
     }
   });
 
-  // ============ CONTENT FACTORY - KEYWORD RESEARCH & RAPID GENERATION ============
+  // ------------ CONTENT FACTORY - KEYWORD RESEARCH & RAPID GENERATION ------------
   
   // Keyword research using SERP API (market intelligence)
   app.post('/api/book/keyword-research', isAuthenticated, async (req: any, res) => {
@@ -5956,7 +5956,7 @@ Break the story into 10-20 pages with clear illustration prompts for each.`;
     }
   });
 
-  // ============ CREATIVE WORKFLOW - DISCUSSION TO BOOK ============
+  // ------------ CREATIVE WORKFLOW - DISCUSSION TO BOOK ------------
   
   // Convert chat discussion into a book plan/outline
   app.post('/api/book/discussion-to-plan', isAuthenticated, async (req: any, res) => {
@@ -6137,9 +6137,9 @@ ${analysisPrompts[analysisType || 'full']}`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // PROJECT NOTES SYSTEM
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Get notes for a project
   app.get('/api/projects/:projectId/notes', isAuthenticated, async (req: any, res) => {
@@ -6237,9 +6237,9 @@ ${analysisPrompts[analysisType || 'full']}`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // DOCTRINE OUTLINES SYSTEM (Optional Structured Knowledge)
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Get doctrine for a project
   app.get('/api/projects/:projectId/doctrine', isAuthenticated, async (req: any, res) => {
@@ -6393,9 +6393,9 @@ ${analysisPrompts[analysisType || 'full']}`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // PROFESSIONAL EDITING (Credit-Based Premium Features)
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   const LITERARY_EXPERT_PROMPT = `You are a professional literary editor and writing coach with expertise in:
 - Literary techniques: metaphor, symbolism, foreshadowing, allusion, irony, imagery, motif
@@ -6629,9 +6629,9 @@ Respond with JSON:
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // RESEARCH & CITATIONS (Premium AI Features)
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // AI Research on topic - 7 credits
   app.post('/api/book/research', isAuthenticated, async (req: any, res) => {
@@ -6863,7 +6863,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
     }
   });
 
-  // ============ VOICE CLONING & SYNTHESIS ROUTES ============
+  // ------------ VOICE CLONING & SYNTHESIS ROUTES ------------
   
   // Get available voice styles
   app.get('/api/voice/styles', (req, res) => {
@@ -6959,7 +6959,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
     }
   });
 
-  // ============ ELEVENLABS PREMIUM VOICE API ============
+  // ------------ ELEVENLABS PREMIUM VOICE API ------------
 
   // Check ElevenLabs configuration
   app.get('/api/voice/elevenlabs/status', (req, res) => {
@@ -7010,7 +7010,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
     }
   });
 
-  // ============ DJ STUDIO - VOICE TRANSFORMATION ============
+  // ------------ DJ STUDIO - VOICE TRANSFORMATION ------------
 
   // Get DJ voice categories
   app.get('/api/dj/voice-categories', (req, res) => {
@@ -7103,7 +7103,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
     });
   });
 
-  // ============ AI AVATAR ROUTES (D-ID) ============
+  // ------------ AI AVATAR ROUTES (D-ID) ------------
 
   // Check if avatar service is configured
   app.get('/api/avatar/status', (req, res) => {
@@ -7258,7 +7258,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
     }
   });
 
-  // ============ VIDEO & MOVIE GENERATION ROUTES ============
+  // ------------ VIDEO & MOVIE GENERATION ROUTES ------------
 
   // Get movie styles
   app.get('/api/video/styles', (req, res) => {
@@ -7407,7 +7407,7 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
     });
   });
 
-  // ============ AUDIO PROCESSING ROUTES ============
+  // ------------ AUDIO PROCESSING ROUTES ------------
 
   // Get all audio processing presets
   app.get('/api/audio/presets', (req, res) => {
@@ -7506,9 +7506,9 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // COURSE STUDIO — creator-authored courses (create, save, publish)
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   app.get('/api/my-courses', isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req)!;
@@ -7733,9 +7733,9 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // VIDEO STUDIO — user projects (create, save, publish)
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   app.get('/api/video/projects', isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req)!;
@@ -7826,9 +7826,9 @@ ${aspectRatio === 'portrait' ? 'Vertical portrait orientation.' : aspectRatio ==
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // IMAGE STUDIO — user image gallery (save, publish)
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   app.get('/api/image/projects', isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req)!;
@@ -7946,9 +7946,9 @@ Include:
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // Spotify API Routes
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/spotify/status', async (req, res) => {
     try {
@@ -8266,7 +8266,7 @@ Respond in JSON format:
     }
   });
 
-  // ============ BOOK STUDIO REVENUE PULSE & INTELLIGENCE API ============
+  // ------------ BOOK STUDIO REVENUE PULSE & INTELLIGENCE API ------------
   
   // Revenue Pulse - Real-time market analytics for Intelligence HUD
   app.get('/api/book-studio/revenue-pulse', isAuthenticated, async (req: any, res) => {
@@ -8533,7 +8533,7 @@ Respond in JSON format:
     }
   });
 
-  // ============ PREMIUM KDP EXPORT WITH 8 TRIM SIZES ============
+  // ------------ PREMIUM KDP EXPORT WITH 8 TRIM SIZES ------------
   
   // KDP Export with professional print settings
   app.post('/api/book-studio/export-kdp', isAuthenticated, async (req: any, res) => {
@@ -9011,9 +9011,9 @@ Respond in JSON format:
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // WHITE LABEL BRANDING ROUTES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Get white label configuration
   app.get('/api/white-label/config', isAuthenticated, async (req: any, res) => {
@@ -9474,9 +9474,9 @@ Respond in JSON format:
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // SASQUATCH COACH AI COMPANION ROUTES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   const getSasquatchCoachPrompt = (persona?: { name: string; creed: string; archetypeKey: string } | null) => {
     const personaBlock = persona
@@ -9879,9 +9879,9 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // RECOVERY DASHBOARD ROUTES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Get comprehensive dashboard data
   app.get('/api/recovery/dashboard', isAuthenticated, async (req: any, res) => {
@@ -11742,9 +11742,9 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // STROKE LYFE PUBLISHING ROUTES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Get user's publishing projects
   app.get('/api/publishing/projects', isAuthenticated, async (req: any, res) => {
@@ -12021,9 +12021,9 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // ACHIEVEMENTS API
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Get user's earned achievements
   app.get('/api/achievements', isAuthenticated, async (req: any, res) => {
@@ -12126,9 +12126,9 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // ACCOUNTABILITY PODS API
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Get open pods for joining
   app.get('/api/pods', isAuthenticated, async (req: any, res) => {
@@ -12421,9 +12421,9 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // RECOVERY ACADEMY PAYMENTS (Separate Stripe Account)
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/recovery/stripe/status', async (req, res) => {
     try {
@@ -12701,9 +12701,9 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // SASQUATCH DOCTRINE - FLICKER LOG
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/recovery/flicker-log', isAuthenticated, async (req: any, res) => {
     try {
@@ -12725,9 +12725,9 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // SASQUATCH DOCTRINE - MEDICAL LOG
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/recovery/medical-log', isAuthenticated, async (req: any, res) => {
     try {
@@ -12769,9 +12769,9 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // SASQUATCH DOCTRINE - COMPASS (7 Pillars)
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/recovery/compass', isAuthenticated, async (req: any, res) => {
     try {
@@ -12793,9 +12793,9 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // SASQUATCH DOCTRINE - DRAFT YOUR LEGEND
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/recovery/legend', isAuthenticated, async (req: any, res) => {
     try {
@@ -12817,9 +12817,9 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // RECOVERY CENTER FINDER - Google Places Integration
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/recovery/centers', async (req, res) => {
     try {
@@ -12874,9 +12874,9 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // RECOVERY BLOG - Database-backed articles
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/recovery/blog', async (req, res) => {
     try {
@@ -12925,9 +12925,9 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // MY BOOK - Recovery Memoir Persistence
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/recovery/my-book', isAuthenticated, async (req: any, res) => {
     try {
@@ -12960,9 +12960,9 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // NEVER ZERO - Streak Tracking
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/recovery/never-zero', isAuthenticated, async (req: any, res) => {
     try {
@@ -13182,9 +13182,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // RECOVERY JOURNAL
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   const { insertRecoveryJournalSchema, updateRecoveryJournalSchema } = await import('@shared/schema');
 
   // Keep journal media (photo/voice) ACL in lockstep with the entry's share
@@ -13473,9 +13473,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // USER SETTINGS
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/settings', isAuthenticated, async (req: any, res) => {
     try {
@@ -13534,9 +13534,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // ACTIVITY WALL
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/activity', async (req: any, res) => {
     try {
@@ -13774,9 +13774,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     res.json({ ok: true });
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // THERAPIST SYSTEM
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/therapist/profile', isAuthenticated, async (req: any, res) => {
     try {
@@ -13901,9 +13901,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // THERAPEUTIC EXERCISES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/exercises', async (req, res) => {
     try {
@@ -13996,9 +13996,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // DIRECT MESSAGING
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/conversations', isAuthenticated, async (req: any, res) => {
     try {
@@ -14076,9 +14076,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // VIDEO SESSIONS
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/video-sessions', isAuthenticated, async (req: any, res) => {
     try {
@@ -14113,9 +14113,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // VITALS TRACKING
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/vitals', isAuthenticated, async (req: any, res) => {
     try {
@@ -14137,9 +14137,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // WEARABLES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/wearables/connections', isAuthenticated, async (req: any, res) => {
     try {
@@ -14207,9 +14207,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // SOCIAL NETWORK
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/social/followers', isAuthenticated, async (req: any, res) => {
     try {
@@ -14263,9 +14263,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // MESSAGES (updating existing routes for frontend compatibility)
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/messages/conversations', isAuthenticated, async (req: any, res) => {
     try {
@@ -14332,9 +14332,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // VIDEO SESSIONS (frontend compatibility)
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/video/sessions', isAuthenticated, async (req: any, res) => {
     try {
@@ -14377,9 +14377,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // THERAPIST MARKETPLACE
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/therapist-marketplace', async (req, res) => {
     try {
@@ -14431,9 +14431,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // ADMIN PLAN BUILDER
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/admin/plans', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
@@ -14474,9 +14474,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // STRIPE KREAITE PRODUCTS
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.post('/api/admin/stripe/create-kreaite-products', isAuthenticated, requireAdmin, async (req: any, res) => {
     try {
@@ -14554,9 +14554,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // SUBSCRIPTION TIERS & FEATURE GATING
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/subscription/tiers - Get all subscription tiers
   app.get('/api/subscription/tiers', async (req, res) => {
@@ -14607,9 +14607,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // RATE LIMITING
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/rate-limits/status - Get user's rate limit status
   app.get('/api/rate-limits/status', isAuthenticated, async (req: any, res) => {
@@ -14658,9 +14658,9 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // SEO, AEO & E-E-A-T
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/seo/schema/organization - Get organization schema
   app.get('/api/seo/schema/organization', (req, res) => {
@@ -14738,9 +14738,9 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
     res.send(robotsTxt);
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // SEO PAGES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/seo/:slug', async (req, res) => {
     try {
@@ -14763,9 +14763,9 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // BLOGGING SUITE - USER STORIES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/blog', async (req, res) => {
     try {
@@ -14915,9 +14915,9 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // PREMIUM BLOG SEO SUITE - AEO, E-E-A-T, GEO, LINKING INTELLIGENCE
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/blog/:id/seo/audit - Full SEO audit with 100-point scoring
   app.get('/api/blog/:id/seo/audit', isAuthenticated, async (req: any, res) => {
@@ -15192,9 +15192,9 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // BOOK MARKETPLACE ROUTES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Get all published marketplace listings
   app.get('/api/marketplace/books', async (req, res) => {
@@ -15863,9 +15863,9 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
     res.json({ trimSizes, bindingTypes, paperTypes });
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // BOOK WEBSITE TEMPLATES API
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   const bookWebsiteTemplates = await import('./bookWebsiteTemplates');
 
@@ -15890,9 +15890,9 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
     res.json(template);
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // BOOK WEBSITE GENERATOR API
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   const bookWebsiteService = await import('./bookWebsiteService');
 
@@ -16165,9 +16165,9 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // LULU PRINT-ON-DEMAND API
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Get available print specifications
   app.get('/api/lulu/print-specs', isAuthenticated, async (req: any, res) => {
@@ -16345,9 +16345,9 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // AI ORCHESTRATOR ROUTES - Unified Content Generation
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Unified content generation endpoint
   app.post('/api/ai/generate', isAuthenticated, async (req: any, res) => {
@@ -16941,9 +16941,9 @@ Tone: Professional, encouraging, specific. Like a trusted editor who genuinely w
   });
 
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // CHILDREN'S BOOK CREATION ROUTES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Age band configuration for word counts and complexity
   const ageBandConfig = {
@@ -17361,12 +17361,12 @@ Return the rhyming version only, no explanation.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // ULTRA-PREMIUM CREATOR GRAPH API
   // Cross-Studio Orchestration, Movie Studio, Voice Cloning
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
-  // ============ MOVIE STUDIO API ============
+  // ------------ MOVIE STUDIO API ------------
 
   // Get movie production options
   app.get('/api/movie/options', (req: any, res) => {
@@ -17494,7 +17494,7 @@ Return the rhyming version only, no explanation.`;
     }
   });
 
-  // ============ CROSS-STUDIO ORCHESTRATION API ============
+  // ------------ CROSS-STUDIO ORCHESTRATION API ------------
 
   // Get available workflow templates
   app.get('/api/workflows/templates', (req: any, res) => {
@@ -17601,7 +17601,7 @@ Return the rhyming version only, no explanation.`;
     }
   });
 
-  // ============ VOICE CLONING LIBRARY API ============
+  // ------------ VOICE CLONING LIBRARY API ------------
 
   // Get user's voice clones
   app.get('/api/voices', isAuthenticated, async (req: any, res) => {
@@ -17656,7 +17656,7 @@ Return the rhyming version only, no explanation.`;
     }
   });
 
-  // ============ DJ PRESETS API ============
+  // ------------ DJ PRESETS API ------------
 
   // Get user's DJ presets
   app.get('/api/dj/presets', isAuthenticated, async (req: any, res) => {
@@ -17706,7 +17706,7 @@ Return the rhyming version only, no explanation.`;
     }
   });
 
-  // ============ AUDIOBOOK FACTORY API ============
+  // ------------ AUDIOBOOK FACTORY API ------------
 
   // Get user's audiobook projects
   app.get('/api/audiobooks', isAuthenticated, async (req: any, res) => {
@@ -17913,7 +17913,7 @@ Return the rhyming version only, no explanation.`;
     }
   });
 
-  // ============ MEDIA STUDIO API ============
+  // ------------ MEDIA STUDIO API ------------
 
   // Remove background using Remove.bg API
   app.post('/api/image/remove-background', isAuthenticated, async (req: any, res) => {
@@ -18205,7 +18205,7 @@ Return the rhyming version only, no explanation.`;
     }
   });
 
-  // ============ CROSS-STUDIO INTEGRATION API ============
+  // ------------ CROSS-STUDIO INTEGRATION API ------------
 
   // Get all user content across studios for import picker
   app.get('/api/studio/library', isAuthenticated, async (req: any, res) => {
@@ -18302,9 +18302,9 @@ Return the rhyming version only, no explanation.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // CREATOR PROFILES & PRESETS API (Stickiness Features)
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Author Profiles CRUD
   app.get('/api/author-profiles', isAuthenticated, async (req: any, res) => {
@@ -18750,9 +18750,9 @@ Return the rhyming version only, no explanation.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // UNIFIED CONVERSATION SYSTEM
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Get conversations for a studio
   app.get('/api/conversations/:studio', isAuthenticated, async (req: any, res) => {
@@ -18863,9 +18863,9 @@ Return the rhyming version only, no explanation.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // QUICK CREATE - 1-Click Magic Tools
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.post('/api/quick-create', isAuthenticated, async (req: any, res) => {
     try {
@@ -19133,9 +19133,9 @@ Create 6 viral clip concepts:
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // MANUSCRIPT TO SOUNDTRACK - Cross-Studio Magic
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.post('/api/manuscript-to-soundtrack', isAuthenticated, async (req: any, res) => {
     try {
@@ -19228,9 +19228,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // ASSET REGISTRY - Cross-Studio Sharing
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/assets', isAuthenticated, async (req: any, res) => {
     try {
@@ -19270,9 +19270,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // VIRAL FEATURES - Affiliate System & Success Stories
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Get affiliate stats for current user
   app.get('/api/affiliate/stats', isAuthenticated, async (req: any, res) => {
@@ -19382,9 +19382,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // AI QUALITY SYSTEM - Tiers, Voices, and Presets
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Get all quality tiers
   app.get('/api/ai/quality-tiers', async (req, res) => {
@@ -19442,9 +19442,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // CREDIT SYSTEM - Wallets, Transactions, Balance
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/credits/balance', isAuthenticated, async (req: any, res) => {
     try {
@@ -19493,9 +19493,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // SASQUATCH GAMES - Beat the Stroked Out Sasquatch
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // Provably fair slot machine with 92% RTP (8% house edge)
   app.post('/api/games/slot-spin', isAuthenticated, async (req: any, res) => {
@@ -20303,9 +20303,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // GEOLOCATION & LOCALIZATION
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/geolocation', async (req: any, res) => {
     try {
@@ -20341,9 +20341,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // JOB QUEUE - Background Processing & SSE Streaming
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.post('/api/jobs', isAuthenticated, async (req: any, res) => {
     try {
@@ -20437,9 +20437,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // ANALYTICS - Usage Statistics & Insights
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   app.get('/api/analytics/credits', isAuthenticated, async (req: any, res) => {
     try {
@@ -20535,9 +20535,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // MARKETPLACE CRUD ROUTES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/marketplace/listings - Get published listings with filters
   app.get('/api/marketplace/listings', async (req, res) => {
@@ -20755,9 +20755,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // MARKETPLACE PURCHASES ROUTES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/marketplace/purchases - Get user's purchases
   app.get('/api/marketplace/purchases', isAuthenticated, async (req: any, res) => {
@@ -20917,9 +20917,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // MARKETPLACE REVIEWS ROUTES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/marketplace/listings/:id/reviews - Get reviews for a listing
   app.get('/api/marketplace/listings/:id/reviews', async (req, res) => {
@@ -21078,9 +21078,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // CREATOR DASHBOARD ROUTES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/marketplace/earnings - Get creator earnings summary
   app.get('/api/marketplace/earnings', isAuthenticated, async (req: any, res) => {
@@ -21167,9 +21167,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // AFFILIATE/REFERRAL SYSTEM ROUTES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/affiliate/code - Get or create user's referral code
   app.get('/api/affiliate/code', isAuthenticated, async (req: any, res) => {
@@ -21358,9 +21358,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // CONTENT MODERATION SYSTEM
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // POST /api/moderation/report - Submit a content report
   app.post('/api/moderation/report', isAuthenticated, async (req: any, res) => {
@@ -21523,9 +21523,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // D-ID AVATAR VIDEO GENERATION
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // POST /api/avatar/generate - Generate AI avatar video
   app.post('/api/avatar/generate', isAuthenticated, async (req: any, res) => {
@@ -21614,9 +21614,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // GOOGLE CLASSROOM INTEGRATION
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/classroom/courses - List user's Google Classroom courses
   app.get('/api/classroom/courses', isAuthenticated, async (req: any, res) => {
@@ -21654,9 +21654,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // GOOGLE BOOKS API INTEGRATION
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/books/search - Search Google Books
   app.get('/api/books/search', isAuthenticated, async (req: any, res) => {
@@ -21740,9 +21740,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // AUTO-DUBBING (Translation + TTS)
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // POST /api/dubbing/translate - Translate and generate TTS for content
   app.post('/api/dubbing/translate', isAuthenticated, async (req: any, res) => {
@@ -21825,9 +21825,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // CREATOR SUBSCRIPTIONS/MEMBERSHIPS
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/creator/:creatorId/tiers - Get subscription tiers for a creator
   app.get('/api/creator/:creatorId/tiers', isAuthenticated, async (req: any, res) => {
@@ -21873,9 +21873,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // COMMUNITY FEATURES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/community/channels - List community channels
   app.get('/api/community/channels', isAuthenticated, async (req: any, res) => {
@@ -21945,9 +21945,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // COLLABORATION FEATURES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // POST /api/projects/:projectId/invite - Invite collaborator
   app.post('/api/projects/:projectId/invite', isAuthenticated, async (req: any, res) => {
@@ -21997,9 +21997,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // AUTHOR BRAIN - Semantic Memory System
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // POST /api/author-brain/projects - Create project context
   app.post('/api/author-brain/projects', isAuthenticated, async (req: any, res) => {
@@ -22244,9 +22244,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // DOC HUB - Document Upload, Parsing & Merging
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // POST /api/doc-hub/parse - Parse uploaded document content
   app.post('/api/doc-hub/parse', isAuthenticated, async (req: any, res) => {
@@ -22568,9 +22568,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // ADMIN PANEL ROUTES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/admin/users - List/search users (admin only)
   app.get('/api/admin/users', isAuthenticated, requireAdmin, async (req: any, res) => {
@@ -23086,9 +23086,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // PODCAST STUDIO ROUTES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/podcasts - List user's podcasts
   app.get('/api/podcasts', isAuthenticated, async (req: any, res) => {
@@ -23369,9 +23369,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // SERP RESEARCH ROUTES
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/research/status - Check if SERP API is configured
   app.get('/api/research/status', isAuthenticated, async (req: any, res) => {
@@ -23562,9 +23562,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // VAULT ENDPOINTS
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/vault/entries - List entries with category/tag filters
   app.get('/api/vault/entries', isAuthenticated, async (req: any, res) => {
@@ -23881,9 +23881,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // BATCH PRODUCTION ENDPOINTS
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // POST /api/production/batches - Create batch job (check credits first)
   app.post('/api/production/batches', isAuthenticated, async (req: any, res) => {
@@ -24077,9 +24077,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // LIFE STORY ENGINE API
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/life-story - Get user's life stories
   app.get('/api/life-story', isAuthenticated, async (req: any, res) => {
@@ -24212,9 +24212,9 @@ Write an engaging, emotionally resonant chapter of about 1000 words that capture
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // SCREENPLAY STUDIO API
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/screenplay - List projects
   app.get('/api/screenplay', isAuthenticated, async (req: any, res) => {
@@ -24651,9 +24651,9 @@ Write compelling, subtext-rich dialogue. Use proper screenplay format with chara
     }
   });
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // MUSIC SANDBOX API
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   // GET /api/music-sandbox - List projects
   app.get('/api/music-sandbox', isAuthenticated, async (req: any, res) => {
@@ -24836,9 +24836,9 @@ Format as structured JSON with clear sections.`;
     }
   });
 
-  // =============================================
+  // ---------------------------------------------
   // API PRICING & BILLING ENDPOINTS
-  // =============================================
+  // ---------------------------------------------
   
   // GET /api/pricing - Get all API pricing information
   app.get('/api/pricing', async (req, res) => {
@@ -24877,9 +24877,9 @@ Format as structured JSON with clear sections.`;
     }
   });
 
-  // =============================================
+  // ---------------------------------------------
   // SPEECH SERVICES (Speech-to-Text, Text-to-Speech)
-  // =============================================
+  // ---------------------------------------------
 
   // POST /api/speech/transcribe - Transcribe audio to text
   app.post('/api/speech/transcribe', isAuthenticated, async (req: any, res) => {
@@ -24946,9 +24946,9 @@ Format as structured JSON with clear sections.`;
     }
   });
 
-  // =============================================
+  // ---------------------------------------------
   // VIDEO INTELLIGENCE SERVICES
-  // =============================================
+  // ---------------------------------------------
 
   // POST /api/video-intelligence/analyze - Start video analysis
   app.post('/api/video-intelligence/analyze', isAuthenticated, async (req: any, res) => {
@@ -24989,9 +24989,9 @@ Format as structured JSON with clear sections.`;
     }
   });
 
-  // =============================================
+  // ---------------------------------------------
   // TRANSLATION SERVICES
-  // =============================================
+  // ---------------------------------------------
 
   // POST /api/translate - Translate text
   app.post('/api/translate', isAuthenticated, async (req: any, res) => {
@@ -25036,9 +25036,9 @@ Format as structured JSON with clear sections.`;
     res.json({ languages: SUPPORTED_LANGUAGES });
   });
 
-  // =============================================
+  // ---------------------------------------------
   // TENOR GIF SERVICES (Free)
-  // =============================================
+  // ---------------------------------------------
 
   // GET /api/gifs/search - Search GIFs
   app.get('/api/gifs/search', async (req, res) => {
@@ -25072,9 +25072,9 @@ Format as structured JSON with clear sections.`;
     }
   });
 
-  // =============================================
+  // ---------------------------------------------
   // D-ID AVATAR VIDEO SERVICES
-  // =============================================
+  // ---------------------------------------------
 
   // POST /api/avatar/create - Create talking avatar video
   app.post('/api/avatar/create', isAuthenticated, async (req: any, res) => {
@@ -25122,9 +25122,9 @@ Format as structured JSON with clear sections.`;
     }
   });
 
-  // =============================================
+  // ---------------------------------------------
   // WEBSITE BUILDER SERVICES
-  // =============================================
+  // ---------------------------------------------
 
   const websiteTemplates = [
     { id: "business-pro", name: "Business Pro", category: "Business", pages: ["Home", "About", "Services", "Team", "Contact"] },
@@ -25269,9 +25269,9 @@ Format as structured JSON with clear sections.`;
     }
   });
 
-  // ============================================================
+  // ------------------------------------------------------------
   // PUSH NOTIFICATION ROUTES
-  // ============================================================
+  // ------------------------------------------------------------
 
   app.get('/api/push/vapid-key', (_req, res) => {
     const { VAPID_PUBLIC_KEY } = require('./pushNotificationService');
@@ -25334,9 +25334,9 @@ Format as structured JSON with clear sections.`;
     }
   });
 
-  // ============================================================
+  // ------------------------------------------------------------
   // MEDICATIONS API
-  // ============================================================
+  // ------------------------------------------------------------
 
   app.get('/api/medications', isAuthenticated, async (req: any, res) => {
     try {
@@ -25421,9 +25421,9 @@ Format as structured JSON with clear sections.`;
     }
   });
 
-  // ============================================================
+  // ------------------------------------------------------------
   // APPOINTMENTS API
-  // ============================================================
+  // ------------------------------------------------------------
 
   app.get('/api/appointments', isAuthenticated, async (req: any, res) => {
     try {
