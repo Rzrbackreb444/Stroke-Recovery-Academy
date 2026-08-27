@@ -41,11 +41,12 @@ export async function saveRoutineFeedback(
             ON CONFLICT (user_id, date)
             DO UPDATE SET
               level = ${input.level},
-              completed_tasks = (
-                SELECT ARRAY(SELECT DISTINCT unnest(routine_completions.completed_tasks || ARRAY[${input.taskId}]::text[]))
-                FROM routine_completions
-                WHERE routine_completions.user_id = ${input.userId}
-                  AND routine_completions.date = ${input.date}
+              completed_tasks = ARRAY(
+                SELECT DISTINCT task_id
+                FROM unnest(
+                  COALESCE(routine_completions.completed_tasks, ARRAY[]::text[])
+                  || EXCLUDED.completed_tasks
+                ) AS task_id
               ),
               updated_at = NOW()`,
       );

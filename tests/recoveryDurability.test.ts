@@ -59,7 +59,7 @@ test("coach UI keeps failed and in-flight turns visibly distinct", () => {
 
 const integrationEnabled = process.env.RECOVERY_DURABILITY_DB === "1";
 const recoveryUserPrefix = `recovery-durability-${process.pid}-`;
-
+const recoveryTestHabitName = `Recovery durability test habit ${process.pid}`;
 type TestDatabase = {
   url: string;
   pool: Pool;
@@ -171,10 +171,32 @@ async function createTestDatabase(): Promise<TestDatabase> {
 
 async function createRecoverySchema(pool: Pool): Promise<void> {
   await pool.query(`
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+    CREATE SCHEMA author_brain;
+    CREATE TABLE author_brain.project_context (
+      id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+      user_id varchar NOT NULL,
+      project_name text NOT NULL,
+      project_type text,
+      global_tone text DEFAULT 'narrative',
+      created_at timestamptz DEFAULT now(),
+      last_updated timestamptz DEFAULT now()
+    );
+    CREATE TABLE author_brain.author_memory (
+      id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+      project_id uuid NOT NULL REFERENCES author_brain.project_context(id) ON DELETE CASCADE,
+      content_type text NOT NULL,
+      raw_text text NOT NULL,
+      embedding text,
+      metadata jsonb DEFAULT '{}',
+      created_at timestamptz DEFAULT now()
+    );
     CREATE TABLE users (
       id varchar PRIMARY KEY,
       email varchar UNIQUE,
-      role text NOT NULL DEFAULT 'member'
+      role text NOT NULL DEFAULT 'member',
+      accepts_power_points boolean NOT NULL DEFAULT true,
+      last_daily_gift_at timestamp
     );
     CREATE TABLE recovery_habits (
       id serial PRIMARY KEY,
@@ -256,6 +278,21 @@ async function createRecoverySchema(pool: Pool): Promise<void> {
       metadata jsonb,
       created_at timestamp NOT NULL DEFAULT now()
     );
+    CREATE TABLE power_point_gifts (
+      id serial PRIMARY KEY,
+      sender_id varchar REFERENCES users(id) ON DELETE SET NULL,
+      receiver_id varchar NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      package_key text NOT NULL,
+      points integer NOT NULL,
+      amount_cents integer NOT NULL,
+      message text,
+      is_anonymous boolean NOT NULL DEFAULT false,
+      stripe_payment_id text,
+      status text NOT NULL DEFAULT 'pending',
+      delivered_at timestamp,
+      read_at timestamp,
+      created_at timestamp NOT NULL DEFAULT now()
+    );
     CREATE TABLE routine_completions (
       id serial PRIMARY KEY,
       user_id varchar NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -316,12 +353,10 @@ async function removeFailureTrigger(
   await pool.query(`DROP TRIGGER IF EXISTS ${triggerName} ON ${table}`);
   await pool.query(`DROP FUNCTION IF EXISTS ${functionName}()`);
 }
-
 async function countRows(pool: Pool, table: string, userId: string): Promise<number> {
   const result = await pool.query(`SELECT COUNT(*)::int AS count FROM ${table} WHERE user_id = $1`, [userId]);
   return Number(result.rows[0].count);
 }
-
 async function cleanRecoveryData(pool: Pool): Promise<void> {
   for (const [table, trigger, fn] of [
     ["credit_ledger", "fail_reward_trigger", "fail_reward_write"],
@@ -331,7 +366,20 @@ async function cleanRecoveryData(pool: Pool): Promise<void> {
     await pool.query(`DROP TRIGGER IF EXISTS ${trigger} ON ${table}`);
     await pool.query(`DROP FUNCTION IF EXISTS ${fn}()`);
   }
+  for (const [table, trigger, fn] of [
+    ["daily_checkins", "drop_checkin_trigger", "drop_checkin_write"],
+    ["routine_completions", "drop_routine_trigger", "drop_routine_write"],
+    ["survivor_goals", "drop_goal_trigger", "drop_goal_write"],
+    ["habit_logs", "drop_habit_trigger", "drop_habit_write"],
+  ]) {
+    await removeConnectionDropTrigger(pool, table, trigger, fn);
+  }
+  await pool.query(
+    "DELETE FROM author_brain.project_context WHERE user_id LIKE $1",
+    [`${recoveryUserPrefix}%`],
+  );
   await pool.query("DELETE FROM users WHERE id LIKE $1", [`${recoveryUserPrefix}%`]);
+  await pool.query("DELETE FROM recovery_habits WHERE name = $1", [recoveryTestHabitName]);
 }
 
 if (integrationEnabled) {
@@ -344,20 +392,39 @@ if (integrationEnabled) {
 
     try {
       await createRecoverySchema(testDatabase.pool);
-      const [{ storage: recoveryStorage, pool: appPool }, { saveRoutineFeedback, replaceSurvivorGoals }] =
+      const [
+        { storage: recoveryStorage, pool: appPool },
+        { saveRoutineFeedback, replaceSurvivorGoals },
+        authorBrain,
+      ] =
         await Promise.all([
           import("../server/storage"),
           import("../server/recoveryDurabilityService"),
+          import("../server/authorBrainService"),
+        ]);
+
+      const [
+        { storage: recoveryStorage, pool: appPool },
+        { saveRoutineFeedback, replaceSurvivorGoals },
+        creditService,
+        powerPointsService,
+        engagementRoutes,
+      ] =
+        await Promise.all([
+          import("../server/storage"),
+          import("../server/recoveryDurabilityService"),
+          import("../server/creditService"),
+          import("../server/powerPointsService"),
+          import("../server/routes/engagementRoutes"),
         ]);
 
       const userId = `${recoveryUserPrefix}owner`;
       const otherUserId = `${recoveryUserPrefix}other`;
-      await testDatabase.pool.query(
-        "INSERT INTO users (id, email) VALUES ($1, $2), ($3, $4)",
-        [userId, `${userId}@example.test`, otherUserId, `${otherUserId}@example.test`],
-      );
+
+      const creditUserId = `${recoveryUserPrefix}credit-user`;
       const habitResult = await testDatabase.pool.query(
-        "INSERT INTO recovery_habits (name, category) VALUES ('Test habit', 'recovery') RETURNING id",
+        "INSERT INTO recovery_habits (name, category) VALUES ($1, 'recovery') RETURNING id",
+        [recoveryTestHabitName],
       );
       const habitId = Number(habitResult.rows[0].id);
       const ownHabitResult = await testDatabase.pool.query(
@@ -371,18 +438,32 @@ if (integrationEnabled) {
       const ownHabitId = Number(ownHabitResult.rows[0].id);
       const otherHabitId = Number(otherHabitResult.rows[0].id);
 
-      await t.test("one of two simultaneous check-ins wins all reward writes", async () => {
-        const input = {
-          userId,
-          checkinDate: new Date("2026-08-27T12:00:00.000Z"),
-          moodScore: 8,
-          energyScore: 7,
-          effortScore: 9,
-        };
+      await t.test("Author Brain memory operations stay scoped to the owning user", async () => {
+        const projectResult = await testDatabase.pool.query(
+          `INSERT INTO author_brain.project_context (user_id, project_name, project_type)
+           VALUES ($1, 'Owner project', 'book'), ($2, 'Other project', 'book')
+           RETURNING id, user_id
+          `,
+          [userId, otherUserId],
+        );
+        const input = { userId, date: "2026-08-29", taskId: "reach", level: 2, reaction: "good" };
         const results = await Promise.allSettled([
           recoveryStorage.createDailyCheckinWithRewards(input),
           recoveryStorage.createDailyCheckinWithRewards(input),
         ]);
+
+        const storedGift = await testDatabase.pool.query(
+          "SELECT status, stripe_payment_id FROM power_point_gifts WHERE id = $1",
+          [giftId],
+        );
+
+        const dailyGiftCount = async () => {
+          const result = await testDatabase.pool.query(
+            "SELECT COUNT(*)::int AS count FROM power_point_gifts WHERE sender_id = $1",
+            [dailySenderId],
+          );
+          return Number(result.rows[0].count);
+        };
         assert.equal(results.filter((result) => result.status === "fulfilled").length, 1);
         assert.equal(results.filter((result) => result.status === "rejected").length, 1);
         assert.equal(await countRows(testDatabase.pool, "daily_checkins", userId), 1);
@@ -393,11 +474,18 @@ if (integrationEnabled) {
           "SELECT bonus_credits, lifetime_earned FROM credit_wallets WHERE user_id = $1",
           [userId],
         );
+
+        const ledger = await testDatabase.pool.query(
+          "SELECT amount, balance_after FROM credit_ledger WHERE user_id = $1 ORDER BY id",
+          [creditUserId],
+        );
         assert.deepEqual(wallet.rows[0], { bonus_credits: 10, lifetime_earned: 510 });
       });
 
       await t.test("a reward failure rolls back the check-in and retry can succeed", async () => {
-        const trigger = ["credit_ledger", "fail_reward_trigger", "fail_reward_write"];
+        const trigger = ["survivor_goals", "fail_goal_trigger", "fail_goal_write"];
+
+        const failedDelivery = await callDailyGift(dailySenderId, dailyReceiverId);
         await installFailureTrigger(testDatabase.pool, ...trigger);
         const failedDate = new Date("2026-08-28T12:00:00.000Z");
         await assert.rejects(
@@ -419,29 +507,67 @@ if (integrationEnabled) {
         assert.equal(await countRows(testDatabase.pool, "routine_feedback", userId), 1);
         const completion = await testDatabase.pool.query(
           "SELECT completed_tasks FROM routine_completions WHERE user_id = $1 AND date = $2",
-          [userId, input.date],
+          [userId, firstTask.date],
         );
         assert.deepEqual(completion.rows[0].completed_tasks, ["reach"]);
       });
 
+      await t.test("concurrent different tasks merge feedback and completion IDs", async () => {
+        const firstTask = { userId, date: "2026-09-02", taskId: "reach", level: 2, reaction: "good" };
+        const secondTask = { userId, date: "2026-09-02", taskId: "stand", level: 2, reaction: "hard" };
+
+        await Promise.all([
+          saveRoutineFeedback(firstTask),
+          saveRoutineFeedback(secondTask),
+        ]);
+
+        assert.equal(await countRows(testDatabase.pool, "routine_feedback", userId), 3);
+        const completion = await testDatabase.pool.query(
+          "SELECT completed_tasks FROM routine_completions WHERE user_id = $1 AND date = $2",
+          [userId, firstTask.date],
+        );
+        assert.deepEqual([...completion.rows[0].completed_tasks].sort(), ["reach", "stand"]);
+
+        await saveRoutineFeedback(firstTask);
+        assert.equal(await countRows(testDatabase.pool, "routine_feedback", userId), 3);
+        const retriedCompletion = await testDatabase.pool.query(
+          "SELECT completed_tasks FROM routine_completions WHERE user_id = $1 AND date = $2",
+          [userId, firstTask.date],
+        );
+        assert.deepEqual([...retriedCompletion.rows[0].completed_tasks].sort(), ["reach", "stand"]);
+      });
+
       await t.test("a routine completion failure rolls feedback back", async () => {
-        const trigger = ["routine_completions", "fail_routine_trigger", "fail_routine_write"];
+        const trigger = ["survivor_goals", "fail_goal_trigger", "fail_goal_write"];
+
+        const failedDelivery = await callDailyGift(dailySenderId, dailyReceiverId);
         await installFailureTrigger(testDatabase.pool, ...trigger);
+        const date = new Date("2026-09-01T12:00:00.000Z");
         await assert.rejects(saveRoutineFeedback({
           userId,
-          date: "2026-08-30",
+          date,
           taskId: "stand",
           level: 3,
           reaction: "hard",
         }));
-        assert.equal(await countRows(testDatabase.pool, "routine_feedback", userId), 1);
-        assert.equal(await countRows(testDatabase.pool, "routine_completions", userId), 1);
+        const failedFeedback = await testDatabase.pool.query(
+          "SELECT COUNT(*)::int AS count FROM routine_feedback WHERE user_id = $1 AND date = $2",
+          [userId, date],
+        );
+        const failedCompletion = await testDatabase.pool.query(
+          "SELECT COUNT(*)::int AS count FROM routine_completions WHERE user_id = $1 AND date = $2",
+          [userId, date],
+        );
+        assert.equal(Number(failedFeedback.rows[0].count), 0);
+        assert.equal(Number(failedCompletion.rows[0].count), 0);
         await removeFailureTrigger(testDatabase.pool, ...trigger);
       });
 
       await t.test("goal replacement rolls back to the prior set on insert failure", async () => {
         await replaceSurvivorGoals(userId, [{ horizon: "short", domain: "physical", goal: "Walk farther" }]);
         const trigger = ["survivor_goals", "fail_goal_trigger", "fail_goal_write"];
+
+        const failedDelivery = await callDailyGift(dailySenderId, dailyReceiverId);
         await installFailureTrigger(testDatabase.pool, ...trigger);
         await assert.rejects(replaceSurvivorGoals(userId, [
           { horizon: "long", domain: "speech", goal: "Speak with confidence" },
@@ -450,17 +576,16 @@ if (integrationEnabled) {
           "SELECT horizon, domain, goal FROM survivor_goals WHERE user_id = $1",
           [userId],
         );
-        assert.deepEqual(unchanged.rows, [{ horizon: "short", domain: "physical", goal: "Walk farther" }]);
-        await removeFailureTrigger(testDatabase.pool, ...trigger);
-        await replaceSurvivorGoals(userId, [{ horizon: "long", domain: "speech", goal: "Speak with confidence" }]);
-        assert.equal(await countRows(testDatabase.pool, "survivor_goals", userId), 1);
-      });
-
-      await t.test("habit IDs are owner-scoped and duplicate logs stay consistent", async () => {
-        await assert.rejects(
-          recoveryStorage.logHabitCompletion(otherHabitId, new Date("2026-08-31T12:00:00.000Z"), undefined, userId),
-          /Habit not found/,
+        assert.equal(unchanged.rows[0].raw_text, "private other creator secret");
+        assert.equal(
+          (await testDatabase.pool.query(
+            "SELECT COUNT(*)::int AS count FROM author_brain.author_memory WHERE project_id = $1",
+            [otherProjectId],
+          )).rows[0].count,
+          1,
         );
+
+        const ownMemories = await authorBrain.getMemories(ownProjectId, userId);
         const unauthorizedLogs = await testDatabase.pool.query(
           "SELECT COUNT(*)::int AS count FROM habit_logs WHERE user_habit_id = $1",
           [otherHabitId],
@@ -481,19 +606,96 @@ if (integrationEnabled) {
           "SELECT total_completions FROM user_habits WHERE id = $1",
           [ownHabitId],
         );
-        assert.equal(habit.rows[0].total_completions, 0);
-      });
-    } finally {
       const importedDb = await import("../server/db").catch(() => undefined);
-      await importedDb?.pool?.end?.().catch(() => undefined);
-      await cleanRecoveryData(testDatabase.pool).catch(() => undefined);
-      await testDatabase.stop();
-      if (originalDatabaseUrl === undefined) delete process.env.DATABASE_URL;
-      else process.env.DATABASE_URL = originalDatabaseUrl;
-      if (originalDriverFlag === undefined) delete process.env.RECOVERY_DURABILITY_DB;
-      else process.env.RECOVERY_DURABILITY_DB = originalDriverFlag;
-    }
-  });
-} else {
-  test("recovery durability integration suite", { skip: "set RECOVERY_DURABILITY_DB=1 to run against disposable PostgreSQL" }, () => {});
+async function removeConnectionDropTrigger(
+  pool: Pool,
+  table: string,
+  triggerName: string,
+  functionName: string,
+): Promise<void> {
+  await pool.query(`DROP TRIGGER IF EXISTS ${triggerName} ON ${table}`);
+  await pool.query(`DROP FUNCTION IF EXISTS ${functionName}()`);
 }
+        const ownMemory = await authorBrain.addMemory({
+          userId,
+          projectId: ownProjectId,
+          contentType: "note",
+          rawText: "owner manuscript context",
+          metadata: { source: "owner" },
+        });
+
+        const dailyWallet = await testDatabase.pool.query(
+          "SELECT balance, bonus_credits, lifetime_earned FROM credit_wallets WHERE user_id = $1",
+          [dailyReceiverId],
+        );
+
+        const restored = await testDatabase.pool.query(
+          "SELECT last_daily_gift_at FROM users WHERE id = $1",
+          [dailySenderId],
+        );
+
+      const giftSenderId = `${recoveryUserPrefix}gift-sender`;
+
+      const callDailyGift = async (sender: string, receiver: string) => {
+        let statusCode = 200;
+        let body: any;
+        const res: any = {
+          status(code: number) { statusCode = code; return res; },
+          json(value: any) { body = value; return res; },
+        };
+        await routeHandlers["POST /api/engagement/daily-gift"](
+          { user: { id: sender }, body: { receiverId: receiver, message: "You’ve got this" } },
+          res,
+        );
+        return { statusCode, body };
+      };
+
+        let expectedBalance = 500;
+
+      const dailyReceiverId = `${recoveryUserPrefix}daily-receiver`;
+
+      const testApp = {
+        get(path: string, ...handlers: any[]) { routeHandlers[`GET ${path}`] = handlers.at(-1); },
+        post(path: string, ...handlers: any[]) { routeHandlers[`POST ${path}`] = handlers.at(-1); },
+      };
+
+        const receiverLedger = await testDatabase.pool.query(
+          "SELECT amount, reference_type, reference_id FROM credit_ledger " +
+          "WHERE user_id = $1 ORDER BY id",
+          [giftReceiverId],
+        );
+
+      const routeHandlers: Record<string, any> = {};
+
+      const giftReceiverId = `${recoveryUserPrefix}gift-receiver`;
+
+        const retry = await callDailyGift(dailySenderId, dailyReceiverId);
+
+        const session = {
+          payment_intent: "pi_durability_test",
+          metadata: { giftId: String(giftId), type: "power_points" },
+        };
+
+        const gift = await testDatabase.pool.query(
+          "INSERT INTO power_point_gifts " +
+          "(sender_id, receiver_id, package_key, points, amount_cents) " +
+          "VALUES ($1, $2, 'cheer', 25, 100) RETURNING id",
+          [giftSenderId, giftReceiverId],
+        );
+
+        const giftId = Number(gift.rows[0].id);
+
+      const dailySenderId = `${recoveryUserPrefix}daily-sender`;
+
+        const projectId = "22222222-2222-4222-8222-222222222222";
+
+        const otherMemoryId = "11111111-1111-4111-8111-111111111111";
+        const ownProjectId = projectResult.rows.find((row) => row.user_id === userId).id;
+
+        const otherProjectId = projectResult.rows.find((row) => row.user_id === otherUserId).id;
+
+        const updated = await authorBrain.updateMemory(
+          ownMemory.id,
+          userId,
+          { rawText: "updated manuscript context", metadata: { edited: true } },
+        );

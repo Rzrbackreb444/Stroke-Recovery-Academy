@@ -225,9 +225,22 @@ export default function RecoveryJournal() {
     setPhotoUploading(true);
     setPhotoPreview(URL.createObjectURL(file));
     try {
-      const urlRes = await apiRequest("POST", "/api/recovery/journal/photo/upload-url", {});
+      const urlRes = await apiRequest("POST", "/api/recovery/journal/photo/upload-url", {
+        name: file.name,
+        size: file.size,
+        contentType: file.type || "application/octet-stream",
+      });
       const { uploadURL, objectPath } = await urlRes.json();
-      const put = await fetch(uploadURL, { method: "PUT", body: file, headers: { "Content-Type": file.type } });
+      const put = await fetch(uploadURL, {
+        method: "PUT",
+        body: file,
+        headers: {
+          "Content-Type": (file.type || "application/octet-stream")
+            .split(";", 1)[0]
+            .trim()
+            .toLowerCase(),
+        },
+      });
       if (!put.ok) throw new Error("upload failed");
       const finRes = await apiRequest("POST", "/api/recovery/journal/photo/finalize", { objectPath });
       const { photoUrl: savedUrl } = await finRes.json();

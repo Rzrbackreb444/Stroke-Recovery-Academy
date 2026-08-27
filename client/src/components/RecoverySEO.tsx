@@ -1,3 +1,4 @@
+import React from "react";
 import { Helmet } from "react-helmet-async";
 import { safeJsonLd } from "@/lib/safeJsonLd";
 
@@ -387,8 +388,9 @@ export default function RecoverySEO({
         <script
           key={i}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: safeJsonLd(s) }}
-        />
+        >
+          {safeJsonLd(s)}
+        </script>
       ))}
     </Helmet>
   );

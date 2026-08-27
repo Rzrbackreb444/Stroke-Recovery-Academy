@@ -14,3 +14,15 @@ an unrelated shared service.
 
 **How to apply:** Run the dedicated recovery durability test command; it creates and
 destroys an isolated cluster unless RECOVERY_TEST_DATABASE_URL is explicitly supplied.
+
+Unexpected disconnects from an active node-postgres client must have a client-level
+error listener; a pool-level listener alone cannot catch the error while the client
+is checked out for a Drizzle transaction.
+
+**Why:** Terminating a backend during transaction cleanup otherwise emits an uncaught
+client error before pg-pool can reclaim the dead connection, even though the next
+pool request can succeed.
+
+**How to apply:** Keep the listener limited to the local node-postgres durability
+configuration and verify a retry obtains a different backend PID after the failed
+transaction.
