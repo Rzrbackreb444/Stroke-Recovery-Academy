@@ -424,18 +424,52 @@ if (integrationEnabled) {
         assert.deepEqual(completion.rows[0].completed_tasks, ["reach"]);
       });
 
+      await t.test("concurrent different tasks merge feedback and completion IDs", async () => {
+        const firstTask = { userId, date: "2026-09-02", taskId: "reach", level: 2, reaction: "good" };
+        const secondTask = { userId, date: "2026-09-02", taskId: "stand", level: 2, reaction: "hard" };
+
+        await Promise.all([
+          saveRoutineFeedback(firstTask),
+          saveRoutineFeedback(secondTask),
+        ]);
+
+        assert.equal(await countRows(testDatabase.pool, "routine_feedback", userId), 3);
+        const completion = await testDatabase.pool.query(
+          "SELECT completed_tasks FROM routine_completions WHERE user_id = $1 AND date = $2",
+          [userId, firstTask.date],
+        );
+        assert.deepEqual([...completion.rows[0].completed_tasks].sort(), ["reach", "stand"]);
+
+        await saveRoutineFeedback(firstTask);
+        assert.equal(await countRows(testDatabase.pool, "routine_feedback", userId), 3);
+        const retriedCompletion = await testDatabase.pool.query(
+          "SELECT completed_tasks FROM routine_completions WHERE user_id = $1 AND date = $2",
+          [userId, firstTask.date],
+        );
+        assert.deepEqual([...retriedCompletion.rows[0].completed_tasks].sort(), ["reach", "stand"]);
+      });
+
       await t.test("a routine completion failure rolls feedback back", async () => {
         const trigger = ["routine_completions", "fail_routine_trigger", "fail_routine_write"];
         await installFailureTrigger(testDatabase.pool, ...trigger);
+        const date = "2026-08-30";
         await assert.rejects(saveRoutineFeedback({
           userId,
-          date: "2026-08-30",
+          date,
           taskId: "stand",
           level: 3,
           reaction: "hard",
         }));
-        assert.equal(await countRows(testDatabase.pool, "routine_feedback", userId), 1);
-        assert.equal(await countRows(testDatabase.pool, "routine_completions", userId), 1);
+        const failedFeedback = await testDatabase.pool.query(
+          "SELECT COUNT(*)::int AS count FROM routine_feedback WHERE user_id = $1 AND date = $2",
+          [userId, date],
+        );
+        const failedCompletion = await testDatabase.pool.query(
+          "SELECT COUNT(*)::int AS count FROM routine_completions WHERE user_id = $1 AND date = $2",
+          [userId, date],
+        );
+        assert.equal(Number(failedFeedback.rows[0].count), 0);
+        assert.equal(Number(failedCompletion.rows[0].count), 0);
         await removeFailureTrigger(testDatabase.pool, ...trigger);
       });
 
