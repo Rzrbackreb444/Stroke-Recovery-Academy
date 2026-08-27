@@ -16,6 +16,7 @@ import { setObjectAclPolicy } from "../server/replit_integrations/object_storage
 const OWNER_ID = "survivor-a";
 const OTHER_ID = "survivor-b";
 const OBJECT_PATH = "/objects/uploads/journal-photo";
+const VOICE_OBJECT_PATH = "/objects/uploads/journal-voice";
 
 type Metadata = {
   size: number;
@@ -308,6 +309,49 @@ test("revoking journal sharing restores owner-only access and private caching", 
   assert.equal(ownerResponse.headers["Cache-Control"], "private, max-age=3600");
 });
 
+test("revoking journal voice-note sharing restores owner-only access and private caching", async () => {
+  const file = new MemoryFile("uploads/journal-voice", "audio/webm", 11);
+  objects.set(VOICE_OBJECT_PATH, file);
+  const objectStorage = new ObjectStorageService();
+
+  // A shared voice note must be readable to an anonymous community viewer.
+  await objectStorage.trySetObjectEntityAclPolicy(
+    VOICE_OBJECT_PATH,
+    { owner: OWNER_ID, visibility: "public" },
+    { requireUploadIntent: false },
+  );
+  const sharedResponse = await invoke(objectHandler, {
+    path: VOICE_OBJECT_PATH,
+  });
+  assert.equal(sharedResponse.statusCode, 200);
+  assert.equal(sharedResponse.served, true);
+  assert.equal(sharedResponse.headers["Content-Type"], "audio/webm");
+  assert.equal(sharedResponse.headers["Cache-Control"], "public, max-age=3600");
+
+  // Revoking the journal share must lock the audio back to its owner.
+  await objectStorage.trySetObjectEntityAclPolicy(
+    VOICE_OBJECT_PATH,
+    { owner: OWNER_ID, visibility: "private" },
+    { requireUploadIntent: false },
+  );
+  const otherResponse = await invoke(objectHandler, {
+    path: VOICE_OBJECT_PATH,
+    user: { id: OTHER_ID },
+  });
+  assert.equal(otherResponse.statusCode, 404);
+  assert.equal(otherResponse.served, false);
+  assert.deepEqual(otherResponse.body, { error: "Object not found" });
+
+  const ownerResponse = await invoke(objectHandler, {
+    path: VOICE_OBJECT_PATH,
+    user: { id: OWNER_ID },
+  });
+  assert.equal(ownerResponse.statusCode, 200);
+  assert.equal(ownerResponse.served, true);
+  assert.equal(ownerResponse.headers["Content-Type"], "audio/webm");
+  assert.equal(ownerResponse.headers["Cache-Control"], "private, max-age=3600");
+});
+
 test("upload intent lookup distinguishes the owner, expiry, and unknown paths", async () => {
   const service = new ObjectStorageService();
   intentRows = [intentFor()];
@@ -433,6 +477,17 @@ test("protected journal routes claim new media before persisting it and secure P
   assert.match(
     journalMediaSource,
     /owner:\s*userId,\s*visibility:\s*"private"[\s\S]*?requireUploadIntent:\s*true/,
+  );
+
+  const journalAclSyncStart = routesSource.indexOf("const syncJournalMediaAcl");
+  const journalAclSyncEnd = routesSource.indexOf(
+    "const secureNewJournalMedia",
+    journalAclSyncStart,
+  );
+  assert.ok(journalAclSyncStart >= 0 && journalAclSyncEnd > journalAclSyncStart);
+  assert.match(
+    routesSource.slice(journalAclSyncStart, journalAclSyncEnd),
+    /entry\?\.voiceUrl\s*\?\?\s*entry\?\.voice_url/,
   );
 });
 
