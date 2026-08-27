@@ -32,13 +32,18 @@ type Metadata = {
 class MemoryFile {
   public deleted = false;
   public metadata: Metadata;
+  private readonly content: Buffer;
 
   constructor(
     public readonly name: string,
     contentType = "image/png",
     size = 12,
+    content = Buffer.from([
+      0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+    ]),
   ) {
     this.metadata = { size, contentType };
+    this.content = content;
   }
 
   async exists(): Promise<[boolean]> {
@@ -58,6 +63,10 @@ class MemoryFile {
 
   async delete(): Promise<void> {
     this.deleted = true;
+  }
+
+  async download(options: { start: number; end: number }): Promise<[Buffer]> {
+    return [this.content.subarray(options.start, options.end + 1)];
   }
 
   createReadStream(): Readable {
@@ -424,6 +433,29 @@ test("journal photo finalization rejects a path issued to another survivor", asy
     JSON.parse(file.metadata.metadata!["custom:aclPolicy"]),
     { owner: OWNER_ID, visibility: "private" },
   );
+});
+
+test("journal photo finalization returns a useful message for mismatched file contents", async () => {
+  const file = new MemoryFile(
+    "uploads/journal-photo",
+    "image/png",
+    12,
+    Buffer.from("not a PNG"),
+  );
+  objects.set(OBJECT_PATH, file);
+  intentRows = [intentFor(OWNER_ID)];
+
+  const response = await invoke(photoFinalizeHandler, {
+    body: { objectPath: OBJECT_PATH },
+    user: { id: OWNER_ID },
+  });
+
+  assert.equal(response.statusCode, 415);
+  assert.equal(
+    response.body.message,
+    "Uploaded file contents do not match the declared type.",
+  );
+  assert.equal(file.metadata.metadata, undefined);
 });
 
 test("protected journal routes claim new media before persisting it and secure PDF output", () => {
