@@ -20416,10 +20416,23 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
+  // Queue-wide metrics are operational/admin data, not a per-user resource.
+  // Keep this route before /:jobId so "stats" is not interpreted as a job id.
+  app.get('/api/jobs/stats', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const stats = jobQueue.getQueueStats();
+      res.json(stats);
+    } catch (error: any) {
+      console.error("Error fetching job stats:", error);
+      res.status(500).json({ message: "Failed to fetch job stats" });
+    }
+  });
+
   app.get('/api/jobs/:jobId', isAuthenticated, async (req: any, res) => {
     try {
       const { jobId } = req.params;
-      const job = jobQueue.getJob(jobId);
+      const userId = getUserId(req)!;
+      const job = jobQueue.getJob(jobId, userId);
       if (!job) {
         return res.status(404).json({ message: "Job not found" });
       }
@@ -20433,7 +20446,12 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   app.delete('/api/jobs/:jobId', isAuthenticated, async (req: any, res) => {
     try {
       const { jobId } = req.params;
-      const cancelled = jobQueue.cancelJob(jobId);
+      const userId = getUserId(req)!;
+      const job = jobQueue.getJob(jobId, userId);
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+      const cancelled = jobQueue.cancelJob(jobId, userId);
       res.json({ success: cancelled });
     } catch (error: any) {
       console.error("Error cancelling job:", error);
@@ -20441,20 +20459,11 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
-  app.get('/api/jobs/stats', isAuthenticated, async (req: any, res) => {
-    try {
-      const stats = jobQueue.getQueueStats();
-      res.json(stats);
-    } catch (error: any) {
-      console.error("Error fetching job stats:", error);
-      res.status(500).json({ message: "Failed to fetch job stats" });
-    }
-  });
-
   app.get('/api/jobs/:jobId/stream', isAuthenticated, async (req: any, res) => {
     try {
       const { jobId } = req.params;
-      const job = jobQueue.getJob(jobId);
+      const userId = getUserId(req)!;
+      const job = jobQueue.getJob(jobId, userId);
       
       if (!job) {
         return res.status(404).json({ message: "Job not found" });
@@ -20472,10 +20481,10 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
       sendUpdate(job);
 
-      const unsubscribe = jobQueue.subscribeToJob(jobId, sendUpdate);
+      const unsubscribe = jobQueue.subscribeToJob(jobId, sendUpdate, userId);
 
       req.on('close', () => {
-        unsubscribe();
+        unsubscribe?.();
         res.end();
       });
     } catch (error: any) {

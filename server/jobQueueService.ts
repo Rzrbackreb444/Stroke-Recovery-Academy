@@ -25,15 +25,35 @@ export interface JobUpdate {
   error?: string;
 }
 
-class JobQueueService extends EventEmitter {
+export type JobStartHandler = (job: Job) => void | Promise<void>;
+
+const TERMINAL_STATUSES = new Set<JobStatus>(['completed', 'failed', 'cancelled']);
+const VALID_TRANSITIONS: Record<JobStatus, Set<JobStatus>> = {
+  pending: new Set(['processing', 'failed', 'cancelled']),
+  processing: new Set(['completed', 'failed', 'cancelled']),
+  completed: new Set(),
+  failed: new Set(),
+  cancelled: new Set(),
+};
+
+export class JobQueueService extends EventEmitter {
   private jobs: Map<string, Job> = new Map();
   private userJobs: Map<string, Set<string>> = new Map();
   private processingQueue: string[] = [];
-  private maxConcurrent: number = 5;
-  private activeJobs: number = 0;
+  private maxConcurrent: number;
+  private activeJobIds: Set<string> = new Set();
+  private jobHandlers: Map<JobType, JobStartHandler> = new Map();
+  private isDraining = false;
 
-  constructor() {
+  // Kept as a derived value for existing diagnostics that inspect the
+  // service's active count; the set remains the accounting source of truth.
+  private get activeJobs(): number {
+    return this.activeJobIds.size;
+  }
+
+  constructor(maxConcurrent: number = 5) {
     super();
+    this.maxConcurrent = Math.max(1, maxConcurrent);
     this.setMaxListeners(100);
   }
 
@@ -75,8 +95,10 @@ class JobQueueService extends EventEmitter {
     return job;
   }
 
-  getJob(jobId: string): Job | undefined {
-    return this.jobs.get(jobId);
+  getJob(jobId: string, userId?: string): Job | undefined {
+    const job = this.jobs.get(jobId);
+    if (!job || (userId !== undefined && job.userId !== userId)) return undefined;
+    return job;
   }
 
   getUserJobs(userId: string, limit: number = 50): Job[] {
@@ -99,7 +121,15 @@ class JobQueueService extends EventEmitter {
     const job = this.jobs.get(jobId);
     if (!job) return undefined;
 
-    if (update.status) job.status = update.status;
+    // A terminal job is immutable. This prevents a late worker callback after
+    // cancellation (or a duplicate callback) from changing its result or
+    // releasing capacity a second time.
+    if (TERMINAL_STATUSES.has(job.status)) return job;
+
+    if (update.status && update.status !== job.status) {
+      if (!VALID_TRANSITIONS[job.status].has(update.status)) return job;
+      job.status = update.status;
+    }
     if (update.progress !== undefined) job.progress = update.progress;
     if (update.result !== undefined) job.result = update.result;
     if (update.error !== undefined) job.error = update.error;
@@ -110,7 +140,7 @@ class JobQueueService extends EventEmitter {
 
     if (update.status === 'completed' || update.status === 'failed') {
       job.completedAt = new Date();
-      this.activeJobs--;
+      this.releaseCapacity(jobId);
       this.processNext();
     }
 
@@ -120,11 +150,12 @@ class JobQueueService extends EventEmitter {
     return job;
   }
 
-  cancelJob(jobId: string): boolean {
+  cancelJob(jobId: string, userId?: string): boolean {
     const job = this.jobs.get(jobId);
-    if (!job) return false;
+    if (!job || (userId !== undefined && job.userId !== userId)) return false;
 
     if (job.status === 'pending' || job.status === 'processing') {
+      const wasProcessing = job.status === 'processing';
       job.status = 'cancelled';
       job.completedAt = new Date();
       
@@ -133,10 +164,11 @@ class JobQueueService extends EventEmitter {
         this.processingQueue.splice(queueIndex, 1);
       }
 
-      if (job.status === 'cancelled') {
-        this.activeJobs--;
-        this.processNext();
-      }
+      // Pending work never acquired a slot. Processing work releases exactly
+      // the slot it owns; repeated cancellation is rejected by the terminal
+      // state check above.
+      if (wasProcessing) this.releaseCapacity(jobId);
+      this.processNext();
 
       this.emit('job:cancelled', job);
       this.emit(`job:${jobId}`, job);
@@ -146,25 +178,91 @@ class JobQueueService extends EventEmitter {
     return false;
   }
 
-  private async processNext(): Promise<void> {
-    if (this.activeJobs >= this.maxConcurrent) return;
-    if (this.processingQueue.length === 0) return;
-
-    const jobId = this.processingQueue.shift();
-    if (!jobId) return;
-
-    const job = this.jobs.get(jobId);
-    if (!job || job.status !== 'pending') {
-      this.processNext();
-      return;
-    }
-
-    this.activeJobs++;
-    this.updateJob(jobId, { status: 'processing' });
-    this.emit('job:start', job);
+  registerJobHandler(type: JobType, handler: JobStartHandler): () => void {
+    this.jobHandlers.set(type, handler);
+    return () => {
+      if (this.jobHandlers.get(type) === handler) this.jobHandlers.delete(type);
+    };
   }
 
-  subscribeToJob(jobId: string, callback: (job: Job) => void): () => void {
+  private isSupportedJobType(type: string): type is JobType {
+    return ['ai_generation', 'batch_generation', 'export', 'import', 'media_processing'].includes(type);
+  }
+
+  private releaseCapacity(jobId: string): void {
+    if (this.activeJobIds.delete(jobId)) {
+      // activeJobIds is the source of truth, so this can never go below zero.
+    }
+  }
+
+  private processNext(): void {
+    if (this.isDraining) return;
+    this.isDraining = true;
+
+    try {
+      while (this.activeJobIds.size < this.maxConcurrent && this.processingQueue.length > 0) {
+        const jobId = this.processingQueue.shift();
+        if (!jobId) continue;
+
+        const job = this.jobs.get(jobId);
+        if (!job || job.status !== 'pending') continue;
+
+        if (!this.isSupportedJobType(job.type)) {
+          this.updateJob(jobId, {
+            status: 'failed',
+            error: `Unsupported job type "${String(job.type)}"`,
+          });
+          continue;
+        }
+
+        const hasEventWorker = this.listenerCount('job:start') > 0;
+        const registeredHandler = this.jobHandlers.get(job.type);
+        if (!hasEventWorker && !registeredHandler) {
+          this.updateJob(jobId, {
+            status: 'failed',
+            error: `No worker is available for job type "${job.type}"`,
+          });
+          continue;
+        }
+
+        this.activeJobIds.add(jobId);
+        this.updateJob(jobId, { status: 'processing' });
+        const startedJob = this.getJob(jobId);
+        if (!startedJob || startedJob.status !== 'processing') continue;
+
+        try {
+          // Keep the existing event-driven worker contract. Registered
+          // handlers are an optional typed convenience for new processors.
+          this.emit('job:start', startedJob);
+        } catch (error: any) {
+          this.updateJob(jobId, {
+            status: 'failed',
+            error: error?.message || `Worker failed to start job "${job.type}"`,
+          });
+          continue;
+        }
+
+        if (registeredHandler && startedJob.status === 'processing') {
+          Promise.resolve(registeredHandler(startedJob)).catch((error: any) => {
+            this.updateJob(jobId, {
+              status: 'failed',
+              error: error?.message || `Worker failed while processing "${job.type}"`,
+            });
+          });
+        }
+      }
+    } finally {
+      this.isDraining = false;
+    }
+  }
+
+  subscribeToJob(
+    jobId: string,
+    callback: (job: Job) => void,
+    userId?: string,
+  ): (() => void) | undefined {
+    if (!this.getJob(jobId, userId)) return undefined;
+
     const listener = (job: Job) => callback(job);
     this.on(`job:${jobId}`, listener);
     
@@ -223,7 +321,7 @@ export const jobQueue = new JobQueueService();
 
 setInterval(() => {
   jobQueue.cleanupOldJobs();
-}, 60 * 60 * 1000);
+}, 60 * 60 * 1000).unref();
 
 export async function processAIGenerationJob(
   job: Job,
