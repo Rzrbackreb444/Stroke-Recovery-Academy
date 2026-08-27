@@ -25,6 +25,19 @@ import {
 import { redactEmail } from "./lib/redact";
 import { requireAdmin } from "./middleware/requireAdmin";
 import { getUserId, getUserEmail } from "./lib/authUtils";
+import {
+  AUTHOR_BRAIN_CONTENT_TYPES,
+  AUTHOR_BRAIN_MAX_CHAPTER_DESCRIPTION_LENGTH,
+  AUTHOR_BRAIN_MAX_CHAPTER_TITLE_LENGTH,
+  AUTHOR_BRAIN_MAX_GLOBAL_TONE_LENGTH,
+  AUTHOR_BRAIN_MAX_MEMORY_TEXT_LENGTH,
+  AUTHOR_BRAIN_MAX_PROJECT_NAME_LENGTH,
+  AUTHOR_BRAIN_MAX_RESULT_LIMIT,
+  AUTHOR_BRAIN_MAX_SEARCH_LENGTH,
+  AUTHOR_BRAIN_PROJECT_TYPES,
+  isAuthorBrainUuid,
+  serializeAuthorBrainMetadata,
+} from "./authorBrainService";
 import { findOrCreateOAuthUser } from "./multiProviderAuth";
 import emailAuthRoutes from "./emailAuthRoutes";
 import luluRoutes from "./luluRoutes";
@@ -426,8 +439,16 @@ setInterval(() => {
 
 const subscribeRateLimit      = makeRateLimiter(5,  60 * 60 * 1000);  // 5 per hour  — newsletter subscribe
 const paymentCheckoutRateLimit = makeRateLimiter(10, 60 * 60 * 1000); // 10 per hour — Stripe checkout sessions
-// ─────────────────────────────────────────────────────────────────────────────
 
+function authorBrainTextError(value: unknown, label: string, maxLength: number, required = true): string | undefined {
+  if (typeof value !== "string" || (required && value.trim().length === 0)) {
+    return `${label} is required`;
+  }
+  if (value.length > maxLength) {
+    return `${label} must be ${maxLength} characters or fewer`;
+  }
+  return undefined;
+}
 export async function registerRoutes(app: Express): Promise<Server> {
   // Platform detection middleware - sets X-Platform header based on host domain
   app.use((req, res, next) => {
@@ -22061,17 +22082,41 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   app.post('/api/author-brain/projects', isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req)!;
+      if (!req.body || typeof req.body !== "object" || Array.isArray(req.body)) {
+        return res.status(400).json({ message: "Request body must be an object" });
+      }
       const { projectName, projectType, globalTone } = req.body;
       
-      if (!projectName || !projectType) {
-        return res.status(400).json({ message: "Project name and type are required" });
+      const projectNameError = authorBrainTextError(
+        projectName,
+        "Project name",
+        AUTHOR_BRAIN_MAX_PROJECT_NAME_LENGTH,
+      );
+      if (projectNameError) {
+        return res.status(400).json({ message: projectNameError });
+      }
+      if (
+        typeof projectType !== "string" ||
+        !(AUTHOR_BRAIN_PROJECT_TYPES as readonly string[]).includes(projectType)
+      ) {
+        return res.status(400).json({ message: "Invalid project type" });
+      }
+      if (globalTone !== undefined) {
+        const globalToneError = authorBrainTextError(
+          globalTone,
+          "Global tone",
+          AUTHOR_BRAIN_MAX_GLOBAL_TONE_LENGTH,
+        );
+        if (globalToneError) {
+          return res.status(400).json({ message: globalToneError });
+        }
       }
       
       const { createProjectContext } = await import('./authorBrainService');
       const project = await createProjectContext({
         userId,
         projectName,
-        projectType,
+        projectType: projectType as typeof AUTHOR_BRAIN_PROJECT_TYPES[number],
         globalTone,
       });
       
@@ -22100,6 +22145,9 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     try {
       const userId = getUserId(req)!;
       const projectId = req.params.id;
+      if (!isAuthorBrainUuid(projectId)) {
+        return res.status(400).json({ message: "Project ID must be a valid UUID" });
+      }
       const { getProjectContext } = await import('./authorBrainService');
       const project = await getProjectContext(projectId, userId);
       
@@ -22119,11 +22167,35 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     try {
       const userId = getUserId(req)!;
       const projectId = req.params.id;
+      if (!req.body || typeof req.body !== "object" || Array.isArray(req.body)) {
+        return res.status(400).json({ message: "Request body must be an object" });
+      }
       const { projectName, globalTone } = req.body;
       
+      if (!isAuthorBrainUuid(projectId)) {
+        return res.status(400).json({ message: "Project ID must be a valid UUID" });
+      }
+      if (projectName === undefined && globalTone === undefined) {
+        return res.status(400).json({ message: "At least one project field is required" });
+      }
+      const projectNameError = projectName === undefined
+        ? undefined
+        : authorBrainTextError(projectName, "Project name", AUTHOR_BRAIN_MAX_PROJECT_NAME_LENGTH);
+      if (projectNameError) {
+        return res.status(400).json({ message: projectNameError });
+      }
+      const globalToneError = globalTone === undefined
+        ? undefined
+        : authorBrainTextError(globalTone, "Global tone", AUTHOR_BRAIN_MAX_GLOBAL_TONE_LENGTH);
+      if (globalToneError) {
+        return res.status(400).json({ message: globalToneError });
+      }
       const { updateProjectContext } = await import('./authorBrainService');
       const project = await updateProjectContext(projectId, userId, { projectName, globalTone });
       
+      if (!project) {
+        return res.status(404).json({ message: "Project not found" });
+      }
       res.json(project);
     } catch (error) {
       console.error("Error updating project context:", error);
@@ -22136,9 +22208,15 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     try {
       const userId = getUserId(req)!;
       const projectId = req.params.id;
+      if (!isAuthorBrainUuid(projectId)) {
+        return res.status(400).json({ message: "Project ID must be a valid UUID" });
+      }
       
       const { deleteProjectContext } = await import('./authorBrainService');
-      await deleteProjectContext(projectId, userId);
+      const deleted = await deleteProjectContext(projectId, userId);
+      if (!deleted) {
+        return res.status(404).json({ message: "Project not found" });
+      }
       
       res.json({ success: true });
     } catch (error) {
@@ -22150,14 +22228,47 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // POST /api/author-brain/memories - Add memory to project
   app.post('/api/author-brain/memories', isAuthenticated, async (req: any, res) => {
     try {
+      const userId = getUserId(req)!;
+      if (!req.body || typeof req.body !== "object" || Array.isArray(req.body)) {
+        return res.status(400).json({ message: "Request body must be an object" });
+      }
       const { projectId, contentType, rawText, metadata } = req.body;
       
-      if (!projectId || !contentType || !rawText) {
-        return res.status(400).json({ message: "Project ID, content type, and text are required" });
+      if (!isAuthorBrainUuid(projectId)) {
+        return res.status(400).json({ message: "Project ID must be a valid UUID" });
+      }
+      if (
+        typeof contentType !== "string" ||
+        !(AUTHOR_BRAIN_CONTENT_TYPES as readonly string[]).includes(contentType)
+      ) {
+        return res.status(400).json({ message: "Invalid content type" });
+      }
+      const textError = authorBrainTextError(
+        rawText,
+        "Text",
+        AUTHOR_BRAIN_MAX_MEMORY_TEXT_LENGTH,
+      );
+      if (textError) {
+        return res.status(400).json({ message: textError });
+      }
+      if (metadata !== undefined) {
+        const metadataError = authorBrainMetadataError(metadata);
+        if (metadataError) {
+          return res.status(400).json({ message: metadataError });
+        }
       }
       
       const { addMemory } = await import('./authorBrainService');
-      const memory = await addMemory({ projectId, contentType, rawText, metadata });
+      const memory = await addMemory({
+        projectId,
+        contentType: contentType as typeof AUTHOR_BRAIN_CONTENT_TYPES[number],
+        rawText,
+        metadata,
+        userId,
+      });
+      if (!memory) {
+        return res.status(404).json({ message: "Project not found" });
+      }
       
       res.json(memory);
     } catch (error) {
@@ -22169,14 +22280,24 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/author-brain/memories - Get memories for project
   app.get('/api/author-brain/memories', isAuthenticated, async (req: any, res) => {
     try {
+      const userId = getUserId(req)!;
       const { projectId, contentType } = req.query;
       
-      if (!projectId) {
-        return res.status(400).json({ message: "Project ID is required" });
+      if (!isAuthorBrainUuid(projectId)) {
+        return res.status(400).json({ message: "Project ID must be a valid UUID" });
+      }
+      if (contentType !== undefined && (
+        typeof contentType !== "string" ||
+        !(AUTHOR_BRAIN_CONTENT_TYPES as readonly string[]).includes(contentType)
+      )) {
+        return res.status(400).json({ message: "Invalid content type" });
       }
       
       const { getMemories } = await import('./authorBrainService');
-      const memories = await getMemories(projectId as string, contentType as string | undefined);
+      const memories = await getMemories(projectId, userId, contentType as string | undefined);
+      if (!memories) {
+        return res.status(404).json({ message: "Project not found" });
+      }
       
       res.json(memories);
     } catch (error) {
@@ -22188,9 +22309,13 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/author-brain/memories/:id - Get single memory
   app.get('/api/author-brain/memories/:id', isAuthenticated, async (req: any, res) => {
     try {
+      const userId = getUserId(req)!;
       const memoryId = req.params.id;
+      if (!isAuthorBrainUuid(memoryId)) {
+        return res.status(400).json({ message: "Memory ID must be a valid UUID" });
+      }
       const { getMemory } = await import('./authorBrainService');
-      const memory = await getMemory(memoryId);
+      const memory = await getMemory(memoryId, userId);
       
       if (!memory) {
         return res.status(404).json({ message: "Memory not found" });
@@ -22206,11 +22331,40 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // PATCH /api/author-brain/memories/:id - Update memory
   app.patch('/api/author-brain/memories/:id', isAuthenticated, async (req: any, res) => {
     try {
+      const userId = getUserId(req)!;
       const memoryId = req.params.id;
+      if (!req.body || typeof req.body !== "object" || Array.isArray(req.body)) {
+        return res.status(400).json({ message: "Request body must be an object" });
+      }
       const { rawText, metadata } = req.body;
       
+      if (!isAuthorBrainUuid(memoryId)) {
+        return res.status(400).json({ message: "Memory ID must be a valid UUID" });
+      }
+      if (rawText === undefined && metadata === undefined) {
+        return res.status(400).json({ message: "At least one memory field is required" });
+      }
+      if (rawText !== undefined) {
+        const textError = authorBrainTextError(
+          rawText,
+          "Text",
+          AUTHOR_BRAIN_MAX_MEMORY_TEXT_LENGTH,
+        );
+        if (textError) {
+          return res.status(400).json({ message: textError });
+        }
+      }
+      if (metadata !== undefined) {
+        const metadataError = authorBrainMetadataError(metadata);
+        if (metadataError) {
+          return res.status(400).json({ message: metadataError });
+        }
+      }
       const { updateMemory } = await import('./authorBrainService');
-      const memory = await updateMemory(memoryId, { rawText, metadata });
+      const memory = await updateMemory(memoryId, userId, { rawText, metadata });
+      if (!memory) {
+        return res.status(404).json({ message: "Memory not found" });
+      }
       
       res.json(memory);
     } catch (error) {
@@ -22222,9 +22376,16 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // DELETE /api/author-brain/memories/:id - Delete memory
   app.delete('/api/author-brain/memories/:id', isAuthenticated, async (req: any, res) => {
     try {
+      const userId = getUserId(req)!;
       const memoryId = req.params.id;
+      if (!isAuthorBrainUuid(memoryId)) {
+        return res.status(400).json({ message: "Memory ID must be a valid UUID" });
+      }
       const { deleteMemory } = await import('./authorBrainService');
-      await deleteMemory(memoryId);
+      const deleted = await deleteMemory(memoryId, userId);
+      if (!deleted) {
+        return res.status(404).json({ message: "Memory not found" });
+      }
       res.json({ success: true });
     } catch (error) {
       console.error("Error deleting memory:", error);
@@ -22235,20 +22396,38 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/author-brain/search - Search memories
   app.get('/api/author-brain/search', isAuthenticated, async (req: any, res) => {
     try {
+      const userId = getUserId(req)!;
       const { projectId, query, contentTypes, limit } = req.query;
       
-      if (!projectId || !query) {
-        return res.status(400).json({ message: "Project ID and query are required" });
+      if (!isAuthorBrainUuid(projectId)) {
+        return res.status(400).json({ message: "Project ID must be a valid UUID" });
+      }
+      const queryError = authorBrainTextError(query, "Search query", AUTHOR_BRAIN_MAX_SEARCH_LENGTH);
+      if (queryError) {
+        return res.status(400).json({ message: queryError });
+      }
+      const types = authorBrainContentTypes(contentTypes);
+      if (contentTypes !== undefined && !types) {
+        return res.status(400).json({ message: "Invalid content types" });
+      }
+      const parsedLimit = authorBrainLimit(limit, 10);
+      if (parsedLimit === undefined) {
+        return res.status(400).json({
+          message: `Limit must be an integer between 1 and ${AUTHOR_BRAIN_MAX_RESULT_LIMIT}`,
+        });
       }
       
       const { searchMemories } = await import('./authorBrainService');
-      const types = contentTypes ? (contentTypes as string).split(',') : undefined;
       const results = await searchMemories(
-        projectId as string, 
-        query as string, 
+        projectId,
+        userId,
+        query,
         types,
-        parseInt(limit as string) || 10
+        parsedLimit,
       );
+      if (!results) {
+        return res.status(404).json({ message: "Project not found" });
+      }
       
       res.json(results);
     } catch (error) {
@@ -22260,19 +22439,52 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/author-brain/context - Get relevant context for chapter
   app.get('/api/author-brain/context', isAuthenticated, async (req: any, res) => {
     try {
+      const userId = getUserId(req)!;
       const { projectId, chapterTitle, chapterDescription, limit } = req.query;
       
-      if (!projectId) {
-        return res.status(400).json({ message: "Project ID is required" });
+      if (!isAuthorBrainUuid(projectId)) {
+        return res.status(400).json({ message: "Project ID must be a valid UUID" });
+      }
+      const titleError = chapterTitle === undefined
+        ? undefined
+        : authorBrainTextError(
+          chapterTitle,
+          "Chapter title",
+          AUTHOR_BRAIN_MAX_CHAPTER_TITLE_LENGTH,
+          false,
+        );
+      if (titleError) {
+        return res.status(400).json({ message: titleError });
+      }
+      const descriptionError = chapterDescription === undefined
+        ? undefined
+        : authorBrainTextError(
+          chapterDescription,
+          "Chapter description",
+          AUTHOR_BRAIN_MAX_CHAPTER_DESCRIPTION_LENGTH,
+          false,
+        );
+      if (descriptionError) {
+        return res.status(400).json({ message: descriptionError });
+      }
+      const parsedLimit = authorBrainLimit(limit, 5);
+      if (parsedLimit === undefined) {
+        return res.status(400).json({
+          message: `Limit must be an integer between 1 and ${AUTHOR_BRAIN_MAX_RESULT_LIMIT}`,
+        });
       }
       
       const { getRelevantContext } = await import('./authorBrainService');
       const context = await getRelevantContext(
-        projectId as string,
+        projectId,
+        userId,
         (chapterTitle as string) || '',
         (chapterDescription as string) || '',
-        parseInt(limit as string) || 5
+        parsedLimit,
       );
+      if (!context) {
+        return res.status(404).json({ message: "Project not found" });
+      }
       
       res.json(context);
     } catch (error) {
@@ -22284,14 +22496,18 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // GET /api/author-brain/stats - Get memory statistics
   app.get('/api/author-brain/stats', isAuthenticated, async (req: any, res) => {
     try {
+      const userId = getUserId(req)!;
       const { projectId } = req.query;
       
-      if (!projectId) {
-        return res.status(400).json({ message: "Project ID is required" });
+      if (!isAuthorBrainUuid(projectId)) {
+        return res.status(400).json({ message: "Project ID must be a valid UUID" });
       }
       
       const { getMemoryStats } = await import('./authorBrainService');
-      const stats = await getMemoryStats(projectId as string);
+      const stats = await getMemoryStats(projectId, userId);
+      if (!stats) {
+        return res.status(404).json({ message: "Project not found" });
+      }
       
       res.json(stats);
     } catch (error) {
@@ -25636,4 +25852,32 @@ Format as structured JSON with clear sections.`;
 
   const httpServer = createServer(app);
   return httpServer;
+}
+
+function authorBrainLimit(value: unknown, defaultValue: number): number | undefined {
+  if (value === undefined) return defaultValue;
+  if (typeof value !== "string" || !/^[1-9][0-9]*$/.test(value)) return undefined;
+  const parsed = Number(value);
+  return Number.isSafeInteger(parsed) && parsed >= 1 && parsed <= AUTHOR_BRAIN_MAX_RESULT_LIMIT
+    ? parsed
+    : undefined;
+}
+
+function authorBrainContentTypes(value: unknown): string[] | undefined {
+  if (value === undefined) return undefined;
+  if (typeof value !== "string" || value.length === 0) return undefined;
+  const types = value.split(",");
+  return types.length > 0 &&
+    types.every((type) => (AUTHOR_BRAIN_CONTENT_TYPES as readonly string[]).includes(type))
+    ? types
+    : undefined;
+}
+
+function authorBrainMetadataError(value: unknown): string | undefined {
+  try {
+    serializeAuthorBrainMetadata(value);
+    return undefined;
+  } catch (error) {
+    return error instanceof Error ? error.message : "Invalid metadata";
+  }
 }

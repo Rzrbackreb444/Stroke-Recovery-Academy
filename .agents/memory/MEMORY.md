@@ -36,3 +36,4 @@
 - [Deployment image size limit](deployment-image-size.md) — Replit Cloud Run cap is 8 GiB; .migration-backup/ and raw media files are typical culprits; delete before re-publishing
 - [WashBizHub product direction](washbizhub-product-direction.md) — visible app is now Laundromat Mastery Community; preserve the focused WashBizHub experience
 - [Recovery durability testing](recovery-durability-testing.md) — local disposable Postgres needs node-postgres and explicit URL credentials
+- [Rebase test conflict recovery](rebase-test-conflict-recovery.md) — after rebases, verify merged tests structurally; conflict markers can hide malformed interleavings
