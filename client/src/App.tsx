@@ -1,5 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from "react";
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -130,7 +130,6 @@ const SurvivalGrid = lazy(() => import("@/pages/SurvivalGrid"));
 const Achievements = lazy(() => import("@/pages/Achievements"));
 const Reminders = lazy(() => import("@/pages/Reminders"));
 const Activity = lazy(() => import("@/pages/Activity"));
-const Exercises = lazy(() => import("@/pages/Exercises"));
 const TherapistDashboard = lazy(() => import("@/pages/TherapistDashboard"));
 const CommandCenter = lazy(() => import("@/pages/CommandCenter"));
 const Wearables = lazy(() => import("@/pages/Wearables"));
@@ -256,6 +255,16 @@ function LazyRouteFallback() {
       </div>
     </div>
   );
+}
+
+function RecoveryRouteRedirect({ to }: { to: string }) {
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    setLocation(to);
+  }, [setLocation, to]);
+
+  return null;
 }
 
 function Router() {
@@ -538,10 +547,9 @@ function Router() {
         <AdminRoute><TherapistAdmin /></AdminRoute>
       </Route>
       <Route path="/recovery" component={StrokeRecoveryLanding} />
+      {/* Legacy dashboard/routine URLs now resolve to the one canonical Today session. */}
       <Route path="/recovery/dashboard">
-        <ProtectedRoute>
-          <RecoveryToday />
-        </ProtectedRoute>
+        <RecoveryRouteRedirect to="/recovery/today" />
       </Route>
       <Route path="/recovery/academy" component={Academy} />
       <Route path="/recovery/sasch" component={SaschLanding} />
@@ -559,9 +567,6 @@ function Router() {
       </Route>
       <Route path="/recovery/activity">
         <RecoveryCommunity />
-      </Route>
-      <Route path="/recovery/exercises">
-        <Exercises />
       </Route>
       <Route path="/recovery/therapist">
         <ProtectedRoute>
@@ -596,18 +601,18 @@ function Router() {
       <Route path="/recovery/community" component={RecoveryCommunity} />
       <Route path="/recovery/campfire">
         <ProtectedRoute>
-          <RecoveryToday />
+          <RecoveryCampfire />
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/premium" component={RecoveryPremium} />
       <Route path="/recovery/journey">
         <ProtectedRoute>
-          <RecoveryToday />
+          <RecoveryJourney />
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/welcome">
         <ProtectedRoute>
-          <RecoveryToday />
+          <RecoveryWelcome />
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/therapist-marketplace">
@@ -696,11 +701,13 @@ function Router() {
       <Route path="/recovery/onboarding" component={RecoveryOnboarding} />
       <Route path="/recovery/me" component={RecoveryMe} />
       <Route path="/recovery/routine">
-        <ProtectedRoute>
+        <RecoveryRouteRedirect to="/recovery/today" />
+      </Route>
+      <Route path="/recovery/today">
+        <ProtectedRoute loginReturnPath="/recovery/today">
           <RecoveryToday />
         </ProtectedRoute>
       </Route>
-      <Route path="/recovery/today" component={RecoveryToday} />
       <Route path="/recovery/circuit" component={RecoveryCircuit} />
       <Route path="/recovery/circuit/:slug">
         <ProtectedRoute>

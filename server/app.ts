@@ -137,6 +137,29 @@ export default async function runApp(
     throw err;
   }
 
+  // Keep the survivor's first-session destination protected before the SPA
+  // shell is served. Client-side guards are still useful for in-app
+  // navigation, but direct requests must not render Today anonymously.
+  app.use((req, res, next) => {
+    if (req.method !== "GET") return next();
+
+    const requestedPath = req.path;
+    const isToday = requestedPath === "/recovery/today";
+    const isLegacyTodayAlias =
+      requestedPath === "/recovery/dashboard" || requestedPath === "/recovery/routine";
+    if (!isToday && !isLegacyTodayAlias) return next();
+
+    const authenticated = typeof req.isAuthenticated === "function" && req.isAuthenticated();
+    if (isLegacyTodayAlias) {
+      if (authenticated) return res.redirect(302, "/recovery/today");
+      return res.redirect(302, `/recovery/login?next=${encodeURIComponent("/recovery/today")}`);
+    }
+    if (!authenticated) {
+      return res.redirect(302, `/recovery/login?next=${encodeURIComponent(req.originalUrl)}`);
+    }
+    next();
+  });
+
   // Structured error logger runs first
   app.use(structuredErrorLogger);
 

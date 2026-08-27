@@ -70,6 +70,9 @@ export default function RecoveryHeader() {
   const [isPrimary, setIsPrimary] = useState(false);
   const [location] = useLocation();
   const { user, isLoading } = useAuth();
+  const recoveryReturnPath = location.startsWith("/recovery/") ? location : "/recovery/today";
+  const signInHref = `/recovery/login?next=${encodeURIComponent(recoveryReturnPath)}`;
+  const signUpHref = `/recovery/login?tab=signup&next=${encodeURIComponent(recoveryReturnPath)}`;
 
   useEffect(() => {
     if (!siteHeaderRegistry.mounted) {
@@ -251,7 +254,7 @@ export default function RecoveryHeader() {
                   variant="ghost"
                   size="sm"
                   className="text-gray-400 hover:text-white text-sm"
-                  onClick={() => (window.location.href = "/recovery/login")}
+                  onClick={() => (window.location.href = signInHref)}
                   data-testid="button-sign-in"
                 >
                   Sign In
@@ -259,7 +262,7 @@ export default function RecoveryHeader() {
                 <Button
                   size="sm"
                   className="bg-gold text-black font-semibold text-sm px-5"
-                  onClick={() => (window.location.href = "/recovery/login?tab=signup")}
+                  onClick={() => (window.location.href = signUpHref)}
                   data-testid="button-join"
                 >
                   Start Free
@@ -377,7 +380,7 @@ export default function RecoveryHeader() {
               ) : (
                 <Button
                   className="w-full bg-gold text-black font-semibold"
-                  onClick={() => (window.location.href = "/recovery/login?tab=signup")}
+                  onClick={() => (window.location.href = signUpHref)}
                   data-testid="mobile-button-join"
                 >
                   Start Free

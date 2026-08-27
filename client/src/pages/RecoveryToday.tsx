@@ -477,6 +477,27 @@ export default function RecoveryToday() {
           </p>
         </Card>
 
+        <Card className="bg-[#111] border-[#E2741B]/30 p-5 mt-4" data-testid="card-next-action">
+          <p className="text-xs uppercase tracking-widest text-[#E2741B] mb-1">Next move</p>
+          <p className="text-white font-semibold">Come back to Today tomorrow for your next personalized rep.</p>
+          <p className="text-sm text-gray-400 mt-1">
+            Your first recovery rep is recorded. You can also take another one now if your body says yes.
+          </p>
+          <Button
+            onClick={() => {
+              setStage("intro");
+              setTaskIdx(0);
+              setReactions({});
+              setWalkLogged(null);
+            }}
+            className="w-full mt-4 bg-[#E2741B] text-black font-bold"
+            data-testid="button-next-rep"
+          >
+            Start another rep
+            <ArrowRight className="h-4 w-4 ml-1.5" />
+          </Button>
+        </Card>
+
         <div className="grid grid-cols-3 gap-3 mt-6">
           <Card className="bg-[#111] border-[#222] p-4 text-center">
             <p className="text-2xl font-black text-emerald-400 tabular-nums" data-testid="stat-good">{goodCount}</p>

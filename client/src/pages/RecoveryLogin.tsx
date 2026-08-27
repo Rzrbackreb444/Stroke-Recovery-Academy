@@ -82,7 +82,10 @@ export default function RecoveryLogin() {
   const signUpMut = useMutation({
     mutationFn: (data: { email: string; password: string; firstName: string; lastName: string }) =>
       apiRequest("POST", "/api/auth/register", data),
-    onSuccess: () => { window.location.href = safeNext === "/recovery/today" ? "/recovery/onboarding" : safeNext; },
+    // Every newly created account must finish the survivor assessment before
+    // entering any requested destination. This keeps signup from dropping a
+    // new survivor into a public library or creator-oriented surface.
+    onSuccess: () => { window.location.href = "/recovery/onboarding"; },
     onError: (e: any) => toast({ title: "Sign up failed", description: e.message, variant: "destructive" }),
   });
 
