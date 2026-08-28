@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { ApiError, apiRequest, queryClient } from "@/lib/queryClient";
 import SEO from "@/components/SEO";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import { Card } from "@/components/ui/card";
@@ -224,6 +224,7 @@ export default function RecoveryJournal() {
     }
     setPhotoUploading(true);
     setPhotoPreview(URL.createObjectURL(file));
+    let finalizing = false;
     try {
       const urlRes = await apiRequest("POST", "/api/recovery/journal/photo/upload-url", {
         name: file.name,
@@ -242,13 +243,25 @@ export default function RecoveryJournal() {
         },
       });
       if (!put.ok) throw new Error("upload failed");
+      finalizing = true;
       const finRes = await apiRequest("POST", "/api/recovery/journal/photo/finalize", { objectPath });
       const { photoUrl: savedUrl } = await finRes.json();
       setPhotoUrl(savedUrl);
       toast({ title: "Photo added." });
     } catch (err) {
       setPhotoPreview("");
-      toast({ title: "Couldn't add that photo", description: "Try again.", variant: "destructive" });
+      let description = "Try again.";
+      if (finalizing && err instanceof ApiError && err.status === 415) {
+        try {
+          const body = JSON.parse(err.body) as { message?: unknown };
+          if (typeof body.message === "string" && body.message.trim()) {
+            description = `${body.message} Choose a different photo and try again.`;
+          }
+        } catch {
+          // Keep the generic fallback if the server response is not JSON.
+        }
+      }
+      toast({ title: "Couldn't add that photo", description, variant: "destructive" });
     } finally {
       setPhotoUploading(false);
     }

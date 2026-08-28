@@ -5,6 +5,7 @@
 - [storage RETURNING * casing](storage-returning-star-casing.md) — some storage.ts methods return snake_case raw rows, not camelCase; read both
 - [Object storage /objects ACL](object-storage-objects-acl.md) — GET /objects enforces owner ACL only on visibility:private; null-policy/public bypass; mount after setupAuth
 - [Mockup Preview Verification](mockup-sandbox-preview-verification.md) — app_preview hits main app, not /__mockup/; use external_url on dev domain
+- [Browser file-input checks](browser-file-input-checks.md) — React file inputs that reset their value need a native DataTransfer change event in Puppeteer
 - [Reflections Feature Direction](reflections-feature-direction.md) — Founder wants survivor monetization proud/first-class; gentle only for brand-new users
 - [staleTime Infinity list-mutation trap](staleinfinity-list-mutations.md) — Studio editor add/delete needs optimistic setQueryData, not just invalidateQueries
 - [Brand accent](brand-accent.md) — Canonical orange (`gold` token / #E2741B), retired amber #C9941A, and the rgba-spaces-break-className gotcha

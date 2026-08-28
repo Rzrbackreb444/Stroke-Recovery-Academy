@@ -8,6 +8,7 @@
     "build": "vite build && esbuild server/index-prod.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js",
     "start": "NODE_ENV=production node dist/index.js",
     "test:blog-ssr": "tsx --test tests/blog-routes.test.ts",
+    "test:recovery-journal-browser": "tsx --test tests/recovery-journal-photo-browser.test.ts",
     "test:recovery-durability": "RECOVERY_DURABILITY_DB=1 tsx --test tests/recoveryDurability.test.ts",
     "test:recovery-seo": "tsx --test tests/recovery-seo-schema.test.ts",
     "check": "tsc",

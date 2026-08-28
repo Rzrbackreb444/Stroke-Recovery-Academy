@@ -26,6 +26,10 @@ import { redactEmail } from "./lib/redact";
 import { requireAdmin } from "./middleware/requireAdmin";
 import { getUserId, getUserEmail } from "./lib/authUtils";
 import {
+  getRecoveryFunnelReport,
+  recordRecoveryFunnelEvent,
+} from "./services/recoveryFunnelService";
+import {
   AUTHOR_BRAIN_CONTENT_TYPES,
   AUTHOR_BRAIN_MAX_CHAPTER_DESCRIPTION_LENGTH,
   AUTHOR_BRAIN_MAX_CHAPTER_TITLE_LENGTH,
@@ -11270,6 +11274,18 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     }
   });
 
+  // POST /api/recovery/today/entry — durable, idempotent Today entry milestone.
+  app.post('/api/recovery/today/entry', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req)!;
+      await recordRecoveryFunnelEvent(userId, "today_entered");
+      res.json({ ok: true });
+    } catch (err) {
+      console.error('today/entry error:', err);
+      res.status(500).json({ message: 'Failed to record Today entry' });
+    }
+  });
+
   // POST /api/recovery/today/feedback
   // Body: { taskId, level, reaction: 'good'|'hard'|'too_hard'|'skipped', date? }
   // Idempotent upsert keyed by (user_id, date, task_id).
@@ -11289,6 +11305,9 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       const dateStr = typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : today;
 
       await saveRoutineFeedback({ userId, date: dateStr, taskId, level: lvl, reaction });
+      if (reaction !== "skipped") {
+        await recordRecoveryFunnelEvent(userId, "first_rep", { taskId });
+      }
 
       res.json({ ok: true });
     } catch (err) {
@@ -11334,6 +11353,9 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         userId, physical, cognitive, speech, emotional, memory,
         notes: normalizedNotes,
       }).returning();
+      await recordRecoveryFunnelEvent(userId, "assessment_completed", {
+        assessmentId: row.id,
+      });
       res.json(row);
     } catch (error) {
       console.error('Error saving assessment:', error);
@@ -11392,6 +11414,12 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         .orderBy(desc(survivorPlans.generatedAt))
         .limit(1);
       if (existingPlan?.plan) {
+        await recordRecoveryFunnelEvent(userId, "plan_generated", {
+          planId: existingPlan.id,
+        });
+        await recordRecoveryFunnelEvent(userId, "onboarding_completed", {
+          planId: existingPlan.id,
+        });
         return res.json({ plan: existingPlan.plan, generatedAt: existingPlan.generatedAt, reused: true });
       }
 
@@ -11599,6 +11627,12 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
         assessmentId: assessment.id,
         plan,
       }).returning();
+      await recordRecoveryFunnelEvent(userId, "plan_generated", {
+        planId: row.id,
+      });
+      await recordRecoveryFunnelEvent(userId, "onboarding_completed", {
+        planId: row.id,
+      });
       res.json({ plan: row.plan, generatedAt: row.generatedAt });
     } catch (error) {
       console.error('Error generating plan:', error);
@@ -22879,6 +22913,20 @@ Provide a JSON response with track suggestions for each chapter/section.`;
   // ----------------------------------------------------------------------------
   // ADMIN PANEL ROUTES
   // ----------------------------------------------------------------------------
+
+  // GET /api/admin/recovery-funnel - Recovery onboarding milestone report.
+  app.get('/api/admin/recovery-funnel', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const requestedDays = Number(req.query.days ?? 30);
+      const days = Number.isFinite(requestedDays)
+        ? Math.min(365, Math.max(1, Math.trunc(requestedDays)))
+        : 30;
+      res.json(await getRecoveryFunnelReport(days));
+    } catch (error) {
+      console.error("Error fetching recovery funnel:", error);
+      res.status(500).json({ message: "Failed to fetch recovery funnel" });
+    }
+  });
 
   // GET /api/admin/users - List/search users (admin only)
   app.get('/api/admin/users', isAuthenticated, requireAdmin, async (req: any, res) => {

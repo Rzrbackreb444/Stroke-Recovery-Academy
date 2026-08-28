@@ -11,7 +11,10 @@ import type { Express, RequestHandler } from "express";
 import multer from "multer";
 import fs from "fs";
 import path from "path";
-import { ObjectStorageService } from "./replit_integrations/object_storage/objectStorage";
+import {
+  ObjectStorageService,
+  ObjectUploadIntentError,
+} from "./replit_integrations/object_storage/objectStorage";
 import { transcribeVideo } from "./videoTranscription";
 import { getUserId } from "./lib/authUtils";
 import { UploadMetadataValidationError } from "./replit_integrations/object_storage/uploadPolicy";
@@ -104,6 +107,12 @@ export function registerJournalMediaRoutes(
       );
       res.json({ photoUrl: objectPath });
     } catch (error) {
+      if (
+        error instanceof ObjectUploadIntentError &&
+        error.message === "Uploaded file contents do not match the declared type."
+      ) {
+        return res.status(415).json({ message: error.message });
+      }
       if (error instanceof Error && error.name === "ObjectUploadIntentError") {
         return res.status(400).json({ message: "Invalid or expired upload reference." });
       }

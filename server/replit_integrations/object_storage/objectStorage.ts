@@ -11,7 +11,7 @@ import {
 } from "./objectAcl";
 import { db } from "../../db";
 import { objectUploadIntents } from "@shared/schema";
-import { and, eq, isNull, gt } from "drizzle-orm";
+import { and, asc, eq, isNull, gt, lte } from "drizzle-orm";
 import {
   normalizeUploadMetadata,
   type UploadMetadata,
@@ -55,6 +55,18 @@ export class ObjectUploadIntentError extends Error {
   }
 }
 
+const CONTENT_SNIFF_BYTES = 64;
+
+export const UPLOAD_INTENT_CLEANUP_BATCH_SIZE = 100;
+export const UPLOAD_INTENT_CLEANUP_INTERVAL_MS = 15 * 60 * 1000;
+
+export interface UploadIntentCleanupResult {
+  scanned: number;
+  objectsDeleted: number;
+  intentsDeleted: number;
+  failures: number;
+}
+
 // The object storage service is used to interact with the object storage service.
 export class ObjectStorageService {
   private static uploadIntentTableReady: Promise<void> | null = null;
@@ -78,7 +90,15 @@ export class ObjectStorageService {
           consumed_at TIMESTAMP WITH TIME ZONE,
           created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
         )
-      `).then(() => undefined);
+      `)
+        .then(async () => {
+          await db.execute(sql`
+            CREATE INDEX IF NOT EXISTS object_upload_intents_unconsumed_expiry_idx
+              ON object_upload_intents (expires_at)
+              WHERE consumed_at IS NULL
+          `);
+        })
+        .then(() => undefined);
     }
     await ObjectStorageService.uploadIntentTableReady;
   }
@@ -216,29 +236,107 @@ export class ObjectStorageService {
 
   // Gets the object entity file from the object path.
   async getObjectEntityFile(objectPath: string): Promise<File> {
-    if (!objectPath.startsWith("/objects/")) {
-      throw new ObjectNotFoundError();
-    }
-
-    const parts = objectPath.slice(1).split("/");
-    if (parts.length < 2) {
-      throw new ObjectNotFoundError();
-    }
-
-    const entityId = parts.slice(1).join("/");
-    let entityDir = this.getPrivateObjectDir();
-    if (!entityDir.endsWith("/")) {
-      entityDir = `${entityDir}/`;
-    }
-    const objectEntityPath = `${entityDir}${entityId}`;
-    const { bucketName, objectName } = parseObjectPath(objectEntityPath);
-    const bucket = objectStorageClient.bucket(bucketName);
-    const objectFile = bucket.file(objectName);
+    const objectFile = this.getObjectEntityFileReference(objectPath);
     const [exists] = await objectFile.exists();
     if (!exists) {
       throw new ObjectNotFoundError();
     }
     return objectFile;
+  }
+
+  /**
+   * Delete an object issued through the /objects upload namespace.
+   *
+   * Missing objects are treated as already cleaned up. Other storage errors
+   * are allowed to reach the caller so the corresponding intent stays in the
+   * database and can be retried on the next cleanup pass.
+   */
+  async deleteObjectEntity(objectPath: string): Promise<void> {
+    const objectFile = this.getObjectEntityFileReference(objectPath);
+    try {
+      await objectFile.delete();
+    } catch (error) {
+      if ((error as { code?: number })?.code !== 404) {
+        throw error;
+      }
+    }
+  }
+
+  /**
+   * Remove expired upload intents in a bounded batch.
+   *
+   * Consumed intents are metadata only after attachment and can be removed
+   * once expired. An unconsumed intent still owns a potentially abandoned
+   * object, so its object is deleted before the intent row is removed. If
+   * storage deletion fails, the row is retained for a later retry.
+   */
+  async cleanupExpiredUploadIntents(
+    batchSize = UPLOAD_INTENT_CLEANUP_BATCH_SIZE,
+  ): Promise<UploadIntentCleanupResult> {
+    await this.ensureUploadIntentTable();
+    const requestedBatchSize = Number.isFinite(batchSize)
+      ? Math.floor(batchSize)
+      : UPLOAD_INTENT_CLEANUP_BATCH_SIZE;
+    const limit = Math.max(
+      1,
+      Math.min(requestedBatchSize, UPLOAD_INTENT_CLEANUP_BATCH_SIZE),
+    );
+    const now = new Date();
+    const intents = await db
+      .select()
+      .from(objectUploadIntents)
+      .where(lte(objectUploadIntents.expiresAt, now))
+      .orderBy(asc(objectUploadIntents.expiresAt))
+      .limit(limit);
+
+    const result: UploadIntentCleanupResult = {
+      scanned: intents.length,
+      objectsDeleted: 0,
+      intentsDeleted: 0,
+      failures: 0,
+    };
+
+    for (const intent of intents) {
+      if (intent.consumedAt === null) {
+        try {
+          await this.deleteObjectEntity(intent.objectPath);
+          result.objectsDeleted += 1;
+        } catch (error) {
+          result.failures += 1;
+          console.error(
+            `[object-storage] failed to delete abandoned upload ${intent.objectPath}:`,
+            error,
+          );
+          continue;
+        }
+      }
+
+      try {
+        const deleted = await db
+          .delete(objectUploadIntents)
+          .where(
+            and(
+              eq(objectUploadIntents.objectPath, intent.objectPath),
+              lte(objectUploadIntents.expiresAt, now),
+              intent.consumedAt === null
+                ? isNull(objectUploadIntents.consumedAt)
+                : eq(objectUploadIntents.consumedAt, intent.consumedAt),
+            ),
+          )
+          .returning({ objectPath: objectUploadIntents.objectPath });
+        if (deleted.length > 0) {
+          result.intentsDeleted += 1;
+        }
+      } catch (error) {
+        result.failures += 1;
+        console.error(
+          `[object-storage] failed to remove expired upload intent ${intent.objectPath}:`,
+          error,
+        );
+      }
+    }
+
+    return result;
   }
 
   normalizeObjectEntityPath(
@@ -297,6 +395,7 @@ export class ObjectStorageService {
       ) {
         throw new ObjectUploadIntentError("Uploaded file metadata does not match the issued upload.");
       }
+      await validateObjectContentType(objectFile, intent.contentType);
     }
     await setObjectAclPolicy(objectFile, aclPolicy);
     if (intent && options.consumeUploadIntent !== false) {
@@ -385,8 +484,37 @@ export class ObjectStorageService {
       requestedPermission: requestedPermission ?? ObjectPermission.READ,
     });
   }
+
+  private getObjectEntityFileReference(objectPath: string): File {
+    if (!objectPath.startsWith("/objects/")) {
+      throw new ObjectNotFoundError();
+    }
+
+    const parts = objectPath.slice(1).split("/");
+    if (parts.length < 2 || !parts.slice(1).join("/")) {
+      throw new ObjectNotFoundError();
+    }
+
+    const entityId = parts.slice(1).join("/");
+    let entityDir = this.getPrivateObjectDir();
+    if (!entityDir.endsWith("/")) {
+      entityDir = `${entityDir}/`;
+    }
+    const objectEntityPath = `${entityDir}${entityId}`;
+    const { bucketName, objectName } = parseObjectPath(objectEntityPath);
+    return objectStorageClient.bucket(bucketName).file(objectName);
+  }
 }
 
+function hasBytes(
+  bytes: Uint8Array,
+  expected: readonly number[],
+  offset = 0,
+): boolean {
+  return expected.every(
+    (value, index) => bytes[offset + index] === value,
+  );
+}
 function parseObjectPath(path: string): {
   bucketName: string;
   objectName: string;
@@ -446,3 +574,120 @@ async function signObjectURL({
   return signedURL;
 }
 
+
+/**
+ * Read only enough of an uploaded object to validate its declared type.
+ */
+export async function validateObjectContentType(
+  file: File,
+  contentType: string,
+): Promise<void> {
+  const [bytes] = await file.download({
+    start: 0,
+    end: CONTENT_SNIFF_BYTES - 1,
+    validation: false,
+  });
+  if (!matchesObjectContentType(bytes, contentType)) {
+    throw new ObjectUploadIntentError(
+      "Uploaded file contents do not match the declared type.",
+    );
+  }
+}
+
+function isHeifContainer(bytes: Uint8Array): boolean {
+  if (!isIsoBmffContainer(bytes)) return false;
+
+  const heifBrands = new Set([
+    "heic",
+    "heix",
+    "hevc",
+    "hevx",
+    "heif",
+    "mif1",
+    "msf1",
+  ]);
+  const brands = [ascii(bytes, 8, 4)];
+  for (let offset = 16; offset + 4 <= bytes.length; offset += 4) {
+    brands.push(ascii(bytes, offset, 4));
+  }
+  return brands.some((brand) => heifBrands.has(brand));
+}
+
+function isIsoBmffContainer(bytes: Uint8Array): boolean {
+  // An ISO Base Media File Format file starts with a box whose type is ftyp.
+  return hasAscii(bytes, 4, "ftyp") && bytes.length >= 12;
+}
+
+/**
+ * Check the small set of file signatures supported by the upload policy.
+ * This is intentionally a lightweight content check, not a full parser or
+ * malware scan. Container formats such as WebM and MP4 cannot distinguish
+ * audio from video from their leading bytes alone, so their shared container
+ * signature is the strongest check available here.
+ */
+export function matchesObjectContentType(
+  bytes: Uint8Array,
+  contentType: string,
+): boolean {
+  const normalizedType = contentType.split(";", 1)[0].trim().toLowerCase();
+
+  switch (normalizedType) {
+    case "image/jpeg":
+      return bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+    case "image/png":
+      return hasBytes(bytes, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+    case "image/gif":
+      return hasAscii(bytes, 0, "GIF87a") || hasAscii(bytes, 0, "GIF89a");
+    case "image/webp":
+      return hasAscii(bytes, 0, "RIFF") && hasAscii(bytes, 8, "WEBP");
+    case "image/heic":
+    case "image/heif":
+      return isHeifContainer(bytes);
+    case "audio/webm":
+    case "video/webm":
+      return hasBytes(bytes, [0x1a, 0x45, 0xdf, 0xa3]);
+    case "audio/mpeg":
+    case "audio/mp3":
+      return (
+        hasAscii(bytes, 0, "ID3") ||
+        (bytes.length >= 2 &&
+          bytes[0] === 0xff &&
+          (bytes[1] & 0xe0) === 0xe0 &&
+          (bytes[1] & 0x06) !== 0)
+      );
+    case "audio/wav":
+    case "audio/x-wav":
+      return hasAscii(bytes, 0, "RIFF") && hasAscii(bytes, 8, "WAVE");
+    case "audio/ogg":
+      return hasAscii(bytes, 0, "OggS");
+    case "audio/mp4":
+    case "audio/x-m4a":
+    case "video/mp4":
+      return isIsoBmffContainer(bytes);
+    case "audio/aac":
+      return (
+        bytes.length >= 2 &&
+        bytes[0] === 0xff &&
+        (bytes[1] & 0xf6) === 0xf0
+      );
+    case "application/pdf":
+      return hasAscii(bytes, 0, "%PDF-");
+    default:
+      return false;
+  }
+}
+
+function ascii(bytes: Uint8Array, offset: number, length: number): string {
+  return String.fromCharCode(...bytes.slice(offset, offset + length));
+}
+
+function hasAscii(
+  bytes: Uint8Array,
+  offset: number,
+  expected: string,
+): boolean {
+  if (bytes.length < offset + expected.length) return false;
+  return expected.split("").every(
+    (character, index) => bytes[offset + index] === character.charCodeAt(0),
+  );
+}

@@ -3,6 +3,8 @@ export {
   ObjectNotFoundError,
   ObjectUploadIntentError,
   objectStorageClient,
+  UPLOAD_INTENT_CLEANUP_BATCH_SIZE,
+  UPLOAD_INTENT_CLEANUP_INTERVAL_MS,
 } from "./objectStorage";
 
 export type {
@@ -11,6 +13,8 @@ export type {
   ObjectAccessGroupType,
   ObjectAclRule,
 } from "./objectAcl";
+
+export type { UploadIntentCleanupResult } from "./objectStorage";
 
 export {
   canAccessObject,
