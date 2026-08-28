@@ -106,6 +106,7 @@ async function mockJournalApi(page: Page, failure: UploadFailure): Promise<void>
 async function openPhotoComposer(page: Page): Promise<void> {
   await page.evaluateOnNewDocument(() => {
     localStorage.setItem("sra:onboarding-complete", "true");
+    localStorage.setItem("sra_install_dismissed_at", String(Date.now()));
   });
   await page.goto(`${baseUrl}/recovery/journal`, { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="button-toggle-reflection-formats"]');
@@ -305,6 +306,23 @@ async function withPhotoPreviewCleanup(): Promise<void> {
       [],
     );
 
+    // The success toast is still visible here. Use a real pointer click rather
+    // than a DOM click so the test catches the fixed toast viewport intercepting
+    // the remove control.
+    await page.click('[data-testid="button-remove-photo"]');
+    await page.waitForFunction(
+      () => !document.querySelector('[data-testid="img-photo-preview"]'),
+      { timeout: 5000 },
+    );
+    await page.waitForFunction(
+      ({ preview, storageKey }) => {
+        const revokedUrls = JSON.parse(localStorage.getItem(storageKey) || "[]") as string[];
+        return revokedUrls.includes(preview);
+      },
+      { timeout: 5000 },
+      { preview: firstPreview, storageKey: revokedUrlsKey },
+    );
+
     await selectPhoto(page, replacementPhoto, "replacement-photo.png", "image/png");
     await page.waitForFunction(
       ({ previousPreview, storageKey }) => {
@@ -333,10 +351,7 @@ async function withPhotoPreviewCleanup(): Promise<void> {
     assert.notEqual(replacementPreview, firstPreview);
 
     await page.waitForSelector('[data-testid="button-remove-photo"]', { timeout: 5000 });
-    await page.$eval(
-      '[data-testid="button-remove-photo"]',
-      (element) => (element as HTMLButtonElement).click(),
-    );
+    await page.click('[data-testid="button-remove-photo"]');
     await page.waitForFunction(
       () => !document.querySelector('[data-testid="img-photo-preview"]'),
       { timeout: 5000 },
