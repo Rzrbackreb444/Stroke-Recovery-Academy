@@ -41,6 +41,7 @@ async function jsonResponse(
 }
 
 async function mockJournalApi(page: Page, failure: UploadFailure): Promise<void> {
+  let finalizeAttempts = 0;
   await page.setRequestInterception(true);
   page.on("request", async (request) => {
     if (request.isInterceptResolutionHandled()) return;
@@ -81,7 +82,15 @@ async function mockJournalApi(page: Page, failure: UploadFailure): Promise<void>
         request.method() === "POST" &&
         url.pathname === "/api/recovery/journal/photo/finalize"
       ) {
-        await jsonResponse(request, failure.finalizeStatus, failure.finalizeBody);
+        const isFirstFinalize = finalizeAttempts === 0;
+        finalizeAttempts += 1;
+        await jsonResponse(
+          request,
+          isFirstFinalize ? failure.finalizeStatus : 200,
+          isFirstFinalize ? failure.finalizeBody : {
+            photoUrl: "/objects/uploads/browser-test-photo",
+          },
+        );
       } else {
         await request.continue();
       }
@@ -101,21 +110,87 @@ async function openPhotoComposer(page: Page): Promise<void> {
   await page.click('[data-testid="button-mode-photo"]');
 }
 
-async function uploadMismatchedPhoto(page: Page, filePath: string): Promise<string> {
+async function selectPhoto(
+  page: Page,
+  filePath: string,
+  fileName: string,
+  contentType: string,
+): Promise<void> {
   const bytes = Array.from(await readFile(filePath));
-  await page.evaluate((fileBytes) => {
+  await page.evaluate(({ fileBytes, fileName, contentType }) => {
     const input = document.querySelector('[data-testid="input-photo-file"]');
     if (!(input instanceof HTMLInputElement)) throw new Error("the journal photo input should be present");
     const transfer = new DataTransfer();
-    transfer.items.add(new File([new Uint8Array(fileBytes)], "selected-as-png.png", { type: "image/png" }));
+    transfer.items.add(new File([new Uint8Array(fileBytes)], fileName, { type: contentType }));
     input.files = transfer.files;
     input.dispatchEvent(new Event("change", { bubbles: true }));
-  }, bytes);
+  }, { fileBytes: bytes, fileName, contentType });
+}
+
+async function uploadMismatchedPhoto(page: Page, filePath: string): Promise<string> {
+  await selectPhoto(page, filePath, "selected-as-png.png", "image/png");
   await page.waitForFunction(
     () => document.body.innerText.includes("Couldn't add that photo"),
     { timeout: 5000 },
   );
   return page.evaluate(() => document.body.innerText);
+}
+
+async function withPhotoRetryAfterTypeWarning(): Promise<void> {
+  const browser = await puppeteer.launch({
+    headless: true,
+    executablePath: findBrowserExecutable(),
+    args: ["--no-sandbox"],
+  });
+  const page = await browser.newPage();
+  const tempDir = await mkdtemp(path.join(tmpdir(), "recovery-journal-browser-"));
+  const mismatchedPhoto = path.join(tempDir, "selected-as-png.png");
+  const validPhoto = path.join(tempDir, "valid-photo.png");
+
+  try {
+    // The first upload has a PDF signature despite being declared as PNG.
+    await writeFile(mismatchedPhoto, Buffer.from("%PDF-1.7\n", "ascii"));
+    // A real 1x1 PNG keeps this test independent of an object-storage fixture.
+    await writeFile(
+      validPhoto,
+      Buffer.from(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+        "base64",
+      ),
+    );
+    await mockJournalApi(page, {
+      finalizeStatus: 415,
+      finalizeBody: {
+        message: "Uploaded file contents do not match the declared type.",
+      },
+    });
+    await openPhotoComposer(page);
+
+    const warningText = await uploadMismatchedPhoto(page, mismatchedPhoto);
+    assert.match(warningText, /Couldn't add that photo/);
+    assert.match(warningText, /Choose a different photo and try again\./);
+
+    await selectPhoto(page, validPhoto, "valid-photo.png", "image/png");
+    await page.waitForFunction(
+      () => document.body.innerText.includes("Photo added."),
+      { timeout: 5000 },
+    );
+
+    const preview = await page.$eval('[data-testid="img-photo-preview"]', (element) => {
+      const bounds = element.getBoundingClientRect();
+      return {
+        src: (element as HTMLImageElement).src,
+        width: bounds.width,
+        height: bounds.height,
+      };
+    });
+    assert.match(preview.src, /^blob:/);
+    assert.ok(preview.width > 0);
+    assert.ok(preview.height > 0);
+  } finally {
+    await browser.close();
+    await rm(tempDir, { recursive: true, force: true });
+  }
 }
 
 async function withPhotoFailure(
@@ -158,6 +233,10 @@ test("a mismatched journal photo shows the specific explanation and retry guidan
       assert.match(toastText, /Choose a different photo and try again\./);
     },
   );
+});
+
+test("a survivor can choose a valid photo after a type warning", async () => {
+  await withPhotoRetryAfterTypeWarning();
 });
 
 test("an ordinary journal photo failure keeps the generic retry message", async () => {
