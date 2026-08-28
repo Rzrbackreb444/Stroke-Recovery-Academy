@@ -106,11 +106,30 @@ async function mockJournalApi(page: Page, failure: UploadFailure): Promise<void>
 async function openPhotoComposer(page: Page): Promise<void> {
   await page.evaluateOnNewDocument(() => {
     localStorage.setItem("sra:onboarding-complete", "true");
+    localStorage.setItem("sra_install_dismissed_at", String(Date.now()));
   });
   await page.goto(`${baseUrl}/recovery/journal`, { waitUntil: "domcontentloaded" });
   await page.waitForSelector('[data-testid="button-toggle-reflection-formats"]');
   await page.click('[data-testid="button-toggle-reflection-formats"]');
   await page.click('[data-testid="button-mode-photo"]');
+}
+
+async function openJournalWithInstallPrompt(page: Page): Promise<void> {
+  await page.evaluateOnNewDocument(() => {
+    localStorage.setItem("sra:onboarding-complete", "true");
+    localStorage.removeItem("sra_install_dismissed_at");
+  });
+  await page.goto(`${baseUrl}/recovery/journal`, { waitUntil: "domcontentloaded" });
+  await page.waitForSelector('[data-testid="button-toggle-reflection-formats"]');
+  await page.evaluate(() => {
+    const event = new Event("beforeinstallprompt", { cancelable: true });
+    Object.defineProperty(event, "prompt", { value: Promise.resolve });
+    Object.defineProperty(event, "userChoice", {
+      value: Promise.resolve({ outcome: "dismissed" }),
+    });
+    window.dispatchEvent(event);
+  });
+  await page.waitForSelector('[data-testid="install-prompt"]');
 }
 
 async function selectPhoto(
@@ -251,6 +270,162 @@ async function withPhotoRetryAfterPutFailure(): Promise<void> {
   }
 }
 
+async function withPhotoPreviewCleanup(): Promise<void> {
+  const browser = await puppeteer.launch({
+    headless: true,
+    executablePath: findBrowserExecutable(),
+    args: ["--no-sandbox"],
+  });
+  const page = await browser.newPage();
+  const tempDir = await mkdtemp(path.join(tmpdir(), "recovery-journal-browser-"));
+  const firstPhoto = path.join(tempDir, "first-photo.png");
+  const replacementPhoto = path.join(tempDir, "replacement-photo.png");
+  const finalPhoto = path.join(tempDir, "final-photo.png");
+  const revokedUrlsKey = "__test_recovery_journal_revoked_urls";
+
+  try {
+    const validPng = Buffer.from(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+      "base64",
+    );
+    await writeFile(firstPhoto, validPng);
+    await writeFile(replacementPhoto, validPng);
+    await writeFile(finalPhoto, validPng);
+
+    await page.evaluateOnNewDocument((storageKey) => {
+      const originalRevokeObjectURL = URL.revokeObjectURL.bind(URL);
+      URL.revokeObjectURL = (url: string) => {
+        const revokedUrls = JSON.parse(localStorage.getItem(storageKey) || "[]") as string[];
+        localStorage.setItem(storageKey, JSON.stringify([...revokedUrls, url]));
+        originalRevokeObjectURL(url);
+      };
+    }, revokedUrlsKey);
+    await mockJournalApi(page, {
+      finalizeStatus: 200,
+      finalizeBody: { message: "unused" },
+    });
+    await openPhotoComposer(page);
+
+    await selectPhoto(page, firstPhoto, "first-photo.png", "image/png");
+    await page.waitForFunction(
+      () => document.querySelector<HTMLImageElement>('[data-testid="img-photo-preview"]')?.src.startsWith("blob:"),
+      { timeout: 5000 },
+    );
+    await page.waitForFunction(
+      () => document.body.innerText.includes("Photo added."),
+      { timeout: 5000 },
+    );
+    const firstPreview = await page.$eval(
+      '[data-testid="img-photo-preview"]',
+      (element) => (element as HTMLImageElement).src,
+    );
+    assert.deepEqual(
+      await page.evaluate((storageKey) => JSON.parse(localStorage.getItem(storageKey) || "[]"), revokedUrlsKey),
+      [],
+    );
+
+    // The success toast is still visible here. Use a real pointer click rather
+    // than a DOM click so the test catches the fixed toast viewport intercepting
+    // the remove control.
+    await page.click('[data-testid="button-remove-photo"]');
+    await page.waitForFunction(
+      () => !document.querySelector('[data-testid="img-photo-preview"]'),
+      { timeout: 5000 },
+    );
+    await page.waitForFunction(
+      ({ preview, storageKey }) => {
+        const revokedUrls = JSON.parse(localStorage.getItem(storageKey) || "[]") as string[];
+        return revokedUrls.includes(preview);
+      },
+      { timeout: 5000 },
+      { preview: firstPreview, storageKey: revokedUrlsKey },
+    );
+
+    await selectPhoto(page, replacementPhoto, "replacement-photo.png", "image/png");
+    await page.waitForFunction(
+      ({ previousPreview, storageKey }) => {
+        const preview = document.querySelector<HTMLImageElement>('[data-testid="img-photo-preview"]');
+        const revokedUrls = JSON.parse(localStorage.getItem(storageKey) || "[]") as string[];
+        return Boolean(preview?.src.startsWith("blob:")) &&
+          preview?.src !== previousPreview &&
+          revokedUrls.includes(previousPreview);
+      },
+      { timeout: 5000 },
+      { previousPreview: firstPreview, storageKey: revokedUrlsKey },
+    );
+    await page.waitForFunction(
+      () => document.body.innerText.includes("Photo added."),
+      { timeout: 5000 },
+    );
+    const replacementPreview = await page.$eval(
+      '[data-testid="img-photo-preview"]',
+      (element) => (element as HTMLImageElement).src,
+    );
+    const revokedAfterReplacement = await page.evaluate(
+      (storageKey) => JSON.parse(localStorage.getItem(storageKey) || "[]") as string[],
+      revokedUrlsKey,
+    );
+    assert.deepEqual(revokedAfterReplacement, [firstPreview]);
+    assert.notEqual(replacementPreview, firstPreview);
+
+    await page.waitForSelector('[data-testid="button-remove-photo"]', { timeout: 5000 });
+    await page.click('[data-testid="button-remove-photo"]');
+    await page.waitForFunction(
+      () => !document.querySelector('[data-testid="img-photo-preview"]'),
+      { timeout: 5000 },
+    );
+    await page.waitForFunction(
+      ({ preview, storageKey }) => {
+        const revokedUrls = JSON.parse(localStorage.getItem(storageKey) || "[]") as string[];
+        return revokedUrls.includes(preview);
+      },
+      { timeout: 5000 },
+      { preview: replacementPreview, storageKey: revokedUrlsKey },
+    );
+    assert.deepEqual(
+      await page.evaluate((storageKey) => JSON.parse(localStorage.getItem(storageKey) || "[]"), revokedUrlsKey),
+      [firstPreview, replacementPreview],
+    );
+
+    await selectPhoto(page, finalPhoto, "final-photo.png", "image/png");
+    await page.waitForFunction(
+      () => document.querySelector<HTMLImageElement>('[data-testid="img-photo-preview"]')?.src.startsWith("blob:"),
+      { timeout: 5000 },
+    );
+    await page.waitForFunction(
+      () => document.body.innerText.includes("Photo added."),
+      { timeout: 5000 },
+    );
+    const finalPreview = await page.$eval(
+      '[data-testid="img-photo-preview"]',
+      (element) => (element as HTMLImageElement).src,
+    );
+    await page.$eval(
+      '[data-testid="link-recovery-home"]',
+      (element) => (element as HTMLAnchorElement).click(),
+    );
+    await page.waitForFunction(
+      () => window.location.pathname === "/recovery/today",
+      { timeout: 5000 },
+    );
+    await page.waitForFunction(
+      ({ preview, storageKey }) => {
+        const revokedUrls = JSON.parse(localStorage.getItem(storageKey) || "[]") as string[];
+        return revokedUrls.includes(preview);
+      },
+      { timeout: 5000 },
+      { preview: finalPreview, storageKey: revokedUrlsKey },
+    );
+    assert.deepEqual(
+      await page.evaluate((storageKey) => JSON.parse(localStorage.getItem(storageKey) || "[]"), revokedUrlsKey),
+      [firstPreview, replacementPreview, finalPreview],
+    );
+  } finally {
+    await browser.close();
+    await rm(tempDir, { recursive: true, force: true });
+  }
+}
+
 async function withPhotoFailure(
   failure: UploadFailure,
   assertion: (toastText: string) => void,
@@ -277,6 +452,51 @@ async function withPhotoFailure(
   }
 }
 
+test("the install prompt does not block a bottom-of-viewport journal control", async () => {
+  const browser = await puppeteer.launch({
+    headless: true,
+    executablePath: findBrowserExecutable(),
+    args: ["--no-sandbox"],
+  });
+  const page = await browser.newPage();
+
+  try {
+    await mockJournalApi(page, {
+      finalizeStatus: 500,
+      finalizeBody: { message: "unused" },
+    });
+    await openJournalWithInstallPrompt(page);
+
+    await page.$eval(
+      '[data-testid="button-save-reflection"]',
+      (element) => element.scrollIntoView({ block: "end", inline: "center" }),
+    );
+    await page.click('[data-testid="button-save-reflection"]');
+    await page.waitForFunction(
+      () => document.body.innerText.includes("Nothing to save yet"),
+      { timeout: 5000 },
+    );
+
+    await page.click('[data-testid="button-dismiss-install"]');
+    await page.waitForSelector('[data-testid="install-prompt"]', { hidden: true });
+    assert.ok(await page.evaluate(() => localStorage.getItem("sra_install_dismissed_at")));
+
+    const eventWasPrevented = await page.evaluate(() => {
+      const event = new Event("beforeinstallprompt", { cancelable: true });
+      Object.defineProperty(event, "prompt", { value: Promise.resolve });
+      Object.defineProperty(event, "userChoice", {
+        value: Promise.resolve({ outcome: "dismissed" }),
+      });
+      return !window.dispatchEvent(event) && event.defaultPrevented;
+    });
+    assert.equal(eventWasPrevented, true);
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    assert.equal(await page.$('[data-testid="install-prompt"]'), null);
+  } finally {
+    await browser.close();
+  }
+});
+
 test("a mismatched journal photo shows the specific explanation and retry guidance", async () => {
   await withPhotoFailure(
     {
@@ -299,6 +519,10 @@ test("a survivor can choose a valid photo after a type warning", async () => {
 
 test("a survivor can retry after an interrupted photo upload", async () => {
   await withPhotoRetryAfterPutFailure();
+});
+
+test("replacing, clearing, and leaving the journal photo preview releases its object URL", async () => {
+  await withPhotoPreviewCleanup();
 });
 
 test("an ordinary journal photo failure keeps the generic retry message", async () => {

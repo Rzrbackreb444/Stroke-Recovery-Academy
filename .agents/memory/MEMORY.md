@@ -38,3 +38,4 @@
 - [WashBizHub product direction](washbizhub-product-direction.md) — visible app is now Laundromat Mastery Community; preserve the focused WashBizHub experience
 - [Recovery durability testing](recovery-durability-testing.md) — local disposable Postgres needs node-postgres and explicit URL credentials
 - [Rebase test conflict recovery](rebase-test-conflict-recovery.md) — after rebases, verify merged tests structurally; conflict markers can hide malformed interleavings
+- [React unmount browser coverage](react-unmount-browser-coverage.md) — use client-side route changes to observe effect cleanup; hard navigation can tear down the page first
