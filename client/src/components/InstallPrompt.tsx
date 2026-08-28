@@ -28,6 +28,8 @@ export default function InstallPrompt() {
 
     const onBefore = (e: Event) => {
       e.preventDefault();
+      const dismissedAt = parseInt(localStorage.getItem(DISMISS_KEY) || "0", 10);
+      if (dismissedAt && Date.now() - dismissedAt < DISMISS_DAYS * 86400_000) return;
       setEvt(e as BeforeInstallPromptEvent);
     };
     const onInstalled = () => { setInstalled(true); setEvt(null); };
@@ -51,7 +53,7 @@ export default function InstallPrompt() {
     <div
       role="dialog"
       aria-label="Install Stroke Recovery Academy"
-      className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 bg-[#1a1a1a] border border-[#E2741B]/40 rounded-lg shadow-xl p-4 flex items-start gap-3"
+      className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 bg-[#1a1a1a] border border-[#E2741B]/40 rounded-lg shadow-xl p-4 flex items-start gap-3 pointer-events-none"
       data-testid="install-prompt"
     >
       <div className="bg-[#E2741B] rounded-md p-2 flex-shrink-0">
@@ -66,6 +68,7 @@ export default function InstallPrompt() {
           <Button
             size="sm"
             data-testid="button-install-app"
+            className="pointer-events-auto bg-[#E2741B] hover:bg-[#b08217] text-black font-semibold"
             onClick={async () => {
               await evt.prompt();
               const choice = await evt.userChoice;
@@ -74,7 +77,6 @@ export default function InstallPrompt() {
               }
               setEvt(null);
             }}
-            className="bg-[#E2741B] hover:bg-[#b08217] text-black font-semibold"
           >
             Install
           </Button>
@@ -82,11 +84,11 @@ export default function InstallPrompt() {
             size="sm"
             variant="ghost"
             data-testid="button-dismiss-install"
+            className="pointer-events-auto text-gray-400"
             onClick={() => {
               localStorage.setItem(DISMISS_KEY, String(Date.now()));
               setEvt(null);
             }}
-            className="text-gray-400"
           >
             Not now
           </Button>
@@ -94,11 +96,11 @@ export default function InstallPrompt() {
       </div>
       <button
         aria-label="Close install prompt"
+        className="text-gray-500 hover:text-gray-300 -mt-1 pointer-events-auto"
         onClick={() => {
           localStorage.setItem(DISMISS_KEY, String(Date.now()));
           setEvt(null);
         }}
-        className="text-gray-500 hover:text-gray-300 -mt-1"
         data-testid="button-close-install"
       >
         <X className="w-4 h-4" />

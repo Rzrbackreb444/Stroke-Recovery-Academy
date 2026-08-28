@@ -114,6 +114,24 @@ async function openPhotoComposer(page: Page): Promise<void> {
   await page.click('[data-testid="button-mode-photo"]');
 }
 
+async function openJournalWithInstallPrompt(page: Page): Promise<void> {
+  await page.evaluateOnNewDocument(() => {
+    localStorage.setItem("sra:onboarding-complete", "true");
+    localStorage.removeItem("sra_install_dismissed_at");
+  });
+  await page.goto(`${baseUrl}/recovery/journal`, { waitUntil: "domcontentloaded" });
+  await page.waitForSelector('[data-testid="button-toggle-reflection-formats"]');
+  await page.evaluate(() => {
+    const event = new Event("beforeinstallprompt", { cancelable: true });
+    Object.defineProperty(event, "prompt", { value: Promise.resolve });
+    Object.defineProperty(event, "userChoice", {
+      value: Promise.resolve({ outcome: "dismissed" }),
+    });
+    window.dispatchEvent(event);
+  });
+  await page.waitForSelector('[data-testid="install-prompt"]');
+}
+
 async function selectPhoto(
   page: Page,
   filePath: string,
@@ -433,6 +451,51 @@ async function withPhotoFailure(
     await rm(tempDir, { recursive: true, force: true });
   }
 }
+
+test("the install prompt does not block a bottom-of-viewport journal control", async () => {
+  const browser = await puppeteer.launch({
+    headless: true,
+    executablePath: findBrowserExecutable(),
+    args: ["--no-sandbox"],
+  });
+  const page = await browser.newPage();
+
+  try {
+    await mockJournalApi(page, {
+      finalizeStatus: 500,
+      finalizeBody: { message: "unused" },
+    });
+    await openJournalWithInstallPrompt(page);
+
+    await page.$eval(
+      '[data-testid="button-save-reflection"]',
+      (element) => element.scrollIntoView({ block: "end", inline: "center" }),
+    );
+    await page.click('[data-testid="button-save-reflection"]');
+    await page.waitForFunction(
+      () => document.body.innerText.includes("Nothing to save yet"),
+      { timeout: 5000 },
+    );
+
+    await page.click('[data-testid="button-dismiss-install"]');
+    await page.waitForSelector('[data-testid="install-prompt"]', { hidden: true });
+    assert.ok(await page.evaluate(() => localStorage.getItem("sra_install_dismissed_at")));
+
+    const eventWasPrevented = await page.evaluate(() => {
+      const event = new Event("beforeinstallprompt", { cancelable: true });
+      Object.defineProperty(event, "prompt", { value: Promise.resolve });
+      Object.defineProperty(event, "userChoice", {
+        value: Promise.resolve({ outcome: "dismissed" }),
+      });
+      return !window.dispatchEvent(event) && event.defaultPrevented;
+    });
+    assert.equal(eventWasPrevented, true);
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    assert.equal(await page.$('[data-testid="install-prompt"]'), null);
+  } finally {
+    await browser.close();
+  }
+});
 
 test("a mismatched journal photo shows the specific explanation and retry guidance", async () => {
   await withPhotoFailure(
