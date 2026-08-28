@@ -42,6 +42,7 @@ async function jsonResponse(
 
 async function mockJournalApi(page: Page, failure: UploadFailure): Promise<void> {
   let finalizeAttempts = 0;
+  let putAttempts = 0;
   await page.setRequestInterception(true);
   page.on("request", async (request) => {
     if (request.isInterceptResolutionHandled()) return;
@@ -73,8 +74,10 @@ async function mockJournalApi(page: Page, failure: UploadFailure): Promise<void>
           objectPath: "/objects/uploads/browser-test-photo",
         });
       } else if (request.method() === "PUT" && url.pathname === new URL(testUploadUrl).pathname) {
+        const isFirstPut = putAttempts === 0;
+        putAttempts += 1;
         await request.respond({
-          status: failure.putStatus ?? 200,
+          status: isFirstPut ? failure.putStatus ?? 200 : 200,
           contentType: "text/plain",
           body: "",
         });
@@ -193,6 +196,61 @@ async function withPhotoRetryAfterTypeWarning(): Promise<void> {
   }
 }
 
+async function withPhotoRetryAfterPutFailure(): Promise<void> {
+  const browser = await puppeteer.launch({
+    headless: true,
+    executablePath: findBrowserExecutable(),
+    args: ["--no-sandbox"],
+  });
+  const page = await browser.newPage();
+  const tempDir = await mkdtemp(path.join(tmpdir(), "recovery-journal-browser-"));
+  const interruptedPhoto = path.join(tempDir, "interrupted-photo.png");
+  const replacementPhoto = path.join(tempDir, "replacement-photo.png");
+
+  try {
+    const validPng = Buffer.from(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+      "base64",
+    );
+    await writeFile(interruptedPhoto, validPng);
+    await writeFile(replacementPhoto, validPng);
+    await mockJournalApi(page, {
+      putStatus: 503,
+      finalizeStatus: 200,
+      finalizeBody: { message: "unused" },
+    });
+    await openPhotoComposer(page);
+
+    await selectPhoto(page, interruptedPhoto, "interrupted-photo.png", "image/png");
+    await page.waitForFunction(
+      () => document.body.innerText.includes("Couldn't add that photo"),
+      { timeout: 5000 },
+    );
+    assert.match(await page.evaluate(() => document.body.innerText), /Try again\./);
+
+    await selectPhoto(page, replacementPhoto, "replacement-photo.png", "image/png");
+    await page.waitForFunction(
+      () => document.body.innerText.includes("Photo added."),
+      { timeout: 5000 },
+    );
+
+    const preview = await page.$eval('[data-testid="img-photo-preview"]', (element) => {
+      const bounds = element.getBoundingClientRect();
+      return {
+        src: (element as HTMLImageElement).src,
+        width: bounds.width,
+        height: bounds.height,
+      };
+    });
+    assert.match(preview.src, /^blob:/);
+    assert.ok(preview.width > 0);
+    assert.ok(preview.height > 0);
+  } finally {
+    await browser.close();
+    await rm(tempDir, { recursive: true, force: true });
+  }
+}
+
 async function withPhotoFailure(
   failure: UploadFailure,
   assertion: (toastText: string) => void,
@@ -237,6 +295,10 @@ test("a mismatched journal photo shows the specific explanation and retry guidan
 
 test("a survivor can choose a valid photo after a type warning", async () => {
   await withPhotoRetryAfterTypeWarning();
+});
+
+test("a survivor can retry after an interrupted photo upload", async () => {
+  await withPhotoRetryAfterPutFailure();
 });
 
 test("an ordinary journal photo failure keeps the generic retry message", async () => {
