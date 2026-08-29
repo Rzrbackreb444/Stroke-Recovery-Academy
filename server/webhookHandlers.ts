@@ -165,15 +165,17 @@ export class WebhookHandlers {
         }
       }
 
-      // ── 4c. RECOVERY POWER POINTS — fulfillment must happen before the
-      //       webhook row is marked processed. If fulfillment fails after the
-      //       Stripe sync succeeds, the failed row remains retryable and the
-      //       gift transaction can be retried safely.
+      // ── 4c. RECOVERY ONE-TIME PAYMENTS — fulfillment must happen before
+      //       the webhook row is marked processed. If fulfillment fails after
+      //       the Stripe sync succeeds, the failed row remains retryable and
+      //       payment-level idempotency keeps the retry safe.
       if (
         parsedEvent &&
         eventType === 'checkout.session.completed' &&
         (parsedEvent as any).data?.object?.payment_status === 'paid' &&
-        (parsedEvent as any).data?.object?.metadata?.type === 'power_points'
+        ['power_points', 'tip', 'premium_purchase'].includes(
+          (parsedEvent as any).data?.object?.metadata?.type,
+        )
       ) {
         const session: any = (parsedEvent as any).data.object;
         if (dependencies.processSuccessfulPayment) {

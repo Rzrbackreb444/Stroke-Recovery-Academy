@@ -290,12 +290,15 @@ export class RecoveryStripeService {
     const amount = session.amount_total;
     const creatorPayout = Math.floor(amount * (CREATOR_SHARE_PERCENT / 100));
     const platformFee = amount - creatorPayout;
+    const stripePaymentId = session.payment_intent;
 
-    if (!creatorId) {
-      console.error('[recoveryStripe] processTip missing creatorId in metadata; skipping insert');
+    if (!creatorId || typeof stripePaymentId !== 'string' || !stripePaymentId) {
+      console.error('[recoveryStripe] processTip missing creatorId or payment_intent; skipping insert');
       return;
     }
 
+    // The payment reference is the stable idempotency key for this one-time
+    // checkout. ON CONFLICT also makes two different event deliveries safe.
     await db.insert(recoveryCreatorTips).values({
       fromUserId: fromUserId || null,
       toCreatorId: creatorId,
@@ -303,10 +306,10 @@ export class RecoveryStripeService {
       amount: amount,
       creatorPayout,
       platformFee,
-      stripePaymentId: session.payment_intent,
+      stripePaymentId,
       message: null,
       status: 'completed',
-    });
+    }).onConflictDoNothing();
   }
 
   private async processPremiumPurchase(session: any) {
@@ -314,9 +317,10 @@ export class RecoveryStripeService {
     const amount = session.amount_total;
     const creatorPayout = Math.floor(amount * (CREATOR_SHARE_PERCENT / 100));
     const platformFee = amount - creatorPayout;
+    const stripePaymentId = session.payment_intent;
 
-    if (!buyerId || !storyId) {
-      console.error('[recoveryStripe] processPremiumPurchase missing buyerId/storyId; skipping insert');
+    if (!buyerId || !storyId || typeof stripePaymentId !== 'string' || !stripePaymentId) {
+      console.error('[recoveryStripe] processPremiumPurchase missing buyerId/storyId/payment_intent; skipping insert');
       return;
     }
 
@@ -326,9 +330,9 @@ export class RecoveryStripeService {
       amount: amount,
       creatorPayout,
       platformFee,
-      stripePaymentId: session.payment_intent,
+      stripePaymentId,
       status: 'completed',
-    });
+    }).onConflictDoNothing();
   }
 
   private async processSubscription(session: any) {

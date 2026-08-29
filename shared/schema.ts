@@ -2161,7 +2161,10 @@ export const recoveryCreatorTips = pgTable("recovery_creator_tips", {
   creatorPayout: integer("creator_payout"), // 85% to creator
   paidOutAt: timestamp("paid_out_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => ({
+  stripePaymentIdUnique: uniqueIndex("recovery_creator_tips_stripe_payment_id_unique")
+    .on(t.stripePaymentId),
+}));
 
 // Premium Content Purchases
 export const recoveryPremiumPurchases = pgTable("recovery_premium_purchases", {
@@ -2175,7 +2178,10 @@ export const recoveryPremiumPurchases = pgTable("recovery_premium_purchases", {
   platformFee: integer("platform_fee"),
   creatorPayout: integer("creator_payout"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => ({
+  stripePaymentIdUnique: uniqueIndex("recovery_premium_purchases_stripe_payment_id_unique")
+    .on(t.stripePaymentId),
+}));
 
 // Recovery Resources (curated content, exercises, tips)
 export const recoveryResources = pgTable("recovery_resources", {

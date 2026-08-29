@@ -71,6 +71,13 @@
       "when": 1787857200001,
       "tag": "0009_persistent_job_queue",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1787857200002,
+      "tag": "0010_recovery_payment_idempotency",
+      "breakpoints": true
     }
   ]
 }
