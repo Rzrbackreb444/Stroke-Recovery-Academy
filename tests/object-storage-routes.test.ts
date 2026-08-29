@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { db } from "../server/db";
 import { ObjectStorageService } from "../server/replit_integrations/object_storage/objectStorage";
 import { registerObjectStorageRoutes } from "../server/replit_integrations/object_storage/routes";
 
@@ -18,6 +19,15 @@ registerObjectStorageRoutes(app);
 
 const requestUrlHandlers = postHandlers.splice(0);
 const originalGetUploadUrl = ObjectStorageService.prototype.getObjectEntityUploadURL;
+const dbForTest = db as any;
+const originalDbMethods = {
+  execute: dbForTest.execute,
+  select: dbForTest.select,
+  delete: dbForTest.delete,
+};
+const originalDeleteObjectEntity = ObjectStorageService.prototype.deleteObjectEntity;
+const objectStorageStatics = ObjectStorageService as any;
+const originalIntentTableReady = objectStorageStatics.uploadIntentTableReady;
 let lastUploadRequest: unknown;
 ObjectStorageService.prototype.getObjectEntityUploadURL = async function (request) {
   lastUploadRequest = request;
@@ -128,6 +138,93 @@ test("upload URL issuance is rate limited per authenticated caller", async () =>
   }
   assert.equal(response.statusCode, 429);
   assert.ok(response.headers["Retry-After"]);
+});
+
+test("expired upload cleanup retries abandoned objects after a storage failure", async () => {
+  const abandonedPath = "/objects/uploads/abandoned-upload";
+  const consumedPath = "/objects/uploads/consumed-upload";
+  const expiredAt = new Date(Date.now() - 60_000);
+  const abandonedIntent = {
+    objectPath: abandonedPath,
+    expiresAt: expiredAt,
+    consumedAt: null,
+  };
+  const consumedIntent = {
+    objectPath: consumedPath,
+    expiresAt: new Date(expiredAt.getTime() + 1),
+    consumedAt: new Date(expiredAt.getTime() - 1),
+  };
+  let intentRows = [abandonedIntent, consumedIntent];
+  let storageOutage = true;
+  const deleteAttempts: string[] = [];
+  const deletedObjects: string[] = [];
+
+  dbForTest.execute = async () => undefined;
+  dbForTest.select = () => ({
+    from: () => ({
+      where: () => ({
+        orderBy: () => ({
+          limit: async (limit: number) =>
+            [...intentRows]
+              .sort((left, right) => left.expiresAt.getTime() - right.expiresAt.getTime())
+              .slice(0, limit),
+        }),
+      }),
+    }),
+  });
+  dbForTest.delete = () => ({
+    where: () => ({
+      returning: async () => {
+        const consumedIndex = intentRows.findIndex((intent) => intent.consumedAt !== null);
+        const deleteIndex = consumedIndex >= 0 ? consumedIndex : 0;
+        const [deletedIntent] = intentRows.splice(deleteIndex, 1);
+        return deletedIntent ? [{ objectPath: deletedIntent.objectPath }] : [];
+      },
+    }),
+  });
+  ObjectStorageService.prototype.deleteObjectEntity = async function (objectPath) {
+    deleteAttempts.push(objectPath);
+    if (storageOutage) {
+      throw new Error("temporary storage outage");
+    }
+    deletedObjects.push(objectPath);
+  };
+  objectStorageStatics.uploadIntentTableReady = null;
+
+  try {
+    const service = new ObjectStorageService();
+    const firstPass = await service.cleanupExpiredUploadIntents();
+
+    assert.deepEqual(firstPass, {
+      scanned: 2,
+      objectsDeleted: 0,
+      intentsDeleted: 1,
+      failures: 1,
+    });
+    assert.deepEqual(intentRows, [abandonedIntent]);
+    assert.deepEqual(deleteAttempts, [abandonedPath]);
+    assert.deepEqual(deletedObjects, []);
+
+    storageOutage = false;
+    const secondPass = await service.cleanupExpiredUploadIntents();
+
+    assert.deepEqual(secondPass, {
+      scanned: 1,
+      objectsDeleted: 1,
+      intentsDeleted: 1,
+      failures: 0,
+    });
+    assert.deepEqual(intentRows, []);
+    assert.deepEqual(deleteAttempts, [abandonedPath, abandonedPath]);
+    assert.deepEqual(deletedObjects, [abandonedPath]);
+    assert.equal(deleteAttempts.includes(consumedPath), false);
+  } finally {
+    dbForTest.execute = originalDbMethods.execute;
+    dbForTest.select = originalDbMethods.select;
+    dbForTest.delete = originalDbMethods.delete;
+    ObjectStorageService.prototype.deleteObjectEntity = originalDeleteObjectEntity;
+    objectStorageStatics.uploadIntentTableReady = originalIntentTableReady;
+  }
 });
 
 test.after(() => {

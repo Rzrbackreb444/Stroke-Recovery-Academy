@@ -2027,13 +2027,13 @@ export class DatabaseStorage implements IStorage {
     }).onConflictDoNothing();
     
     await db.update(videoSessions)
-      .set({ status: 'active', startedAt: new Date() })
+      .set({ status: 'live', startedAt: new Date() })
       .where(eq(videoSessions.id, sessionId));
   }
 
   async endVideoSession(sessionId: number): Promise<void> {
     await db.update(videoSessions)
-      .set({ status: 'completed', endedAt: new Date() })
+      .set({ status: 'ended', endedAt: new Date() })
       .where(eq(videoSessions.id, sessionId));
   }
 

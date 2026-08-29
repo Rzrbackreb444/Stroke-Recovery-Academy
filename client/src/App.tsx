@@ -289,6 +289,13 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/community" component={Community} />
+      {/* The survivor social graph has one canonical home. */}
+      <Route path="/social-network">
+        <RecoveryRouteRedirect to="/recovery/community" />
+      </Route>
+      <Route path="/activity">
+        <RecoveryRouteRedirect to="/recovery/community" />
+      </Route>
       <Route path="/community/thread/:id" component={Thread} />
       <Route path="/groups" component={Groups} />
       <Route path="/groups/:slug" component={GroupDetail} />
@@ -329,6 +336,13 @@ function Router() {
       <Route path="/privacy" component={PrivacyPolicy} />
       <Route path="/legal/medical-disclaimer" component={MedicalDisclaimer} />
       <Route path="/legal/refund-policy" component={RefundPolicy} />
+      {/* Keep this specific route before the /recovery landing route. Wouter
+          matches the landing route as a prefix. */}
+      <Route path="/recovery/video">
+        <ProtectedRoute loginReturnPath="/recovery/video">
+          <VideoSessions />
+        </ProtectedRoute>
+      </Route>
       <Route path="/settings/privacy">
         <ProtectedRoute>
           <AccountPrivacy />
@@ -566,7 +580,7 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/recovery/activity">
-        <RecoveryCommunity />
+        <RecoveryRouteRedirect to="/recovery/community" />
       </Route>
       <Route path="/recovery/therapist">
         <ProtectedRoute>
@@ -588,15 +602,8 @@ function Router() {
           <Messages />
         </ProtectedRoute>
       </Route>
-      <Route path="/recovery/video">
-        <ProtectedRoute>
-          <VideoSessions />
-        </ProtectedRoute>
-      </Route>
       <Route path="/recovery/social">
-        <ProtectedRoute>
-          <SocialNetwork />
-        </ProtectedRoute>
+        <RecoveryRouteRedirect to="/recovery/community" />
       </Route>
       <Route path="/recovery/community" component={RecoveryCommunity} />
       <Route path="/recovery/campfire">
