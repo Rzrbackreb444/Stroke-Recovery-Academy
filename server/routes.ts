@@ -11825,20 +11825,34 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
       }
 
       // The plan and both funnel milestones are one logical operation. If a
-      // funnel write fails, the generated plan must roll back with it.
+      // funnel write fails, the generated plan must roll back with it. The
+      // assessment unique index makes concurrent requests converge on one
+      // plan; the losing insert waits for the winner and then reads it.
       const row = await dbInst.transaction(async (tx) => {
-        const [created] = await tx.insert(survivorPlans).values({
+        let [effectivePlan] = await tx.insert(survivorPlans).values({
           userId,
           assessmentId: assessment.id,
           plan,
+        }).onConflictDoNothing({
+          target: survivorPlans.assessmentId,
         }).returning();
+        if (!effectivePlan) {
+          [effectivePlan] = await tx
+            .select()
+            .from(survivorPlans)
+            .where(eq(survivorPlans.assessmentId, assessment.id))
+            .limit(1);
+        }
+        if (!effectivePlan) {
+          throw new Error(`Recovery plan was not available for assessment ${assessment.id}`);
+        }
         await recordRecoveryFunnelEvent(userId, "plan_generated", {
-          planId: created.id,
+          planId: effectivePlan.id,
         }, tx);
         await recordRecoveryFunnelEvent(userId, "onboarding_completed", {
-          planId: created.id,
+          planId: effectivePlan.id,
         }, tx);
-        return created;
+        return effectivePlan;
       });
       res.json({ plan: row.plan, generatedAt: row.generatedAt });
     } catch (error) {

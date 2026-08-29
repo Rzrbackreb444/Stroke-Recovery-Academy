@@ -6353,6 +6353,7 @@ export const survivorPlans = pgTable("survivor_plans", {
   generatedAt: timestamp("generated_at").notNull().defaultNow(),
 }, (t) => ({
   userIdx: index("survivor_plans_user_idx").on(t.userId, t.generatedAt),
+  assessmentUnique: uniqueIndex("survivor_plans_assessment_unique").on(t.assessmentId),
 }));
 
 export const insertSurvivorPlanSchema = createInsertSchema(survivorPlans).omit({

@@ -354,9 +354,24 @@ test(
       // Keep the plan test deterministic even when the workspace has a Gemini
       // secret configured. The route should use its documented fallback.
       const originalFetch = globalThis.fetch;
+      const originalGeminiKey = process.env.GEMINI_API_KEY;
+      process.env.GEMINI_API_KEY = "recovery-funnel-test-key";
+      let concurrentPlanRequests = 0;
+      let holdConcurrentPlanRequests = false;
+      let releaseConcurrentPlanRequests!: () => void;
+      const concurrentPlanRequestsReady = new Promise<void>((resolve) => {
+        releaseConcurrentPlanRequests = resolve;
+      });
       globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
         const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
         if (url.includes("generativelanguage.googleapis.com")) {
+          if (holdConcurrentPlanRequests) {
+            concurrentPlanRequests += 1;
+            if (concurrentPlanRequests === 2) {
+              releaseConcurrentPlanRequests();
+            }
+            await concurrentPlanRequestsReady;
+          }
           return new Response("", { status: 503 });
         }
         return originalFetch(input, init);
@@ -391,10 +406,79 @@ test(
         await removePlanFunnelFailure(pool);
         planFunnelFailureInstalled = false;
 
+        // Hold both plan requests in the same generation step so neither can
+        // accidentally pass only because the other happened to finish first.
+        holdConcurrentPlanRequests = true;
+        const concurrentPlans = await Promise.all([
+          jsonRequest(
+            baseUrl,
+            "/api/recovery/plan/generate",
+            { method: "POST", body: JSON.stringify({}) },
+            survivorCookie,
+          ),
+          jsonRequest(
+            baseUrl,
+            "/api/recovery/plan/generate",
+            { method: "POST", body: JSON.stringify({}) },
+            survivorCookie,
+          ),
+        ]);
+        holdConcurrentPlanRequests = false;
+        for (const result of concurrentPlans) {
+          assert.equal(result.response.status, 200, `concurrent plan failed: ${JSON.stringify(result.body)}`);
+        }
+        assert.deepEqual(concurrentPlans[0].body.plan, concurrentPlans[1].body.plan);
+        assert.equal(concurrentPlans[0].body.generatedAt, concurrentPlans[1].body.generatedAt);
+
+        const planState = await db.execute(sql`
+          SELECT COUNT(*)::int AS count,
+                 COUNT(DISTINCT assessment_id)::int AS assessments
+            FROM survivor_plans
+           WHERE user_id = ${survivorId}
+             AND assessment_id = (
+               SELECT id
+                 FROM sasquatch_assessments
+                WHERE user_id = ${survivorId}
+                ORDER BY taken_at DESC, id DESC
+                LIMIT 1
+             )
+        `);
+        const planStateRow = planState.rows[0] as { count: number | string; assessments: number | string };
+        assert.deepEqual(
+          {
+            count: Number(planStateRow.count),
+            assessments: Number(planStateRow.assessments),
+          },
+          { count: 1, assessments: 1 },
+        );
+        const planMilestones = await db.execute(sql`
+          SELECT event_type, COUNT(*)::int AS count
+            FROM recovery_funnel_events
+           WHERE user_id = ${survivorId}
+             AND event_type IN ('plan_generated', 'onboarding_completed')
+           GROUP BY event_type
+           ORDER BY event_type
+        `);
+        assert.deepEqual(
+          planMilestones.rows.map((row) => ({
+            event_type: String((row as { event_type: string }).event_type),
+            count: Number((row as { count: number | string }).count),
+          })),
+          [
+            { event_type: "onboarding_completed", count: 1 },
+            { event_type: "plan_generated", count: 1 },
+          ],
+        );
+
         await postRecovery(baseUrl, "/api/recovery/plan/generate", {}, survivorCookie);
         await postRecovery(baseUrl, "/api/recovery/plan/generate", {}, survivorCookie);
       } finally {
         globalThis.fetch = originalFetch;
+        if (originalGeminiKey === undefined) {
+          delete process.env.GEMINI_API_KEY;
+        } else {
+          process.env.GEMINI_API_KEY = originalGeminiKey;
+        }
       }
 
       await postRecovery(baseUrl, "/api/recovery/today/entry", {}, survivorCookie);
