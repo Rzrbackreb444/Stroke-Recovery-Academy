@@ -468,8 +468,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Serve user-uploaded media files
   const uploadsDir = path.join(process.cwd(), 'uploads');
+  const communityUploadsDir = path.join(uploadsDir, 'community');
   if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
-  app.use('/uploads', express.static(uploadsDir));
+  if (!fs.existsSync(communityUploadsDir)) fs.mkdirSync(communityUploadsDir, { recursive: true });
 
   // Email Authentication Routes - moved to after setupAuth for session access
 
@@ -1134,6 +1135,100 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   const { registerObjectStorageRoutes } = await import('./replit_integrations/object_storage');
   registerObjectStorageRoutes(app);
 
+  // Community uploads are not served by the public legacy /uploads mount.
+  // Check the owning post first so a private or pod-only activity post never
+  // becomes public merely because its media URL is guessed or shared.
+  app.get('/uploads/community/:filename', async (req: any, res, next) => {
+    const filename = path.basename(req.params.filename);
+    if (!filename || filename !== req.params.filename) return res.status(404).end();
+    try {
+      const { db: mediaDb } = await import('./db');
+      const { activityMedia, activityPosts, podMembers } = await import('../shared/schema');
+      const { and, eq } = await import('drizzle-orm');
+      const mediaUrl = `/uploads/community/${filename}`;
+      const [media] = await mediaDb
+        .select({
+          postId: activityMedia.postId,
+          visibility: activityPosts.visibility,
+          authorId: activityPosts.authorId,
+          podId: activityPosts.podId,
+        })
+        .from(activityMedia)
+        .innerJoin(activityPosts, eq(activityPosts.id, activityMedia.postId))
+        .where(eq(activityMedia.mediaUrl, mediaUrl))
+        .limit(1);
+      if (!media) return res.status(404).end();
+
+      const viewerId = getUserId(req);
+      if (media.visibility === 'private' && media.authorId !== viewerId) {
+        return res.status(404).end();
+      }
+      if (media.visibility === 'members' && !viewerId) {
+        return res.status(404).end();
+      }
+      if (media.visibility === 'pod') {
+        if (!viewerId || !media.podId) return res.status(404).end();
+        const [membership] = await mediaDb
+          .select({ id: podMembers.id })
+          .from(podMembers)
+          .where(and(eq(podMembers.podId, media.podId), eq(podMembers.userId, viewerId)))
+          .limit(1);
+        if (!membership) return res.status(404).end();
+      }
+
+      return res.sendFile(filename, { root: communityUploadsDir });
+    } catch (error) {
+      return next(error);
+    }
+  });
+  // Other legacy uploads (avatars, course assets, and creator media) retain
+  // their existing public behavior and storage paths. Activity media that
+  // predates the dedicated community directory is checked here before it
+  // reaches that legacy static mount.
+  app.use('/uploads', async (req: any, res, next) => {
+    const requestedUrl = `/uploads${req.path}`;
+    if (requestedUrl.startsWith('/uploads/community/')) return next();
+    try {
+      const { db: legacyMediaDb } = await import('./db');
+      const { activityMedia, activityPosts, podMembers } = await import('../shared/schema');
+      const { and, eq } = await import('drizzle-orm');
+      const [media] = await legacyMediaDb
+        .select({
+          visibility: activityPosts.visibility,
+          authorId: activityPosts.authorId,
+          podId: activityPosts.podId,
+        })
+        .from(activityMedia)
+        .innerJoin(activityPosts, eq(activityPosts.id, activityMedia.postId))
+        .where(eq(activityMedia.mediaUrl, requestedUrl))
+        .limit(1);
+      if (!media) return next();
+
+      const viewerId = getUserId(req);
+      if (media.visibility === 'private' && media.authorId !== viewerId) {
+        return res.status(404).end();
+      }
+      if (media.visibility === 'members' && !viewerId) {
+        return res.status(404).end();
+      }
+      if (media.visibility === 'pod') {
+        if (!viewerId || !media.podId) return res.status(404).end();
+        const [membership] = await legacyMediaDb
+          .select({ id: podMembers.id })
+          .from(podMembers)
+          .where(and(eq(podMembers.podId, media.podId), eq(podMembers.userId, viewerId)))
+          .limit(1);
+        if (!membership) return res.status(404).end();
+      }
+      return next();
+    } catch {
+      // If this is not an activity-media row, preserve the legacy static
+      // behavior. The dedicated community route above remains fail-closed.
+      return next();
+    }
+  });
+  app.use('/uploads', express.static(uploadsDir));
+
   // Survivor + account + lulu routes MUST be mounted after setupAuth so
   // isAuthenticated / getUserId() see the session/passport middleware.
   // See note above their previous mount.
@@ -1188,12 +1283,31 @@ Last updated: ${new Date().toISOString().split('T')[0]}
   });
 
   // POST /api/upload/media — upload image or video
-  app.post('/api/upload/media', isAuthenticated, mediaUpload.single('file'), (req: any, res) => {
+  const communityMediaStorage = multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, communityUploadsDir),
+    filename: (_req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      cb(null, uniqueSuffix + path.extname(file.originalname));
+    },
+  });
+  const communityMediaUpload = multer({
+    storage: communityMediaStorage,
+    limits: { fileSize: 500 * 1024 * 1024 },
+    fileFilter: (_req, file, cb) => {
+      const allowed = /jpeg|jpg|png|gif|webp|mp4|mov|webm|avi|heic/i;
+      if (allowed.test(path.extname(file.originalname)) || allowed.test(file.mimetype)) {
+        cb(null, true);
+      } else {
+        cb(new Error('Only images and videos allowed'));
+      }
+    },
+  });
+  app.post('/api/upload/media', isAuthenticated, communityMediaUpload.single('file'), (req: any, res) => {
     if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
     const ext = path.extname(req.file.originalname).toLowerCase();
     const isVideo = /mp4|mov|webm|avi/.test(ext);
     res.json({
-      url: `/uploads/${req.file.filename}`,
+      url: `/uploads/community/${req.file.filename}`,
       mediaType: isVideo ? 'video' : 'image',
       filename: req.file.filename,
       size: req.file.size,
@@ -13748,7 +13862,18 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     try {
       const userId = getUserId(req)!;
       const { content, postType, visibility, podId, media } = req.body;
-      if (!content || typeof content !== "string" || !content.trim()) {
+      const submittedMedia = Array.isArray(media) ? media : [];
+      if (submittedMedia.length > 10) {
+        return res.status(400).json({ message: "You can attach up to 10 media files." });
+      }
+      for (const item of submittedMedia) {
+        if (!item || !["image", "video", "gif", "sticker"].includes(item.mediaType) ||
+            typeof item.mediaUrl !== "string" || !item.mediaUrl.trim() || item.mediaUrl.length > 2048) {
+          return res.status(400).json({ message: "One of the attached media files is invalid." });
+        }
+      }
+      const textContent = typeof content === "string" ? content.trim() : "";
+      if (!textContent && submittedMedia.length === 0) {
         return res.status(400).json({ message: "Write something before posting." });
       }
       if (!["public", "members", "pod", "private"].includes(visibility || "public")) {
@@ -13760,23 +13885,34 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       
       const post = await storage.createActivityPost({
         authorId: userId,
-        content,
+        content: textContent || (submittedMedia.some((item: any) => item.mediaType === "video")
+          ? "Shared a recovery video."
+          : "Shared a recovery photo."),
         postType: postType || 'update',
         visibility: visibility || 'public',
         podId,
       });
       
-      if (media && Array.isArray(media)) {
-        for (let i = 0; i < media.length; i++) {
+      try {
+        for (let i = 0; i < submittedMedia.length; i++) {
+          const item = submittedMedia[i];
           await storage.addActivityMedia({
             postId: post.id,
-            ...media[i],
+            mediaType: item.mediaType,
+            mediaUrl: item.mediaUrl.trim(),
+            thumbnailUrl: typeof item.thumbnailUrl === "string" ? item.thumbnailUrl : undefined,
+            altText: typeof item.altText === "string" ? item.altText : undefined,
             order: i,
           });
         }
+      } catch (mediaError) {
+        // Do not leave a text-only post behind when its media cannot be
+        // attached. The client can safely retry the complete request.
+        await storage.deleteActivityPost(post.id);
+        throw mediaError;
       }
       
-      const crisis = detectCrisis(content);
+      const crisis = detectCrisis(textContent);
       res.json({
         ...post,
         crisis: crisis.detected,
@@ -14498,6 +14634,11 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     try {
       const userId = getUserId(req)!;
       const sessionId = parseInt(req.params.id);
+      const session = await storage.getVideoSession(sessionId);
+      if (!session) return res.status(404).json({ message: "Session not found" });
+      if (session.status === "ended" || session.status === "cancelled") {
+        return res.status(409).json({ message: "This session is no longer available." });
+      }
       await storage.joinVideoSession(sessionId, userId);
       res.json({ success: true });
     } catch (error) {
@@ -14507,7 +14648,16 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
 
   app.post('/api/video/sessions/:id/end', isAuthenticated, async (req: any, res) => {
     try {
+      const userId = getUserId(req)!;
       const sessionId = parseInt(req.params.id);
+      const session = await storage.getVideoSession(sessionId);
+      if (!session) return res.status(404).json({ message: "Session not found" });
+      if (session.hostId !== userId) {
+        return res.status(403).json({ message: "Only the session host can end this session." });
+      }
+      if (session.status === "ended" || session.status === "cancelled") {
+        return res.status(409).json({ message: "This session has already ended." });
+      }
       await storage.endVideoSession(sessionId);
       res.json({ success: true });
     } catch (error) {

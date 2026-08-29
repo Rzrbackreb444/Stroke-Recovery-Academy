@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import RecoverySEO from "@/components/RecoverySEO";
+import { Link } from "wouter";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,7 +24,7 @@ import {
   Users, Flame, Heart, Trophy, Lightbulb, PartyPopper,
   ThumbsUp, Image, Video, Send, MessageCircle, Share2,
   Pin, ChevronDown, ChevronUp, Radio, Calendar,
-  Milestone, HelpCircle, Star, Camera, Upload, X, Plus,
+  Milestone, HelpCircle, Star, Camera, Upload, X, Plus, RotateCcw,
   PlayCircle, Clock, Eye, Crown, Zap, Activity
 } from "lucide-react";
 import { safeAccentForDark } from "@/lib/personaContrast";
@@ -403,52 +404,82 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
   const qc = useQueryClient();
   const [content, setContent] = useState("");
   const [postType, setPostType] = useState<string>("update");
-  const [media, setMedia] = useState<Array<{ url: string; mediaType: string }>>([]);
+  const [media, setMedia] = useState<Array<{ url: string; mediaType: string; name: string }>>([]);
   const [uploading, setUploading] = useState(false);
+  const [failedFiles, setFailedFiles] = useState<File[]>([]);
+  const [uploadError, setUploadError] = useState("");
+  const [postError, setPostError] = useState("");
   const [expanded, setExpanded] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const handleMediaUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
+  const uploadFiles = async (files: File[]) => {
     if (!files.length) return;
     setUploading(true);
-    try {
-      for (const file of files) {
+    setUploadError("");
+    const failed: File[] = [];
+    let uploaded = 0;
+
+    for (const file of files) {
+      try {
+        if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+          throw new Error("Choose an image or video file.");
+        }
+        if (file.size > 500 * 1024 * 1024) {
+          throw new Error("Files must be smaller than 500MB.");
+        }
         const fd = new FormData();
         fd.append("file", file);
         const res = await fetch("/api/upload/media", { method: "POST", body: fd });
-        const data = await res.json();
-        if (data.url) setMedia((m) => [...m, { url: data.url, mediaType: data.mediaType }]);
+        let data: any = {};
+        try { data = await res.json(); } catch { /* use the status message below */ }
+        if (!res.ok || !data.url || !data.mediaType) {
+          throw new Error(data.message || "The upload did not finish.");
+        }
+        setMedia((m) => [...m, { url: data.url, mediaType: data.mediaType, name: file.name }]);
+        uploaded++;
+      } catch {
+        failed.push(file);
       }
-      toast({ title: `${files.length} file(s) uploaded` });
-    } catch {
-      toast({ title: "Upload failed", variant: "destructive" });
-    } finally {
-      setUploading(false);
+    }
+    setFailedFiles(failed);
+    setUploading(false);
+    if (failed.length > 0) {
+      const message = `${failed.length} upload${failed.length === 1 ? "" : "s"} failed. Retry before posting.`;
+      setUploadError(message);
+      toast({
+        title: uploaded > 0 ? "Some uploads failed" : "Upload failed",
+        description: message,
+        variant: "destructive",
+      });
+    } else {
+      toast({ title: `${uploaded} file${uploaded === 1 ? "" : "s"} ready to post` });
     }
   };
 
+  const handleMediaUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    e.target.value = "";
+    await uploadFiles(files);
+  };
+
   const postMutation = useMutation({
+    onMutate: () => setPostError(""),
     mutationFn: async () => {
       const response = await apiRequest("POST", "/api/activity", {
         postType,
-        content,
+        content: content.trim(),
         visibility: "public",
+        media: media.map(({ url, mediaType }) => ({ mediaUrl: url, mediaType })),
       });
-      const post = await response.json();
-      const postId = (post as any).id;
-      for (const m of media) {
-        await apiRequest("POST", `/api/activity/${postId}/media`, {
-          mediaType: m.mediaType,
-          mediaUrl: m.url,
-        });
-      }
-      return post;
+      return response.json();
     },
     onSuccess: (post: any) => {
       qc.invalidateQueries({ queryKey: ["/api/community/posts"] });
       setContent("");
       setMedia([]);
+      setFailedFiles([]);
+      setUploadError("");
+      setPostError("");
       setPostType("update");
       setExpanded(false);
       toast({
@@ -458,7 +489,11 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
           : undefined,
       });
     },
-    onError: () => toast({ title: "Failed to post", variant: "destructive" }),
+    onError: (error: any) => {
+      const message = error?.message || "We couldn't publish that post. Try again.";
+      setPostError(message);
+      toast({ title: "Failed to post", description: message, variant: "destructive" });
+    },
   });
 
   const { data: personaData } = useQuery<{ persona: { name: string; creed: string; accentColor: string } | null }>({
@@ -537,8 +572,10 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
                           <img src={m.url} alt="Uploaded image preview" className="w-24 h-24 rounded object-cover" />
                         )}
                         <button
+                          type="button"
                           onClick={() => setMedia((prev) => prev.filter((_, idx) => idx !== i))}
                           className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full p-0.5"
+                          aria-label={`Remove ${m.name}`}
                         >
                           <X className="w-3 h-3" />
                         </button>
@@ -571,18 +608,34 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
                       <Video className="w-4 h-4" />
                       Video
                     </Button>
-                    {uploading && <span className="text-xs text-gray-500 self-center">Uploading...</span>}
+                    {uploading && <span className="text-xs text-gray-400 self-center" role="status">Uploading media…</span>}
+                    {!uploading && uploadError && (
+                      <div className="flex items-center gap-2 text-xs text-red-300" role="alert" data-testid="text-upload-error">
+                        <span>{uploadError}</span>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="h-7 border-red-400/50 text-red-200"
+                          onClick={() => uploadFiles(failedFiles)}
+                          disabled={failedFiles.length === 0}
+                          data-testid="button-retry-upload"
+                        >
+                          <RotateCcw className="w-3 h-3 mr-1" /> Retry
+                        </Button>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex gap-2">
-                    <Button size="sm" variant="ghost" className="text-gray-400" onClick={() => { setExpanded(false); setContent(""); setMedia([]); }}>
+                    <Button size="sm" variant="ghost" className="text-gray-400" onClick={() => { setExpanded(false); setContent(""); setMedia([]); setFailedFiles([]); setUploadError(""); setPostError(""); }}>
                       Cancel
                     </Button>
                     <Button
                       size="sm"
                       className="bg-[#E2741B] text-black font-bold gap-1.5"
                       onClick={() => postMutation.mutate()}
-                      disabled={postMutation.isPending || (!content.trim() && !media.length)}
+                      disabled={postMutation.isPending || uploading || failedFiles.length > 0 || (!content.trim() && !media.length)}
                       data-testid="button-submit-post"
                     >
                       <Send className="w-3.5 h-3.5" />
@@ -590,6 +643,22 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
                     </Button>
                   </div>
                 </div>
+                {postError && (
+                  <div className="flex items-center justify-between gap-3 rounded-md border border-red-500/40 bg-red-950/20 px-3 py-2 text-xs text-red-200" role="alert" data-testid="text-post-error">
+                    <span>{postError}</span>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="h-7 shrink-0 border-red-400/50 text-red-200"
+                      onClick={() => postMutation.mutate()}
+                      disabled={postMutation.isPending}
+                      data-testid="button-retry-post"
+                    >
+                      <RotateCcw className="w-3 h-3 mr-1" /> Retry post
+                    </Button>
+                  </div>
+                )}
               </>
             )}
           </div>
@@ -1242,11 +1311,18 @@ function LiveTab({ isAdmin }: { isAdmin: boolean }) {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-bold text-white">Live Events</h3>
-          <p className="text-sm text-gray-400">Join Nick for live coaching & Q&A sessions</p>
+          <p className="text-sm text-gray-400">Join Nick for public coaching and Q&A broadcasts.</p>
         </div>
-        {isAdmin && (
-          <GoLiveModal onSuccess={() => qc.invalidateQueries({ queryKey: ["/api/live/events"] })} />
-        )}
+        <div className="flex items-center gap-2">
+          <Button asChild variant="outline" className="border-[#333] text-gray-300 gap-2" data-testid="link-live-video-sessions">
+            <Link href="/recovery/video">
+              <Video className="w-4 h-4" /> Live video sessions
+            </Link>
+          </Button>
+          {isAdmin && (
+            <GoLiveModal onSuccess={() => qc.invalidateQueries({ queryKey: ["/api/live/events"] })} />
+          )}
+        </div>
       </div>
 
       {liveNow.length > 0 && (
@@ -1393,9 +1469,9 @@ export default function RecoveryCommunity() {
               <Users className="w-4 h-4 mr-1.5" />
               Members
             </TabsTrigger>
-            <TabsTrigger value="live" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black text-gray-400" data-testid="tab-live">
+            <TabsTrigger value="live" className="data-[state=active]:bg-[#E2741B] data-[state=active]:text-black text-gray-400" data-testid="tab-live-events">
               <Radio className="w-4 h-4 mr-1.5" />
-              Live
+              Live Events
             </TabsTrigger>
           </TabsList>
           </div>

@@ -261,9 +261,17 @@ export default function RecoveryResources() {
             Can't find what you're looking for? Our community and coaches are here to help.
           </p>
           <div className="flex gap-3">
-            <Button variant="outline">
-              <Users className="h-4 w-4 mr-2" />
-              Join Community
+            <Button asChild variant="outline">
+              <Link href="/recovery/community" data-testid="link-resources-community">
+                <Users className="h-4 w-4 mr-2" />
+                Join Community
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="border-[#E2741B]/50 text-[#F3B27A]">
+              <Link href="/recovery/video" data-testid="link-resources-live-video">
+                <Video className="h-4 w-4 mr-2" />
+                Live video sessions
+              </Link>
             </Button>
              <Button asChild className="bg-[#E2741B] text-black">
                <Link href="/recovery/coaching">

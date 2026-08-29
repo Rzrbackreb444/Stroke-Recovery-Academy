@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -1178,7 +1178,13 @@ export default function RecoveryJournal() {
                 Consented entries from the community. Survivors seeing survivors. You're never the only one.
               </p>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <Button asChild variant="outline" className="shrink-0 border-[#2A2621] text-[#E2741B] hover:bg-[#1C1915]" data-testid="link-journal-community">
+                <Link href="/recovery/community">
+                  <HeartHandshake className="w-4 h-4 mr-2" />
+                  Community wall
+                </Link>
+              </Button>
               {[
                 { id: "all", label: "All" },
                 { id: "triumphs", label: "Triumphs" },

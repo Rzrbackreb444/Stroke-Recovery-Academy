@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut, LayoutDashboard, Settings, Heart, ChevronDown, Crown, Sparkles, Check, Flame, Users, BookOpen, ShoppingCart, CalendarDays, MessageCircle, PenLine, Compass } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, Settings, Heart, ChevronDown, Crown, Sparkles, Check, Flame, Users, BookOpen, ShoppingCart, CalendarDays, MessageCircle, PenLine, Compass, Video } from "lucide-react";
 import {
   HoverCard,
   HoverCardContent,
@@ -23,13 +23,15 @@ import sraEmblem from "@assets/sra-emblem.png";
 // and GlobalHeader both), so legacy per-page header mounts are suppressed.
 import { siteHeaderRegistry } from "./siteHeaderRegistry";
 
-// Keep the first choice set small: Today is the starting point, while
-// Community, Journal, and Coach support the day without competing with it.
+// Keep the first choice set focused: Today is the starting point, while
+// Community, Journal, Coach, and live sessions are the places survivors
+// return to most often.
 const primaryNav: { href: string; label: string; icon?: typeof Flame }[] = [
   { href: "/recovery/today", label: "Today", icon: CalendarDays },
   { href: "/recovery/community", label: "Community", icon: MessageCircle },
   { href: "/recovery/journal", label: "Journal", icon: PenLine },
   { href: "/recovery/sasquatch-coach", label: "Coach" },
+  { href: "/recovery/video", label: "Live Video", icon: Video },
 ];
 
 // Keep specialist tools available without making them part of the first
@@ -47,7 +49,8 @@ const resourcesGroups: { title: string; items: { href: string; label: string; pr
   {
     title: "Connect",
     items: [
-      { href: "/recovery/campfire", label: "Campfire (Live)" },
+      { href: "/recovery/campfire", label: "Campfire (Circles)" },
+      { href: "/recovery/video", label: "Live Video Sessions" },
       { href: "/recovery/spotlight", label: "Spotlight" },
       { href: "/groups", label: "Groups" },
     ],
@@ -127,7 +130,7 @@ export default function RecoveryHeader() {
             </div>
           </Link>
 
-          {/* Desktop nav — 4 accountability-focused primary + More megamenu */}
+          {/* Desktop nav — focused primary links + More megamenu */}
           <nav className="hidden xl:flex items-center gap-0.5 shrink-0" aria-label="Main navigation">
             {primaryNav.map((link) => {
               const Icon = link.icon;
@@ -289,7 +292,7 @@ export default function RecoveryHeader() {
       {mobileOpen && (
         <div className="xl:hidden border-t border-[#1e1e1e] bg-[#0D0D0D]">
           <div className="max-w-7xl mx-auto px-4 py-4 space-y-1">
-            {/* 4 accountability-focused primary links */}
+            {/* Focused primary links */}
             {primaryNav.map((link) => {
               const Icon = link.icon;
               return (

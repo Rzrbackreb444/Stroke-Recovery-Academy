@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -64,6 +65,7 @@ export default function VideoSessions() {
   const [inCall, setInCall] = useState(false);
   const [micEnabled, setMicEnabled] = useState(true);
   const [videoEnabled, setVideoEnabled] = useState(true);
+  const [copiedSessionId, setCopiedSessionId] = useState<number | null>(null);
 
   const [sessionForm, setSessionForm] = useState({
     title: "",
@@ -92,6 +94,9 @@ export default function VideoSessions() {
       setSessionForm({ title: "", description: "", sessionType: "therapy", scheduledAt: "", maxParticipants: 2 });
       toast({ title: "Session scheduled!", description: "Participants will be notified" });
     },
+    onError: (error: any) => {
+      toast({ title: "Couldn't schedule session", description: error?.message || "Try again.", variant: "destructive" });
+    },
   });
 
   const joinSessionMutation = useMutation({
@@ -105,6 +110,9 @@ export default function VideoSessions() {
         setInCall(true);
       }
     },
+    onError: (error: any) => {
+      toast({ title: "Couldn't join session", description: error?.message || "Try again.", variant: "destructive" });
+    },
   });
 
   const endSessionMutation = useMutation({
@@ -116,6 +124,9 @@ export default function VideoSessions() {
       setInCall(false);
       setActiveSession(null);
       toast({ title: "Session ended" });
+    },
+    onError: (error: any) => {
+      toast({ title: "Couldn't end session", description: error?.message || "Try again.", variant: "destructive" });
     },
   });
 
@@ -130,6 +141,17 @@ export default function VideoSessions() {
       case "coaching": return "Coaching Call";
       case "group_class": return "Group Class";
       default: return type;
+    }
+  };
+
+  const copyMeetingLink = async (session: VideoSession) => {
+    if (!session.meetingUrl) return;
+    try {
+      await navigator.clipboard.writeText(session.meetingUrl);
+      setCopiedSessionId(session.id);
+      window.setTimeout(() => setCopiedSessionId((current) => current === session.id ? null : current), 2000);
+    } catch {
+      toast({ title: "Couldn't copy meeting link", description: "Open the session to use its meeting link.", variant: "destructive" });
     }
   };
 
@@ -256,12 +278,17 @@ export default function VideoSessions() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold" data-testid="text-video-sessions-title">
-              Video Sessions
+              Live Video Sessions
             </h1>
             <p className="text-gray-400 mt-1">
-              Telemedicine and video coaching calls
+              Scheduled live video sessions for coaching, therapy, and survivor circles
             </p>
           </div>
+          <Button asChild variant="outline" className="border-[#333] text-gray-300">
+            <Link href="/recovery/community" data-testid="link-back-community">
+              Back to Community
+            </Link>
+          </Button>
           <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
             <DialogTrigger asChild>
               <Button className="bg-primary hover:bg-primary/90" data-testid="button-schedule-session">
@@ -432,9 +459,11 @@ export default function VideoSessions() {
                       </div>
                       <div className="flex items-center gap-2">
                         {session.meetingUrl && (
-                          <Button size="sm" variant="outline">
-                            <Copy className="w-4 h-4 mr-2" />
-                            Copy Link
+                          <Button size="sm" variant="outline" onClick={() => copyMeetingLink(session)}>
+                            {copiedSessionId === session.id
+                              ? <CheckCircle2 className="w-4 h-4 mr-2" />
+                              : <Copy className="w-4 h-4 mr-2" />}
+                            {copiedSessionId === session.id ? "Copied" : "Copy Link"}
                           </Button>
                         )}
                         <Button
@@ -481,9 +510,11 @@ export default function VideoSessions() {
                         </div>
                       </div>
                       {session.recordingUrl && (
-                        <Button variant="outline" size="sm">
-                          <Play className="w-4 h-4 mr-2" />
-                          View Recording
+                        <Button asChild variant="outline" size="sm">
+                          <a href={session.recordingUrl} target="_blank" rel="noopener noreferrer">
+                            <Play className="w-4 h-4 mr-2" />
+                            View Recording
+                          </a>
                         </Button>
                       )}
                     </div>
