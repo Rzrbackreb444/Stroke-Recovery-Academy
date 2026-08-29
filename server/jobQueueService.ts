@@ -28,6 +28,12 @@ export interface JobUpdate {
 export type JobStartHandler = (job: Job) => void | Promise<void>;
 
 const TERMINAL_STATUSES = new Set<JobStatus>(['completed', 'failed', 'cancelled']);
+/**
+ * Maximum time a worker may leave a job in `processing` before the queue
+ * fails it and releases the worker slot. This bounds the impact of a worker
+ * that crashes or stops responding after accepting a job.
+ */
+export const DEFAULT_PROCESSING_TIMEOUT_MS = 5 * 60 * 1000;
 const VALID_TRANSITIONS: Record<JobStatus, Set<JobStatus>> = {
   pending: new Set(['processing', 'failed', 'cancelled']),
   processing: new Set(['completed', 'failed', 'cancelled']),
@@ -43,6 +49,8 @@ export class JobQueueService extends EventEmitter {
   private maxConcurrent: number;
   private activeJobIds: Set<string> = new Set();
   private jobHandlers: Map<JobType, JobStartHandler> = new Map();
+  private processingTimeouts: Map<string, ReturnType<typeof setTimeout>> = new Map();
+  private processingTimeoutMs: number;
   private isDraining = false;
 
   // Kept as a derived value for existing diagnostics that inspect the
@@ -51,9 +59,16 @@ export class JobQueueService extends EventEmitter {
     return this.activeJobIds.size;
   }
 
-  constructor(maxConcurrent: number = 5) {
+  constructor(
+    maxConcurrent: number = 5,
+    processingTimeoutMs: number = DEFAULT_PROCESSING_TIMEOUT_MS,
+  ) {
     super();
     this.maxConcurrent = Math.max(1, maxConcurrent);
+    if (!Number.isFinite(processingTimeoutMs) || processingTimeoutMs <= 0) {
+      throw new RangeError('processingTimeoutMs must be a finite number greater than zero');
+    }
+    this.processingTimeoutMs = processingTimeoutMs;
     this.setMaxListeners(100);
   }
 
@@ -139,6 +154,7 @@ export class JobQueueService extends EventEmitter {
     }
 
     if (update.status === 'completed' || update.status === 'failed') {
+      this.clearProcessingTimeout(jobId);
       job.completedAt = new Date();
       this.releaseCapacity(jobId);
       this.processNext();
@@ -167,7 +183,10 @@ export class JobQueueService extends EventEmitter {
       // Pending work never acquired a slot. Processing work releases exactly
       // the slot it owns; repeated cancellation is rejected by the terminal
       // state check above.
-      if (wasProcessing) this.releaseCapacity(jobId);
+      if (wasProcessing) {
+        this.clearProcessingTimeout(jobId);
+        this.releaseCapacity(jobId);
+      }
       this.processNext();
 
       this.emit('job:cancelled', job);
@@ -193,6 +212,32 @@ export class JobQueueService extends EventEmitter {
     if (this.activeJobIds.delete(jobId)) {
       // activeJobIds is the source of truth, so this can never go below zero.
     }
+  }
+
+  private clearProcessingTimeout(jobId: string): void {
+    const timeout = this.processingTimeouts.get(jobId);
+    if (!timeout) return;
+
+    clearTimeout(timeout);
+    this.processingTimeouts.delete(jobId);
+  }
+
+  private scheduleProcessingTimeout(job: Job): void {
+    this.clearProcessingTimeout(job.id);
+
+    const timeout = setTimeout(() => {
+      this.processingTimeouts.delete(job.id);
+
+      const currentJob = this.jobs.get(job.id);
+      if (!currentJob || currentJob.status !== 'processing') return;
+
+      this.updateJob(job.id, {
+        status: 'failed',
+        error: `Worker timed out after ${this.processingTimeoutMs}ms while processing "${job.type}"; the job may have lost its worker`,
+      });
+    }, this.processingTimeoutMs);
+    timeout.unref?.();
+    this.processingTimeouts.set(job.id, timeout);
   }
 
   private processNext(): void {
@@ -229,6 +274,7 @@ export class JobQueueService extends EventEmitter {
         this.updateJob(jobId, { status: 'processing' });
         const startedJob = this.getJob(jobId);
         if (!startedJob || startedJob.status !== 'processing') continue;
+        this.scheduleProcessingTimeout(startedJob);
 
         try {
           // Keep the existing event-driven worker contract. Registered
@@ -243,12 +289,14 @@ export class JobQueueService extends EventEmitter {
         }
 
         if (registeredHandler && startedJob.status === 'processing') {
-          Promise.resolve(registeredHandler(startedJob)).catch((error: any) => {
-            this.updateJob(jobId, {
-              status: 'failed',
-              error: error?.message || `Worker failed while processing "${job.type}"`,
+          Promise.resolve()
+            .then(() => registeredHandler(startedJob))
+            .catch((error: any) => {
+              this.updateJob(jobId, {
+                status: 'failed',
+                error: error?.message || `Worker failed while processing "${job.type}"`,
+              });
             });
-          });
         }
       }
     } finally {

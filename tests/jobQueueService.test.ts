@@ -95,4 +95,52 @@ console.log("\njobQueueService.test.ts\n");
   });
 }
 
+{
+  const queue = new JobQueueService(1, 100);
+  const started: Job[] = [];
+  let timeoutFailures = 0;
+  queue.on("job:start", (job: Job) => started.push(job));
+  queue.on("job:updated", (job: Job) => {
+    if (job.status === "failed") timeoutFailures++;
+  });
+  const timedOut = queue.createJob("ai_generation", "owner-a", {});
+  const pending = queue.createJob("ai_generation", "owner-a", {});
+  const waiting = queue.createJob("ai_generation", "owner-a", {});
+
+  assert.equal(timedOut.status, "processing");
+  assert.equal(pending.status, "pending");
+
+  await new Promise((resolve) => setTimeout(resolve, 150));
+
+  assert.equal(timedOut.status, "failed");
+  assert.match(timedOut.error ?? "", /Worker timed out after 100ms/);
+  assert.equal(timedOut.completedAt instanceof Date, true);
+  assert.equal(timeoutFailures, 1, "an expired job fails exactly once");
+  assert.equal(queue.getQueueStats().processing, 1, "the next job owns the released capacity");
+  assert.equal(pending.status, "processing", "timeout releases capacity for pending work");
+  assert.equal(waiting.status, "pending");
+  assert.equal(started.map((job) => job.id).join(","), `${timedOut.id},${pending.id}`);
+
+  // A worker that finishes after the timeout cannot change the failure or
+  // release the capacity a second time.
+  queue.updateJob(timedOut.id, { status: "completed", progress: 100, result: "late" });
+  assert.equal(timedOut.status, "failed");
+  assert.equal(timedOut.result, undefined);
+  assert.equal(queue.getQueueStats().processing, 1);
+  assert.equal(waiting.status, "pending", "a late completion cannot release another job's slot");
+}
+
+{
+  const queue = new JobQueueService(1, 20);
+  queue.on("job:start", (job: Job) => {
+    queue.cancelJob(job.id, "owner-a");
+  });
+  const cancelled = queue.createJob("ai_generation", "owner-a", {});
+
+  assert.equal(cancelled.status, "cancelled");
+  await new Promise((resolve) => setTimeout(resolve, 40));
+  assert.equal(cancelled.status, "cancelled", "cancellation clears the processing timeout");
+  assert.equal(queue.getQueueStats().failed, 0);
+}
+
 console.log("PASS job queue lifecycle coverage");
