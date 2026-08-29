@@ -211,6 +211,31 @@ test(
       await postRecovery(baseUrl, "/api/recovery/assessment", assessment, survivorCookie);
       await postRecovery(baseUrl, "/api/recovery/assessment", assessment, survivorCookie);
 
+      // A later reassessment is valid once the 24-hour duplicate window has
+      // passed. Move the initial snapshot outside that window, then submit a
+      // materially different set of scores and notes. The new snapshot should
+      // drive plan generation without creating a second funnel milestone.
+      await db.execute(sql`
+        UPDATE sasquatch_assessments
+           SET taken_at = NOW() - INTERVAL '2 days'
+         WHERE user_id = ${survivorId}
+      `);
+      const reassessment = {
+        physical: 6,
+        cognitive: 4,
+        speech: 7,
+        emotional: 5,
+        memory: 8,
+        notes: "integration later reassessment coverage",
+      };
+      await postRecovery(baseUrl, "/api/recovery/assessment", reassessment, survivorCookie);
+      const assessmentRows = await db.execute(sql`
+        SELECT COUNT(*)::int AS count
+          FROM sasquatch_assessments
+         WHERE user_id = ${survivorId}
+      `);
+      assert.equal(Number((assessmentRows.rows[0] as { count: number | string }).count), 2);
+
       // Keep the plan test deterministic even when the workspace has a Gemini
       // secret configured. The route should use its documented fallback.
       const originalFetch = globalThis.fetch;
