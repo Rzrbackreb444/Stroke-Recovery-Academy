@@ -7,16 +7,13 @@
  * these fast checks still run in the normal no-database test command.
  */
 import assert from "node:assert/strict";
-import { mkdtemp, rm } from "node:fs/promises";
 import { readFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { spawn, type ChildProcess } from "node:child_process";
-import { once } from "node:events";
 import { randomUUID } from "node:crypto";
 import test from "node:test";
-import { Pool, Client } from "pg";
+import { Pool } from "pg";
 import express from "express";
 import { type Server } from "node:http";
+import { createDisposablePostgres } from "./disposablePostgres";
 
 const routes = await readFile(new URL("../server/routes.ts", import.meta.url), "utf8");
 const storage = await readFile(new URL("../server/storage.ts", import.meta.url), "utf8");
@@ -69,115 +66,6 @@ test("coach UI keeps failed and in-flight turns visibly distinct", () => {
 
 const integrationEnabled = process.env.RECOVERY_DURABILITY_DB === "1";
 const recoveryUserPrefix = `recovery-durability-${process.pid}-`;
-
-type TestDatabase = {
-  url: string;
-  pool: Pool;
-  stop: () => Promise<void>;
-};
-
-function postgresConnectionOptions(url: string) {
-  const parsed = new URL(url);
-  return {
-    connectionString: url,
-    host: parsed.hostname,
-    port: parsed.port ? Number(parsed.port) : 5432,
-    database: decodeURIComponent(parsed.pathname.slice(1)),
-    user: decodeURIComponent(parsed.username),
-    password: parsed.password ? decodeURIComponent(parsed.password) : undefined,
-  };
-}
-
-function runProcess(command: string, args: string[]): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const child = spawn(command, args, { stdio: ["ignore", "ignore", "pipe"] });
-    let stderr = "";
-    child.stderr?.on("data", (chunk) => { stderr += String(chunk); });
-    child.once("error", reject);
-    child.once("exit", (code) => {
-      if (code === 0) resolve();
-      else reject(new Error(`${command} exited with ${code}: ${stderr.trim()}`));
-    });
-  });
-}
-
-async function waitForPostgres(url: string, user: string): Promise<void> {
-  for (let attempt = 0; attempt < 60; attempt++) {
-    const client = new Client({ connectionString: url, user });
-    try {
-      await client.connect();
-      await client.query("SELECT 1");
-      await client.end();
-      return;
-    } catch {
-      await client.end().catch(() => undefined);
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-  }
-  throw new Error("Timed out waiting for disposable PostgreSQL");
-}
-
-async function createTestDatabase(): Promise<TestDatabase> {
-  const configuredUrl = process.env.RECOVERY_TEST_DATABASE_URL;
-  if (configuredUrl) {
-    if (configuredUrl === process.env.DATABASE_URL) {
-      throw new Error("RECOVERY_TEST_DATABASE_URL must not be the development DATABASE_URL");
-    }
-    const pool = new Pool(postgresConnectionOptions(configuredUrl));
-    await pool.query("SELECT 1");
-    return { url: configuredUrl, pool, stop: async () => pool.end() };
-  }
-
-  const dataDir = await mkdtemp(`${tmpdir()}/recovery-durability-`);
-  const user = "recovery_test";
-  const database = `recovery_durability_${process.pid}`;
-  const port = 55000 + (process.pid % 1000);
-  let postgres: ChildProcess | undefined;
-  let adminPool: Pool | undefined;
-  try {
-    await runProcess("initdb", [
-      "--no-locale",
-      "--encoding=UTF8",
-      "--auth=trust",
-      `--username=${user}`,
-      `--pgdata=${dataDir}`,
-    ]);
-    postgres = spawn("postgres", [
-      "-D", dataDir,
-      "-p", String(port),
-      "-h", "127.0.0.1",
-      "-k", dataDir,
-    ], {
-      stdio: ["ignore", "ignore", "pipe"],
-    });
-    const adminUrl = `postgresql://${user}@127.0.0.1:${port}/postgres`;
-    await waitForPostgres(adminUrl, user);
-    adminPool = new Pool(postgresConnectionOptions(adminUrl));
-    await adminPool.query(`CREATE DATABASE "${database}"`);
-    const url = `postgresql://${user}@127.0.0.1:${port}/${database}`;
-    const pool = new Pool(postgresConnectionOptions(url));
-    await pool.query("SELECT 1");
-    return {
-      url,
-      pool,
-      stop: async () => {
-        await pool.end();
-        await adminPool?.end();
-        postgres?.kill("SIGTERM");
-        await once(postgres!, "exit").catch(() => undefined);
-        await rm(dataDir, { recursive: true, force: true });
-      },
-    };
-  } catch (error) {
-    await adminPool?.end().catch(() => undefined);
-    if (postgres && postgres.exitCode === null) {
-      postgres.kill("SIGTERM");
-      await once(postgres, "exit").catch(() => undefined);
-    }
-    await rm(dataDir, { recursive: true, force: true });
-    throw error;
-  }
-}
 
 async function createRecoverySchema(pool: Pool): Promise<void> {
   await pool.query(`
@@ -449,7 +337,7 @@ async function cleanRecoveryData(pool: Pool): Promise<void> {
 
 if (integrationEnabled) {
   test("recovery durability survives real failures and concurrent requests", { timeout: 120_000 }, async (t) => {
-    const testDatabase = await createTestDatabase();
+    const testDatabase = await createDisposablePostgres();
     const originalDatabaseUrl = process.env.DATABASE_URL;
     const originalDriverFlag = process.env.RECOVERY_DURABILITY_DB;
     const originalIssuerUrl = process.env.ISSUER_URL;
