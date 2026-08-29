@@ -517,6 +517,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Hydrate durable jobs before the app starts accepting requests. This also
+  // converts jobs interrupted during a restart into an explicit retryable
+  // failure instead of leaving clients polling forever.
+  await jobQueue.initialize();
+
   // Platform detection middleware - sets X-Platform header based on host domain
   app.use((req, res, next) => {
     const host = req.get('host') || req.hostname || 'localhost';
@@ -20654,6 +20659,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
       const userId = getUserId(req)!;
       const { type, data, metadata } = req.body;
       const job = jobQueue.createJob(type, userId, data, metadata);
+      await jobQueue.waitForPersistence(job.id);
       res.json(job);
     } catch (error: any) {
       console.error("Error creating job:", error);
@@ -20709,6 +20715,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         return res.status(404).json({ message: "Job not found" });
       }
       const cancelled = jobQueue.cancelJob(jobId, userId);
+      await jobQueue.waitForPersistence(jobId);
       res.json({ success: cancelled });
     } catch (error: any) {
       console.error("Error cancelling job:", error);

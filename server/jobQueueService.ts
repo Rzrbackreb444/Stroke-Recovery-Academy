@@ -1,4 +1,6 @@
 import { EventEmitter } from 'events';
+import { desc, eq, sql } from 'drizzle-orm';
+import { jobQueueJobs } from '@shared/schema';
 
 export type JobStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
 export type JobType = 'ai_generation' | 'batch_generation' | 'export' | 'import' | 'media_processing';
@@ -27,6 +29,12 @@ export interface JobUpdate {
 
 export type JobStartHandler = (job: Job) => void | Promise<void>;
 
+export interface JobPersistence {
+  loadJobs(): Promise<Job[]>;
+  saveJob(job: Job): Promise<void>;
+  deleteJob(jobId: string): Promise<void>;
+}
+
 const TERMINAL_STATUSES = new Set<JobStatus>(['completed', 'failed', 'cancelled']);
 /**
  * Maximum time a worker may leave a job in `processing` before the queue
@@ -52,6 +60,9 @@ export class JobQueueService extends EventEmitter {
   private processingTimeouts: Map<string, ReturnType<typeof setTimeout>> = new Map();
   private processingTimeoutMs: number;
   private isDraining = false;
+  private persistence?: JobPersistence;
+  private persistenceChains: Map<string, Promise<void>> = new Map();
+  private initializationPromise?: Promise<void>;
 
   // Kept as a derived value for existing diagnostics that inspect the
   // service's active count; the set remains the accounting source of truth.
@@ -62,6 +73,7 @@ export class JobQueueService extends EventEmitter {
   constructor(
     maxConcurrent: number = 5,
     processingTimeoutMs: number = DEFAULT_PROCESSING_TIMEOUT_MS,
+    persistence?: JobPersistence,
   ) {
     super();
     this.maxConcurrent = Math.max(1, maxConcurrent);
@@ -69,6 +81,7 @@ export class JobQueueService extends EventEmitter {
       throw new RangeError('processingTimeoutMs must be a finite number greater than zero');
     }
     this.processingTimeoutMs = processingTimeoutMs;
+    this.persistence = persistence;
     this.setMaxListeners(100);
   }
 
@@ -102,6 +115,7 @@ export class JobQueueService extends EventEmitter {
     }
     this.userJobs.get(userId)!.add(id);
 
+    this.persistSnapshot(job);
     this.processingQueue.push(id);
     this.emit('job:created', job);
     
@@ -162,6 +176,7 @@ export class JobQueueService extends EventEmitter {
 
     this.emit('job:updated', job);
     this.emit(`job:${jobId}`, job);
+    this.persistSnapshot(job);
 
     return job;
   }
@@ -191,6 +206,7 @@ export class JobQueueService extends EventEmitter {
 
       this.emit('job:cancelled', job);
       this.emit(`job:${jobId}`, job);
+      this.persistSnapshot(job);
       return true;
     }
 
@@ -206,6 +222,85 @@ export class JobQueueService extends EventEmitter {
 
   private isSupportedJobType(type: string): type is JobType {
     return ['ai_generation', 'batch_generation', 'export', 'import', 'media_processing'].includes(type);
+  }
+
+  /**
+   * Load durable jobs before requests are served. Jobs that were processing
+   * when the process stopped cannot safely be resumed because their worker may
+   * have already performed an external side effect, so they become an
+   * explicit retryable failure instead of remaining stuck.
+   */
+  async initialize(): Promise<void> {
+    if (this.initializationPromise) return this.initializationPromise;
+
+    this.initializationPromise = (async () => {
+      if (!this.persistence) {
+        this.persistence = await createDatabaseJobPersistence();
+      }
+
+      const persistedJobs = await this.persistence.loadJobs();
+      for (const persistedJob of persistedJobs) {
+        if (this.jobs.has(persistedJob.id)) continue;
+
+        const job = persistedJob.status === 'processing'
+          ? {
+              ...persistedJob,
+              status: 'failed' as const,
+              completedAt: new Date(),
+              error: persistedJob.error
+                ? `${persistedJob.error} (worker interrupted by server restart; retryable)`
+                : 'Worker interrupted by server restart before the job completed; retryable',
+            }
+          : persistedJob;
+
+        this.jobs.set(job.id, job);
+        if (!this.userJobs.has(job.userId)) {
+          this.userJobs.set(job.userId, new Set());
+        }
+        this.userJobs.get(job.userId)!.add(job.id);
+
+        if (job.status === 'pending') {
+          this.processingQueue.push(job.id);
+        }
+
+        if (job !== persistedJob) {
+          await this.persistence.saveJob(job);
+          this.emit('job:updated', job);
+          this.emit(`job:${job.id}`, job);
+        }
+      }
+
+      this.processNext();
+    })().catch((error) => {
+      this.initializationPromise = undefined;
+      throw error;
+    });
+
+    return this.initializationPromise;
+  }
+
+  /**
+   * Wait until the latest write for a job has reached durable storage. The
+   * queue remains synchronous for existing workers, while HTTP creation can
+   * wait before acknowledging a successfully persisted job.
+   */
+  async waitForPersistence(jobId: string): Promise<void> {
+    await this.persistenceChains.get(jobId);
+  }
+
+  private persistSnapshot(job: Job): void {
+    if (!this.persistence) return;
+
+    const snapshot = cloneJob(job);
+    const previous = this.persistenceChains.get(job.id) ?? Promise.resolve();
+    const next = previous
+      .catch(() => undefined)
+      .then(() => this.persistence!.saveJob(snapshot));
+
+    this.persistenceChains.set(job.id, next);
+    void next.catch((error) => {
+      console.error(`[jobQueue] failed to persist job ${job.id}:`, error);
+    });
   }
 
   private releaseCapacity(jobId: string): void {
@@ -356,6 +451,16 @@ export class JobQueueService extends EventEmitter {
           if (userJobSet) {
             userJobSet.delete(id);
           }
+          if (this.persistence) {
+            const previous = this.persistenceChains.get(id) ?? Promise.resolve();
+            const next = previous
+              .catch(() => undefined)
+              .then(() => this.persistence!.deleteJob(id));
+            this.persistenceChains.set(id, next);
+            void next.catch((error) => {
+              console.error(`[jobQueue] failed to delete expired job ${id}:`, error);
+            });
+          }
           cleaned++;
         }
       }
@@ -363,6 +468,111 @@ export class JobQueueService extends EventEmitter {
 
     return cleaned;
   }
+}
+
+function cloneJob(job: Job): Job {
+  return {
+    ...job,
+    data: structuredClone(job.data),
+    ...(job.result !== undefined ? { result: structuredClone(job.result) } : {}),
+    ...(job.metadata !== undefined ? { metadata: structuredClone(job.metadata) } : {}),
+  };
+}
+
+async function createDatabaseJobPersistence(): Promise<JobPersistence> {
+  const { db } = await import('./db');
+
+  // The migration is the normal installation path. This guarded initializer
+  // also keeps an older running environment from dropping jobs while the
+  // migration is being rolled out.
+  await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS job_queue_jobs (
+      id TEXT PRIMARY KEY NOT NULL,
+      type TEXT NOT NULL,
+      user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      status TEXT NOT NULL DEFAULT 'pending',
+      progress INTEGER NOT NULL DEFAULT 0,
+      data JSONB NOT NULL DEFAULT '{}'::jsonb,
+      result JSONB,
+      error TEXT,
+      created_at TIMESTAMP NOT NULL DEFAULT now(),
+      started_at TIMESTAMP,
+      completed_at TIMESTAMP,
+      metadata JSONB
+    )
+  `);
+  await db.execute(sql`
+    CREATE INDEX IF NOT EXISTS job_queue_jobs_user_created_idx
+      ON job_queue_jobs (user_id, created_at)
+  `);
+  await db.execute(sql`
+    CREATE INDEX IF NOT EXISTS job_queue_jobs_status_idx
+      ON job_queue_jobs (status, created_at)
+  `);
+
+  return {
+    async loadJobs() {
+      const rows = await db
+        .select()
+        .from(jobQueueJobs)
+        .orderBy(desc(jobQueueJobs.createdAt));
+
+      return rows.map((row) => ({
+        id: row.id,
+        type: row.type as JobType,
+        userId: row.userId,
+        status: row.status as JobStatus,
+        progress: row.progress,
+        data: (row.data ?? {}) as Record<string, any>,
+        ...(row.result !== null ? { result: row.result } : {}),
+        ...(row.error !== null ? { error: row.error } : {}),
+        createdAt: row.createdAt,
+        ...(row.startedAt ? { startedAt: row.startedAt } : {}),
+        ...(row.completedAt ? { completedAt: row.completedAt } : {}),
+        ...(row.metadata !== null ? { metadata: row.metadata as Record<string, any> } : {}),
+      }));
+    },
+
+    async saveJob(job) {
+      const snapshot = cloneJob(job);
+      await db
+        .insert(jobQueueJobs)
+        .values({
+          id: snapshot.id,
+          type: snapshot.type,
+          userId: snapshot.userId,
+          status: snapshot.status,
+          progress: snapshot.progress,
+          data: snapshot.data,
+          result: snapshot.result ?? null,
+          error: snapshot.error ?? null,
+          createdAt: snapshot.createdAt,
+          startedAt: snapshot.startedAt ?? null,
+          completedAt: snapshot.completedAt ?? null,
+          metadata: snapshot.metadata ?? null,
+        })
+        .onConflictDoUpdate({
+          target: jobQueueJobs.id,
+          set: {
+            type: snapshot.type,
+            userId: snapshot.userId,
+            status: snapshot.status,
+            progress: snapshot.progress,
+            data: snapshot.data,
+            result: snapshot.result ?? null,
+            error: snapshot.error ?? null,
+            createdAt: snapshot.createdAt,
+            startedAt: snapshot.startedAt ?? null,
+            completedAt: snapshot.completedAt ?? null,
+            metadata: snapshot.metadata ?? null,
+          },
+        });
+    },
+
+    async deleteJob(jobId) {
+      await db.delete(jobQueueJobs).where(eq(jobQueueJobs.id, jobId));
+    },
+  };
 }
 
 export const jobQueue = new JobQueueService();
@@ -385,11 +595,13 @@ export async function processAIGenerationJob(
       progress: 100,
       result,
     });
+    await jobQueue.waitForPersistence(job.id);
   } catch (error: any) {
     jobQueue.updateJob(job.id, {
       status: 'failed',
       error: error.message || 'Unknown error',
     });
+    await jobQueue.waitForPersistence(job.id);
   }
 }
 
@@ -441,10 +653,12 @@ export async function processBatchJob(
       },
       error: errors.length === items.length ? 'All batch items failed' : undefined,
     });
+    await queue.waitForPersistence(job.id);
   } catch (error: any) {
     queue.updateJob(job.id, {
       status: 'failed',
       error: error.message || 'Batch processing failed',
     });
+    await queue.waitForPersistence(job.id);
   }
 }

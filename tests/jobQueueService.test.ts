@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {
   JobQueueService,
+  type JobPersistence,
   processBatchJob,
   type Job,
 } from "../server/jobQueueService";
@@ -180,6 +181,78 @@ console.log("\njobQueueService.test.ts\n");
   ]);
   assert.equal(job.progress, 100);
   assert.equal(terminalJob?.id, job.id);
+}
+
+{
+  class MemoryJobPersistence implements JobPersistence {
+    private jobs = new Map<string, Job>();
+
+    async loadJobs(): Promise<Job[]> {
+      return Array.from(this.jobs.values()).map((job) => ({
+        ...job,
+        data: structuredClone(job.data),
+        ...(job.result !== undefined ? { result: structuredClone(job.result) } : {}),
+        ...(job.metadata !== undefined ? { metadata: structuredClone(job.metadata) } : {}),
+      }));
+    }
+
+    async saveJob(job: Job): Promise<void> {
+      this.jobs.set(job.id, {
+        ...job,
+        data: structuredClone(job.data),
+        ...(job.result !== undefined ? { result: structuredClone(job.result) } : {}),
+        ...(job.metadata !== undefined ? { metadata: structuredClone(job.metadata) } : {}),
+      });
+    }
+
+    async deleteJob(jobId: string): Promise<void> {
+      this.jobs.delete(jobId);
+    }
+
+    seed(job: Job): void {
+      this.jobs.set(job.id, job);
+    }
+  }
+
+  const persistence = new MemoryJobPersistence();
+  const writer = new JobQueueService(1, 1000, persistence);
+  writer.on("job:start", (startedJob: Job) => {
+    writer.updateJob(startedJob.id, {
+      status: "completed",
+      progress: 100,
+      result: { items: [{ id: "item-1", content: "survived restart" }] },
+    });
+  });
+  const completed = writer.createJob("batch_generation", "owner-a", {
+    items: [{ id: "item-1" }],
+  });
+  await writer.waitForPersistence(completed.id);
+
+  const restored = new JobQueueService(1, 1000, persistence);
+  await restored.initialize();
+  assert.deepEqual(restored.getJob(completed.id, "owner-a")?.result, {
+    items: [{ id: "item-1", content: "survived restart" }],
+  });
+  assert.equal(restored.getJob(completed.id, "owner-b"), undefined);
+
+  const interrupted: Job = {
+    id: "job_interrupted",
+    type: "batch_generation",
+    userId: "owner-a",
+    status: "processing",
+    progress: 60,
+    data: { items: [{ id: "item-2" }] },
+    createdAt: new Date("2026-08-29T00:00:00.000Z"),
+    startedAt: new Date("2026-08-29T00:01:00.000Z"),
+  };
+  persistence.seed(interrupted);
+
+  const recovered = new JobQueueService(1, 1000, persistence);
+  await recovered.initialize();
+  const recoveredJob = recovered.getJob(interrupted.id, "owner-a");
+  assert.equal(recoveredJob?.status, "failed");
+  assert.match(recoveredJob?.error ?? "", /server restart.*retryable/i);
+  assert.equal(recoveredJob?.progress, 60);
 }
 
 console.log("PASS job queue lifecycle coverage");

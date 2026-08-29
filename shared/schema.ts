@@ -5591,10 +5591,23 @@ export const trendingTopics = pgTable("trending_topics", {
   expiresAt: timestamp("expires_at"),
 });
 
-// ============================================================================
-// CREATOR PRODUCTION ENGINE - BATCH PRODUCTION
-// ============================================================================
-
+export const jobQueueJobs = pgTable("job_queue_jobs", {
+  id: text("id").primaryKey(),
+  type: text("type").notNull(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  status: text("status").notNull().default("pending"),
+  progress: integer("progress").notNull().default(0),
+  data: jsonb("data").notNull().default({}),
+  result: jsonb("result"),
+  error: text("error"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  startedAt: timestamp("started_at"),
+  completedAt: timestamp("completed_at"),
+  metadata: jsonb("metadata"),
+}, (table) => [
+  index("job_queue_jobs_user_created_idx").on(table.userId, table.createdAt),
+  index("job_queue_jobs_status_idx").on(table.status, table.createdAt),
+]);
 export const productionBatches = pgTable("production_batches", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
@@ -7471,3 +7484,5 @@ export const laundromatDiscussionReplies = pgTable("laundromat_discussion_replie
 export const insertLaundromatDiscussionReplySchema = createInsertSchema(laundromatDiscussionReplies).omit({ id: true, createdAt: true, updatedAt: true, editedAt: true });
 
 export const insertLaundromatEquipmentPlanSchema = createInsertSchema(laundromatEquipmentPlans).omit({ id: true, createdAt: true, updatedAt: true });
+
+export type JobQueueJob = typeof jobQueueJobs.$inferSelect;
