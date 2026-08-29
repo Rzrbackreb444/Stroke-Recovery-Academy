@@ -134,6 +134,80 @@ console.log("\njobQueueService.test.ts\n");
 
 {
   const queue = new JobQueueService(1, 20);
+  const contexts: Array<{
+    attempt: number;
+    attemptId: string;
+    idempotencyKey: string;
+    isRetry: boolean;
+    update: (update: { status: "completed" }) => Job | undefined;
+  }> = [];
+  queue.on("job:start", (_job, context) => {
+    contexts.push(context);
+    if (context.isRetry) {
+      context.update({ status: "completed" });
+    }
+  });
+
+  const timedOut = queue.createJob("ai_generation", "owner-a", {});
+  await new Promise((resolve) => setTimeout(resolve, 40));
+  assert.equal(timedOut.status, "failed");
+  assert.equal(timedOut.attempt, 1);
+  assert.equal(timedOut.attempts, 1);
+  assert.equal(timedOut.failureHistory.length, 1);
+  assert.equal(timedOut.failureHistory[0].reason, "worker_timeout");
+
+  const originalContext = contexts[0];
+  const originalIdempotencyKey = timedOut.idempotencyKey;
+  const retried = queue.retryJob(timedOut.id, "owner-a");
+  assert.equal(retried, timedOut);
+  assert.equal(timedOut.status, "completed", "a timed-out job can be retried");
+  assert.equal(timedOut.attempt, 2);
+  assert.equal(timedOut.attempts, 2);
+  assert.equal(timedOut.failureHistory.length, 1, "retry preserves the original failure");
+  assert.equal(timedOut.idempotencyKey, originalIdempotencyKey);
+  assert.equal(contexts[1].isRetry, true);
+  assert.equal(contexts[1].idempotencyKey, originalContext.idempotencyKey);
+  assert.notEqual(contexts[1].attemptId, originalContext.attemptId);
+
+  // The disappeared worker's callback is scoped to attempt one and cannot
+  // overwrite the successful retry.
+  originalContext.update({ status: "completed" });
+  assert.equal(timedOut.status, "completed");
+  assert.equal(timedOut.failureHistory.length, 1);
+}
+
+{
+  const queue = new JobQueueService(1, 100, {
+    ai_generation: {
+      maxAttempts: 2,
+      retryableFailureReasons: ["handler"],
+    },
+  });
+  queue.on("job:start", (_job, context) => {
+    context.update({
+      status: "failed",
+      error: `attempt ${context.attempt} failed`,
+      failureReason: "handler",
+    });
+  });
+
+  const exhausted = queue.createJob("ai_generation", "owner-a", {});
+  assert.equal(exhausted.status, "failed");
+  assert.equal(exhausted.attempt, 1);
+  assert.equal(queue.retryJob(exhausted.id, "owner-a"), exhausted);
+  assert.equal(exhausted.status, "failed");
+  assert.equal(exhausted.attempt, 2);
+  assert.equal(exhausted.failureHistory.length, 2);
+  assert.equal(queue.retryJob(exhausted.id, "owner-a"), undefined);
+  assert.deepEqual(queue.getRetryEligibility(exhausted.id, "owner-a"), {
+    eligible: false,
+    reason: "Retry limit reached (2 attempts)",
+    remainingAttempts: 0,
+  });
+}
+
+{
+  const queue = new JobQueueService(1, 20);
   queue.on("job:start", (job: Job) => {
     queue.cancelJob(job.id, "owner-a");
   });
@@ -157,7 +231,7 @@ console.log("\njobQueueService.test.ts\n");
     });
   });
 
-  queue.registerJobHandler("batch_generation", (job) =>
+  queue.registerJobHandler("batch_generation", (job, context) =>
     processBatchJob(
       job,
       async (item, index) => {
@@ -165,6 +239,7 @@ console.log("\njobQueueService.test.ts\n");
         return { id: item.id, index, status: "completed", content: `result-${index}` };
       },
       queue,
+      context,
     ),
   );
 
@@ -235,16 +310,16 @@ console.log("\njobQueueService.test.ts\n");
   });
   assert.equal(restored.getJob(completed.id, "owner-b"), undefined);
 
-  const interrupted: Job = {
+  const interrupted = {
     id: "job_interrupted",
-    type: "batch_generation",
+    type: "batch_generation" as const,
     userId: "owner-a",
-    status: "processing",
+    status: "processing" as const,
     progress: 60,
     data: { items: [{ id: "item-2" }] },
     createdAt: new Date("2026-08-29T00:00:00.000Z"),
     startedAt: new Date("2026-08-29T00:01:00.000Z"),
-  };
+  } as Job;
   persistence.seed(interrupted);
 
   const recovered = new JobQueueService(1, 1000, persistence);
@@ -253,6 +328,8 @@ console.log("\njobQueueService.test.ts\n");
   assert.equal(recoveredJob?.status, "failed");
   assert.match(recoveredJob?.error ?? "", /server restart.*retryable/i);
   assert.equal(recoveredJob?.progress, 60);
+  assert.equal(recoveredJob?.failureHistory.length, 1);
+  assert.equal(recoveredJob?.retryable, true);
 }
 
 console.log("PASS job queue lifecycle coverage");

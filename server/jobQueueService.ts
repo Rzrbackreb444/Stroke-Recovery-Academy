@@ -5,6 +5,55 @@ import { jobQueueJobs } from '@shared/schema';
 export type JobStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
 export type JobType = 'ai_generation' | 'batch_generation' | 'export' | 'import' | 'media_processing';
 
+export type JobFailureReason =
+  | 'worker_timeout'
+  | 'worker_start'
+  | 'handler'
+  | 'validation'
+  | 'unsupported'
+  | 'no_worker'
+  | 'unknown';
+
+export interface JobFailure {
+  attempt: number;
+  error: string;
+  reason: JobFailureReason;
+  failedAt: Date;
+  attemptId?: string;
+}
+
+export interface JobRetryPolicy {
+  maxAttempts: number;
+  retryableFailureReasons: readonly JobFailureReason[];
+}
+
+/**
+ * Retry rules are intentionally explicit per job type. A retry reuses the
+ * stable job idempotency key, so processors can make external writes
+ * idempotent even when a worker disappeared after a partial write.
+ */
+export const JOB_RETRY_POLICIES: Readonly<Record<JobType, JobRetryPolicy>> = {
+  ai_generation: {
+    maxAttempts: 3,
+    retryableFailureReasons: ['worker_timeout', 'worker_start', 'handler'],
+  },
+  batch_generation: {
+    maxAttempts: 3,
+    retryableFailureReasons: ['worker_timeout', 'worker_start', 'handler'],
+  },
+  export: {
+    maxAttempts: 2,
+    retryableFailureReasons: ['worker_timeout', 'worker_start', 'handler'],
+  },
+  import: {
+    maxAttempts: 2,
+    retryableFailureReasons: ['worker_timeout', 'worker_start', 'handler'],
+  },
+  media_processing: {
+    maxAttempts: 2,
+    retryableFailureReasons: ['worker_timeout', 'worker_start', 'handler'],
+  },
+};
 export interface Job {
   id: string;
   type: JobType;
@@ -12,6 +61,20 @@ export interface Job {
   status: JobStatus;
   progress: number;
   data: Record<string, any>;
+  /** Number of times this job has been claimed by a worker, including the current attempt. */
+  attempt: number;
+  /** Alias exposed for consumers that use the conventional plural name. */
+  attempts: number;
+  /** Maximum number of worker attempts, including the initial attempt. */
+  maxAttempts: number;
+  /** Stable across retries and intended for downstream idempotency keys. */
+  idempotencyKey: string;
+  /** Failure records are append-only and survive a retry. */
+  failureHistory: JobFailure[];
+  failureReason?: JobFailureReason;
+  retryable?: boolean;
+  /** Identifies the currently running attempt; it changes on every retry. */
+  attemptId?: string;
   result?: any;
   error?: string;
   createdAt: Date;
@@ -25,15 +88,37 @@ export interface JobUpdate {
   progress?: number;
   result?: any;
   error?: string;
+  failureReason?: JobFailureReason;
+  retryable?: boolean;
 }
 
-export type JobStartHandler = (job: Job) => void | Promise<void>;
+export interface JobExecutionContext {
+  jobId: string;
+  attempt: number;
+  attemptId: string;
+  /** Stable across all attempts for this job. */
+  idempotencyKey: string;
+  isRetry: boolean;
+  /**
+   * Derive a stable key for a sub-operation. The same scope gets the same
+   * value on a retry, which lets external providers deduplicate partial work.
+   */
+  idempotencyKeyFor(scope: string): string;
+  /** Update only the attempt that received this context. */
+  update(update: JobUpdate): Job | undefined;
+}
+export type JobStartHandler = (
+  job: Job,
+  context: JobExecutionContext,
+) => void | Promise<void>;
 
 export interface JobPersistence {
   loadJobs(): Promise<Job[]>;
   saveJob(job: Job): Promise<void>;
   deleteJob(jobId: string): Promise<void>;
 }
+
+const JOB_RETRY_METADATA_KEY = '__jobQueueRetryState';
 
 const TERMINAL_STATUSES = new Set<JobStatus>(['completed', 'failed', 'cancelled']);
 /**
@@ -52,16 +137,29 @@ const VALID_TRANSITIONS: Record<JobStatus, Set<JobStatus>> = {
 
 export class JobQueueService extends EventEmitter {
   private jobs: Map<string, Job> = new Map();
+
   private userJobs: Map<string, Set<string>> = new Map();
+
   private processingQueue: string[] = [];
+
   private maxConcurrent: number;
+
   private activeJobIds: Set<string> = new Set();
+
   private jobHandlers: Map<JobType, JobStartHandler> = new Map();
+
   private processingTimeouts: Map<string, ReturnType<typeof setTimeout>> = new Map();
+
   private processingTimeoutMs: number;
+
+  private retryPolicies: Readonly<Record<JobType, JobRetryPolicy>>;
+
   private isDraining = false;
+
   private persistence?: JobPersistence;
+
   private persistenceChains: Map<string, Promise<void>> = new Map();
+
   private initializationPromise?: Promise<void>;
 
   // Kept as a derived value for existing diagnostics that inspect the
@@ -73,6 +171,10 @@ export class JobQueueService extends EventEmitter {
   constructor(
     maxConcurrent: number = 5,
     processingTimeoutMs: number = DEFAULT_PROCESSING_TIMEOUT_MS,
+    retryPoliciesOrPersistence:
+      | Partial<Record<JobType, JobRetryPolicy>>
+      | JobPersistence
+      | undefined = {},
     persistence?: JobPersistence,
   ) {
     super();
@@ -81,7 +183,28 @@ export class JobQueueService extends EventEmitter {
       throw new RangeError('processingTimeoutMs must be a finite number greater than zero');
     }
     this.processingTimeoutMs = processingTimeoutMs;
-    this.persistence = persistence;
+    const isPersistence = (
+      typeof retryPoliciesOrPersistence === 'object'
+      && retryPoliciesOrPersistence !== null
+      && 'loadJobs' in retryPoliciesOrPersistence
+      && 'saveJob' in retryPoliciesOrPersistence
+      && 'deleteJob' in retryPoliciesOrPersistence
+    );
+    const retryPolicies = isPersistence
+      ? {}
+      : (retryPoliciesOrPersistence as Partial<Record<JobType, JobRetryPolicy>>);
+    this.persistence = isPersistence
+      ? retryPoliciesOrPersistence as JobPersistence
+      : persistence;
+    this.retryPolicies = {
+      ...JOB_RETRY_POLICIES,
+      ...retryPolicies,
+    };
+    for (const [type, policy] of Object.entries(this.retryPolicies)) {
+      if (!Number.isInteger(policy.maxAttempts) || policy.maxAttempts < 1) {
+        throw new RangeError(`maxAttempts for "${type}" must be an integer greater than zero`);
+      }
+    }
     this.setMaxListeners(100);
   }
 
@@ -104,6 +227,11 @@ export class JobQueueService extends EventEmitter {
       status: 'pending',
       progress: 0,
       data,
+      attempt: 0,
+      attempts: 0,
+      maxAttempts: this.getRetryPolicy(type).maxAttempts,
+      idempotencyKey: id,
+      failureHistory: [],
       createdAt: new Date(),
       metadata,
     };
@@ -146,9 +274,14 @@ export class JobQueueService extends EventEmitter {
       .slice(0, limit);
   }
 
-  updateJob(jobId: string, update: JobUpdate): Job | undefined {
+  updateJob(jobId: string, update: JobUpdate, attemptId?: string): Job | undefined {
     const job = this.jobs.get(jobId);
     if (!job) return undefined;
+
+    // A timed-out worker may call back after the same job has been retried.
+    // Require attempt-scoped updates from handlers so that callback cannot
+    // mutate the newer attempt.
+    if (attemptId !== undefined && job.attemptId !== attemptId) return job;
 
     // A terminal job is immutable. This prevents a late worker callback after
     // cancellation (or a duplicate callback) from changing its result or
@@ -162,6 +295,22 @@ export class JobQueueService extends EventEmitter {
     if (update.progress !== undefined) job.progress = update.progress;
     if (update.result !== undefined) job.result = update.result;
     if (update.error !== undefined) job.error = update.error;
+    if (update.failureReason !== undefined) job.failureReason = update.failureReason;
+    if (update.retryable !== undefined) job.retryable = update.retryable;
+
+    if (update.status === 'failed') {
+      const error = update.error || 'Job failed';
+      const reason = update.failureReason || 'unknown';
+      job.failureHistory.push({
+        attempt: job.attempt,
+        error,
+        reason,
+        failedAt: new Date(),
+        attemptId: job.attemptId,
+      });
+      job.retryable = update.retryable
+        ?? this.getRetryPolicy(job.type).retryableFailureReasons.includes(reason);
+    }
 
     if (update.status === 'processing' && !job.startedAt) {
       job.startedAt = new Date();
@@ -242,16 +391,33 @@ export class JobQueueService extends EventEmitter {
       for (const persistedJob of persistedJobs) {
         if (this.jobs.has(persistedJob.id)) continue;
 
-        const job = persistedJob.status === 'processing'
+        const normalizedJob = this.normalizePersistedJob(persistedJob);
+        const job = normalizedJob.status === 'processing'
           ? {
-              ...persistedJob,
+              ...normalizedJob,
               status: 'failed' as const,
               completedAt: new Date(),
-              error: persistedJob.error
-                ? `${persistedJob.error} (worker interrupted by server restart; retryable)`
+              error: normalizedJob.error
+                ? `${normalizedJob.error} (worker interrupted by server restart; retryable)`
                 : 'Worker interrupted by server restart before the job completed; retryable',
+              failureReason: 'worker_timeout' as const,
+              retryable: this.getRetryPolicy(normalizedJob.type)
+                .retryableFailureReasons.includes('worker_timeout'),
+              attemptId: undefined,
+              failureHistory: [
+                ...normalizedJob.failureHistory,
+                {
+                  attempt: normalizedJob.attempt,
+                  error: normalizedJob.error
+                    ? `${normalizedJob.error} (worker interrupted by server restart; retryable)`
+                    : 'Worker interrupted by server restart before the job completed; retryable',
+                  reason: 'worker_timeout' as const,
+                  failedAt: new Date(),
+                  attemptId: normalizedJob.attemptId,
+                },
+              ],
             }
-          : persistedJob;
+          : normalizedJob;
 
         this.jobs.set(job.id, job);
         if (!this.userJobs.has(job.userId)) {
@@ -263,8 +429,8 @@ export class JobQueueService extends EventEmitter {
           this.processingQueue.push(job.id);
         }
 
-        if (job !== persistedJob) {
-          await this.persistence.saveJob(job);
+        await this.persistence.saveJob(job);
+        if (job.status === 'failed' && normalizedJob.status === 'processing') {
           this.emit('job:updated', job);
           this.emit(`job:${job.id}`, job);
         }
@@ -303,6 +469,52 @@ export class JobQueueService extends EventEmitter {
     });
   }
 
+  private normalizePersistedJob(persistedJob: Job): Job {
+    const policy = this.getRetryPolicy(persistedJob.type);
+    const storedMetadata = (persistedJob.metadata ?? {}) as Record<string, any>;
+    const retryState = storedMetadata[JOB_RETRY_METADATA_KEY] as Record<string, any> | undefined;
+    const { [JOB_RETRY_METADATA_KEY]: _retryState, ...metadata } = storedMetadata;
+    const attempt = Number.isInteger(retryState?.attempt)
+      ? retryState?.attempt
+      : Number.isInteger(persistedJob.attempt)
+        ? persistedJob.attempt
+        : 0;
+    const failureHistory = Array.isArray(retryState?.failureHistory)
+      ? retryState.failureHistory.map((failure: any) => ({
+          ...failure,
+          failedAt: failure.failedAt instanceof Date
+            ? failure.failedAt
+            : new Date(failure.failedAt),
+        }))
+      : Array.isArray(persistedJob.failureHistory)
+        ? persistedJob.failureHistory
+        : [];
+
+    return {
+      ...persistedJob,
+      attempt,
+      attempts: attempt,
+      maxAttempts: Number.isInteger(retryState?.maxAttempts)
+        ? retryState?.maxAttempts
+        : Number.isInteger(persistedJob.maxAttempts)
+          ? persistedJob.maxAttempts
+          : policy.maxAttempts,
+      idempotencyKey: typeof retryState?.idempotencyKey === 'string'
+        ? retryState.idempotencyKey
+        : typeof persistedJob.idempotencyKey === 'string'
+          ? persistedJob.idempotencyKey
+          : persistedJob.id,
+      failureHistory,
+      ...(retryState?.failureReason || persistedJob.failureReason
+        ? { failureReason: retryState?.failureReason || persistedJob.failureReason }
+        : {}),
+      ...(retryState?.retryable !== undefined || persistedJob.retryable !== undefined
+        ? { retryable: retryState?.retryable ?? persistedJob.retryable }
+        : {}),
+      ...(Object.keys(metadata).length > 0 ? { metadata } : { metadata: undefined }),
+    };
+  }
+
   private releaseCapacity(jobId: string): void {
     if (this.activeJobIds.delete(jobId)) {
       // activeJobIds is the source of truth, so this can never go below zero.
@@ -317,19 +529,24 @@ export class JobQueueService extends EventEmitter {
     this.processingTimeouts.delete(jobId);
   }
 
-  private scheduleProcessingTimeout(job: Job): void {
+  private scheduleProcessingTimeout(job: Job, attemptId: string): void {
     this.clearProcessingTimeout(job.id);
 
     const timeout = setTimeout(() => {
       this.processingTimeouts.delete(job.id);
 
       const currentJob = this.jobs.get(job.id);
-      if (!currentJob || currentJob.status !== 'processing') return;
+      if (
+        !currentJob
+        || currentJob.status !== 'processing'
+        || currentJob.attemptId !== attemptId
+      ) return;
 
       this.updateJob(job.id, {
         status: 'failed',
         error: `Worker timed out after ${this.processingTimeoutMs}ms while processing "${job.type}"; the job may have lost its worker`,
-      });
+        failureReason: 'worker_timeout',
+      }, attemptId);
     }, this.processingTimeoutMs);
     timeout.unref?.();
     this.processingTimeouts.set(job.id, timeout);
@@ -366,31 +583,49 @@ export class JobQueueService extends EventEmitter {
         }
 
         this.activeJobIds.add(jobId);
+        job.attempt += 1;
+        job.attempts = job.attempt;
+        const attemptId = `${job.id}:attempt:${job.attempt}`;
+        job.attemptId = attemptId;
         this.updateJob(jobId, { status: 'processing' });
-        const startedJob = this.getJob(jobId);
+        const currentJob = this.getJob(jobId);
+        const startedJob = currentJob ? { ...currentJob } : undefined;
         if (!startedJob || startedJob.status !== 'processing') continue;
-        this.scheduleProcessingTimeout(startedJob);
+        const context: JobExecutionContext = {
+          jobId: startedJob.id,
+          attempt: startedJob.attempt,
+          attemptId,
+          idempotencyKey: startedJob.idempotencyKey,
+          isRetry: startedJob.attempt > 1,
+          idempotencyKeyFor: (scope: string) =>
+            `${startedJob.idempotencyKey}:${scope}`,
+          update: (update: JobUpdate) =>
+            this.updateJob(startedJob.id, update, attemptId),
+        };
+        this.scheduleProcessingTimeout(startedJob, attemptId);
 
         try {
           // Keep the existing event-driven worker contract. Registered
           // handlers are an optional typed convenience for new processors.
-          this.emit('job:start', startedJob);
+          this.emit('job:start', startedJob, context);
         } catch (error: any) {
           this.updateJob(jobId, {
             status: 'failed',
             error: error?.message || `Worker failed to start job "${job.type}"`,
-          });
+            failureReason: 'worker_start',
+          }, attemptId);
           continue;
         }
 
-        if (registeredHandler && startedJob.status === 'processing') {
+        if (registeredHandler && this.getJob(jobId)?.status === 'processing') {
           Promise.resolve()
-            .then(() => registeredHandler(startedJob))
+            .then(() => registeredHandler(startedJob, context))
             .catch((error: any) => {
               this.updateJob(jobId, {
                 status: 'failed',
                 error: error?.message || `Worker failed while processing "${job.type}"`,
-              });
+                failureReason: 'handler',
+              }, attemptId);
             });
         }
       }
@@ -468,6 +703,75 @@ export class JobQueueService extends EventEmitter {
 
     return cleaned;
   }
+
+  getRetryPolicy(type: JobType): JobRetryPolicy {
+    return this.retryPolicies[type] || {
+      maxAttempts: 1,
+      retryableFailureReasons: [],
+    };
+  }
+
+  getRetryEligibility(
+    jobId: string,
+    userId?: string,
+  ): { eligible: boolean; reason?: string; remainingAttempts: number } {
+    const job = this.getJob(jobId, userId);
+    if (!job) {
+      return { eligible: false, reason: 'Job not found', remainingAttempts: 0 };
+    }
+
+    const remainingAttempts = Math.max(0, job.maxAttempts - job.attempt);
+    if (job.status !== 'failed') {
+      return {
+        eligible: false,
+        reason: 'Only failed jobs can be retried',
+        remainingAttempts,
+      };
+    }
+    if (remainingAttempts === 0) {
+      return {
+        eligible: false,
+        reason: `Retry limit reached (${job.maxAttempts} attempts)`,
+        remainingAttempts: 0,
+      };
+    }
+    if (!job.retryable) {
+      return {
+        eligible: false,
+        reason: `Failure "${job.failureReason || 'unknown'}" is not eligible for retry`,
+        remainingAttempts,
+      };
+    }
+
+    return { eligible: true, remainingAttempts };
+  }
+
+  /**
+   * Requeue one failed job. The id remains stable so all attempts share one
+   * idempotency boundary and failureHistory remains available to operators.
+   */
+  retryJob(jobId: string, userId?: string): Job | undefined {
+    const job = this.jobs.get(jobId);
+    if (!job || (userId !== undefined && job.userId !== userId)) return undefined;
+    if (!this.getRetryEligibility(jobId, userId).eligible) return undefined;
+
+    job.status = 'pending';
+    job.progress = 0;
+    job.error = undefined;
+    job.failureReason = undefined;
+    job.retryable = undefined;
+    job.result = undefined;
+    job.startedAt = undefined;
+    job.completedAt = undefined;
+    job.attemptId = undefined;
+    this.processingQueue.push(job.id);
+    this.persistSnapshot(job);
+    this.emit('job:retried', job);
+    this.emit('job:updated', job);
+    this.emit(`job:${job.id}`, job);
+    this.processNext();
+    return job;
+  }
 }
 
 function cloneJob(job: Job): Job {
@@ -476,6 +780,20 @@ function cloneJob(job: Job): Job {
     data: structuredClone(job.data),
     ...(job.result !== undefined ? { result: structuredClone(job.result) } : {}),
     ...(job.metadata !== undefined ? { metadata: structuredClone(job.metadata) } : {}),
+  };
+}
+
+function metadataForPersistence(job: Job): Record<string, any> {
+  return {
+    ...(job.metadata ? structuredClone(job.metadata) : {}),
+    [JOB_RETRY_METADATA_KEY]: {
+      attempt: job.attempt,
+      maxAttempts: job.maxAttempts,
+      idempotencyKey: job.idempotencyKey,
+      failureHistory: structuredClone(job.failureHistory),
+      ...(job.failureReason ? { failureReason: job.failureReason } : {}),
+      ...(job.retryable !== undefined ? { retryable: job.retryable } : {}),
+    },
   };
 }
 
@@ -530,7 +848,7 @@ async function createDatabaseJobPersistence(): Promise<JobPersistence> {
         ...(row.startedAt ? { startedAt: row.startedAt } : {}),
         ...(row.completedAt ? { completedAt: row.completedAt } : {}),
         ...(row.metadata !== null ? { metadata: row.metadata as Record<string, any> } : {}),
-      }));
+      } as Job));
     },
 
     async saveJob(job) {
@@ -549,7 +867,7 @@ async function createDatabaseJobPersistence(): Promise<JobPersistence> {
           createdAt: snapshot.createdAt,
           startedAt: snapshot.startedAt ?? null,
           completedAt: snapshot.completedAt ?? null,
-          metadata: snapshot.metadata ?? null,
+          metadata: metadataForPersistence(snapshot),
         })
         .onConflictDoUpdate({
           target: jobQueueJobs.id,
@@ -564,7 +882,7 @@ async function createDatabaseJobPersistence(): Promise<JobPersistence> {
             createdAt: snapshot.createdAt,
             startedAt: snapshot.startedAt ?? null,
             completedAt: snapshot.completedAt ?? null,
-            metadata: snapshot.metadata ?? null,
+            metadata: metadataForPersistence(snapshot),
           },
         });
     },
@@ -580,36 +898,53 @@ export const jobQueue = new JobQueueService();
 setInterval(() => {
   jobQueue.cleanupOldJobs();
 }, 60 * 60 * 1000).unref();
-
 export async function processAIGenerationJob(
   job: Job,
-  generateFn: (data: any, onProgress: (p: number) => void) => Promise<any>
+  generateFn: (data: any, onProgress: (p: number) => void) => Promise<any>,
+  context?: JobExecutionContext,
 ): Promise<void> {
+  const update = (jobUpdate: JobUpdate) =>
+    context
+      ? context.update(jobUpdate)
+      : jobQueue.updateJob(job.id, jobUpdate);
+
   try {
     const result = await generateFn(job.data, (progress) => {
-      jobQueue.updateJob(job.id, { progress });
+      update({ progress });
     });
 
-    jobQueue.updateJob(job.id, {
+    update({
       status: 'completed',
       progress: 100,
       result,
     });
     await jobQueue.waitForPersistence(job.id);
   } catch (error: any) {
-    jobQueue.updateJob(job.id, {
+    update({
       status: 'failed',
       error: error.message || 'Unknown error',
+      failureReason: 'handler',
     });
     await jobQueue.waitForPersistence(job.id);
   }
 }
 
+export type BatchProcessFn = (
+  item: any,
+  index: number,
+  idempotencyKey: string,
+) => Promise<any>;
 export async function processBatchJob(
   job: Job,
-  processFn: (item: any, index: number) => Promise<any>,
+  processFn: BatchProcessFn,
   queue: JobQueueService = jobQueue,
+  context?: JobExecutionContext,
 ): Promise<void> {
+  const update = (jobUpdate: JobUpdate) =>
+    context
+      ? context.update(jobUpdate)
+      : queue.updateJob(job.id, jobUpdate);
+
   try {
     const items = job.data.items;
     if (!Array.isArray(items) || items.length === 0) {
@@ -622,7 +957,9 @@ export async function processBatchJob(
 
     for (let i = 0; i < items.length; i++) {
       try {
-        const result = await processFn(items[i], i);
+        const itemKey = context?.idempotencyKeyFor(`item:${items[i]?.id || i}`)
+          || `${job.id}:item:${items[i]?.id || i}`;
+        const result = await processFn(items[i], i, itemKey);
         results.push({ index: i, success: true, result });
         outputItems.push(result);
       } catch (error: any) {
@@ -637,10 +974,10 @@ export async function processBatchJob(
       }
 
       const progress = Math.round(((i + 1) / items.length) * 100);
-      queue.updateJob(job.id, { progress });
+      update({ progress });
     }
 
-    queue.updateJob(job.id, {
+    update({
       status: errors.length === items.length ? 'failed' : 'completed',
       progress: 100,
       result: {
@@ -652,13 +989,16 @@ export async function processBatchJob(
         totalProcessed: items.length,
       },
       error: errors.length === items.length ? 'All batch items failed' : undefined,
+      failureReason: errors.length === items.length ? 'handler' : undefined,
     });
     await queue.waitForPersistence(job.id);
   } catch (error: any) {
-    queue.updateJob(job.id, {
+    update({
       status: 'failed',
       error: error.message || 'Batch processing failed',
+      failureReason: 'handler',
     });
     await queue.waitForPersistence(job.id);
   }
 }
+

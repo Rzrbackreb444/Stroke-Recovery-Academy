@@ -459,7 +459,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // The batch-generation panel uses the general job API. Register its worker
   // before any request can create a job; otherwise createJob would correctly
   // fail the job as unavailable instead of handing it to the AI pipeline.
-  jobQueue.registerJobHandler('batch_generation', async (job) => {
+  jobQueue.registerJobHandler('batch_generation', async (job, context) => {
     const data = job.data || {};
     const quantity = Number(data.quantity);
     const template = typeof data.template === 'string' ? data.template.trim() : '';
@@ -515,7 +515,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         content: generated.content,
         preview: generated.content.trim().slice(0, 240),
       };
-    });
+    }, jobQueue, context);
   });
 
   // Hydrate durable jobs before the app starts accepting requests. This also
@@ -20713,6 +20713,31 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     } catch (error: any) {
       console.error("Error fetching job:", error);
       res.status(500).json({ message: "Failed to fetch job" });
+    }
+  });
+
+  app.post('/api/jobs/:jobId/retry', isAuthenticated, async (req: any, res) => {
+    try {
+      const { jobId } = req.params;
+      const userId = getUserId(req)!;
+      const job = jobQueue.getJob(jobId, userId);
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+
+      const retriedJob = jobQueue.retryJob(jobId, userId);
+      if (!retriedJob) {
+        const eligibility = jobQueue.getRetryEligibility(jobId, userId);
+        return res.status(409).json({
+          message: eligibility.reason || "Job cannot be retried",
+          remainingAttempts: eligibility.remainingAttempts,
+        });
+      }
+
+      res.json(retriedJob);
+    } catch (error: any) {
+      console.error("Error retrying job:", error);
+      res.status(500).json({ message: "Failed to retry job" });
     }
   });
 
