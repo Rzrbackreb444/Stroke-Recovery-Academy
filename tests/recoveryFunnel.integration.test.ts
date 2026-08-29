@@ -81,6 +81,26 @@ async function postRecovery(
   assert.equal(response.status, 200, `${path} failed: ${JSON.stringify(body)}`);
 }
 
+async function installAssessmentFunnelFailure(pool: { query: (text: string) => Promise<unknown> }): Promise<void> {
+  await pool.query(`
+    CREATE OR REPLACE FUNCTION recovery_funnel_test_fail_assessment() RETURNS trigger
+    LANGUAGE plpgsql AS $$
+    BEGIN
+      RAISE EXCEPTION 'recovery funnel injected failure';
+    END;
+    $$;
+    DROP TRIGGER IF EXISTS recovery_funnel_test_fail_assessment ON recovery_funnel_events;
+    CREATE TRIGGER recovery_funnel_test_fail_assessment
+    BEFORE INSERT ON recovery_funnel_events
+    FOR EACH ROW EXECUTE FUNCTION recovery_funnel_test_fail_assessment();
+  `);
+}
+
+async function removeAssessmentFunnelFailure(pool: { query: (text: string) => Promise<unknown> }): Promise<void> {
+  await pool.query("DROP TRIGGER IF EXISTS recovery_funnel_test_fail_assessment ON recovery_funnel_events");
+  await pool.query("DROP FUNCTION IF EXISTS recovery_funnel_test_fail_assessment()");
+}
+
 test(
   "authenticated recovery retries and concurrent reassessments count one survivor per funnel milestone",
   { skip: !canRun },
@@ -118,6 +138,7 @@ test(
     const adminEmail = `${adminId}@example.test`;
     const password = "recovery-funnel-test-password";
     let appServer: Server | undefined;
+    let assessmentFunnelFailureInstalled = false;
 
     try {
       await db.insert(users).values([
@@ -208,6 +229,36 @@ test(
         memory: 3,
         notes: "integration retry coverage",
       };
+
+      // The snapshot and its milestone must be all-or-nothing. A trigger is
+      // used here instead of mocking the service so this exercises the same
+      // database transaction as production.
+      await ensureRecoveryFunnelTable();
+      await installAssessmentFunnelFailure(pool);
+      assessmentFunnelFailureInstalled = true;
+      const failedAssessment = await jsonRequest(
+        baseUrl,
+        "/api/recovery/assessment",
+        { method: "POST", body: JSON.stringify(assessment) },
+        survivorCookie,
+      );
+      assert.equal(failedAssessment.response.status, 500);
+      const rolledBackAssessment = await db.execute(sql`
+        SELECT COUNT(*)::int AS count
+          FROM sasquatch_assessments
+         WHERE user_id = ${survivorId}
+      `);
+      const rolledBackMilestone = await db.execute(sql`
+        SELECT COUNT(*)::int AS count
+          FROM recovery_funnel_events
+         WHERE user_id = ${survivorId}
+           AND event_type = 'assessment_completed'
+      `);
+      assert.equal(Number((rolledBackAssessment.rows[0] as { count: number | string }).count), 0);
+      assert.equal(Number((rolledBackMilestone.rows[0] as { count: number | string }).count), 0);
+      await removeAssessmentFunnelFailure(pool);
+      assessmentFunnelFailureInstalled = false;
+
       await postRecovery(baseUrl, "/api/recovery/assessment", assessment, survivorCookie);
       await postRecovery(baseUrl, "/api/recovery/assessment", assessment, survivorCookie);
 
@@ -369,6 +420,9 @@ test(
       // discovering the test OIDC issuer), so make teardown independent of
       // whether the route that creates this compatibility table ran.
       await ensureRecoveryFunnelTable();
+      if (assessmentFunnelFailureInstalled) {
+        await removeAssessmentFunnelFailure(pool);
+      }
       await db.execute(sql`DELETE FROM recovery_funnel_events WHERE user_id IN (${survivorId}, ${adminId})`);
       await db.execute(sql`DELETE FROM routine_feedback WHERE user_id IN (${survivorId}, ${adminId})`);
       await db.execute(sql`DELETE FROM routine_completions WHERE user_id IN (${survivorId}, ${adminId})`);

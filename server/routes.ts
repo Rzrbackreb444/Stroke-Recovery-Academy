@@ -28,6 +28,7 @@ import { getUserId, getUserEmail } from "./lib/authUtils";
 import { registerJournalUpdateRoute, syncJournalMediaAcl } from "./recoveryJournalUpdateRoute";
 import {
   getRecoveryFunnelReport,
+  ensureRecoveryFunnelTable,
   recordRecoveryFunnelEvent,
 } from "./services/recoveryFunnelService";
 import {
@@ -11517,26 +11518,35 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       const { db: dbInst } = await import('./db');
       const { sasquatchAssessments } = await import('../shared/schema');
       const { and, desc, gte, eq } = await import('drizzle-orm');
-      const [existing] = await dbInst.select().from(sasquatchAssessments)
-        .where(and(
-          eq(sasquatchAssessments.userId, userId),
-          eq(sasquatchAssessments.physical, physical),
-          eq(sasquatchAssessments.cognitive, cognitive),
-          eq(sasquatchAssessments.speech, speech),
-          eq(sasquatchAssessments.emotional, emotional),
-          eq(sasquatchAssessments.memory, memory),
-          gte(sasquatchAssessments.takenAt, new Date(Date.now() - 24 * 60 * 60 * 1000)),
-        ))
-        .orderBy(desc(sasquatchAssessments.takenAt))
-        .limit(1);
       const normalizedNotes = notes ? String(notes).slice(0, 1000) : null;
-      if (existing && (existing.notes || null) === normalizedNotes) return res.json(existing);
-      const [row] = await dbInst.insert(sasquatchAssessments).values({
-        userId, physical, cognitive, speech, emotional, memory,
-        notes: normalizedNotes,
-      }).returning();
-      await recordRecoveryFunnelEvent(userId, "assessment_completed", {
-        assessmentId: row.id,
+      // The compatibility table may still need to be installed on an older
+      // database. Do that before opening the transaction so the funnel
+      // service never uses a separate connection while the transaction is
+      // holding the assessment snapshot.
+      await ensureRecoveryFunnelTable();
+      const row = await dbInst.transaction(async (tx) => {
+        const [existing] = await tx.select().from(sasquatchAssessments)
+          .where(and(
+            eq(sasquatchAssessments.userId, userId),
+            eq(sasquatchAssessments.physical, physical),
+            eq(sasquatchAssessments.cognitive, cognitive),
+            eq(sasquatchAssessments.speech, speech),
+            eq(sasquatchAssessments.emotional, emotional),
+            eq(sasquatchAssessments.memory, memory),
+            gte(sasquatchAssessments.takenAt, new Date(Date.now() - 24 * 60 * 60 * 1000)),
+          ))
+          .orderBy(desc(sasquatchAssessments.takenAt))
+          .limit(1);
+        if (existing && (existing.notes || null) === normalizedNotes) return existing;
+
+        const [created] = await tx.insert(sasquatchAssessments).values({
+          userId, physical, cognitive, speech, emotional, memory,
+          notes: normalizedNotes,
+        }).returning();
+        await recordRecoveryFunnelEvent(userId, "assessment_completed", {
+          assessmentId: created.id,
+        }, tx);
+        return created;
       });
       res.json(row);
     } catch (error) {
