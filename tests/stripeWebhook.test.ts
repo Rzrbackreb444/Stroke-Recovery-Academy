@@ -31,7 +31,8 @@
 
 import { randomUUID } from "node:crypto";
 import { pool as dbPool } from "../server/db";
-import { WebhookHandlers } from "../server/webhookHandlers";
+import { WebhookHandlers, type WebhookDependencies } from "../server/webhookHandlers";
+import { recoveryStripeService } from "../server/recoveryStripeService";
 
 // ── tiny test harness (matches the style of recoveryAnchorSchema.test.ts) ──
 let passed = 0;
@@ -67,9 +68,13 @@ async function cleanup(eventIds: string[]) {
   );
 }
 
-async function tryProcess(payload: any, signature = "t=0,v1=invalid"): Promise<Error | null> {
+async function tryProcess(
+  payload: any,
+  signature = "t=0,v1=invalid",
+  dependencies?: WebhookDependencies,
+): Promise<Error | null> {
   try {
-    await WebhookHandlers.processWebhook(payload, signature, "test-uuid");
+    await WebhookHandlers.processWebhook(payload, signature, "test-uuid", dependencies);
     return null;
   } catch (e: any) {
     return e instanceof Error ? e : new Error(String(e));
@@ -85,6 +90,100 @@ function makePayload(eventId: string, type = "payment_intent.succeeded") {
       data: { object: { id: "pi_test_fake" } },
     }),
   );
+}
+
+function makePowerPointsPayload(eventId: string, giftId: number, paymentIntent: string) {
+  return Buffer.from(
+    JSON.stringify({
+      id: eventId,
+      type: "checkout.session.completed",
+      object: "event",
+      data: {
+        object: {
+          id: `cs_test_${eventId}`,
+          object: "checkout.session",
+          status: "complete",
+          payment_status: "paid",
+          payment_intent: paymentIntent,
+          metadata: {
+            type: "power_points",
+            giftId: String(giftId),
+          },
+        },
+      },
+    }),
+  );
+}
+
+const noOpSync: WebhookDependencies["sync"] = {
+  async processWebhook() {},
+};
+
+async function createGiftFixture(points = 100) {
+  const senderId = `stripe-webhook-sender-${randomUUID()}`;
+  const receiverId = `stripe-webhook-receiver-${randomUUID()}`;
+  const paymentIntent = `pi_test_${randomUUID()}`;
+
+  await dbPool.query(
+    `INSERT INTO users (id, email, first_name, last_name)
+     VALUES ($1, $2, 'Supporter', 'Test'), ($3, $4, 'Survivor', 'Test')`,
+    [senderId, `${senderId}@test.invalid`, receiverId, `${receiverId}@test.invalid`],
+  );
+  await dbPool.query(
+    `INSERT INTO credit_wallets
+       (user_id, balance, bonus_credits, lifetime_earned, lifetime_spent)
+     VALUES ($1, 0, 0, 0, 0)`,
+    [receiverId],
+  );
+  const gift = await dbPool.query(
+    `INSERT INTO power_point_gifts
+       (sender_id, receiver_id, package_key, points, amount_cents, status)
+     VALUES ($1, $2, 'spark', $3, 500, 'pending')
+     RETURNING id`,
+    [senderId, receiverId, points],
+  );
+
+  return {
+    senderId,
+    receiverId,
+    giftId: gift.rows[0].id as number,
+    paymentIntent,
+  };
+}
+
+async function fixtureCounts(receiverId: string, giftId: number) {
+  const [gift, wallet, ledger] = await Promise.all([
+    dbPool.query(
+      `SELECT id, status, stripe_payment_id
+         FROM power_point_gifts
+        WHERE id = $1`,
+      [giftId],
+    ),
+    dbPool.query(
+      `SELECT bonus_credits, lifetime_earned
+         FROM credit_wallets
+        WHERE user_id = $1`,
+      [receiverId],
+    ),
+    dbPool.query(
+      `SELECT id, reference_type, reference_id, amount
+         FROM credit_ledger
+        WHERE user_id = $1
+          AND reference_type = 'power_point_gift'
+          AND reference_id = $2`,
+      [receiverId, String(giftId)],
+    ),
+  ]);
+
+  return {
+    gift: gift.rows[0] ?? null,
+    wallet: wallet.rows[0] ?? null,
+    ledger: ledger.rows,
+  };
+}
+
+async function cleanupGiftFixture(fixture: Awaited<ReturnType<typeof createGiftFixture>>) {
+  await dbPool.query(`DELETE FROM users WHERE id = ANY($1)`, [[fixture.senderId, fixture.receiverId]]);
 }
 
 // ── tests ─────────────────────────────────────────────────────────────────
@@ -213,6 +312,89 @@ async function run() {
 
     const row = await eventRow(eventId5);
     assert(row?.status === "received", "row left untouched for the in-flight worker");
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  console.log("\n• Paid Power Points fulfillment: concurrent webhook deliveries credit once");
+  const concurrentEventId = `evt_test_${runId}_power_points_concurrent`;
+  created.push(concurrentEventId);
+  const concurrentFixture = await createGiftFixture();
+  try {
+    const payload = makePowerPointsPayload(
+      concurrentEventId,
+      concurrentFixture.giftId,
+      concurrentFixture.paymentIntent,
+    );
+    const dependencies: WebhookDependencies = { sync: noOpSync };
+    const errors = await Promise.all([
+      tryProcess(payload, "test-signature", dependencies),
+      tryProcess(payload, "test-signature", dependencies),
+    ]);
+    assert(errors.every((error) => error === null), "both concurrent deliveries return successfully");
+
+    const counts = await fixtureCounts(concurrentFixture.receiverId, concurrentFixture.giftId);
+    assert(counts.gift?.status === "delivered", "concurrent delivery marks the gift delivered");
+    assert(
+      counts.gift?.stripe_payment_id === concurrentFixture.paymentIntent,
+      "delivered gift keeps the Stripe payment reference",
+    );
+    assert(counts.wallet?.bonus_credits === 100, "receiver gets the Power Points exactly once");
+    assert(counts.wallet?.lifetime_earned === 100, "receiver lifetime credits increase exactly once");
+    assert(counts.ledger.length === 1, "gift creates exactly one credit ledger entry");
+    assert(
+      counts.ledger[0]?.reference_type === "power_point_gift" &&
+        counts.ledger[0]?.reference_id === String(concurrentFixture.giftId) &&
+        counts.ledger[0]?.amount === 100,
+      "the single ledger entry references the delivered gift",
+    );
+    const row = await eventRow(concurrentEventId);
+    assert(row?.status === "processed", "concurrent event ends processed");
+  } finally {
+    await cleanupGiftFixture(concurrentFixture);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  console.log("\n• Failed fulfillment: retry does not duplicate a paid gift or credit");
+  const retryEventId = `evt_test_${runId}_power_points_retry`;
+  created.push(retryEventId);
+  const retryFixture = await createGiftFixture();
+  try {
+    let failAfterFirstFulfillment = true;
+    const dependencies: WebhookDependencies = {
+      sync: noOpSync,
+      processSuccessfulPayment: async (session) => {
+        await recoveryStripeService.processSuccessfulPayment(session);
+        if (failAfterFirstFulfillment) {
+          failAfterFirstFulfillment = false;
+          throw new Error("simulated post-fulfillment webhook failure");
+        }
+      },
+    };
+    const payload = makePowerPointsPayload(
+      retryEventId,
+      retryFixture.giftId,
+      retryFixture.paymentIntent,
+    );
+
+    const firstError = await tryProcess(payload, "test-signature", dependencies);
+    assert(firstError !== null, "a failed first attempt surfaces an error for Stripe retry");
+    assert((await eventRow(retryEventId))?.status === "failed", "failed fulfillment leaves the event retryable");
+
+    const retryError = await tryProcess(payload, "test-signature", dependencies);
+    assert(retryError === null, "the same successful checkout can be retried");
+
+    const counts = await fixtureCounts(retryFixture.receiverId, retryFixture.giftId);
+    assert(counts.gift?.status === "delivered", "retried gift remains delivered");
+    assert(counts.wallet?.bonus_credits === 100, "retry does not duplicate receiver credits");
+    assert(counts.wallet?.lifetime_earned === 100, "retry does not duplicate lifetime credits");
+    assert(counts.ledger.length === 1, "retry leaves one ledger entry for the gift");
+    assert(
+      counts.ledger[0]?.reference_id === String(retryFixture.giftId),
+      "retry preserves the ledger reference to the gift",
+    );
+    assert((await eventRow(retryEventId))?.status === "processed", "successful retry marks the event processed");
+  } finally {
+    await cleanupGiftFixture(retryFixture);
   }
 
   } finally {
