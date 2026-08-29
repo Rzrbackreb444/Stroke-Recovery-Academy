@@ -25,6 +25,7 @@ import {
 import { redactEmail } from "./lib/redact";
 import { requireAdmin } from "./middleware/requireAdmin";
 import { getUserId, getUserEmail } from "./lib/authUtils";
+import { registerJournalUpdateRoute, syncJournalMediaAcl } from "./recoveryJournalUpdateRoute";
 import {
   getRecoveryFunnelReport,
   recordRecoveryFunnelEvent,
@@ -13401,37 +13402,10 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // ----------------------------------------------------------------------------
   // RECOVERY JOURNAL
   // ----------------------------------------------------------------------------
-  const { insertRecoveryJournalSchema, updateRecoveryJournalSchema } = await import('@shared/schema');
+  const { insertRecoveryJournalSchema } = await import('@shared/schema');
 
-  // Keep journal media (photo/voice) ACL in lockstep with the entry's share
-  // state: shared entries expose media publicly so the community feed can render
-  // it; private entries lock media back down to the owner. PDFs are never
-  // shared, so they are not touched here.
-  const { ObjectStorageService: JournalMediaObjectStorage } = await import('./replit_integrations/object_storage/objectStorage');
-  const syncJournalMediaAcl = async (entry: any, ownerId: string) => {
-    // storage.create/updateJournalEntry return raw `RETURNING *` rows (snake_case),
-    // so read both casings to stay robust if a mapped row is ever passed in.
-    const isShared = entry?.isShared ?? entry?.is_shared;
-    const visibility: 'public' | 'private' = isShared ? 'public' : 'private';
-    const objectStorage = new JournalMediaObjectStorage();
-    for (const mediaPath of [entry?.photoUrl ?? entry?.photo_url, entry?.voiceUrl ?? entry?.voice_url]) {
-      if (typeof mediaPath === 'string' && mediaPath.startsWith('/objects/')) {
-        try {
-          // Existing journal media may predate upload intents. Preserve the
-          // share/unshare lifecycle for those objects; new attachments are
-          // required to pass the owner-bound intent check at finalization.
-          await objectStorage.trySetObjectEntityAclPolicy(
-            mediaPath,
-            { owner: ownerId, visibility },
-            { requireUploadIntent: false },
-          );
-        } catch (e) {
-          console.error('Failed to sync journal media ACL for entry', entry?.id, e);
-        }
-      }
-    }
-  };
   const secureNewJournalMedia = async (data: any, ownerId: string) => {
+    const { ObjectStorageService: JournalMediaObjectStorage } = await import('./replit_integrations/object_storage/objectStorage');
     const objectStorage = new JournalMediaObjectStorage();
     for (const mediaPath of [data?.photoUrl, data?.voiceUrl]) {
       if (typeof mediaPath === 'string' && mediaPath.startsWith('/objects/')) {
@@ -13703,27 +13677,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  app.patch('/api/recovery/journal/:id', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req)!;
-      const entryId = parseInt(req.params.id);
-      const validated = updateRecoveryJournalSchema.partial().safeParse(req.body);
-      if (!validated.success) {
-        return res.status(400).json({ message: "Invalid update", details: validated.error.issues });
-      }
-      const entry = await storage.updateJournalEntry(entryId, userId, validated.data);
-      if (!entry) {
-        return res.status(404).json({ message: "Entry not found" });
-      }
-      if (validated.data.isShared !== undefined) {
-        await syncJournalMediaAcl(entry, userId);
-      }
-      res.json(entry);
-    } catch (error) {
-      console.error("Error updating journal entry:", error);
-      res.status(500).json({ message: "Failed to update journal entry" });
-    }
-  });
+  registerJournalUpdateRoute(app, isAuthenticated);
 
   // ----------------------------------------------------------------------------
   // USER SETTINGS
