@@ -395,32 +395,54 @@ export async function processAIGenerationJob(
 
 export async function processBatchJob(
   job: Job,
-  processFn: (item: any, index: number) => Promise<any>
+  processFn: (item: any, index: number) => Promise<any>,
+  queue: JobQueueService = jobQueue,
 ): Promise<void> {
   try {
-    const items = job.data.items as any[];
+    const items = job.data.items;
+    if (!Array.isArray(items) || items.length === 0) {
+      throw new Error('Batch job must contain at least one item');
+    }
+
     const results: any[] = [];
+    const outputItems: any[] = [];
     const errors: any[] = [];
 
     for (let i = 0; i < items.length; i++) {
       try {
         const result = await processFn(items[i], i);
         results.push({ index: i, success: true, result });
+        outputItems.push(result);
       } catch (error: any) {
-        errors.push({ index: i, success: false, error: error.message });
+        const message = error?.message || 'Item processing failed';
+        errors.push({ index: i, success: false, error: message });
+        outputItems.push({
+          id: items[i]?.id || `${job.id}-item-${i}`,
+          index: i,
+          status: 'failed',
+          error: message,
+        });
       }
 
       const progress = Math.round(((i + 1) / items.length) * 100);
-      jobQueue.updateJob(job.id, { progress });
+      queue.updateJob(job.id, { progress });
     }
 
-    jobQueue.updateJob(job.id, {
+    queue.updateJob(job.id, {
       status: errors.length === items.length ? 'failed' : 'completed',
       progress: 100,
-      result: { results, errors, totalProcessed: items.length },
+      result: {
+        // `items` is the user-facing result shape used by batch-generation
+        // clients. Keep the detailed per-item records for existing consumers.
+        items: outputItems,
+        results,
+        errors,
+        totalProcessed: items.length,
+      },
+      error: errors.length === items.length ? 'All batch items failed' : undefined,
     });
   } catch (error: any) {
-    jobQueue.updateJob(job.id, {
+    queue.updateJob(job.id, {
       status: 'failed',
       error: error.message || 'Batch processing failed',
     });

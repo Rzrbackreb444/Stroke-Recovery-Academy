@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {
   JobQueueService,
+  processBatchJob,
   type Job,
 } from "../server/jobQueueService";
 
@@ -141,6 +142,44 @@ console.log("\njobQueueService.test.ts\n");
   await new Promise((resolve) => setTimeout(resolve, 40));
   assert.equal(cancelled.status, "cancelled", "cancellation clears the processing timeout");
   assert.equal(queue.getQueueStats().failed, 0);
+}
+
+{
+  const queue = new JobQueueService();
+  let terminalJob: Job | undefined;
+  const terminal = new Promise<void>((resolve) => {
+    queue.on("job:updated", (updatedJob: Job) => {
+      if (updatedJob.status === "completed" || updatedJob.status === "failed") {
+        terminalJob = updatedJob;
+        resolve();
+      }
+    });
+  });
+
+  queue.registerJobHandler("batch_generation", (job) =>
+    processBatchJob(
+      job,
+      async (item, index) => {
+        if (index === 1) throw new Error("item unavailable");
+        return { id: item.id, index, status: "completed", content: `result-${index}` };
+      },
+      queue,
+    ),
+  );
+
+  const job = queue.createJob("batch_generation", "owner-a", {
+    items: [{ id: "first" }, { id: "second" }, { id: "third" }],
+  });
+  await terminal;
+
+  assert.equal(job.status, "completed", "a batch with partial item failures completes");
+  assert.deepEqual(job.result?.items, [
+    { id: "first", index: 0, status: "completed", content: "result-0" },
+    { id: "second", index: 1, status: "failed", error: "item unavailable" },
+    { id: "third", index: 2, status: "completed", content: "result-2" },
+  ]);
+  assert.equal(job.progress, 100);
+  assert.equal(terminalJob?.id, job.id);
 }
 
 console.log("PASS job queue lifecycle coverage");

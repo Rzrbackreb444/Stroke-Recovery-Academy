@@ -86,7 +86,7 @@ import {
 } from "./spotifyService";
 import { seedRecoveryData } from "./seedRecoveryData";
 import { seedCreatorToolCategories, seedWorkflowCategories } from "./seedCreatorTools";
-import { generate, generateStream, bookGenerator, marketingGenerator, screenplayGenerator, courseGenerator, researchGenerator, getUsageStats } from "./aiOrchestrator";
+import { generate, generateStream, bookGenerator, marketingGenerator, screenplayGenerator, courseGenerator, researchGenerator, getUsageStats, type GenerateOptions } from "./aiOrchestrator";
 import { 
   generateChildStoryRequestSchema,
   generateCharacterPromptRequestSchema,
@@ -200,7 +200,7 @@ import {
 import * as creditService from './creditService';
 import * as geoService from './geolocationService';
 import * as i18nService from './i18nService';
-import { jobQueue } from './jobQueueService';
+import { jobQueue, processBatchJob } from './jobQueueService';
 import { getElevenLabsService, SASQUATCH_VOICE_ID, isElevenLabsConfigured as isElevenLabsServiceConfigured } from './elevenlabs';
 import {
   isLuluConfigured,
@@ -455,6 +455,68 @@ function authorBrainTextError(value: unknown, label: string, maxLength: number, 
   return undefined;
 }
 export async function registerRoutes(app: Express): Promise<Server> {
+  // The batch-generation panel uses the general job API. Register its worker
+  // before any request can create a job; otherwise createJob would correctly
+  // fail the job as unavailable instead of handing it to the AI pipeline.
+  jobQueue.registerJobHandler('batch_generation', async (job) => {
+    const data = job.data || {};
+    const quantity = Number(data.quantity);
+    const template = typeof data.template === 'string' ? data.template.trim() : '';
+
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 50) {
+      throw new Error('Batch quantity must be an integer from 1 to 50');
+    }
+    if (!template) {
+      throw new Error('Batch template is required');
+    }
+
+    const [qualityTier] = data.qualityTierId
+      ? await db.select().from(aiQualityTiers).where(eq(aiQualityTiers.id, Number(data.qualityTierId))).limit(1)
+      : [];
+    const [voicePreset] = data.voicePresetId
+      ? await db.select().from(aiVoicePresets).where(eq(aiVoicePresets.id, Number(data.voicePresetId))).limit(1)
+      : [];
+
+    const taskType: GenerateOptions['taskType'] = data.studioType === 'course'
+      ? 'course'
+      : data.studioType === 'video'
+        ? 'screenplay'
+        : data.studioType === 'image'
+          ? 'image_prompt'
+          : data.contentType === 'outline'
+            ? 'outline'
+            : 'draft';
+
+    job.data.items = Array.from({ length: quantity }, (_, index) => ({
+      id: `${job.id}-item-${index}`,
+      prompt: [
+        `Create ${data.contentType || 'content'} for a ${data.studioType || 'creative'} project.`,
+        `This is item ${index + 1} of ${quantity}.`,
+        template.replace(/\{index\}/g, String(index + 1)),
+      ].join('\n\n'),
+    }));
+
+    await processBatchJob(job, async (item, index) => {
+      const generated = await generate({
+        prompt: item.prompt,
+        taskType,
+        userId: job.userId,
+        qualityTier: qualityTier
+          ? { ...qualityTier, promptModifiers: qualityTier.promptModifiers ?? undefined }
+          : undefined,
+        voicePreset,
+      });
+
+      return {
+        id: item.id,
+        index,
+        status: 'completed',
+        content: generated.content,
+        preview: generated.content.trim().slice(0, 240),
+      };
+    });
+  });
+
   // Platform detection middleware - sets X-Platform header based on host domain
   app.use((req, res, next) => {
     const host = req.get('host') || req.hostname || 'localhost';
@@ -20674,9 +20736,10 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         res.write(`data: ${JSON.stringify(updatedJob)}\n\n`);
       };
 
-      sendUpdate(job);
-
       const unsubscribe = jobQueue.subscribeToJob(jobId, sendUpdate, userId);
+       // Subscribe before sending the snapshot so a fast worker cannot finish
+       // in the gap between those two operations and strand the stream.
+       sendUpdate(job);
 
       req.on('close', () => {
         unsubscribe?.();
