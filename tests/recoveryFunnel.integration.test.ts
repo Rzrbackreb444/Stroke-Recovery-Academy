@@ -82,7 +82,7 @@ async function postRecovery(
 }
 
 test(
-  "authenticated recovery retries count one survivor per funnel milestone",
+  "authenticated recovery retries and concurrent reassessments count one survivor per funnel milestone",
   { skip: !canRun },
   async () => {
     const { db, pool } = await import("../server/db");
@@ -220,21 +220,61 @@ test(
            SET taken_at = NOW() - INTERVAL '2 days'
          WHERE user_id = ${survivorId}
       `);
-      const reassessment = {
+      const reassessmentA = {
         physical: 6,
         cognitive: 4,
         speech: 7,
         emotional: 5,
         memory: 8,
-        notes: "integration later reassessment coverage",
+        notes: "integration simultaneous reassessment A",
       };
-      await postRecovery(baseUrl, "/api/recovery/assessment", reassessment, survivorCookie);
+      const reassessmentB = {
+        physical: 3,
+        cognitive: 8,
+        speech: 5,
+        emotional: 9,
+        memory: 2,
+        notes: "integration simultaneous reassessment B",
+      };
+      await Promise.all([
+        postRecovery(baseUrl, "/api/recovery/assessment", reassessmentA, survivorCookie),
+        postRecovery(baseUrl, "/api/recovery/assessment", reassessmentB, survivorCookie),
+      ]);
       const assessmentRows = await db.execute(sql`
-        SELECT COUNT(*)::int AS count
+        SELECT physical, cognitive, speech, emotional, memory, notes
           FROM sasquatch_assessments
          WHERE user_id = ${survivorId}
+         ORDER BY taken_at, id
       `);
-      assert.equal(Number((assessmentRows.rows[0] as { count: number | string }).count), 2);
+      assert.equal(assessmentRows.rows.length, 3);
+      const concurrentSnapshots = assessmentRows.rows
+        .filter((row) => {
+          const snapshot = row as { notes: string | null };
+          return snapshot.notes === reassessmentA.notes || snapshot.notes === reassessmentB.notes;
+        })
+        .map((row) => {
+          const snapshot = row as {
+            physical: number | string;
+            cognitive: number | string;
+            speech: number | string;
+            emotional: number | string;
+            memory: number | string;
+            notes: string | null;
+          };
+          return [
+            Number(snapshot.physical),
+            Number(snapshot.cognitive),
+            Number(snapshot.speech),
+            Number(snapshot.emotional),
+            Number(snapshot.memory),
+            snapshot.notes,
+          ];
+        })
+        .sort((left, right) => String(left[5]).localeCompare(String(right[5])));
+      assert.deepEqual(concurrentSnapshots, [
+        [6, 4, 7, 5, 8, reassessmentA.notes],
+        [3, 8, 5, 9, 2, reassessmentB.notes],
+      ]);
 
       // Keep the plan test deterministic even when the workspace has a Gemini
       // secret configured. The route should use its documented fallback.
