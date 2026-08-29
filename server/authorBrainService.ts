@@ -243,8 +243,8 @@ export async function updateProjectContext(projectId: string, userId: string, up
   const result = await db.execute(sql`
     UPDATE author_brain.project_context
     SET 
-      project_name = COALESCE(${updates.projectName}, project_name),
-      global_tone = COALESCE(${updates.globalTone}, global_tone),
+      project_name = COALESCE(${updates.projectName ?? null}, project_name),
+      global_tone = COALESCE(${updates.globalTone ?? null}, global_tone),
       last_updated = CURRENT_TIMESTAMP
     WHERE id = ${projectId} AND user_id = ${userId}
     RETURNING *
