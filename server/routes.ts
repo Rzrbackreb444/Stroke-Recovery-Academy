@@ -11588,6 +11588,11 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       const { sasquatchAssessments, survivorGoals, survivorPlans } = await import('../shared/schema');
       const { eq, desc, and } = await import('drizzle-orm');
 
+      // The compatibility table must exist before opening the transaction.
+      // recordRecoveryFunnelEvent accepts the transaction executor, but its
+      // guarded table setup uses the default connection.
+      await ensureRecoveryFunnelTable();
+
       const [assessment] = await dbInst
         .select()
         .from(sasquatchAssessments)
@@ -11606,11 +11611,16 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         .orderBy(desc(survivorPlans.generatedAt))
         .limit(1);
       if (existingPlan?.plan) {
-        await recordRecoveryFunnelEvent(userId, "plan_generated", {
-          planId: existingPlan.id,
-        });
-        await recordRecoveryFunnelEvent(userId, "onboarding_completed", {
-          planId: existingPlan.id,
+        // A retry may be completing a plan written by an older request. Keep
+        // both milestone repairs atomic so a failed second write does not
+        // leave the funnel reporting only half of onboarding.
+        await dbInst.transaction(async (tx) => {
+          await recordRecoveryFunnelEvent(userId, "plan_generated", {
+            planId: existingPlan.id,
+          }, tx);
+          await recordRecoveryFunnelEvent(userId, "onboarding_completed", {
+            planId: existingPlan.id,
+          }, tx);
         });
         return res.json({ plan: existingPlan.plan, generatedAt: existingPlan.generatedAt, reused: true });
       }
@@ -11814,16 +11824,21 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
         };
       }
 
-      const [row] = await dbInst.insert(survivorPlans).values({
-        userId,
-        assessmentId: assessment.id,
-        plan,
-      }).returning();
-      await recordRecoveryFunnelEvent(userId, "plan_generated", {
-        planId: row.id,
-      });
-      await recordRecoveryFunnelEvent(userId, "onboarding_completed", {
-        planId: row.id,
+      // The plan and both funnel milestones are one logical operation. If a
+      // funnel write fails, the generated plan must roll back with it.
+      const row = await dbInst.transaction(async (tx) => {
+        const [created] = await tx.insert(survivorPlans).values({
+          userId,
+          assessmentId: assessment.id,
+          plan,
+        }).returning();
+        await recordRecoveryFunnelEvent(userId, "plan_generated", {
+          planId: created.id,
+        }, tx);
+        await recordRecoveryFunnelEvent(userId, "onboarding_completed", {
+          planId: created.id,
+        }, tx);
+        return created;
       });
       res.json({ plan: row.plan, generatedAt: row.generatedAt });
     } catch (error) {

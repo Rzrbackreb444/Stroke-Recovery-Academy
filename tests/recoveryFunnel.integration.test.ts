@@ -101,6 +101,29 @@ async function removeAssessmentFunnelFailure(pool: { query: (text: string) => Pr
   await pool.query("DROP FUNCTION IF EXISTS recovery_funnel_test_fail_assessment()");
 }
 
+async function installPlanFunnelFailure(pool: { query: (text: string) => Promise<unknown> }): Promise<void> {
+  await pool.query(`
+    CREATE OR REPLACE FUNCTION recovery_funnel_test_fail_plan() RETURNS trigger
+    LANGUAGE plpgsql AS $$
+    BEGIN
+      IF NEW.event_type IN ('plan_generated', 'onboarding_completed') THEN
+        RAISE EXCEPTION 'recovery funnel injected plan failure';
+      END IF;
+      RETURN NEW;
+    END;
+    $$;
+    DROP TRIGGER IF EXISTS recovery_funnel_test_fail_plan ON recovery_funnel_events;
+    CREATE TRIGGER recovery_funnel_test_fail_plan
+    BEFORE INSERT ON recovery_funnel_events
+    FOR EACH ROW EXECUTE FUNCTION recovery_funnel_test_fail_plan();
+  `);
+}
+
+async function removePlanFunnelFailure(pool: { query: (text: string) => Promise<unknown> }): Promise<void> {
+  await pool.query("DROP TRIGGER IF EXISTS recovery_funnel_test_fail_plan ON recovery_funnel_events");
+  await pool.query("DROP FUNCTION IF EXISTS recovery_funnel_test_fail_plan()");
+}
+
 test(
   "authenticated recovery retries and concurrent reassessments count one survivor per funnel milestone",
   { skip: !canRun },
@@ -139,6 +162,7 @@ test(
     const password = "recovery-funnel-test-password";
     let appServer: Server | undefined;
     let assessmentFunnelFailureInstalled = false;
+    let planFunnelFailureInstalled = false;
 
     try {
       await db.insert(users).values([
@@ -338,6 +362,35 @@ test(
         return originalFetch(input, init);
       }) as typeof fetch;
       try {
+        // The generated plan and its milestones must be all-or-nothing. A
+        // trigger failure proves the funnel write runs inside the plan
+        // transaction rather than after it.
+        await ensureRecoveryFunnelTable();
+        await installPlanFunnelFailure(pool);
+        planFunnelFailureInstalled = true;
+        const failedPlan = await jsonRequest(
+          baseUrl,
+          "/api/recovery/plan/generate",
+          { method: "POST", body: JSON.stringify({}) },
+          survivorCookie,
+        );
+        assert.equal(failedPlan.response.status, 500);
+        const rolledBackPlan = await db.execute(sql`
+          SELECT COUNT(*)::int AS count
+            FROM survivor_plans
+           WHERE user_id = ${survivorId}
+        `);
+        const rolledBackPlanMilestones = await db.execute(sql`
+          SELECT COUNT(*)::int AS count
+            FROM recovery_funnel_events
+           WHERE user_id = ${survivorId}
+             AND event_type IN ('plan_generated', 'onboarding_completed')
+        `);
+        assert.equal(Number((rolledBackPlan.rows[0] as { count: number | string }).count), 0);
+        assert.equal(Number((rolledBackPlanMilestones.rows[0] as { count: number | string }).count), 0);
+        await removePlanFunnelFailure(pool);
+        planFunnelFailureInstalled = false;
+
         await postRecovery(baseUrl, "/api/recovery/plan/generate", {}, survivorCookie);
         await postRecovery(baseUrl, "/api/recovery/plan/generate", {}, survivorCookie);
       } finally {
@@ -422,6 +475,9 @@ test(
       await ensureRecoveryFunnelTable();
       if (assessmentFunnelFailureInstalled) {
         await removeAssessmentFunnelFailure(pool);
+      }
+      if (planFunnelFailureInstalled) {
+        await removePlanFunnelFailure(pool);
       }
       await db.execute(sql`DELETE FROM recovery_funnel_events WHERE user_id IN (${survivorId}, ${adminId})`);
       await db.execute(sql`DELETE FROM routine_feedback WHERE user_id IN (${survivorId}, ${adminId})`);
