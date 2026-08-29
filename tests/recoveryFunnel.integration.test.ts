@@ -6,6 +6,7 @@
  * is skipped so the fast, database-free test suite remains usable.
  */
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { createServer, type Server } from "node:http";
 import express from "express";
 import test from "node:test";
@@ -148,8 +149,8 @@ test(
     const { registerRoutes } = await import("../server/routes");
     const { ensureRecoveryFunnelTable } = await import("../server/services/recoveryFunnelService");
     const { hashPassword } = await import("../server/multiProviderAuth");
-    const { users } = await import("../shared/schema");
-    const { sql } = await import("drizzle-orm");
+    const { survivorPlans, users } = await import("../shared/schema");
+      const { inArray, sql } = await import("drizzle-orm");
     const { randomUUID } = await import("node:crypto");
     globalThis.setInterval = originalSetInterval;
     globalThis.setTimeout = originalSetTimeout;
@@ -181,6 +182,14 @@ test(
           role: "admin",
         },
       ]);
+      const planMigration = await readFile(
+        new URL("../migrations/0011_recovery_plan_assessment_unique.sql", import.meta.url),
+        "utf8",
+      );
+      // The integration database may have the schema table but not the latest
+      // generated migration. Applying it here keeps the route assertions
+      // honest and exercises the duplicate-free rollout path.
+      await pool.query(planMigration);
 
       const issuer = "https://recovery-funnel-test.invalid";
       process.env.ISSUER_URL = issuer;
@@ -472,6 +481,142 @@ test(
 
         await postRecovery(baseUrl, "/api/recovery/plan/generate", {}, survivorCookie);
         await postRecovery(baseUrl, "/api/recovery/plan/generate", {}, survivorCookie);
+
+        // Exercise the rollout itself, not only the schema declaration. A
+        // clean database should install the index, while legacy duplicates
+        // should stop the migration without deleting or rewriting either
+        // plan. The index is restored before the route coverage continues.
+        const existingIndex = await pool.query(`
+          SELECT to_regclass('public.survivor_plans_assessment_unique') AS index_name
+        `);
+        const hadPlanAssessmentIndex = Boolean(
+          (existingIndex as { rows?: Array<{ index_name: string | null }> }).rows?.[0]?.index_name,
+        );
+        const legacyAssessmentResult = await db.execute(sql`
+          SELECT COALESCE(MAX(id), 0)::int + 100000 AS id
+            FROM sasquatch_assessments
+        `);
+        const legacyAssessmentId = Number(
+          (legacyAssessmentResult.rows[0] as { id: number | string }).id,
+        );
+
+        let legacyPlanIds: number[] = [];
+        try {
+          await pool.query('DROP INDEX IF EXISTS "survivor_plans_assessment_unique"');
+          await pool.query(planMigration);
+          const cleanIndex = await pool.query(`
+            SELECT to_regclass('public.survivor_plans_assessment_unique') AS index_name
+          `);
+          assert.ok(
+            (cleanIndex as { rows?: Array<{ index_name: string | null }> }).rows?.[0]?.index_name,
+            "clean recovery-plan migration did not create its unique index",
+          );
+
+          await pool.query('DROP INDEX IF EXISTS "survivor_plans_assessment_unique"');
+          const insertedLegacyPlans = await db.insert(survivorPlans).values([
+            {
+              userId: survivorId,
+              assessmentId: legacyAssessmentId,
+              plan: { source: "legacy-first" },
+            },
+            {
+              userId: survivorId,
+              assessmentId: legacyAssessmentId,
+              plan: { source: "legacy-second" },
+            },
+          ]).returning({ id: survivorPlans.id });
+          legacyPlanIds = insertedLegacyPlans.map(({ id }) => id);
+
+          await assert.rejects(
+            () => pool.query(planMigration),
+            (error: unknown) => {
+              const databaseError = error as {
+                message?: string;
+                detail?: string;
+                hint?: string;
+              };
+              const diagnostics = [
+                databaseError.message,
+                databaseError.detail,
+                databaseError.hint,
+              ]
+                .filter(Boolean)
+                .join(" ");
+              assert.match(diagnostics, /legacy duplicate plans found/i);
+              assert.match(diagnostics, new RegExp(String(legacyAssessmentId)));
+              assert.match(diagnostics, /preserve every plan row/i);
+              return true;
+            },
+          );
+
+          const legacyRows = await db.execute(sql`
+            SELECT assessment_id, plan
+              FROM survivor_plans
+             WHERE user_id = ${survivorId}
+               AND assessment_id = ${legacyAssessmentId}
+             ORDER BY id
+          `);
+          assert.equal(legacyRows.rows.length, 2);
+          assert.deepEqual(
+            legacyRows.rows.map((row) => (row as { plan: { source: string } }).plan.source),
+            ["legacy-first", "legacy-second"],
+          );
+          const failedIndex = await pool.query(`
+            SELECT to_regclass('public.survivor_plans_assessment_unique') AS index_name
+          `);
+          assert.equal(
+            (failedIndex as { rows?: Array<{ index_name: string | null }> }).rows?.[0]?.index_name ?? null,
+            null,
+            "legacy duplicate preflight should fail before creating the unique index",
+          );
+
+          // The reviewed remediation is deliberately non-destructive: keep
+          // both plan rows, but unlink the duplicate association from one.
+          await db.execute(sql`
+            UPDATE survivor_plans
+               SET assessment_id = NULL
+             WHERE id = (
+               SELECT MAX(id)
+                 FROM survivor_plans
+                WHERE user_id = ${survivorId}
+                  AND assessment_id = ${legacyAssessmentId}
+             )
+          `);
+          await pool.query(planMigration);
+          const remediatedIndex = await pool.query(`
+            SELECT to_regclass('public.survivor_plans_assessment_unique') AS index_name
+          `);
+          assert.ok(
+            (remediatedIndex as { rows?: Array<{ index_name: string | null }> }).rows?.[0]?.index_name,
+            "reviewed legacy remediation should allow the unique index to be created",
+          );
+          const remediatedRows = await db.execute(sql`
+            SELECT COUNT(*)::int AS total,
+                   COUNT(assessment_id)::int AS linked
+              FROM survivor_plans
+             WHERE user_id = ${survivorId}
+               AND id IN (${sql.join(legacyPlanIds.map((id) => sql`${id}`), sql`, `)})
+          `);
+          const remediatedRow = remediatedRows.rows[0] as {
+            total: number | string;
+            linked: number | string;
+          };
+          assert.deepEqual(
+            {
+              total: Number(remediatedRow.total),
+              linked: Number(remediatedRow.linked),
+            },
+            { total: 2, linked: 1 },
+          );
+        } finally {
+          if (legacyPlanIds.length > 0) {
+            await db.delete(survivorPlans).where(inArray(survivorPlans.id, legacyPlanIds));
+          }
+          await pool.query('DROP INDEX IF EXISTS "survivor_plans_assessment_unique"');
+          if (hadPlanAssessmentIndex) {
+            await pool.query(planMigration);
+          }
+        }
       } finally {
         globalThis.fetch = originalFetch;
         if (originalGeminiKey === undefined) {
