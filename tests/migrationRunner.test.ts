@@ -1,5 +1,9 @@
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import assert from "node:assert/strict";
+import { join } from "node:path";
 import test from "node:test";
+import { randomUUID } from "node:crypto";
+import { tmpdir } from "node:os";
 import { createDisposablePostgres } from "./disposablePostgres";
 import { applyMigrationFiles } from "./migrationRunner";
 
@@ -30,6 +34,78 @@ test(
       );
     } finally {
       await database.stop();
+    }
+  },
+);
+
+
+test(
+  "rolls back a migration when a later statement fails and allows a retry",
+  { skip: !integrationEnabled, timeout: 120_000 },
+  async () => {
+    const database = await createDisposablePostgres();
+    const migrationDirectory = await mkdtemp(
+      join(tmpdir(), "migration-runner-failure-"),
+    );
+    const tableName = `migration_runner_rollback_${randomUUID().replaceAll("-", "")}`;
+    const migrationFilename = "0001_failing_probe.sql";
+    const migrationPath = join(migrationDirectory, migrationFilename);
+    const createTableStatement = `CREATE TABLE "${tableName}" (id integer);`;
+    const failingStatement = "SELECT migration_runner_missing_function();";
+
+    try {
+      await writeFile(
+        migrationPath,
+        `${createTableStatement}\n--> statement-breakpoint\n${failingStatement}\n`,
+      );
+
+      await assert.rejects(
+        applyMigrationFiles(
+          database.pool,
+          new URL("./", `file://${migrationDirectory}/`),
+        ),
+        (error: unknown) => {
+          assert.ok(error instanceof Error);
+          assert.match(
+            error.message,
+            new RegExp(`Migration ${migrationFilename} failed at statement 2:`),
+          );
+          assert.match(
+            error.message,
+            new RegExp(failingStatement.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+          );
+          assert.match(
+            error.message,
+            /function migration_runner_missing_function\(\) does not exist/,
+          );
+          return true;
+        },
+      );
+
+      const rolledBack = await database.pool.query<{ relation: string | null }>(
+        "SELECT to_regclass($1) AS relation",
+        [`public.${tableName}`],
+      );
+      assert.equal(
+        rolledBack.rows[0]?.relation,
+        null,
+        "the object created before the failure should be rolled back",
+      );
+
+      await writeFile(migrationPath, `${createTableStatement}\n`);
+      await applyMigrationFiles(
+        database.pool,
+        new URL("./", `file://${migrationDirectory}/`),
+      );
+
+      const retried = await database.pool.query<{ relation: string | null }>(
+        "SELECT to_regclass($1) AS relation",
+        [`public.${tableName}`],
+      );
+      assert.equal(retried.rows[0]?.relation, tableName);
+    } finally {
+      await database.stop();
+      await rm(migrationDirectory, { recursive: true, force: true });
     }
   },
 );
