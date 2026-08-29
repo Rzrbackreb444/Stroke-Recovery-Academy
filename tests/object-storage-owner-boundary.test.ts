@@ -399,6 +399,61 @@ test("journal sharing toggles voice-note privacy through the update route", asyn
   assert.equal(ownerResponse.headers["Cache-Control"], "private, max-age=3600");
 });
 
+test("journal sharing toggles photo privacy through the update route", async () => {
+  const file = new MemoryFile("uploads/journal-photo");
+  objects.set(OBJECT_PATH, file);
+  journalEntry = {
+    ...journalEntry,
+    is_shared: false,
+    photo_url: OBJECT_PATH,
+  };
+
+  const shareResponse = await invoke(journalPatchHandler, {
+    params: { id: String(journalEntry.id) },
+    body: { isShared: true },
+    user: { id: OWNER_ID },
+  });
+  assert.equal(shareResponse.statusCode, 200);
+  assert.deepEqual(shareResponse.body, { ...journalEntry });
+
+  // The real journal update route makes the photo readable to an anonymous
+  // community viewer.
+  const sharedResponse = await invoke(objectHandler, {
+    path: OBJECT_PATH,
+  });
+  assert.equal(sharedResponse.statusCode, 200);
+  assert.equal(sharedResponse.served, true);
+  assert.equal(sharedResponse.headers["Content-Type"], "image/png");
+  assert.equal(sharedResponse.headers["Cache-Control"], "public, max-age=3600");
+
+  const revokeResponse = await invoke(journalPatchHandler, {
+    params: { id: String(journalEntry.id) },
+    body: { isShared: false },
+    user: { id: OWNER_ID },
+  });
+  assert.equal(revokeResponse.statusCode, 200);
+  assert.deepEqual(revokeResponse.body, { ...journalEntry });
+
+  // Revoking through the same journal route must lock the photo back to its
+  // owner, so another survivor still receives a not-found response.
+  const otherResponse = await invoke(objectHandler, {
+    path: OBJECT_PATH,
+    user: { id: OTHER_ID },
+  });
+  assert.equal(otherResponse.statusCode, 404);
+  assert.equal(otherResponse.served, false);
+  assert.deepEqual(otherResponse.body, { error: "Object not found" });
+
+  const ownerResponse = await invoke(objectHandler, {
+    path: OBJECT_PATH,
+    user: { id: OWNER_ID },
+  });
+  assert.equal(ownerResponse.statusCode, 200);
+  assert.equal(ownerResponse.served, true);
+  assert.equal(ownerResponse.headers["Content-Type"], "image/png");
+  assert.equal(ownerResponse.headers["Cache-Control"], "private, max-age=3600");
+});
+
 test("upload intent lookup distinguishes the owner, expiry, and unknown paths", async () => {
   const service = new ObjectStorageService();
   intentRows = [intentFor()];
