@@ -107,7 +107,7 @@ export async function recordRecoveryFunnelEvent(
   userId: string,
   eventType: RecoveryFunnelEventType,
   metadata: Record<string, unknown> = {},
-  executor: { execute: (query: unknown) => Promise<unknown> } = db as any,
+  executor: { execute: (query: any) => any } = db as any,
 ): Promise<void> {
   if (!EVENT_TYPES.includes(eventType)) {
     throw new Error(`Unknown recovery funnel event: ${eventType}`);

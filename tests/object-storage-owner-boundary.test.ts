@@ -11,6 +11,7 @@ import {
 } from "../server/replit_integrations/object_storage/objectStorage";
 import { registerObjectStorageRoutes } from "../server/replit_integrations/object_storage/routes";
 import { registerJournalMediaRoutes } from "../server/journalMediaRoutes";
+import { registerJournalUpdateRoute } from "../server/recoveryJournalUpdateRoute";
 import { setObjectAclPolicy } from "../server/replit_integrations/object_storage/objectAcl";
 
 const OWNER_ID = "survivor-a";
@@ -222,6 +223,62 @@ const objectHandler = objectGetRoutes["/objects/:objectPath(*)"];
 const photoFinalizeHandler =
   journalPostRoutes["/api/recovery/journal/photo/finalize"].at(-1);
 
+const journalPatchRoutes: Record<string, any[]> = {};
+const journalPatchApp = {
+  patch: (path: string, ...handlers: any[]) => {
+    journalPatchRoutes[path] = handlers;
+  },
+};
+let journalEntry = {
+  id: 42,
+  user_id: OWNER_ID,
+  is_shared: false,
+  voice_url: VOICE_OBJECT_PATH,
+};
+registerJournalUpdateRoute(
+  journalPatchApp as any,
+  (_req: any, _res: any, next: any) => next(),
+  {
+    storage: {
+      updateJournalEntry: async (id, userId, updates) => {
+        if (id !== journalEntry.id || userId !== OWNER_ID) return undefined;
+        journalEntry = {
+          ...journalEntry,
+          is_shared: updates.isShared,
+        };
+        return journalEntry;
+      },
+    },
+  },
+);
+const journalPatchHandler = journalPatchRoutes["/api/recovery/journal/:id"].at(-1);
+
+const failedJournalPatchRoutes: Record<string, any[]> = {};
+const failedJournalPatchApp = {
+  patch: (path: string, ...handlers: any[]) => {
+    failedJournalPatchRoutes[path] = handlers;
+  },
+};
+registerJournalUpdateRoute(
+  failedJournalPatchApp as any,
+  (_req: any, _res: any, next: any) => next(),
+  {
+    storage: {
+      updateJournalEntry: async (id, userId, updates) => ({
+        id,
+        user_id: userId,
+        is_shared: updates.isShared,
+        photo_url: OBJECT_PATH,
+      }),
+    },
+    syncMediaAcl: async () => {
+      throw new Error("object storage unavailable");
+    },
+  },
+);
+const failedJournalPatchHandler =
+  failedJournalPatchRoutes["/api/recovery/journal/:id"].at(-1);
+
 test("an issued upload is readable only by its owner before ACL finalization", async () => {
   const file = new MemoryFile("uploads/journal-photo");
   objects.set(OBJECT_PATH, file);
@@ -318,17 +375,31 @@ test("revoking journal sharing restores owner-only access and private caching", 
   assert.equal(ownerResponse.headers["Cache-Control"], "private, max-age=3600");
 });
 
-test("revoking journal voice-note sharing restores owner-only access and private caching", async () => {
+test("journal sharing reports media ACL failures instead of returning success", async () => {
+  const response = await invoke(failedJournalPatchHandler, {
+    params: { id: "42" },
+    body: { isShared: true },
+    user: { id: OWNER_ID },
+  });
+
+  assert.equal(response.statusCode, 500);
+  assert.deepEqual(response.body, { message: "Failed to update journal entry" });
+});
+
+test("journal sharing toggles voice-note privacy through the update route", async () => {
   const file = new MemoryFile("uploads/journal-voice", "audio/webm", 11);
   objects.set(VOICE_OBJECT_PATH, file);
-  const objectStorage = new ObjectStorageService();
 
-  // A shared voice note must be readable to an anonymous community viewer.
-  await objectStorage.trySetObjectEntityAclPolicy(
-    VOICE_OBJECT_PATH,
-    { owner: OWNER_ID, visibility: "public" },
-    { requireUploadIntent: false },
-  );
+  const shareResponse = await invoke(journalPatchHandler, {
+    params: { id: String(journalEntry.id) },
+    body: { isShared: true },
+    user: { id: OWNER_ID },
+  });
+  assert.equal(shareResponse.statusCode, 200);
+  assert.deepEqual(shareResponse.body, { ...journalEntry });
+
+  // The real journal update route makes the voice note readable to an
+  // anonymous community viewer.
   const sharedResponse = await invoke(objectHandler, {
     path: VOICE_OBJECT_PATH,
   });
@@ -337,12 +408,16 @@ test("revoking journal voice-note sharing restores owner-only access and private
   assert.equal(sharedResponse.headers["Content-Type"], "audio/webm");
   assert.equal(sharedResponse.headers["Cache-Control"], "public, max-age=3600");
 
-  // Revoking the journal share must lock the audio back to its owner.
-  await objectStorage.trySetObjectEntityAclPolicy(
-    VOICE_OBJECT_PATH,
-    { owner: OWNER_ID, visibility: "private" },
-    { requireUploadIntent: false },
-  );
+  const revokeResponse = await invoke(journalPatchHandler, {
+    params: { id: String(journalEntry.id) },
+    body: { isShared: false },
+    user: { id: OWNER_ID },
+  });
+  assert.equal(revokeResponse.statusCode, 200);
+  assert.deepEqual(revokeResponse.body, { ...journalEntry });
+
+  // Revoking through the same journal route must lock the audio back to its
+  // owner, so another survivor still receives a not-found response.
   const otherResponse = await invoke(objectHandler, {
     path: VOICE_OBJECT_PATH,
     user: { id: OTHER_ID },
@@ -358,6 +433,61 @@ test("revoking journal voice-note sharing restores owner-only access and private
   assert.equal(ownerResponse.statusCode, 200);
   assert.equal(ownerResponse.served, true);
   assert.equal(ownerResponse.headers["Content-Type"], "audio/webm");
+  assert.equal(ownerResponse.headers["Cache-Control"], "private, max-age=3600");
+});
+
+test("journal sharing toggles photo privacy through the update route", async () => {
+  const file = new MemoryFile("uploads/journal-photo");
+  objects.set(OBJECT_PATH, file);
+  journalEntry = {
+    ...journalEntry,
+    is_shared: false,
+    photo_url: OBJECT_PATH,
+  };
+
+  const shareResponse = await invoke(journalPatchHandler, {
+    params: { id: String(journalEntry.id) },
+    body: { isShared: true },
+    user: { id: OWNER_ID },
+  });
+  assert.equal(shareResponse.statusCode, 200);
+  assert.deepEqual(shareResponse.body, { ...journalEntry });
+
+  // The real journal update route makes the photo readable to an anonymous
+  // community viewer.
+  const sharedResponse = await invoke(objectHandler, {
+    path: OBJECT_PATH,
+  });
+  assert.equal(sharedResponse.statusCode, 200);
+  assert.equal(sharedResponse.served, true);
+  assert.equal(sharedResponse.headers["Content-Type"], "image/png");
+  assert.equal(sharedResponse.headers["Cache-Control"], "public, max-age=3600");
+
+  const revokeResponse = await invoke(journalPatchHandler, {
+    params: { id: String(journalEntry.id) },
+    body: { isShared: false },
+    user: { id: OWNER_ID },
+  });
+  assert.equal(revokeResponse.statusCode, 200);
+  assert.deepEqual(revokeResponse.body, { ...journalEntry });
+
+  // Revoking through the same journal route must lock the photo back to its
+  // owner, so another survivor still receives a not-found response.
+  const otherResponse = await invoke(objectHandler, {
+    path: OBJECT_PATH,
+    user: { id: OTHER_ID },
+  });
+  assert.equal(otherResponse.statusCode, 404);
+  assert.equal(otherResponse.served, false);
+  assert.deepEqual(otherResponse.body, { error: "Object not found" });
+
+  const ownerResponse = await invoke(objectHandler, {
+    path: OBJECT_PATH,
+    user: { id: OWNER_ID },
+  });
+  assert.equal(ownerResponse.statusCode, 200);
+  assert.equal(ownerResponse.served, true);
+  assert.equal(ownerResponse.headers["Content-Type"], "image/png");
   assert.equal(ownerResponse.headers["Cache-Control"], "private, max-age=3600");
 });
 
@@ -512,13 +642,14 @@ test("protected journal routes claim new media before persisting it and secure P
   );
 
   const journalAclSyncStart = routesSource.indexOf("const syncJournalMediaAcl");
-  const journalAclSyncEnd = routesSource.indexOf(
-    "const secureNewJournalMedia",
-    journalAclSyncStart,
+  assert.equal(journalAclSyncStart, -1);
+  assert.match(routesSource, /registerJournalUpdateRoute\(app,\s*isAuthenticated\)/);
+  const journalUpdateSource = readFileSync(
+    "server/recoveryJournalUpdateRoute.ts",
+    "utf8",
   );
-  assert.ok(journalAclSyncStart >= 0 && journalAclSyncEnd > journalAclSyncStart);
   assert.match(
-    routesSource.slice(journalAclSyncStart, journalAclSyncEnd),
+    journalUpdateSource,
     /entry\?\.voiceUrl\s*\?\?\s*entry\?\.voice_url/,
   );
 });

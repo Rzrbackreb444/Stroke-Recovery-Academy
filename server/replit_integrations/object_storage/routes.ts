@@ -8,6 +8,7 @@ import {
 import { getObjectAclPolicy, ObjectPermission } from "./objectAcl";
 import { isAuthenticated } from "../../replitAuth";
 import { getUserId } from "../../lib/authUtils";
+import { requireAdmin } from "../../middleware/requireAdmin";
 import {
   normalizeUploadMetadata,
   UploadMetadataValidationError,
@@ -93,6 +94,21 @@ export function registerObjectStorageRoutes(app: Express): void {
     UPLOAD_INTENT_CLEANUP_INTERVAL_MS,
   );
   cleanupTimer.unref?.();
+
+  app.get(
+    "/api/admin/object-storage/upload-cleanup-health",
+    isAuthenticated,
+    requireAdmin,
+    async (_req, res) => {
+      try {
+        const health = await objectStorageService.getUploadIntentCleanupHealth();
+        res.json(health);
+      } catch (error) {
+        console.error("[object-storage] failed to read upload cleanup health:", error);
+        res.status(500).json({ message: "Failed to read upload cleanup health" });
+      }
+    },
+  );
 
   /**
    * Request a presigned URL for file upload.

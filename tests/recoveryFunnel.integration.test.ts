@@ -6,6 +6,7 @@
  * is skipped so the fast, database-free test suite remains usable.
  */
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { createServer, type Server } from "node:http";
 import express from "express";
 import test from "node:test";
@@ -81,8 +82,51 @@ async function postRecovery(
   assert.equal(response.status, 200, `${path} failed: ${JSON.stringify(body)}`);
 }
 
+async function installAssessmentFunnelFailure(pool: { query: (text: string) => Promise<unknown> }): Promise<void> {
+  await pool.query(`
+    CREATE OR REPLACE FUNCTION recovery_funnel_test_fail_assessment() RETURNS trigger
+    LANGUAGE plpgsql AS $$
+    BEGIN
+      RAISE EXCEPTION 'recovery funnel injected failure';
+    END;
+    $$;
+    DROP TRIGGER IF EXISTS recovery_funnel_test_fail_assessment ON recovery_funnel_events;
+    CREATE TRIGGER recovery_funnel_test_fail_assessment
+    BEFORE INSERT ON recovery_funnel_events
+    FOR EACH ROW EXECUTE FUNCTION recovery_funnel_test_fail_assessment();
+  `);
+}
+
+async function removeAssessmentFunnelFailure(pool: { query: (text: string) => Promise<unknown> }): Promise<void> {
+  await pool.query("DROP TRIGGER IF EXISTS recovery_funnel_test_fail_assessment ON recovery_funnel_events");
+  await pool.query("DROP FUNCTION IF EXISTS recovery_funnel_test_fail_assessment()");
+}
+
+async function installPlanFunnelFailure(pool: { query: (text: string) => Promise<unknown> }): Promise<void> {
+  await pool.query(`
+    CREATE OR REPLACE FUNCTION recovery_funnel_test_fail_plan() RETURNS trigger
+    LANGUAGE plpgsql AS $$
+    BEGIN
+      IF NEW.event_type IN ('plan_generated', 'onboarding_completed') THEN
+        RAISE EXCEPTION 'recovery funnel injected plan failure';
+      END IF;
+      RETURN NEW;
+    END;
+    $$;
+    DROP TRIGGER IF EXISTS recovery_funnel_test_fail_plan ON recovery_funnel_events;
+    CREATE TRIGGER recovery_funnel_test_fail_plan
+    BEFORE INSERT ON recovery_funnel_events
+    FOR EACH ROW EXECUTE FUNCTION recovery_funnel_test_fail_plan();
+  `);
+}
+
+async function removePlanFunnelFailure(pool: { query: (text: string) => Promise<unknown> }): Promise<void> {
+  await pool.query("DROP TRIGGER IF EXISTS recovery_funnel_test_fail_plan ON recovery_funnel_events");
+  await pool.query("DROP FUNCTION IF EXISTS recovery_funnel_test_fail_plan()");
+}
+
 test(
-  "authenticated recovery retries count one survivor per funnel milestone",
+  "authenticated recovery retries and concurrent reassessments count one survivor per funnel milestone",
   { skip: !canRun },
   async () => {
     const { db, pool } = await import("../server/db");
@@ -105,8 +149,8 @@ test(
     const { registerRoutes } = await import("../server/routes");
     const { ensureRecoveryFunnelTable } = await import("../server/services/recoveryFunnelService");
     const { hashPassword } = await import("../server/multiProviderAuth");
-    const { users } = await import("../shared/schema");
-    const { sql } = await import("drizzle-orm");
+    const { survivorPlans, users } = await import("../shared/schema");
+      const { inArray, sql } = await import("drizzle-orm");
     const { randomUUID } = await import("node:crypto");
     globalThis.setInterval = originalSetInterval;
     globalThis.setTimeout = originalSetTimeout;
@@ -118,6 +162,8 @@ test(
     const adminEmail = `${adminId}@example.test`;
     const password = "recovery-funnel-test-password";
     let appServer: Server | undefined;
+    let assessmentFunnelFailureInstalled = false;
+    let planFunnelFailureInstalled = false;
 
     try {
       await db.insert(users).values([
@@ -136,6 +182,14 @@ test(
           role: "admin",
         },
       ]);
+      const planMigration = await readFile(
+        new URL("../migrations/0011_recovery_plan_assessment_unique.sql", import.meta.url),
+        "utf8",
+      );
+      // The integration database may have the schema table but not the latest
+      // generated migration. Applying it here keeps the route assertions
+      // honest and exercises the duplicate-free rollout path.
+      await pool.query(planMigration);
 
       const issuer = "https://recovery-funnel-test.invalid";
       process.env.ISSUER_URL = issuer;
@@ -208,6 +262,36 @@ test(
         memory: 3,
         notes: "integration retry coverage",
       };
+
+      // The snapshot and its milestone must be all-or-nothing. A trigger is
+      // used here instead of mocking the service so this exercises the same
+      // database transaction as production.
+      await ensureRecoveryFunnelTable();
+      await installAssessmentFunnelFailure(pool);
+      assessmentFunnelFailureInstalled = true;
+      const failedAssessment = await jsonRequest(
+        baseUrl,
+        "/api/recovery/assessment",
+        { method: "POST", body: JSON.stringify(assessment) },
+        survivorCookie,
+      );
+      assert.equal(failedAssessment.response.status, 500);
+      const rolledBackAssessment = await db.execute(sql`
+        SELECT COUNT(*)::int AS count
+          FROM sasquatch_assessments
+         WHERE user_id = ${survivorId}
+      `);
+      const rolledBackMilestone = await db.execute(sql`
+        SELECT COUNT(*)::int AS count
+          FROM recovery_funnel_events
+         WHERE user_id = ${survivorId}
+           AND event_type = 'assessment_completed'
+      `);
+      assert.equal(Number((rolledBackAssessment.rows[0] as { count: number | string }).count), 0);
+      assert.equal(Number((rolledBackMilestone.rows[0] as { count: number | string }).count), 0);
+      await removeAssessmentFunnelFailure(pool);
+      assessmentFunnelFailureInstalled = false;
+
       await postRecovery(baseUrl, "/api/recovery/assessment", assessment, survivorCookie);
       await postRecovery(baseUrl, "/api/recovery/assessment", assessment, survivorCookie);
 
@@ -220,37 +304,326 @@ test(
            SET taken_at = NOW() - INTERVAL '2 days'
          WHERE user_id = ${survivorId}
       `);
-      const reassessment = {
+      const reassessmentA = {
         physical: 6,
         cognitive: 4,
         speech: 7,
         emotional: 5,
         memory: 8,
-        notes: "integration later reassessment coverage",
+        notes: "integration simultaneous reassessment A",
       };
-      await postRecovery(baseUrl, "/api/recovery/assessment", reassessment, survivorCookie);
+      const reassessmentB = {
+        physical: 3,
+        cognitive: 8,
+        speech: 5,
+        emotional: 9,
+        memory: 2,
+        notes: "integration simultaneous reassessment B",
+      };
+      await Promise.all([
+        postRecovery(baseUrl, "/api/recovery/assessment", reassessmentA, survivorCookie),
+        postRecovery(baseUrl, "/api/recovery/assessment", reassessmentB, survivorCookie),
+      ]);
       const assessmentRows = await db.execute(sql`
-        SELECT COUNT(*)::int AS count
+        SELECT physical, cognitive, speech, emotional, memory, notes
           FROM sasquatch_assessments
          WHERE user_id = ${survivorId}
+         ORDER BY taken_at, id
       `);
-      assert.equal(Number((assessmentRows.rows[0] as { count: number | string }).count), 2);
+      assert.equal(assessmentRows.rows.length, 3);
+      const concurrentSnapshots = assessmentRows.rows
+        .filter((row) => {
+          const snapshot = row as { notes: string | null };
+          return snapshot.notes === reassessmentA.notes || snapshot.notes === reassessmentB.notes;
+        })
+        .map((row) => {
+          const snapshot = row as {
+            physical: number | string;
+            cognitive: number | string;
+            speech: number | string;
+            emotional: number | string;
+            memory: number | string;
+            notes: string | null;
+          };
+          return [
+            Number(snapshot.physical),
+            Number(snapshot.cognitive),
+            Number(snapshot.speech),
+            Number(snapshot.emotional),
+            Number(snapshot.memory),
+            snapshot.notes,
+          ];
+        })
+        .sort((left, right) => String(left[5]).localeCompare(String(right[5])));
+      assert.deepEqual(concurrentSnapshots, [
+        [6, 4, 7, 5, 8, reassessmentA.notes],
+        [3, 8, 5, 9, 2, reassessmentB.notes],
+      ]);
 
       // Keep the plan test deterministic even when the workspace has a Gemini
       // secret configured. The route should use its documented fallback.
       const originalFetch = globalThis.fetch;
+      const originalGeminiKey = process.env.GEMINI_API_KEY;
+      process.env.GEMINI_API_KEY = "recovery-funnel-test-key";
+      let concurrentPlanRequests = 0;
+      let holdConcurrentPlanRequests = false;
+      let releaseConcurrentPlanRequests!: () => void;
+      const concurrentPlanRequestsReady = new Promise<void>((resolve) => {
+        releaseConcurrentPlanRequests = resolve;
+      });
       globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
         const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
         if (url.includes("generativelanguage.googleapis.com")) {
+          if (holdConcurrentPlanRequests) {
+            concurrentPlanRequests += 1;
+            if (concurrentPlanRequests === 2) {
+              releaseConcurrentPlanRequests();
+            }
+            await concurrentPlanRequestsReady;
+          }
           return new Response("", { status: 503 });
         }
         return originalFetch(input, init);
       }) as typeof fetch;
       try {
+        // The generated plan and its milestones must be all-or-nothing. A
+        // trigger failure proves the funnel write runs inside the plan
+        // transaction rather than after it.
+        await ensureRecoveryFunnelTable();
+        await installPlanFunnelFailure(pool);
+        planFunnelFailureInstalled = true;
+        const failedPlan = await jsonRequest(
+          baseUrl,
+          "/api/recovery/plan/generate",
+          { method: "POST", body: JSON.stringify({}) },
+          survivorCookie,
+        );
+        assert.equal(failedPlan.response.status, 500);
+        const rolledBackPlan = await db.execute(sql`
+          SELECT COUNT(*)::int AS count
+            FROM survivor_plans
+           WHERE user_id = ${survivorId}
+        `);
+        const rolledBackPlanMilestones = await db.execute(sql`
+          SELECT COUNT(*)::int AS count
+            FROM recovery_funnel_events
+           WHERE user_id = ${survivorId}
+             AND event_type IN ('plan_generated', 'onboarding_completed')
+        `);
+        assert.equal(Number((rolledBackPlan.rows[0] as { count: number | string }).count), 0);
+        assert.equal(Number((rolledBackPlanMilestones.rows[0] as { count: number | string }).count), 0);
+        await removePlanFunnelFailure(pool);
+        planFunnelFailureInstalled = false;
+
+        // Hold both plan requests in the same generation step so neither can
+        // accidentally pass only because the other happened to finish first.
+        holdConcurrentPlanRequests = true;
+        const concurrentPlans = await Promise.all([
+          jsonRequest(
+            baseUrl,
+            "/api/recovery/plan/generate",
+            { method: "POST", body: JSON.stringify({}) },
+            survivorCookie,
+          ),
+          jsonRequest(
+            baseUrl,
+            "/api/recovery/plan/generate",
+            { method: "POST", body: JSON.stringify({}) },
+            survivorCookie,
+          ),
+        ]);
+        holdConcurrentPlanRequests = false;
+        for (const result of concurrentPlans) {
+          assert.equal(result.response.status, 200, `concurrent plan failed: ${JSON.stringify(result.body)}`);
+        }
+        assert.deepEqual(concurrentPlans[0].body.plan, concurrentPlans[1].body.plan);
+        assert.equal(concurrentPlans[0].body.generatedAt, concurrentPlans[1].body.generatedAt);
+
+        const planState = await db.execute(sql`
+          SELECT COUNT(*)::int AS count,
+                 COUNT(DISTINCT assessment_id)::int AS assessments
+            FROM survivor_plans
+           WHERE user_id = ${survivorId}
+             AND assessment_id = (
+               SELECT id
+                 FROM sasquatch_assessments
+                WHERE user_id = ${survivorId}
+                ORDER BY taken_at DESC, id DESC
+                LIMIT 1
+             )
+        `);
+        const planStateRow = planState.rows[0] as { count: number | string; assessments: number | string };
+        assert.deepEqual(
+          {
+            count: Number(planStateRow.count),
+            assessments: Number(planStateRow.assessments),
+          },
+          { count: 1, assessments: 1 },
+        );
+        const planMilestones = await db.execute(sql`
+          SELECT event_type, COUNT(*)::int AS count
+            FROM recovery_funnel_events
+           WHERE user_id = ${survivorId}
+             AND event_type IN ('plan_generated', 'onboarding_completed')
+           GROUP BY event_type
+           ORDER BY event_type
+        `);
+        assert.deepEqual(
+          planMilestones.rows.map((row) => ({
+            event_type: String((row as { event_type: string }).event_type),
+            count: Number((row as { count: number | string }).count),
+          })),
+          [
+            { event_type: "onboarding_completed", count: 1 },
+            { event_type: "plan_generated", count: 1 },
+          ],
+        );
+
         await postRecovery(baseUrl, "/api/recovery/plan/generate", {}, survivorCookie);
         await postRecovery(baseUrl, "/api/recovery/plan/generate", {}, survivorCookie);
+
+        // Exercise the rollout itself, not only the schema declaration. A
+        // clean database should install the index, while legacy duplicates
+        // should stop the migration without deleting or rewriting either
+        // plan. The index is restored before the route coverage continues.
+        const existingIndex = await pool.query(`
+          SELECT to_regclass('public.survivor_plans_assessment_unique') AS index_name
+        `);
+        const hadPlanAssessmentIndex = Boolean(
+          (existingIndex as { rows?: Array<{ index_name: string | null }> }).rows?.[0]?.index_name,
+        );
+        const legacyAssessmentResult = await db.execute(sql`
+          SELECT COALESCE(MAX(id), 0)::int + 100000 AS id
+            FROM sasquatch_assessments
+        `);
+        const legacyAssessmentId = Number(
+          (legacyAssessmentResult.rows[0] as { id: number | string }).id,
+        );
+
+        let legacyPlanIds: number[] = [];
+        try {
+          await pool.query('DROP INDEX IF EXISTS "survivor_plans_assessment_unique"');
+          await pool.query(planMigration);
+          const cleanIndex = await pool.query(`
+            SELECT to_regclass('public.survivor_plans_assessment_unique') AS index_name
+          `);
+          assert.ok(
+            (cleanIndex as { rows?: Array<{ index_name: string | null }> }).rows?.[0]?.index_name,
+            "clean recovery-plan migration did not create its unique index",
+          );
+
+          await pool.query('DROP INDEX IF EXISTS "survivor_plans_assessment_unique"');
+          const insertedLegacyPlans = await db.insert(survivorPlans).values([
+            {
+              userId: survivorId,
+              assessmentId: legacyAssessmentId,
+              plan: { source: "legacy-first" },
+            },
+            {
+              userId: survivorId,
+              assessmentId: legacyAssessmentId,
+              plan: { source: "legacy-second" },
+            },
+          ]).returning({ id: survivorPlans.id });
+          legacyPlanIds = insertedLegacyPlans.map(({ id }) => id);
+
+          await assert.rejects(
+            () => pool.query(planMigration),
+            (error: unknown) => {
+              const databaseError = error as {
+                message?: string;
+                detail?: string;
+                hint?: string;
+              };
+              const diagnostics = [
+                databaseError.message,
+                databaseError.detail,
+                databaseError.hint,
+              ]
+                .filter(Boolean)
+                .join(" ");
+              assert.match(diagnostics, /legacy duplicate plans found/i);
+              assert.match(diagnostics, new RegExp(String(legacyAssessmentId)));
+              assert.match(diagnostics, /preserve every plan row/i);
+              return true;
+            },
+          );
+
+          const legacyRows = await db.execute(sql`
+            SELECT assessment_id, plan
+              FROM survivor_plans
+             WHERE user_id = ${survivorId}
+               AND assessment_id = ${legacyAssessmentId}
+             ORDER BY id
+          `);
+          assert.equal(legacyRows.rows.length, 2);
+          assert.deepEqual(
+            legacyRows.rows.map((row) => (row as { plan: { source: string } }).plan.source),
+            ["legacy-first", "legacy-second"],
+          );
+          const failedIndex = await pool.query(`
+            SELECT to_regclass('public.survivor_plans_assessment_unique') AS index_name
+          `);
+          assert.equal(
+            (failedIndex as { rows?: Array<{ index_name: string | null }> }).rows?.[0]?.index_name ?? null,
+            null,
+            "legacy duplicate preflight should fail before creating the unique index",
+          );
+
+          // The reviewed remediation is deliberately non-destructive: keep
+          // both plan rows, but unlink the duplicate association from one.
+          await db.execute(sql`
+            UPDATE survivor_plans
+               SET assessment_id = NULL
+             WHERE id = (
+               SELECT MAX(id)
+                 FROM survivor_plans
+                WHERE user_id = ${survivorId}
+                  AND assessment_id = ${legacyAssessmentId}
+             )
+          `);
+          await pool.query(planMigration);
+          const remediatedIndex = await pool.query(`
+            SELECT to_regclass('public.survivor_plans_assessment_unique') AS index_name
+          `);
+          assert.ok(
+            (remediatedIndex as { rows?: Array<{ index_name: string | null }> }).rows?.[0]?.index_name,
+            "reviewed legacy remediation should allow the unique index to be created",
+          );
+          const remediatedRows = await db.execute(sql`
+            SELECT COUNT(*)::int AS total,
+                   COUNT(assessment_id)::int AS linked
+              FROM survivor_plans
+             WHERE user_id = ${survivorId}
+               AND id IN (${sql.join(legacyPlanIds.map((id) => sql`${id}`), sql`, `)})
+          `);
+          const remediatedRow = remediatedRows.rows[0] as {
+            total: number | string;
+            linked: number | string;
+          };
+          assert.deepEqual(
+            {
+              total: Number(remediatedRow.total),
+              linked: Number(remediatedRow.linked),
+            },
+            { total: 2, linked: 1 },
+          );
+        } finally {
+          if (legacyPlanIds.length > 0) {
+            await db.delete(survivorPlans).where(inArray(survivorPlans.id, legacyPlanIds));
+          }
+          await pool.query('DROP INDEX IF EXISTS "survivor_plans_assessment_unique"');
+          if (hadPlanAssessmentIndex) {
+            await pool.query(planMigration);
+          }
+        }
       } finally {
         globalThis.fetch = originalFetch;
+        if (originalGeminiKey === undefined) {
+          delete process.env.GEMINI_API_KEY;
+        } else {
+          process.env.GEMINI_API_KEY = originalGeminiKey;
+        }
       }
 
       await postRecovery(baseUrl, "/api/recovery/today/entry", {}, survivorCookie);
@@ -329,6 +702,12 @@ test(
       // discovering the test OIDC issuer), so make teardown independent of
       // whether the route that creates this compatibility table ran.
       await ensureRecoveryFunnelTable();
+      if (assessmentFunnelFailureInstalled) {
+        await removeAssessmentFunnelFailure(pool);
+      }
+      if (planFunnelFailureInstalled) {
+        await removePlanFunnelFailure(pool);
+      }
       await db.execute(sql`DELETE FROM recovery_funnel_events WHERE user_id IN (${survivorId}, ${adminId})`);
       await db.execute(sql`DELETE FROM routine_feedback WHERE user_id IN (${survivorId}, ${adminId})`);
       await db.execute(sql`DELETE FROM routine_completions WHERE user_id IN (${survivorId}, ${adminId})`);

@@ -31,7 +31,8 @@
 
 import { randomUUID } from "node:crypto";
 import { pool as dbPool } from "../server/db";
-import { WebhookHandlers } from "../server/webhookHandlers";
+import { WebhookHandlers, type WebhookDependencies } from "../server/webhookHandlers";
+import { recoveryStripeService } from "../server/recoveryStripeService";
 
 // ── tiny test harness (matches the style of recoveryAnchorSchema.test.ts) ──
 let passed = 0;
@@ -67,9 +68,13 @@ async function cleanup(eventIds: string[]) {
   );
 }
 
-async function tryProcess(payload: any, signature = "t=0,v1=invalid"): Promise<Error | null> {
+async function tryProcess(
+  payload: any,
+  signature = "t=0,v1=invalid",
+  dependencies?: WebhookDependencies,
+): Promise<Error | null> {
   try {
-    await WebhookHandlers.processWebhook(payload, signature, "test-uuid");
+    await WebhookHandlers.processWebhook(payload, signature, "test-uuid", dependencies);
     return null;
   } catch (e: any) {
     return e instanceof Error ? e : new Error(String(e));
@@ -85,6 +90,178 @@ function makePayload(eventId: string, type = "payment_intent.succeeded") {
       data: { object: { id: "pi_test_fake" } },
     }),
   );
+}
+
+function makePowerPointsPayload(eventId: string, giftId: number, paymentIntent: string) {
+  return Buffer.from(
+    JSON.stringify({
+      id: eventId,
+      type: "checkout.session.completed",
+      object: "event",
+      data: {
+        object: {
+          id: `cs_test_${eventId}`,
+          object: "checkout.session",
+          status: "complete",
+          payment_status: "paid",
+          payment_intent: paymentIntent,
+          metadata: {
+            type: "power_points",
+            giftId: String(giftId),
+          },
+        },
+      },
+    }),
+  );
+}
+
+function makeRecoveryPaymentPayload(
+  eventId: string,
+  type: "tip" | "premium_purchase",
+  metadata: Record<string, string>,
+  paymentIntent: string,
+) {
+  return Buffer.from(
+    JSON.stringify({
+      id: eventId,
+      type: "checkout.session.completed",
+      object: "event",
+      data: {
+        object: {
+          id: `cs_test_${eventId}`,
+          object: "checkout.session",
+          status: "complete",
+          payment_status: "paid",
+          amount_total: 2500,
+          payment_intent: paymentIntent,
+          metadata: { ...metadata, type },
+        },
+      },
+    }),
+  );
+}
+
+const noOpSync: WebhookDependencies["sync"] = {
+  async processWebhook() {},
+};
+
+async function createRecoveryPaymentFixture() {
+  const creatorId = `stripe-webhook-creator-${randomUUID()}`;
+  const buyerId = `stripe-webhook-buyer-${randomUUID()}`;
+  const slug = `stripe-webhook-story-${randomUUID()}`;
+
+  await dbPool.query(
+    `INSERT INTO users (id, email, first_name, last_name)
+     VALUES ($1, $2, 'Creator', 'Test'), ($3, $4, 'Buyer', 'Test')`,
+    [creatorId, `${creatorId}@test.invalid`, buyerId, `${buyerId}@test.invalid`],
+  );
+  const story = await dbPool.query(
+    `INSERT INTO recovery_stories
+       (author_id, slug, title, content, status, is_premium, premium_price)
+     VALUES ($1, $2, 'Webhook Test Story', 'Test content', 'published', true, 2500)
+     RETURNING id`,
+    [creatorId, slug],
+  );
+
+  return {
+    creatorId,
+    buyerId,
+    storyId: story.rows[0].id as number,
+    tipPaymentIntent: `pi_test_tip_${randomUUID()}`,
+    premiumPaymentIntent: `pi_test_premium_${randomUUID()}`,
+  };
+}
+
+async function recoveryPaymentCounts(
+  type: "tip" | "premium_purchase",
+  paymentIntent: string,
+) {
+  const table = type === "tip"
+    ? "recovery_creator_tips"
+    : "recovery_premium_purchases";
+  const result = await dbPool.query(
+    `SELECT id, stripe_payment_id
+       FROM ${table}
+      WHERE stripe_payment_id = $1`,
+    [paymentIntent],
+  );
+  return result.rows;
+}
+
+async function cleanupRecoveryPaymentFixture(
+  fixture: Awaited<ReturnType<typeof createRecoveryPaymentFixture>>,
+) {
+  await dbPool.query(
+    `DELETE FROM users WHERE id = ANY($1)`,
+    [[fixture.creatorId, fixture.buyerId]],
+  );
+}
+
+async function createGiftFixture(points = 100) {
+  const senderId = `stripe-webhook-sender-${randomUUID()}`;
+  const receiverId = `stripe-webhook-receiver-${randomUUID()}`;
+  const paymentIntent = `pi_test_${randomUUID()}`;
+
+  await dbPool.query(
+    `INSERT INTO users (id, email, first_name, last_name)
+     VALUES ($1, $2, 'Supporter', 'Test'), ($3, $4, 'Survivor', 'Test')`,
+    [senderId, `${senderId}@test.invalid`, receiverId, `${receiverId}@test.invalid`],
+  );
+  await dbPool.query(
+    `INSERT INTO credit_wallets
+       (user_id, balance, bonus_credits, lifetime_earned, lifetime_spent)
+     VALUES ($1, 0, 0, 0, 0)`,
+    [receiverId],
+  );
+  const gift = await dbPool.query(
+    `INSERT INTO power_point_gifts
+       (sender_id, receiver_id, package_key, points, amount_cents, status)
+     VALUES ($1, $2, 'spark', $3, 500, 'pending')
+     RETURNING id`,
+    [senderId, receiverId, points],
+  );
+
+  return {
+    senderId,
+    receiverId,
+    giftId: gift.rows[0].id as number,
+    paymentIntent,
+  };
+}
+
+async function fixtureCounts(receiverId: string, giftId: number) {
+  const [gift, wallet, ledger] = await Promise.all([
+    dbPool.query(
+      `SELECT id, status, stripe_payment_id
+         FROM power_point_gifts
+        WHERE id = $1`,
+      [giftId],
+    ),
+    dbPool.query(
+      `SELECT bonus_credits, lifetime_earned
+         FROM credit_wallets
+        WHERE user_id = $1`,
+      [receiverId],
+    ),
+    dbPool.query(
+      `SELECT id, reference_type, reference_id, amount
+         FROM credit_ledger
+        WHERE user_id = $1
+          AND reference_type = 'power_point_gift'
+          AND reference_id = $2`,
+      [receiverId, String(giftId)],
+    ),
+  ]);
+
+  return {
+    gift: gift.rows[0] ?? null,
+    wallet: wallet.rows[0] ?? null,
+    ledger: ledger.rows,
+  };
+}
+
+async function cleanupGiftFixture(fixture: Awaited<ReturnType<typeof createGiftFixture>>) {
+  await dbPool.query(`DELETE FROM users WHERE id = ANY($1)`, [[fixture.senderId, fixture.receiverId]]);
 }
 
 // ── tests ─────────────────────────────────────────────────────────────────
@@ -213,6 +390,281 @@ async function run() {
 
     const row = await eventRow(eventId5);
     assert(row?.status === "received", "row left untouched for the in-flight worker");
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  console.log("\n• Paid Power Points fulfillment: concurrent webhook deliveries credit once");
+  const concurrentEventId = `evt_test_${runId}_power_points_concurrent`;
+  created.push(concurrentEventId);
+  const concurrentFixture = await createGiftFixture();
+  try {
+    const payload = makePowerPointsPayload(
+      concurrentEventId,
+      concurrentFixture.giftId,
+      concurrentFixture.paymentIntent,
+    );
+    const dependencies: WebhookDependencies = { sync: noOpSync };
+    const errors = await Promise.all([
+      tryProcess(payload, "test-signature", dependencies),
+      tryProcess(payload, "test-signature", dependencies),
+    ]);
+    assert(errors.every((error) => error === null), "both concurrent deliveries return successfully");
+
+    const counts = await fixtureCounts(concurrentFixture.receiverId, concurrentFixture.giftId);
+    assert(counts.gift?.status === "delivered", "concurrent delivery marks the gift delivered");
+    assert(
+      counts.gift?.stripe_payment_id === concurrentFixture.paymentIntent,
+      "delivered gift keeps the Stripe payment reference",
+    );
+    assert(counts.wallet?.bonus_credits === 100, "receiver gets the Power Points exactly once");
+    assert(counts.wallet?.lifetime_earned === 100, "receiver lifetime credits increase exactly once");
+    assert(counts.ledger.length === 1, "gift creates exactly one credit ledger entry");
+    assert(
+      counts.ledger[0]?.reference_type === "power_point_gift" &&
+        counts.ledger[0]?.reference_id === String(concurrentFixture.giftId) &&
+        counts.ledger[0]?.amount === 100,
+      "the single ledger entry references the delivered gift",
+    );
+    const row = await eventRow(concurrentEventId);
+    assert(row?.status === "processed", "concurrent event ends processed");
+  } finally {
+    await cleanupGiftFixture(concurrentFixture);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  console.log("\n• Failed fulfillment: retry does not duplicate a paid gift or credit");
+  const retryEventId = `evt_test_${runId}_power_points_retry`;
+  created.push(retryEventId);
+  const retryFixture = await createGiftFixture();
+  try {
+    let failAfterFirstFulfillment = true;
+    const dependencies: WebhookDependencies = {
+      sync: noOpSync,
+      processSuccessfulPayment: async (session) => {
+        await recoveryStripeService.processSuccessfulPayment(session);
+        if (failAfterFirstFulfillment) {
+          failAfterFirstFulfillment = false;
+          throw new Error("simulated post-fulfillment webhook failure");
+        }
+      },
+    };
+    const payload = makePowerPointsPayload(
+      retryEventId,
+      retryFixture.giftId,
+      retryFixture.paymentIntent,
+    );
+
+    const firstError = await tryProcess(payload, "test-signature", dependencies);
+    assert(firstError !== null, "a failed first attempt surfaces an error for Stripe retry");
+    assert((await eventRow(retryEventId))?.status === "failed", "failed fulfillment leaves the event retryable");
+
+    const retryError = await tryProcess(payload, "test-signature", dependencies);
+    assert(retryError === null, "the same successful checkout can be retried");
+
+    const counts = await fixtureCounts(retryFixture.receiverId, retryFixture.giftId);
+    assert(counts.gift?.status === "delivered", "retried gift remains delivered");
+    assert(counts.wallet?.bonus_credits === 100, "retry does not duplicate receiver credits");
+    assert(counts.wallet?.lifetime_earned === 100, "retry does not duplicate lifetime credits");
+    assert(counts.ledger.length === 1, "retry leaves one ledger entry for the gift");
+    assert(
+      counts.ledger[0]?.reference_id === String(retryFixture.giftId),
+      "retry preserves the ledger reference to the gift",
+    );
+    assert((await eventRow(retryEventId))?.status === "processed", "successful retry marks the event processed");
+  } finally {
+    await cleanupGiftFixture(retryFixture);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  console.log("\n• Paid recovery tips: concurrent deliveries create one tip");
+  const tipConcurrentEventIds = [
+    `evt_test_${runId}_tip_concurrent_1`,
+    `evt_test_${runId}_tip_concurrent_2`,
+  ];
+  created.push(...tipConcurrentEventIds);
+  const tipConcurrentFixture = await createRecoveryPaymentFixture();
+  try {
+    const payloads = tipConcurrentEventIds.map((eventId) =>
+      makeRecoveryPaymentPayload(
+        eventId,
+        "tip",
+        {
+          creatorId: tipConcurrentFixture.creatorId,
+          storyId: String(tipConcurrentFixture.storyId),
+          fromUserId: tipConcurrentFixture.buyerId,
+        },
+        tipConcurrentFixture.tipPaymentIntent,
+      ),
+    );
+    const dependencies: WebhookDependencies = {
+      sync: noOpSync,
+      processSuccessfulPayment: (session) =>
+        recoveryStripeService.processSuccessfulPayment(session),
+    };
+    const errors = await Promise.all(
+      payloads.map((payload) => tryProcess(payload, "test-signature", dependencies)),
+    );
+    assert(errors.every((error) => error === null), "concurrent tip deliveries return successfully");
+    assert(
+      (await recoveryPaymentCounts("tip", tipConcurrentFixture.tipPaymentIntent)).length === 1,
+      "concurrent tip deliveries create exactly one tip record",
+    );
+    assert(
+      (await Promise.all(tipConcurrentEventIds.map(eventRow))).every(
+        (row) => row?.status === "processed",
+      ),
+      "concurrent tip events end processed",
+    );
+  } finally {
+    await cleanupRecoveryPaymentFixture(tipConcurrentFixture);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  console.log("\n• Paid recovery tips: a failed webhook retry does not duplicate the tip");
+  const tipRetryEventId = `evt_test_${runId}_tip_retry`;
+  created.push(tipRetryEventId);
+  const tipRetryFixture = await createRecoveryPaymentFixture();
+  try {
+    let failAfterFirstFulfillment = true;
+    const dependencies: WebhookDependencies = {
+      sync: noOpSync,
+      processSuccessfulPayment: async (session) => {
+        await recoveryStripeService.processSuccessfulPayment(session);
+        if (failAfterFirstFulfillment) {
+          failAfterFirstFulfillment = false;
+          throw new Error("simulated post-tip webhook failure");
+        }
+      },
+    };
+    const payload = makeRecoveryPaymentPayload(
+      tipRetryEventId,
+      "tip",
+      {
+        creatorId: tipRetryFixture.creatorId,
+        storyId: String(tipRetryFixture.storyId),
+        fromUserId: tipRetryFixture.buyerId,
+      },
+      tipRetryFixture.tipPaymentIntent,
+    );
+
+    const firstError = await tryProcess(payload, "test-signature", dependencies);
+    assert(firstError !== null, "a failed tip attempt surfaces an error for Stripe retry");
+    assert(
+      (await recoveryPaymentCounts("tip", tipRetryFixture.tipPaymentIntent)).length === 1,
+      "the failed tip attempt still creates one tip record",
+    );
+    assert(
+      (await eventRow(tipRetryEventId))?.status === "failed",
+      "failed tip fulfillment leaves the event retryable",
+    );
+
+    const retryError = await tryProcess(payload, "test-signature", dependencies);
+    assert(retryError === null, "the paid tip can be retried successfully");
+    assert(
+      (await recoveryPaymentCounts("tip", tipRetryFixture.tipPaymentIntent)).length === 1,
+      "tip retry leaves one tip record",
+    );
+    assert(
+      (await eventRow(tipRetryEventId))?.status === "processed",
+      "successful tip retry marks the event processed",
+    );
+  } finally {
+    await cleanupRecoveryPaymentFixture(tipRetryFixture);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  console.log("\n• Premium purchases: concurrent deliveries create one purchase");
+  const premiumConcurrentEventIds = [
+    `evt_test_${runId}_premium_concurrent_1`,
+    `evt_test_${runId}_premium_concurrent_2`,
+  ];
+  created.push(...premiumConcurrentEventIds);
+  const premiumConcurrentFixture = await createRecoveryPaymentFixture();
+  try {
+    const payloads = premiumConcurrentEventIds.map((eventId) =>
+      makeRecoveryPaymentPayload(
+        eventId,
+        "premium_purchase",
+        {
+          storyId: String(premiumConcurrentFixture.storyId),
+          buyerId: premiumConcurrentFixture.buyerId,
+        },
+        premiumConcurrentFixture.premiumPaymentIntent,
+      ),
+    );
+    const dependencies: WebhookDependencies = {
+      sync: noOpSync,
+      processSuccessfulPayment: (session) =>
+        recoveryStripeService.processSuccessfulPayment(session),
+    };
+    const errors = await Promise.all(
+      payloads.map((payload) => tryProcess(payload, "test-signature", dependencies)),
+    );
+    assert(errors.every((error) => error === null), "concurrent premium deliveries return successfully");
+    assert(
+      (await recoveryPaymentCounts("premium_purchase", premiumConcurrentFixture.premiumPaymentIntent)).length === 1,
+      "concurrent premium deliveries create exactly one purchase record",
+    );
+    assert(
+      (await Promise.all(premiumConcurrentEventIds.map(eventRow))).every(
+        (row) => row?.status === "processed",
+      ),
+      "concurrent premium events end processed",
+    );
+  } finally {
+    await cleanupRecoveryPaymentFixture(premiumConcurrentFixture);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  console.log("\n• Premium purchases: a failed webhook retry does not duplicate the purchase");
+  const premiumRetryEventId = `evt_test_${runId}_premium_retry`;
+  created.push(premiumRetryEventId);
+  const premiumRetryFixture = await createRecoveryPaymentFixture();
+  try {
+    let failAfterFirstFulfillment = true;
+    const dependencies: WebhookDependencies = {
+      sync: noOpSync,
+      processSuccessfulPayment: async (session) => {
+        await recoveryStripeService.processSuccessfulPayment(session);
+        if (failAfterFirstFulfillment) {
+          failAfterFirstFulfillment = false;
+          throw new Error("simulated post-purchase webhook failure");
+        }
+      },
+    };
+    const payload = makeRecoveryPaymentPayload(
+      premiumRetryEventId,
+      "premium_purchase",
+      {
+        storyId: String(premiumRetryFixture.storyId),
+        buyerId: premiumRetryFixture.buyerId,
+      },
+      premiumRetryFixture.premiumPaymentIntent,
+    );
+
+    const firstError = await tryProcess(payload, "test-signature", dependencies);
+    assert(firstError !== null, "a failed premium attempt surfaces an error for Stripe retry");
+    assert(
+      (await recoveryPaymentCounts("premium_purchase", premiumRetryFixture.premiumPaymentIntent)).length === 1,
+      "the failed premium attempt still creates one purchase record",
+    );
+    assert(
+      (await eventRow(premiumRetryEventId))?.status === "failed",
+      "failed premium fulfillment leaves the event retryable",
+    );
+
+    const retryError = await tryProcess(payload, "test-signature", dependencies);
+    assert(retryError === null, "the premium purchase can be retried successfully");
+    assert(
+      (await recoveryPaymentCounts("premium_purchase", premiumRetryFixture.premiumPaymentIntent)).length === 1,
+      "premium retry leaves one purchase record",
+    );
+    assert(
+      (await eventRow(premiumRetryEventId))?.status === "processed",
+      "successful premium retry marks the event processed",
+    );
+  } finally {
+    await cleanupRecoveryPaymentFixture(premiumRetryFixture);
   }
 
   } finally {

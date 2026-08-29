@@ -2,6 +2,13 @@ import { getStripeSync } from './stripeClient';
 import { pool as dbPool } from './db';
 import { recordSasquatchSubscriptionTransition } from './services/sasquatchFunnelService';
 
+export interface WebhookDependencies {
+  sync?: {
+    processWebhook(payload: Buffer, signature: string, uuid: string): Promise<void>;
+  };
+  processSuccessfulPayment?: (session: any) => Promise<void>;
+}
+
 export class WebhookHandlers {
   /**
    * Process an inbound Stripe webhook with idempotency protection.
@@ -17,9 +24,15 @@ export class WebhookHandlers {
    *      sync / fulfillment.
    *   4. Hand the raw payload to `stripe-replit-sync` for signature
    *      verification + DB sync.
-   *   5. Mark the event row as `processed` (or `failed` on exception).
+   *   5. Run downstream fulfillment and telemetry.
+   *   6. Mark the event row as `processed` (or `failed` on exception).
    */
-  static async processWebhook(payload: Buffer, signature: string, uuid: string): Promise<void> {
+  static async processWebhook(
+    payload: Buffer,
+    signature: string,
+    uuid: string,
+    dependencies: WebhookDependencies = {},
+  ): Promise<void> {
     if (!Buffer.isBuffer(payload)) {
       throw new Error(
         'STRIPE WEBHOOK ERROR: Payload must be a Buffer. ' +
@@ -87,19 +100,8 @@ export class WebhookHandlers {
 
     // ── 3. Hand off to stripe-replit-sync (verifies signature + syncs DB) ──
     try {
-      const sync = await getStripeSync();
+      const sync = dependencies.sync || await getStripeSync();
       await sync.processWebhook(payload, signature, uuid);
-
-      if (reserved && eventId) {
-        await dbPool
-          .query(
-            `UPDATE webhook_events
-                SET status = 'processed', processed_at = NOW()
-              WHERE provider = 'stripe' AND event_id = $1`,
-            [eventId]
-          )
-          .catch(() => {/* best-effort */});
-      }
 
       // ── 4. Funnel telemetry — fire trial_converted / trial_canceled on
       //      Stripe subscription state transitions for the Sasquatch Premium
@@ -163,6 +165,27 @@ export class WebhookHandlers {
         }
       }
 
+      // ── 4c. RECOVERY ONE-TIME PAYMENTS — fulfillment must happen before
+      //       the webhook row is marked processed. If fulfillment fails after
+      //       the Stripe sync succeeds, the failed row remains retryable and
+      //       payment-level idempotency keeps the retry safe.
+      if (
+        parsedEvent &&
+        eventType === 'checkout.session.completed' &&
+        (parsedEvent as any).data?.object?.payment_status === 'paid' &&
+        ['power_points', 'tip', 'premium_purchase'].includes(
+          (parsedEvent as any).data?.object?.metadata?.type,
+        )
+      ) {
+        const session: any = (parsedEvent as any).data.object;
+        if (dependencies.processSuccessfulPayment) {
+          await dependencies.processSuccessfulPayment(session);
+        } else {
+          const { recoveryStripeService } = await import('./recoveryStripeService');
+          await recoveryStripeService.processSuccessfulPayment(session);
+        }
+      }
+
       // ── 5. Sasquatch Studio subscription state — keep our DB in sync with
       //      Stripe so renewals don't silently flip the user to "inactive"
       //      (and so cancels propagate immediately).
@@ -194,6 +217,19 @@ export class WebhookHandlers {
         } catch (e) {
           console.warn('[stripe-webhook] sasq-studio sync failed:', e);
         }
+      }
+
+      // Mark the event processed only after all payment fulfillment has
+      // completed. A failed fulfillment must leave the row retryable.
+      if (reserved && eventId) {
+        await dbPool
+          .query(
+            `UPDATE webhook_events
+                SET status = 'processed', processed_at = NOW()
+              WHERE provider = 'stripe' AND event_id = $1`,
+            [eventId]
+          )
+          .catch(() => {/* best-effort */});
       }
     } catch (err) {
       if (reserved && eventId) {

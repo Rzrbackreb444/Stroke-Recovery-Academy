@@ -158,6 +158,7 @@ test("expired upload cleanup retries abandoned objects after a storage failure",
   let storageOutage = true;
   const deleteAttempts: string[] = [];
   const deletedObjects: string[] = [];
+  const healthResults: Array<{ failures: number; scanned: number }> = [];
 
   dbForTest.execute = async () => undefined;
   dbForTest.select = () => ({
@@ -189,6 +190,15 @@ test("expired upload cleanup retries abandoned objects after a storage failure",
     }
     deletedObjects.push(objectPath);
   };
+  const originalRecordCleanupHealth = (ObjectStorageService.prototype as any)
+    .recordUploadIntentCleanupHealth;
+  (ObjectStorageService.prototype as any).recordUploadIntentCleanupHealth =
+    async function (result: { failures: number; scanned: number }) {
+      healthResults.push({
+        failures: result.failures,
+        scanned: result.scanned,
+      });
+    };
   objectStorageStatics.uploadIntentTableReady = null;
 
   try {
@@ -204,6 +214,7 @@ test("expired upload cleanup retries abandoned objects after a storage failure",
     assert.deepEqual(intentRows, [abandonedIntent]);
     assert.deepEqual(deleteAttempts, [abandonedPath]);
     assert.deepEqual(deletedObjects, []);
+    assert.deepEqual(healthResults, [{ failures: 1, scanned: 2 }]);
 
     storageOutage = false;
     const secondPass = await service.cleanupExpiredUploadIntents();
@@ -218,11 +229,17 @@ test("expired upload cleanup retries abandoned objects after a storage failure",
     assert.deepEqual(deleteAttempts, [abandonedPath, abandonedPath]);
     assert.deepEqual(deletedObjects, [abandonedPath]);
     assert.equal(deleteAttempts.includes(consumedPath), false);
+    assert.deepEqual(healthResults, [
+      { failures: 1, scanned: 2 },
+      { failures: 0, scanned: 1 },
+    ]);
   } finally {
     dbForTest.execute = originalDbMethods.execute;
     dbForTest.select = originalDbMethods.select;
     dbForTest.delete = originalDbMethods.delete;
     ObjectStorageService.prototype.deleteObjectEntity = originalDeleteObjectEntity;
+    (ObjectStorageService.prototype as any).recordUploadIntentCleanupHealth =
+      originalRecordCleanupHealth;
     objectStorageStatics.uploadIntentTableReady = originalIntentTableReady;
   }
 });

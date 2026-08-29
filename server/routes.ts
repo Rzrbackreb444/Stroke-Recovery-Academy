@@ -25,8 +25,10 @@ import {
 import { redactEmail } from "./lib/redact";
 import { requireAdmin } from "./middleware/requireAdmin";
 import { getUserId, getUserEmail } from "./lib/authUtils";
+import { registerJournalUpdateRoute, syncJournalMediaAcl } from "./recoveryJournalUpdateRoute";
 import {
   getRecoveryFunnelReport,
+  ensureRecoveryFunnelTable,
   recordRecoveryFunnelEvent,
 } from "./services/recoveryFunnelService";
 import {
@@ -85,7 +87,7 @@ import {
 } from "./spotifyService";
 import { seedRecoveryData } from "./seedRecoveryData";
 import { seedCreatorToolCategories, seedWorkflowCategories } from "./seedCreatorTools";
-import { generate, generateStream, bookGenerator, marketingGenerator, screenplayGenerator, courseGenerator, researchGenerator, getUsageStats } from "./aiOrchestrator";
+import { generate, generateStream, bookGenerator, marketingGenerator, screenplayGenerator, courseGenerator, researchGenerator, getUsageStats, type GenerateOptions } from "./aiOrchestrator";
 import { 
   generateChildStoryRequestSchema,
   generateCharacterPromptRequestSchema,
@@ -199,7 +201,7 @@ import {
 import * as creditService from './creditService';
 import * as geoService from './geolocationService';
 import * as i18nService from './i18nService';
-import { jobQueue } from './jobQueueService';
+import { jobQueue, processBatchJob } from './jobQueueService';
 import { getElevenLabsService, SASQUATCH_VOICE_ID, isElevenLabsConfigured as isElevenLabsServiceConfigured } from './elevenlabs';
 import {
   isLuluConfigured,
@@ -454,6 +456,73 @@ function authorBrainTextError(value: unknown, label: string, maxLength: number, 
   return undefined;
 }
 export async function registerRoutes(app: Express): Promise<Server> {
+  // The batch-generation panel uses the general job API. Register its worker
+  // before any request can create a job; otherwise createJob would correctly
+  // fail the job as unavailable instead of handing it to the AI pipeline.
+  jobQueue.registerJobHandler('batch_generation', async (job, context) => {
+    const data = job.data || {};
+    const quantity = Number(data.quantity);
+    const template = typeof data.template === 'string' ? data.template.trim() : '';
+
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 50) {
+      throw new Error('Batch quantity must be an integer from 1 to 50');
+    }
+    if (!template) {
+      throw new Error('Batch template is required');
+    }
+
+    const [qualityTier] = data.qualityTierId
+      ? await db.select().from(aiQualityTiers).where(eq(aiQualityTiers.id, Number(data.qualityTierId))).limit(1)
+      : [];
+    const [voicePreset] = data.voicePresetId
+      ? await db.select().from(aiVoicePresets).where(eq(aiVoicePresets.id, Number(data.voicePresetId))).limit(1)
+      : [];
+
+    const taskType: GenerateOptions['taskType'] = data.studioType === 'course'
+      ? 'course'
+      : data.studioType === 'video'
+        ? 'screenplay'
+        : data.studioType === 'image'
+          ? 'image_prompt'
+          : data.contentType === 'outline'
+            ? 'outline'
+            : 'draft';
+
+    job.data.items = Array.from({ length: quantity }, (_, index) => ({
+      id: `${job.id}-item-${index}`,
+      prompt: [
+        `Create ${data.contentType || 'content'} for a ${data.studioType || 'creative'} project.`,
+        `This is item ${index + 1} of ${quantity}.`,
+        template.replace(/\{index\}/g, String(index + 1)),
+      ].join('\n\n'),
+    }));
+
+    await processBatchJob(job, async (item, index) => {
+      const generated = await generate({
+        prompt: item.prompt,
+        taskType,
+        userId: job.userId,
+        qualityTier: qualityTier
+          ? { ...qualityTier, promptModifiers: qualityTier.promptModifiers ?? undefined }
+          : undefined,
+        voicePreset,
+      });
+
+      return {
+        id: item.id,
+        index,
+        status: 'completed',
+        content: generated.content,
+        preview: generated.content.trim().slice(0, 240),
+      };
+    }, jobQueue, context);
+  });
+
+  // Hydrate durable jobs before the app starts accepting requests. This also
+  // converts jobs interrupted during a restart into an explicit retryable
+  // failure instead of leaving clients polling forever.
+  await jobQueue.initialize();
+
   // Platform detection middleware - sets X-Platform header based on host domain
   app.use((req, res, next) => {
     const host = req.get('host') || req.hostname || 'localhost';
@@ -11449,26 +11518,35 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       const { db: dbInst } = await import('./db');
       const { sasquatchAssessments } = await import('../shared/schema');
       const { and, desc, gte, eq } = await import('drizzle-orm');
-      const [existing] = await dbInst.select().from(sasquatchAssessments)
-        .where(and(
-          eq(sasquatchAssessments.userId, userId),
-          eq(sasquatchAssessments.physical, physical),
-          eq(sasquatchAssessments.cognitive, cognitive),
-          eq(sasquatchAssessments.speech, speech),
-          eq(sasquatchAssessments.emotional, emotional),
-          eq(sasquatchAssessments.memory, memory),
-          gte(sasquatchAssessments.takenAt, new Date(Date.now() - 24 * 60 * 60 * 1000)),
-        ))
-        .orderBy(desc(sasquatchAssessments.takenAt))
-        .limit(1);
       const normalizedNotes = notes ? String(notes).slice(0, 1000) : null;
-      if (existing && (existing.notes || null) === normalizedNotes) return res.json(existing);
-      const [row] = await dbInst.insert(sasquatchAssessments).values({
-        userId, physical, cognitive, speech, emotional, memory,
-        notes: normalizedNotes,
-      }).returning();
-      await recordRecoveryFunnelEvent(userId, "assessment_completed", {
-        assessmentId: row.id,
+      // The compatibility table may still need to be installed on an older
+      // database. Do that before opening the transaction so the funnel
+      // service never uses a separate connection while the transaction is
+      // holding the assessment snapshot.
+      await ensureRecoveryFunnelTable();
+      const row = await dbInst.transaction(async (tx) => {
+        const [existing] = await tx.select().from(sasquatchAssessments)
+          .where(and(
+            eq(sasquatchAssessments.userId, userId),
+            eq(sasquatchAssessments.physical, physical),
+            eq(sasquatchAssessments.cognitive, cognitive),
+            eq(sasquatchAssessments.speech, speech),
+            eq(sasquatchAssessments.emotional, emotional),
+            eq(sasquatchAssessments.memory, memory),
+            gte(sasquatchAssessments.takenAt, new Date(Date.now() - 24 * 60 * 60 * 1000)),
+          ))
+          .orderBy(desc(sasquatchAssessments.takenAt))
+          .limit(1);
+        if (existing && (existing.notes || null) === normalizedNotes) return existing;
+
+        const [created] = await tx.insert(sasquatchAssessments).values({
+          userId, physical, cognitive, speech, emotional, memory,
+          notes: normalizedNotes,
+        }).returning();
+        await recordRecoveryFunnelEvent(userId, "assessment_completed", {
+          assessmentId: created.id,
+        }, tx);
+        return created;
       });
       res.json(row);
     } catch (error) {
@@ -11510,6 +11588,11 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       const { sasquatchAssessments, survivorGoals, survivorPlans } = await import('../shared/schema');
       const { eq, desc, and } = await import('drizzle-orm');
 
+      // The compatibility table must exist before opening the transaction.
+      // recordRecoveryFunnelEvent accepts the transaction executor, but its
+      // guarded table setup uses the default connection.
+      await ensureRecoveryFunnelTable();
+
       const [assessment] = await dbInst
         .select()
         .from(sasquatchAssessments)
@@ -11528,11 +11611,16 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         .orderBy(desc(survivorPlans.generatedAt))
         .limit(1);
       if (existingPlan?.plan) {
-        await recordRecoveryFunnelEvent(userId, "plan_generated", {
-          planId: existingPlan.id,
-        });
-        await recordRecoveryFunnelEvent(userId, "onboarding_completed", {
-          planId: existingPlan.id,
+        // A retry may be completing a plan written by an older request. Keep
+        // both milestone repairs atomic so a failed second write does not
+        // leave the funnel reporting only half of onboarding.
+        await dbInst.transaction(async (tx) => {
+          await recordRecoveryFunnelEvent(userId, "plan_generated", {
+            planId: existingPlan.id,
+          }, tx);
+          await recordRecoveryFunnelEvent(userId, "onboarding_completed", {
+            planId: existingPlan.id,
+          }, tx);
         });
         return res.json({ plan: existingPlan.plan, generatedAt: existingPlan.generatedAt, reused: true });
       }
@@ -11736,16 +11824,35 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
         };
       }
 
-      const [row] = await dbInst.insert(survivorPlans).values({
-        userId,
-        assessmentId: assessment.id,
-        plan,
-      }).returning();
-      await recordRecoveryFunnelEvent(userId, "plan_generated", {
-        planId: row.id,
-      });
-      await recordRecoveryFunnelEvent(userId, "onboarding_completed", {
-        planId: row.id,
+      // The plan and both funnel milestones are one logical operation. If a
+      // funnel write fails, the generated plan must roll back with it. The
+      // assessment unique index makes concurrent requests converge on one
+      // plan; the losing insert waits for the winner and then reads it.
+      const row = await dbInst.transaction(async (tx) => {
+        let [effectivePlan] = await tx.insert(survivorPlans).values({
+          userId,
+          assessmentId: assessment.id,
+          plan,
+        }).onConflictDoNothing({
+          target: survivorPlans.assessmentId,
+        }).returning();
+        if (!effectivePlan) {
+          [effectivePlan] = await tx
+            .select()
+            .from(survivorPlans)
+            .where(eq(survivorPlans.assessmentId, assessment.id))
+            .limit(1);
+        }
+        if (!effectivePlan) {
+          throw new Error(`Recovery plan was not available for assessment ${assessment.id}`);
+        }
+        await recordRecoveryFunnelEvent(userId, "plan_generated", {
+          planId: effectivePlan.id,
+        }, tx);
+        await recordRecoveryFunnelEvent(userId, "onboarding_completed", {
+          planId: effectivePlan.id,
+        }, tx);
+        return effectivePlan;
       });
       res.json({ plan: row.plan, generatedAt: row.generatedAt });
     } catch (error) {
@@ -13401,37 +13508,10 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   // ----------------------------------------------------------------------------
   // RECOVERY JOURNAL
   // ----------------------------------------------------------------------------
-  const { insertRecoveryJournalSchema, updateRecoveryJournalSchema } = await import('@shared/schema');
+  const { insertRecoveryJournalSchema } = await import('@shared/schema');
 
-  // Keep journal media (photo/voice) ACL in lockstep with the entry's share
-  // state: shared entries expose media publicly so the community feed can render
-  // it; private entries lock media back down to the owner. PDFs are never
-  // shared, so they are not touched here.
-  const { ObjectStorageService: JournalMediaObjectStorage } = await import('./replit_integrations/object_storage/objectStorage');
-  const syncJournalMediaAcl = async (entry: any, ownerId: string) => {
-    // storage.create/updateJournalEntry return raw `RETURNING *` rows (snake_case),
-    // so read both casings to stay robust if a mapped row is ever passed in.
-    const isShared = entry?.isShared ?? entry?.is_shared;
-    const visibility: 'public' | 'private' = isShared ? 'public' : 'private';
-    const objectStorage = new JournalMediaObjectStorage();
-    for (const mediaPath of [entry?.photoUrl ?? entry?.photo_url, entry?.voiceUrl ?? entry?.voice_url]) {
-      if (typeof mediaPath === 'string' && mediaPath.startsWith('/objects/')) {
-        try {
-          // Existing journal media may predate upload intents. Preserve the
-          // share/unshare lifecycle for those objects; new attachments are
-          // required to pass the owner-bound intent check at finalization.
-          await objectStorage.trySetObjectEntityAclPolicy(
-            mediaPath,
-            { owner: ownerId, visibility },
-            { requireUploadIntent: false },
-          );
-        } catch (e) {
-          console.error('Failed to sync journal media ACL for entry', entry?.id, e);
-        }
-      }
-    }
-  };
   const secureNewJournalMedia = async (data: any, ownerId: string) => {
+    const { ObjectStorageService: JournalMediaObjectStorage } = await import('./replit_integrations/object_storage/objectStorage');
     const objectStorage = new JournalMediaObjectStorage();
     for (const mediaPath of [data?.photoUrl, data?.voiceUrl]) {
       if (typeof mediaPath === 'string' && mediaPath.startsWith('/objects/')) {
@@ -13703,27 +13783,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
-  app.patch('/api/recovery/journal/:id', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req)!;
-      const entryId = parseInt(req.params.id);
-      const validated = updateRecoveryJournalSchema.partial().safeParse(req.body);
-      if (!validated.success) {
-        return res.status(400).json({ message: "Invalid update", details: validated.error.issues });
-      }
-      const entry = await storage.updateJournalEntry(entryId, userId, validated.data);
-      if (!entry) {
-        return res.status(404).json({ message: "Entry not found" });
-      }
-      if (validated.data.isShared !== undefined) {
-        await syncJournalMediaAcl(entry, userId);
-      }
-      res.json(entry);
-    } catch (error) {
-      console.error("Error updating journal entry:", error);
-      res.status(500).json({ message: "Failed to update journal entry" });
-    }
-  });
+  registerJournalUpdateRoute(app, isAuthenticated);
 
   // ----------------------------------------------------------------------------
   // USER SETTINGS
@@ -20638,6 +20698,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
       const userId = getUserId(req)!;
       const { type, data, metadata } = req.body;
       const job = jobQueue.createJob(type, userId, data, metadata);
+      await jobQueue.waitForPersistence(job.id);
       res.json(job);
     } catch (error: any) {
       console.error("Error creating job:", error);
@@ -20684,6 +20745,31 @@ Provide a JSON response with track suggestions for each chapter/section.`;
     }
   });
 
+  app.post('/api/jobs/:jobId/retry', isAuthenticated, async (req: any, res) => {
+    try {
+      const { jobId } = req.params;
+      const userId = getUserId(req)!;
+      const job = jobQueue.getJob(jobId, userId);
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+
+      const retriedJob = jobQueue.retryJob(jobId, userId);
+      if (!retriedJob) {
+        const eligibility = jobQueue.getRetryEligibility(jobId, userId);
+        return res.status(409).json({
+          message: eligibility.reason || "Job cannot be retried",
+          remainingAttempts: eligibility.remainingAttempts,
+        });
+      }
+
+      res.json(retriedJob);
+    } catch (error: any) {
+      console.error("Error retrying job:", error);
+      res.status(500).json({ message: "Failed to retry job" });
+    }
+  });
+
   app.delete('/api/jobs/:jobId', isAuthenticated, async (req: any, res) => {
     try {
       const { jobId } = req.params;
@@ -20693,6 +20779,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         return res.status(404).json({ message: "Job not found" });
       }
       const cancelled = jobQueue.cancelJob(jobId, userId);
+      await jobQueue.waitForPersistence(jobId);
       res.json({ success: cancelled });
     } catch (error: any) {
       console.error("Error cancelling job:", error);
@@ -20720,9 +20807,10 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         res.write(`data: ${JSON.stringify(updatedJob)}\n\n`);
       };
 
-      sendUpdate(job);
-
       const unsubscribe = jobQueue.subscribeToJob(jobId, sendUpdate, userId);
+       // Subscribe before sending the snapshot so a fast worker cannot finish
+       // in the gap between those two operations and strand the stream.
+       sendUpdate(job);
 
       req.on('close', () => {
         unsubscribe?.();

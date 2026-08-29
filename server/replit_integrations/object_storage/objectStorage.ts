@@ -67,6 +67,22 @@ export interface UploadIntentCleanupResult {
   failures: number;
 }
 
+export interface UploadIntentCleanupHealth {
+  lastRunAt: Date;
+  lastStatus: "success" | "failure";
+  lastSuccessAt: Date | null;
+  lastFailureAt: Date | null;
+  consecutiveFailures: number;
+  totalRuns: number;
+  totalFailures: number;
+  lastScanned: number;
+  lastObjectsDeleted: number;
+  lastIntentsDeleted: number;
+  lastFailureCount: number;
+  lastError: string | null;
+  updatedAt: Date;
+}
+
 // The object storage service is used to interact with the object storage service.
 export class ObjectStorageService {
   private static uploadIntentTableReady: Promise<void> | null = null;
@@ -97,10 +113,142 @@ export class ObjectStorageService {
               ON object_upload_intents (expires_at)
               WHERE consumed_at IS NULL
           `);
+          await db.execute(sql`
+            CREATE TABLE IF NOT EXISTS object_upload_cleanup_health (
+              id INTEGER PRIMARY KEY,
+              last_run_at TIMESTAMP WITH TIME ZONE NOT NULL,
+              last_status VARCHAR(16) NOT NULL,
+              last_success_at TIMESTAMP WITH TIME ZONE,
+              last_failure_at TIMESTAMP WITH TIME ZONE,
+              consecutive_failures INTEGER NOT NULL DEFAULT 0,
+              total_runs INTEGER NOT NULL DEFAULT 0,
+              total_failures INTEGER NOT NULL DEFAULT 0,
+              last_scanned INTEGER NOT NULL DEFAULT 0,
+              last_objects_deleted INTEGER NOT NULL DEFAULT 0,
+              last_intents_deleted INTEGER NOT NULL DEFAULT 0,
+              last_failure_count INTEGER NOT NULL DEFAULT 0,
+              last_error TEXT,
+              updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+            )
+          `);
         })
         .then(() => undefined);
     }
     await ObjectStorageService.uploadIntentTableReady;
+  }
+
+  /**
+   * Persist the latest cleanup outcome without allowing observability to
+   * change cleanup behavior. The singleton row makes the signal queryable
+   * even when a pass finds no expired intents.
+   */
+  private async recordUploadIntentCleanupHealth(
+    result: UploadIntentCleanupResult,
+    error?: unknown,
+  ): Promise<void> {
+    const failureCount = error ? Math.max(1, result.failures) : result.failures;
+    const status = failureCount > 0 ? "failure" : "success";
+    const lastError = error
+      ? error instanceof Error
+        ? error.message
+        : String(error)
+      : result.failures > 0
+        ? `${result.failures} cleanup item(s) failed`
+        : null;
+
+    try {
+      await db.execute(sql`
+        INSERT INTO object_upload_cleanup_health (
+          id,
+          last_run_at,
+          last_status,
+          last_success_at,
+          last_failure_at,
+          consecutive_failures,
+          total_runs,
+          total_failures,
+          last_scanned,
+          last_objects_deleted,
+          last_intents_deleted,
+          last_failure_count,
+          last_error,
+          updated_at
+        )
+        VALUES (
+          1,
+          NOW(),
+          ${status},
+          CASE WHEN ${failureCount} = 0 THEN NOW() ELSE NULL END,
+          CASE WHEN ${failureCount} > 0 THEN NOW() ELSE NULL END,
+          ${failureCount > 0 ? 1 : 0},
+          1,
+          ${failureCount},
+          ${result.scanned},
+          ${result.objectsDeleted},
+          ${result.intentsDeleted},
+          ${failureCount},
+          ${lastError},
+          NOW()
+        )
+        ON CONFLICT (id) DO UPDATE SET
+          last_run_at = EXCLUDED.last_run_at,
+          last_status = EXCLUDED.last_status,
+          last_success_at = CASE
+            WHEN EXCLUDED.last_status = 'success'
+              THEN EXCLUDED.last_run_at
+            ELSE object_upload_cleanup_health.last_success_at
+          END,
+          last_failure_at = CASE
+            WHEN EXCLUDED.last_status = 'failure'
+              THEN EXCLUDED.last_run_at
+            ELSE object_upload_cleanup_health.last_failure_at
+          END,
+          consecutive_failures = CASE
+            WHEN EXCLUDED.last_status = 'success'
+              THEN 0
+            ELSE object_upload_cleanup_health.consecutive_failures + 1
+          END,
+          total_runs = object_upload_cleanup_health.total_runs + 1,
+          total_failures = object_upload_cleanup_health.total_failures
+            + EXCLUDED.last_failure_count,
+          last_scanned = EXCLUDED.last_scanned,
+          last_objects_deleted = EXCLUDED.last_objects_deleted,
+          last_intents_deleted = EXCLUDED.last_intents_deleted,
+          last_failure_count = EXCLUDED.last_failure_count,
+          last_error = EXCLUDED.last_error,
+          updated_at = NOW()
+      `);
+    } catch (healthError) {
+      console.error(
+        "[object-storage] failed to record upload cleanup health:",
+        healthError,
+      );
+    }
+  }
+
+  async getUploadIntentCleanupHealth(): Promise<UploadIntentCleanupHealth | null> {
+    await this.ensureUploadIntentTable();
+    const result = await db.execute(sql`
+      SELECT
+        last_run_at AS "lastRunAt",
+        last_status AS "lastStatus",
+        last_success_at AS "lastSuccessAt",
+        last_failure_at AS "lastFailureAt",
+        consecutive_failures AS "consecutiveFailures",
+        total_runs AS "totalRuns",
+        total_failures AS "totalFailures",
+        last_scanned AS "lastScanned",
+        last_objects_deleted AS "lastObjectsDeleted",
+        last_intents_deleted AS "lastIntentsDeleted",
+        last_failure_count AS "lastFailureCount",
+        last_error AS "lastError",
+        updated_at AS "updatedAt"
+      FROM object_upload_cleanup_health
+      WHERE id = 1
+    `);
+    const rows =
+      (result as unknown as { rows?: UploadIntentCleanupHealth[] }).rows ?? [];
+    return rows[0] ?? null;
   }
 
   // Gets the public object search paths.
@@ -273,70 +421,77 @@ export class ObjectStorageService {
   async cleanupExpiredUploadIntents(
     batchSize = UPLOAD_INTENT_CLEANUP_BATCH_SIZE,
   ): Promise<UploadIntentCleanupResult> {
-    await this.ensureUploadIntentTable();
-    const requestedBatchSize = Number.isFinite(batchSize)
-      ? Math.floor(batchSize)
-      : UPLOAD_INTENT_CLEANUP_BATCH_SIZE;
-    const limit = Math.max(
-      1,
-      Math.min(requestedBatchSize, UPLOAD_INTENT_CLEANUP_BATCH_SIZE),
-    );
-    const now = new Date();
-    const intents = await db
-      .select()
-      .from(objectUploadIntents)
-      .where(lte(objectUploadIntents.expiresAt, now))
-      .orderBy(asc(objectUploadIntents.expiresAt))
-      .limit(limit);
-
     const result: UploadIntentCleanupResult = {
-      scanned: intents.length,
+      scanned: 0,
       objectsDeleted: 0,
       intentsDeleted: 0,
       failures: 0,
     };
 
-    for (const intent of intents) {
-      if (intent.consumedAt === null) {
+    try {
+      await this.ensureUploadIntentTable();
+      const requestedBatchSize = Number.isFinite(batchSize)
+        ? Math.floor(batchSize)
+        : UPLOAD_INTENT_CLEANUP_BATCH_SIZE;
+      const limit = Math.max(
+        1,
+        Math.min(requestedBatchSize, UPLOAD_INTENT_CLEANUP_BATCH_SIZE),
+      );
+      const now = new Date();
+      const intents = await db
+        .select()
+        .from(objectUploadIntents)
+        .where(lte(objectUploadIntents.expiresAt, now))
+        .orderBy(asc(objectUploadIntents.expiresAt))
+        .limit(limit);
+      result.scanned = intents.length;
+
+      for (const intent of intents) {
+        if (intent.consumedAt === null) {
+          try {
+            await this.deleteObjectEntity(intent.objectPath);
+            result.objectsDeleted += 1;
+          } catch (error) {
+            result.failures += 1;
+            console.error(
+              `[object-storage] failed to delete abandoned upload ${intent.objectPath}:`,
+              error,
+            );
+            continue;
+          }
+        }
+
         try {
-          await this.deleteObjectEntity(intent.objectPath);
-          result.objectsDeleted += 1;
+          const deleted = await db
+            .delete(objectUploadIntents)
+            .where(
+              and(
+                eq(objectUploadIntents.objectPath, intent.objectPath),
+                lte(objectUploadIntents.expiresAt, now),
+                intent.consumedAt === null
+                  ? isNull(objectUploadIntents.consumedAt)
+                  : eq(objectUploadIntents.consumedAt, intent.consumedAt),
+              ),
+            )
+            .returning({ objectPath: objectUploadIntents.objectPath });
+          if (deleted.length > 0) {
+            result.intentsDeleted += 1;
+          }
         } catch (error) {
           result.failures += 1;
           console.error(
-            `[object-storage] failed to delete abandoned upload ${intent.objectPath}:`,
+            `[object-storage] failed to remove expired upload intent ${intent.objectPath}:`,
             error,
           );
-          continue;
         }
       }
 
-      try {
-        const deleted = await db
-          .delete(objectUploadIntents)
-          .where(
-            and(
-              eq(objectUploadIntents.objectPath, intent.objectPath),
-              lte(objectUploadIntents.expiresAt, now),
-              intent.consumedAt === null
-                ? isNull(objectUploadIntents.consumedAt)
-                : eq(objectUploadIntents.consumedAt, intent.consumedAt),
-            ),
-          )
-          .returning({ objectPath: objectUploadIntents.objectPath });
-        if (deleted.length > 0) {
-          result.intentsDeleted += 1;
-        }
-      } catch (error) {
-        result.failures += 1;
-        console.error(
-          `[object-storage] failed to remove expired upload intent ${intent.objectPath}:`,
-          error,
-        );
-      }
+      await this.recordUploadIntentCleanupHealth(result);
+      return result;
+    } catch (error) {
+      await this.recordUploadIntentCleanupHealth(result, error);
+      throw error;
     }
-
-    return result;
   }
 
   normalizeObjectEntityPath(

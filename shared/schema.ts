@@ -334,6 +334,26 @@ export const insertObjectUploadIntentSchema = createInsertSchema(objectUploadInt
 export type ObjectUploadIntent = typeof objectUploadIntents.$inferSelect;
 export type InsertObjectUploadIntent = z.infer<typeof insertObjectUploadIntentSchema>;
 
+// Singleton operational signal for the scheduled abandoned-upload cleanup.
+// Keeping this separate from upload intents records successful empty passes too.
+export const objectUploadCleanupHealth = pgTable("object_upload_cleanup_health", {
+  id: integer("id").primaryKey(),
+  lastRunAt: timestamp("last_run_at", { withTimezone: true }).notNull(),
+  lastStatus: varchar("last_status", { length: 16 }).notNull().default("success"),
+  lastSuccessAt: timestamp("last_success_at", { withTimezone: true }),
+  lastFailureAt: timestamp("last_failure_at", { withTimezone: true }),
+  consecutiveFailures: integer("consecutive_failures").notNull().default(0),
+  totalRuns: integer("total_runs").notNull().default(0),
+  totalFailures: integer("total_failures").notNull().default(0),
+  lastScanned: integer("last_scanned").notNull().default(0),
+  lastObjectsDeleted: integer("last_objects_deleted").notNull().default(0),
+  lastIntentsDeleted: integer("last_intents_deleted").notNull().default(0),
+  lastFailureCount: integer("last_failure_count").notNull().default(0),
+  lastError: text("last_error"),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+export type ObjectUploadCleanupHealth = typeof objectUploadCleanupHealth.$inferSelect;
+
 // Power Points — purchased by family/friends/therapists, gifted to a survivor
 // with a motivational message. Delivered as bonus credits + persistent inbox entry.
 export const powerPointGifts = pgTable("power_point_gifts", {
@@ -2141,7 +2161,10 @@ export const recoveryCreatorTips = pgTable("recovery_creator_tips", {
   creatorPayout: integer("creator_payout"), // 85% to creator
   paidOutAt: timestamp("paid_out_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => ({
+  stripePaymentIdUnique: uniqueIndex("recovery_creator_tips_stripe_payment_id_unique")
+    .on(t.stripePaymentId),
+}));
 
 // Premium Content Purchases
 export const recoveryPremiumPurchases = pgTable("recovery_premium_purchases", {
@@ -2155,7 +2178,10 @@ export const recoveryPremiumPurchases = pgTable("recovery_premium_purchases", {
   platformFee: integer("platform_fee"),
   creatorPayout: integer("creator_payout"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => ({
+  stripePaymentIdUnique: uniqueIndex("recovery_premium_purchases_stripe_payment_id_unique")
+    .on(t.stripePaymentId),
+}));
 
 // Recovery Resources (curated content, exercises, tips)
 export const recoveryResources = pgTable("recovery_resources", {
@@ -5571,10 +5597,23 @@ export const trendingTopics = pgTable("trending_topics", {
   expiresAt: timestamp("expires_at"),
 });
 
-// ============================================================================
-// CREATOR PRODUCTION ENGINE - BATCH PRODUCTION
-// ============================================================================
-
+export const jobQueueJobs = pgTable("job_queue_jobs", {
+  id: text("id").primaryKey(),
+  type: text("type").notNull(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  status: text("status").notNull().default("pending"),
+  progress: integer("progress").notNull().default(0),
+  data: jsonb("data").notNull().default({}),
+  result: jsonb("result"),
+  error: text("error"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  startedAt: timestamp("started_at"),
+  completedAt: timestamp("completed_at"),
+  metadata: jsonb("metadata"),
+}, (table) => [
+  index("job_queue_jobs_user_created_idx").on(table.userId, table.createdAt),
+  index("job_queue_jobs_status_idx").on(table.status, table.createdAt),
+]);
 export const productionBatches = pgTable("production_batches", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
@@ -6314,6 +6353,7 @@ export const survivorPlans = pgTable("survivor_plans", {
   generatedAt: timestamp("generated_at").notNull().defaultNow(),
 }, (t) => ({
   userIdx: index("survivor_plans_user_idx").on(t.userId, t.generatedAt),
+  assessmentUnique: uniqueIndex("survivor_plans_assessment_unique").on(t.assessmentId),
 }));
 
 export const insertSurvivorPlanSchema = createInsertSchema(survivorPlans).omit({
@@ -7451,3 +7491,5 @@ export const laundromatDiscussionReplies = pgTable("laundromat_discussion_replie
 export const insertLaundromatDiscussionReplySchema = createInsertSchema(laundromatDiscussionReplies).omit({ id: true, createdAt: true, updatedAt: true, editedAt: true });
 
 export const insertLaundromatEquipmentPlanSchema = createInsertSchema(laundromatEquipmentPlans).omit({ id: true, createdAt: true, updatedAt: true });
+
+export type JobQueueJob = typeof jobQueueJobs.$inferSelect;

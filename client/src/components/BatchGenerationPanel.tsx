@@ -128,6 +128,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
   const [results, setResults] = useState<BatchResult[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState<string | null>(null);
 
   const { data: creditBalance } = useCreditBalance();
   const { data: tiers = [] } = useQuery<QualityTier[]>({
@@ -156,13 +157,16 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
 
   useEffect(() => {
     if (job) {
-      if (job.data?.results) {
-        setResults(job.data.results);
+      if (job.result?.items) {
+        setResults(job.result.items);
       }
       if (job.status === 'completed' || job.status === 'failed') {
         setIsGenerating(false);
         if (job.status === 'completed' && job.result?.items) {
           onComplete(job.result.items);
+        }
+        if (job.status === 'failed') {
+          setGenerationError(job.error || 'Batch generation failed');
         }
       }
     }
@@ -173,6 +177,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
 
     setIsGenerating(true);
     setResults([]);
+    setGenerationError(null);
 
     try {
       const response = await createJob.mutateAsync({
@@ -192,6 +197,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
       setActiveJobId(response.id);
     } catch (error) {
       setIsGenerating(false);
+      setGenerationError(error instanceof Error ? error.message : 'Failed to start batch generation');
       console.error('Failed to start batch generation:', error);
     }
   };
@@ -224,6 +230,17 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
       </CardHeader>
 
       <CardContent className="space-y-6">
+        {generationError && (
+          <div
+            className="flex items-start gap-2 rounded-lg border border-red-500/40 bg-red-500/10 p-3 text-sm text-red-300"
+            role="alert"
+            data-testid="text-generation-error"
+          >
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>{generationError}</span>
+          </div>
+        )}
+
         {!isGenerating && results.length === 0 && (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -482,7 +499,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                 </div>
                 <div>
                   <p className="font-medium text-foreground" data-testid="text-completion-status">
-                    Generation Complete
+                     {job?.status === 'failed' ? 'Generation Failed' : 'Generation Complete'}
                   </p>
                   <p className="text-sm text-zinc-500">
                     {completedCount} successful, {failedCount} failed
@@ -495,6 +512,7 @@ export function BatchGenerationPanel({ studioType, onComplete }: BatchGeneration
                 onClick={() => {
                   setResults([]);
                   setActiveJobId(null);
+                   setGenerationError(null);
                 }}
                 data-testid="button-new-batch"
               >
