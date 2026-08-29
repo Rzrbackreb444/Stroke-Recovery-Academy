@@ -57,6 +57,13 @@
       "when": 1787853600000,
       "tag": "0007_object_upload_intent_cleanup",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1787857200000,
+      "tag": "0008_object_upload_cleanup_health",
+      "breakpoints": true
     }
   ]
 }
