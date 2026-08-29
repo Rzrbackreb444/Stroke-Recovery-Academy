@@ -19,18 +19,16 @@ export async function syncJournalMediaAcl(entry: any, ownerId: string): Promise<
     entry?.voiceUrl ?? entry?.voice_url,
   ]) {
     if (typeof mediaPath === "string" && mediaPath.startsWith("/objects/")) {
-      try {
-        // Existing journal media may predate upload intents. Preserve the
-        // share/unshare lifecycle for those objects; new attachments are
-        // required to pass the owner-bound intent check at finalization.
-        await objectStorage.trySetObjectEntityAclPolicy(
-          mediaPath,
-          { owner: ownerId, visibility },
-          { requireUploadIntent: false },
-        );
-      } catch (error) {
-        console.error("Failed to sync journal media ACL for entry", entry?.id, error);
-      }
+      // Existing journal media may predate upload intents. Preserve the
+      // share/unshare lifecycle for those objects; new attachments are
+      // required to pass the owner-bound intent check at finalization.
+      // Let failures reach the route so a privacy toggle is never reported
+      // as successful when its media ACL was not synchronized.
+      await objectStorage.trySetObjectEntityAclPolicy(
+        mediaPath,
+        { owner: ownerId, visibility },
+        { requireUploadIntent: false },
+      );
     }
   }
 }

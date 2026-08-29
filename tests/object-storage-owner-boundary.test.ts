@@ -253,6 +253,32 @@ registerJournalUpdateRoute(
 );
 const journalPatchHandler = journalPatchRoutes["/api/recovery/journal/:id"].at(-1);
 
+const failedJournalPatchRoutes: Record<string, any[]> = {};
+const failedJournalPatchApp = {
+  patch: (path: string, ...handlers: any[]) => {
+    failedJournalPatchRoutes[path] = handlers;
+  },
+};
+registerJournalUpdateRoute(
+  failedJournalPatchApp as any,
+  (_req: any, _res: any, next: any) => next(),
+  {
+    storage: {
+      updateJournalEntry: async (id, userId, updates) => ({
+        id,
+        user_id: userId,
+        is_shared: updates.isShared,
+        photo_url: OBJECT_PATH,
+      }),
+    },
+    syncMediaAcl: async () => {
+      throw new Error("object storage unavailable");
+    },
+  },
+);
+const failedJournalPatchHandler =
+  failedJournalPatchRoutes["/api/recovery/journal/:id"].at(-1);
+
 test("an issued upload is readable only by its owner before ACL finalization", async () => {
   const file = new MemoryFile("uploads/journal-photo");
   objects.set(OBJECT_PATH, file);
@@ -347,6 +373,17 @@ test("revoking journal sharing restores owner-only access and private caching", 
   assert.equal(ownerResponse.statusCode, 200);
   assert.equal(ownerResponse.served, true);
   assert.equal(ownerResponse.headers["Cache-Control"], "private, max-age=3600");
+});
+
+test("journal sharing reports media ACL failures instead of returning success", async () => {
+  const response = await invoke(failedJournalPatchHandler, {
+    params: { id: "42" },
+    body: { isShared: true },
+    user: { id: OWNER_ID },
+  });
+
+  assert.equal(response.statusCode, 500);
+  assert.deepEqual(response.body, { message: "Failed to update journal entry" });
 });
 
 test("journal sharing toggles voice-note privacy through the update route", async () => {
