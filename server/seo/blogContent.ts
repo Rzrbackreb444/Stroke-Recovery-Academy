@@ -969,7 +969,7 @@ export const POST_BEST_FOODS = makeBlogPost({
       paragraphs: [
         'One topic most food guides skip: eating mechanics after stroke. Up to 50% of stroke survivors have some degree of dysphagia (swallowing difficulty) in the acute phase. Even survivors who recover swallowing function often have reduced appetite, changed taste, or difficulty with food preparation due to hemiparesis.',
         'If swallowing is a concern, work with a speech-language pathologist before changing diet texture. Choking risk is real and can be life-threatening. Many of the foods on the 12-food list can be pureed or soft-modified — sardines, salmon, avocado, berries, and oatmeal all work. Ask your SLP about IDDSI levels if you need a formal texture framework.',
-        'For survivors managing food preparation with one functional arm: adaptive cutting boards, rocker knives, and one-handed jar openers make a real difference. The Recovery Store has a curated list of adaptive kitchen tools.',
+        'For survivors managing food preparation with one functional arm: adaptive cutting boards, rocker knives, and one-handed jar openers make a real difference. A curated list of adaptive kitchen tools can help you compare practical options.',
       ],
     },
   ],
@@ -1154,7 +1154,7 @@ export const POST_SPASTICITY = makeBlogPost({
       paragraphs: [
         'Neuromuscular electrical stimulation (NMES) and functional electrical stimulation (FES) devices can significantly reduce spasticity when used consistently at home. They work by sending electrical pulses to the muscle that trigger a contraction — essentially mimicking the signal the brain is failing to send. Paired with active effort (trying to move the limb while the device stimulates), they are far more effective than passive stimulation alone.',
         'Transcutaneous electrical nerve stimulation (TENS) units available over the counter target sensory nerves and can reduce tone temporarily — useful before stretching or therapy. True NMES devices require slightly more voltage and target motor nerves directly. Your PT or physiatrist can prescribe a trial with a clinical-grade device and help you interpret the response before you invest in a home unit.',
-        'The TENS units in the Recovery Store are a cost-effective starting point for at-home electrical stimulation. They do not replace clinical NMES but they are accessible, affordable, and supported by a reasonable evidence base for spasticity management.',
+        'Over-the-counter TENS units are a cost-effective starting point for at-home electrical stimulation. They do not replace clinical NMES but they are accessible, affordable, and supported by a reasonable evidence base for spasticity management.',
       ],
       bullets: [
         'TENS: sensory stimulation, reduces tone temporarily, OTC accessible',
@@ -1769,7 +1769,7 @@ export const POST_RESISTANCE_BANDS = makeBlogPost({
         'Some stroke survivors develop skin sensitivity or latex allergy during recovery. Standard latex bands can cause irritation, rashes, or contact dermatitis. A latex-free set eliminates this risk while providing the same progressive resistance training.',
       ],
       products: [
-        { name: 'Lianjindun 5-Piece Professional Resistance Band Set', link: 'https://www.amazon.com/dp/B0C5M1YDKQ', note: 'Latex-free resistance bands with five tension levels. Includes loop and tube bands with handles. Also in the Recovery Store.' },
+        { name: 'Lianjindun 5-Piece Professional Resistance Band Set', link: 'https://www.amazon.com/dp/B0C5M1YDKQ', note: 'Latex-free resistance bands with five tension levels. Includes loop and tube bands with handles. See the direct Amazon listing.' },
       ],
     },
     {
@@ -1915,8 +1915,8 @@ export const POST_SHOWER_SAFETY = makeBlogPost({
         'The exact models matter. A cheap shower chair wobbles. A weak grab bar rips out of drywall. These are the specific products that worked for me and thousands of other survivors.',
       ],
       products: [
-        { name: 'Drive Medical Premium Shower Chair with Back and Padded Arms', link: 'https://www.amazon.com/dp/B013AX88P2', note: 'Height-adjustable with backrest and padded arms. Eliminates balance risk entirely. Also in the Recovery Store.' },
-        { name: 'PerfectMed Spill-Proof Urinals for Men (2 Pack)', link: 'https://www.amazon.com/dp/B07YMHR8SJ', note: '32 oz portable urinals with glow-in-the-dark lids. Eliminates nighttime bathroom trips — the single biggest fall risk window after stroke. Also in the Recovery Store.' },
+        { name: 'Drive Medical Premium Shower Chair with Back and Padded Arms', link: 'https://www.amazon.com/dp/B013AX88P2', note: 'Height-adjustable with backrest and padded arms. Eliminates balance risk entirely. See the direct Amazon listing.' },
+        { name: 'PerfectMed Spill-Proof Urinals for Men (2 Pack)', link: 'https://www.amazon.com/dp/B07YMHR8SJ', note: '32 oz portable urinals with glow-in-the-dark lids. Eliminates nighttime bathroom trips — the single biggest fall risk window after stroke. See the direct Amazon listing.' },
       ],
     },
     {
@@ -2309,7 +2309,7 @@ export const POST_STROKE_GIFT_GUIDE = makeBlogPost({
     {
       h2: 'Budget-friendly gift list by price range',
       paragraphs: [
-        'Not everyone can afford the electric ankle trainer or a custom grab bar installation. Here is a practical gift list by price range, all of which appear in the Recovery Store.',
+        'Not everyone can afford the electric ankle trainer or a custom grab bar installation. Here is a practical gift list by price range, with direct retailer links for the products discussed.',
       ],
       table: {
         caption: 'Stroke recovery gifts by budget',
@@ -2504,7 +2504,7 @@ export const POST_ROBOTIC_GLOVE = makeBlogPost({
     "The protocol matters more than the device; misusing it wastes your money.",
   ],
   subhead: 'My left hand was a closed fist for 14 months straight. Robotic gloves were part of what broke the pattern — but only after I stopped using the wrong one.',
-  ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
+  ctaPrimary: { href: 'https://www.amazon.com/syrebo-Rehabilitation-Hemiplegia-Recovery-Equipment/dp/B0C36PWC3H', label: 'Check the recommended glove on Amazon' },
   ctaSecondary: { href: '/blog/afo-vs-electric-ankle-trainer', label: 'Drop foot solutions too' },
   image: '/images/blog/saebo-glove-product.jpg',
   sections: [
@@ -2614,7 +2614,6 @@ export const POST_ROBOTIC_GLOVE = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'All survivor-tested stroke recovery gear.' },
     { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'Continue upper limb rebuilding after glove sessions.' },
     { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs. electric ankle trainer', blurb: 'The same question for your foot and ankle.' },
     { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'Footwear that accommodates AFOs and drop foot.' },
@@ -2653,7 +2652,7 @@ export const POST_BEST_SHOES = makeBlogPost({
     "AFO users need extra depth and a specific fitting protocol.",
   ],
   subhead: 'After my stroke at 36, footwear stopped being a fashion decision. Your shoe determines whether you trip, compensate wrong, or actually walk with confidence. Here is what works.',
-  ctaPrimary: { href: '/recovery/shop', label: 'Browse recovery gear' },
+  ctaPrimary: { href: 'https://www.amazon.com/Brooks-Mens-Adrenaline-Supportive-Running/dp/B0D93BZ61K', label: 'Check the recommended shoes on Amazon' },
   ctaSecondary: { href: '/blog/afo-vs-electric-ankle-trainer', label: 'Drop foot solutions' },
     image: '/images/blog/brooks-adrenaline-gts-product.jpg',
   sections: [
@@ -2759,7 +2758,6 @@ export const POST_BEST_SHOES = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Survivor-tested gear including shoes and mobility aids.' },
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'Why I chose the Cascadia trail shoe over the standard stability options. The real review nobody else can give you.' },
     { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs. electric ankle trainer', blurb: 'Which drop foot solution fits your recovery stage.' },
     { href: '/blog/foot-drop-rehab-at-home', label: 'Drop foot rehab at home', blurb: 'The protocol for rebuilding dorsiflexion.' },
@@ -2799,7 +2797,7 @@ export const POST_WALKING_AIDS = makeBlogPost({
     "Progress through aids over time rather than clinging to one too long.",
   ],
   subhead: 'The wrong aid doesn\'t just fail to support you — it teaches your brain the wrong compensation pattern. Here is how to choose, what to look for, and the models I recommend.',
-  ctaPrimary: { href: '/recovery/shop', label: 'Browse all recovery gear' },
+  ctaPrimary: { href: 'https://www.amazon.com/Drive-Medical-Nitro-Rollator-Walker/dp/B009SOC9PI', label: 'Check the recommended walking aid on Amazon' },
   ctaSecondary: { href: '/blog/best-shoes-stroke-survivors', label: 'Get the right shoes too' },
     image: '/images/blog/ossur-afo-product.jpg',
   sections: [
@@ -2842,7 +2840,7 @@ export const POST_WALKING_AIDS = makeBlogPost({
         {
           name: 'HurryCane Freedom Edition — best single-point cane',
           link: 'https://www.amazon.com/dp/B00MV4WEVU',
-          note: 'Pivoting base that self-adjusts to uneven surfaces — the key differentiator. Folds flat. Multiple heights. Already in the Recovery Store.',
+          note: 'Pivoting base that self-adjusts to uneven surfaces — the key differentiator. Folds flat. Multiple heights. See the direct Amazon listing.',
         },
         {
           name: 'Hugo Mobility Offset Quad Cane — best quad cane',
@@ -2895,7 +2893,6 @@ export const POST_WALKING_AIDS = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'HurryCane and survivor-tested gear in one place.' },
     { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'The right shoe makes every walking aid more effective.' },
     { href: '/blog/foot-drop-rehab-at-home', label: 'Drop foot rehab at home', blurb: 'Address the gait deficit that makes walking aids necessary.' },
     { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home', blurb: 'The protocol for rebuilding independent ambulation.' },
@@ -2934,7 +2931,7 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
     "A structured 20-minute daily hand session is what actually rebuilds function.",
   ],
   subhead: 'Sixty minutes of OT per week isn\'t enough. The survivors who rebuild hand function are the ones filling the hours between sessions. Here are the tools that make those hours count.',
-  ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B001AW1PE0', label: 'Check the recommended hand tool on Amazon' },
   ctaSecondary: { href: '/blog/best-robotic-glove-stroke-recovery', label: 'Consider a robotic glove too' },
   image: '/images/blog/theraputty-putty-red.jpg',
   sections: [
@@ -2973,7 +2970,7 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
         {
           name: 'Theraputty Hand Exercise Putty Set — 6-piece progression set',
           link: 'https://www.amazon.com/dp/B001AW1PE0',
-          note: 'Six resistance levels from extra-soft to extra-firm. Allows progressive loading as hand strength returns. Also in the Recovery Store. The starting point for any home hand therapy program.',
+          note: 'Six resistance levels from extra-soft to extra-firm. Allows progressive loading as hand strength returns. See the direct Amazon listing. The starting point for any home hand therapy program.',
         },
         {
           name: 'CanDo Theraputty Plus — color-coded resistance',
@@ -3001,7 +2998,7 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
         {
           name: 'Grip Strength Trainer Set — adjustable resistance',
           link: 'https://www.amazon.com/dp/B07B2Z3YXS',
-          note: 'Adjustable resistance per finger, forearm and grip trainer included. Also in the Recovery Store. The set I\'d use alongside therapy putty for a complete home hand program.',
+          note: 'Adjustable resistance per finger, forearm and grip trainer included. See the direct Amazon listing. The set I\'d use alongside therapy putty for a complete home hand program.',
         },
       ],
     },
@@ -3015,7 +3012,7 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
         {
           name: 'D\'Addario Varigrip Hand Exerciser — individual finger resistance',
           link: 'https://www.amazon.com/dp/B001OCGGEM',
-          note: 'Individual adjustable resistance per finger. Works at a desk, in a chair, or anywhere. Also in the Recovery Store.',
+          note: 'Individual adjustable resistance per finger. Works at a desk, in a chair, or anywhere. See the direct Amazon listing.',
         },
       ],
     },
@@ -3050,7 +3047,7 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
         'Use the reacher for tasks that are still outside your current hand capability: pulling on socks, picking up dropped items, retrieving objects from cabinets. Keep doing the hand work. The reacher handles the rest for now.',
       ],
       products: [
-        { name: 'FitPlus Reacher Grabber Tool — 32 Inch Extra Long', link: 'https://www.amazon.com/dp/B0CSPTWZYH', note: '32-inch extra-long reacher with rotating jaw and magnetic tip. One-handed operation. The ADL bridge while hand function rebuilds. Also in the Recovery Store.' },
+        { name: 'FitPlus Reacher Grabber Tool — 32 Inch Extra Long', link: 'https://www.amazon.com/dp/B0CSPTWZYH', note: '32-inch extra-long reacher with rotating jaw and magnetic tip. One-handed operation. The ADL bridge while hand function rebuilds. See the direct Amazon listing.' },
       ],
     },
   ],
@@ -3062,7 +3059,6 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Therapy putty, grip trainer, finger exerciser — all in one place.' },
     { href: '/blog/best-robotic-glove-stroke-recovery', label: 'Best robotic gloves for stroke recovery', blurb: 'Amplify hand rehab volume with EMG-triggered assistance.' },
     { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'Continue upper limb work beyond the hand.' },
     { href: '/programs/daily-routine', label: 'The Daily Routine', blurb: 'The daily system that makes twice-daily practice sustainable.' },
@@ -3073,7 +3069,7 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
     description: 'Six resistance levels from extra-soft to extra-firm. The most versatile single hand rehab tool for stroke survivors at any stage.',
     link: 'https://www.amazon.com/dp/B001AW1PE0',
     label: 'Check Current Price on Amazon',
-    note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
+    note: 'Direct Amazon listing. Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
     title: 'The hand rebuild protocol is in the book',
@@ -3100,7 +3096,7 @@ export const POST_MOBILITY_SCOOTER = makeBlogPost({
     "Medicare may cover a scooter when it is medically necessary for the home.",
   ],
   subhead: 'Getting a scooter isn\'t giving up on walking. It is buying your cognitive and physical energy back for the things that actually move recovery forward. Here is how to choose.',
-  ctaPrimary: { href: '/recovery/shop', label: 'Browse all recovery gear' },
+  ctaPrimary: { href: 'https://www.amazon.com/Pride-Mobility-4-Wheel-Electric-Scooter/dp/B00PV2QSLW', label: 'Check the recommended scooter on Amazon' },
   ctaSecondary: { href: '/blog/best-walking-aids-stroke-survivors', label: 'Start with walking aids' },
   image: '/images/blog/mobility-scooter.jpg',
   sections: [
@@ -3149,8 +3145,8 @@ export const POST_MOBILITY_SCOOTER = makeBlogPost({
         'The Pride Go-Go Sport is the standard recommendation, but it is not the only option. Two alternatives serve different needs: the ultra-lightweight folding scooter for travel, and the heavy-duty 4-wheel scooter for outdoor terrain and longer range.',
       ],
       products: [
-        { name: 'Ranger Ultra-Light 28 lbs Folding Mobility Scooter', link: 'https://www.amazon.com/dp/B0FHP3X1MM', note: 'Carbon-frame folding scooter at 28 lbs — one of the lightest available. Air-travel ready and liftable by one person. Also in the Recovery Store.' },
-        { name: 'Eldryvon 4-Wheel Electric Mobility Scooter (15–50 Mile Range)', link: 'https://www.amazon.com/dp/B0DSR2KV8S', note: '350W motor, rotating seat for easy transfers, dual basket. Better for outdoor terrain and longer community trips. Also in the Recovery Store.' },
+        { name: 'Ranger Ultra-Light 28 lbs Folding Mobility Scooter', link: 'https://www.amazon.com/dp/B0FHP3X1MM', note: 'Carbon-frame folding scooter at 28 lbs — one of the lightest available. Air-travel ready and liftable by one person. See the direct Amazon listing.' },
+        { name: 'Eldryvon 4-Wheel Electric Mobility Scooter (15–50 Mile Range)', link: 'https://www.amazon.com/dp/B0DSR2KV8S', note: '350W motor, rotating seat for easy transfers, dual basket. Better for outdoor terrain and longer community trips. See the direct Amazon listing.' },
       ],
     },
     {
@@ -3192,7 +3188,6 @@ export const POST_MOBILITY_SCOOTER = makeBlogPost({
     { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors', blurb: 'Canes, walkers, and rollators for shorter-distance mobility.' },
     { href: '/blog/best-wheelchair-stroke-survivor', label: 'Best wheelchairs for stroke survivors', blurb: 'When a scooter isn\'t the right fit.' },
     { href: '/blog/managing-fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'The energy management system that makes recovery sustainable.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'All stroke recovery gear in one place.' },
   ],
   publishedDate: '2026-06-05',
   productCard: {
@@ -3227,7 +3222,7 @@ export const POST_WHEELCHAIR = makeBlogPost({
     "A wheelchair is a stage in the mobility story, not a verdict.",
   ],
   subhead: 'A wheelchair is not the end of the mobility story. It is a tool — one that should support your posture, your transfers, and your independence as aggressively as possible. Here is how to choose.',
-  ctaPrimary: { href: '/recovery/shop', label: 'Browse all recovery gear' },
+  ctaPrimary: { href: 'https://www.amazon.com/Drive-Medical-Lightweight-Expedition-Wheelchair/dp/B00537S944', label: 'Check the recommended wheelchair on Amazon' },
   ctaSecondary: { href: '/blog/best-mobility-scooter-stroke-survivor', label: 'Considering a scooter instead?' },
   image: '/images/blog/wheelchair-drive-medical.jpg',
   sections: [
@@ -3323,7 +3318,6 @@ export const POST_WHEELCHAIR = makeBlogPost({
     { href: '/blog/best-mobility-scooter-stroke-survivor', label: 'Best mobility scooters for stroke survivors', blurb: 'For outdoor distance that preserves recovery energy.' },
     { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids for stroke survivors', blurb: 'Canes, walkers, and rollators when ambulation is the goal.' },
     { href: '/blog/managing-fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'Why energy management is a recovery strategy.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'All stroke recovery gear in one place.' },
   ],
   publishedDate: '2026-06-05',
   productCard: {
@@ -3358,7 +3352,7 @@ export const POST_PEDAL_EXERCISER = makeBlogPost({
     "It supplements the daily routine but does not replace physical therapy.",
   ],
   subhead: 'Cycling motion is one of the earliest things stroke survivors can do on the affected leg — but only the right type of device captures the full benefit. Here is the breakdown.',
-  ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B00B1VDNQA', label: 'Check the recommended pedal exerciser on Amazon' },
   ctaSecondary: { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training guide too' },
     image: '/images/blog/pedal-exerciser-product.jpg',
   sections: [
@@ -3382,7 +3376,7 @@ export const POST_PEDAL_EXERCISER = makeBlogPost({
         {
           name: 'DeskCycle Under-Desk Pedal Exerciser',
           link: 'https://www.amazon.com/dp/B00B1VDNQA',
-          note: 'Calibrated resistance, whisper-quiet operation, fits under most chairs and desks. Magnetic resistance allows smooth cycling even at slow RPM — critical for survivors who can\'t maintain fast cadence on the affected side. Also in the Recovery Store.',
+          note: 'Calibrated resistance, whisper-quiet operation, fits under most chairs and desks. Magnetic resistance allows smooth cycling even at slow RPM — critical for survivors who can\'t maintain fast cadence on the affected side. See the direct Amazon listing.',
         },
       ],
       image: {
@@ -3440,7 +3434,6 @@ export const POST_PEDAL_EXERCISER = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'DeskCycle and all stroke recovery gear in one place.' },
     { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home', blurb: 'Build on the cycling base with walking-specific training.' },
     { href: '/blog/best-balance-board-stroke-recovery', label: 'Best balance boards for stroke recovery', blurb: 'Take the work from seated to standing.' },
     { href: '/blog/managing-fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'Energy management for sustainable daily exercise.' },
@@ -3451,7 +3444,7 @@ export const POST_PEDAL_EXERCISER = makeBlogPost({
     description: 'Calibrated magnetic resistance, whisper-quiet, works at slow RPM. The pedal exerciser most commonly used in stroke home rehab programs.',
     link: 'https://www.amazon.com/dp/B00B1VDNQA',
     label: 'Check Current Price on Amazon',
-    note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
+    note: 'Direct Amazon listing. Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
     title: 'The lower body rebuild is in the book',
@@ -3478,7 +3471,7 @@ export const POST_PUSH_UP_BARS_GUIDE = makeBlogPost({
     "Add Bala Bangles to progressively load upper-body pressing.",
   ],
   subhead: 'Rebuilding pressing strength after stroke means training around wrist limitations, compensated grip, and asymmetric loading. The right push-up bars make that possible. The wrong ones make it worse.',
-  ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B008DNAJ5M', label: 'Check push-up bars on Amazon' },
   ctaSecondary: { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Add resistance bands too' },
   image: '/images/blog/grip-strength-trainer.jpg',
   sections: [
@@ -3515,7 +3508,7 @@ export const POST_PUSH_UP_BARS_GUIDE = makeBlogPost({
         {
           name: 'Perfect Fitness Push-Up Bars — rotating handles',
           link: 'https://www.amazon.com/dp/B008DNAJ5M',
-          note: 'Rotating handles reduce wrist torque, non-slip base, foam grips. The most widely used push-up bar in stroke rehab home programs. Also in the Recovery Store.',
+          note: 'Rotating handles reduce wrist torque, non-slip base, foam grips. The most widely used push-up bar in stroke rehab home programs. See the direct Amazon listing.',
         },
       ],
     },
@@ -3551,7 +3544,6 @@ export const POST_PUSH_UP_BARS_GUIDE = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Push-up bars and all stroke recovery training gear.' },
     { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'The pull-based counterpart to push-up training.' },
     { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools', blurb: 'Build the grip strength that makes bar work possible.' },
     { href: '/blog/perfect-fitness-pushup-stands-review-stroke-recovery', label: 'Perfect Fitness Pushup Stands review', blurb: 'The fixed, stability-first alternative to rotating bars.' },
@@ -3564,7 +3556,7 @@ export const POST_PUSH_UP_BARS_GUIDE = makeBlogPost({
     description: 'Rotating handles reduce wrist torque. Non-slip base. The standard push-up bar in stroke home rehab programs.',
     link: 'https://www.amazon.com/dp/B008DNAJ5M',
     label: 'Check Current Price on Amazon',
-    note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
+    note: 'Direct Amazon listing. Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
     title: 'The upper body rebuild is in the book',
@@ -3663,7 +3655,7 @@ export const POST_PUSHUP_STANDS_REVIEW = makeBlogPost({
       h2: 'Who should buy the Perfect Fitness Pushup Stands',
       paragraphs: [
         'Buy these if your dominant concern is stability and a wrist that will not extend onto the floor — the planted 360 base and neutral grip are their whole point, and at $19.99 they are an easy, low-risk addition to a home program.',
-        'Skip them in favor of rotating push-up bars if your main issue is forearm or wrist tone that resists a fixed hand angle. Both belong in the Recovery Store, and many survivors own both — stands for stability days, bars for tone days.',
+        'Skip them in favor of rotating push-up bars if your main issue is forearm or wrist tone that resists a fixed hand angle. Both can be useful, and many survivors own both — stands for stability days, bars for tone days.',
       ],
       products: [
         {
@@ -3695,7 +3687,6 @@ export const POST_PUSHUP_STANDS_REVIEW = makeBlogPost({
     { href: '/blog/rotating-push-up-bars-vs-fixed-pushup-stands-stroke', label: 'Rotating bars vs fixed pushup stands', blurb: 'Pick the right pressing tool for your specific deficit.' },
     { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'The pull-based counterpart to push-up training.' },
     { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools', blurb: 'Build the grip and wrist tolerance that makes handle work possible.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Pushup stands and all stroke recovery training gear.' },
   ],
   publishedDate: '2026-08-10',
   productCard: {
@@ -3731,7 +3722,7 @@ export const POST_BARS_VS_STANDS = makeBlogPost({
     'Match the tool to your deficit, not to reviews written for able-bodied lifters.',
   ],
   subhead: 'Two Perfect Fitness tools, two very different jobs. The right choice depends on whether your biggest barrier is wrist tone or balance. Here is how a survivor decides.',
-  ctaPrimary: { href: '/recovery/shop', label: 'See both in the Recovery Store' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B008DNAJ5M', label: 'Check push-up bars on Amazon' },
   ctaSecondary: { href: '/blog/perfect-fitness-pushup-stands-review-stroke-recovery', label: 'Read the pushup stands review' },
   image: '/images/blog/grip-strength-trainer.jpg',
   imageAlt: 'Rotating push-up bars and fixed pushup stands side by side for stroke recovery comparison',
@@ -3833,7 +3824,6 @@ export const POST_BARS_VS_STANDS = makeBlogPost({
     { href: '/blog/best-push-up-bars-stroke-recovery', label: 'Best push-up bars for stroke recovery', blurb: 'The rotating-handle guide and upper-body session structure.' },
     { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Best resistance bands for stroke recovery', blurb: 'The pull-based counterpart to push-up training.' },
     { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools', blurb: 'Build the grip and wrist tolerance that makes handle work possible.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Both tools and all stroke recovery training gear.' },
   ],
   publishedDate: '2026-08-10',
   productCard: {
@@ -3868,7 +3858,7 @@ export const POST_AFO_OSSUR = makeBlogPost({
     "Transition away from the AFO as ankle control returns, not by a fixed date.",
   ],
   subhead: 'The wrong AFO brace isn\'t just uncomfortable — it teaches your ankle the wrong thing. Here is how to choose, how to fit it, and the models worth considering.',
-  ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
+  ctaPrimary: { href: 'https://www.amazon.com/Ossur-Foot-up-Drop-Foot-Brace/dp/B00KB008OM', label: 'Check the recommended AFO on Amazon' },
   ctaSecondary: { href: '/blog/afo-vs-electric-ankle-trainer', label: 'Compare AFO vs electric options' },
     image: '/images/blog/ossur-afo-product.jpg',
   sections: [
@@ -3953,7 +3943,6 @@ export const POST_AFO_OSSUR = makeBlogPost({
     { href: '/blog/foot-drop-rehab-at-home', label: 'Drop foot rehab at home', blurb: 'The protocol for rebuilding dorsiflexion.' },
     { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'AFO-compatible footwear — Brooks and Skechers guide.' },
     { href: '/blog/best-ankle-brace-stroke-survivor', label: 'Best ankle braces for stroke survivors', blurb: 'Lighter options when a full AFO isn\'t needed.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Ossur AFO and all stroke recovery gear.' },
   ],
   publishedDate: '2026-06-05',
   productCard: {
@@ -3988,7 +3977,7 @@ export const POST_ANKLE_BRACE = makeBlogPost({
     "Many survivors step down from an AFO to a lace-up brace as control improves.",
   ],
   subhead: 'Not every drop foot needs a full AFO. Not every ankle instability needs a rigid brace. Here is how to figure out which level of support your ankle actually needs — and which products deliver it.',
-  ctaPrimary: { href: '/recovery/shop', label: 'Browse recovery gear' },
+  ctaPrimary: { href: 'https://www.amazon.com/Vive-Laced-Ankle-Brace-Compression/dp/B073RKSNXX', label: 'Check the recommended ankle brace on Amazon' },
   ctaSecondary: { href: '/blog/best-afo-brace-drop-foot', label: 'Need more? See full AFO guide' },
     image: '/images/blog/ossur-afo-product.jpg',
   sections: [
@@ -4070,7 +4059,6 @@ export const POST_ANKLE_BRACE = makeBlogPost({
     { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs. electric ankle trainer', blurb: 'Which approach fits your recovery stage.' },
     { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'Brooks and Skechers for braced and unbraced feet.' },
     { href: '/blog/best-balance-board-stroke-recovery', label: 'Best balance boards for stroke recovery', blurb: 'Rebuild the proprioception a brace compensates for.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'All stroke recovery gear in one place.' },
   ],
   publishedDate: '2026-06-05',
   productCard: {
@@ -4105,7 +4093,7 @@ export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
     "Combine balance work with ankle training for compounding gains.",
   ],
   subhead: 'Balance training after stroke isn\'t about not falling — it\'s about rebuilding the sensory feedback loops that stroke severed. Here is what works, what doesn\'t, and the boards I recommend.',
-  ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B07D8J6BHR', label: 'Check the recommended balance board on Amazon' },
   ctaSecondary: { href: '/blog/best-ankle-brace-stroke-survivor', label: 'Stabilize the ankle first' },
     image: '/images/blog/balance-board-product.jpg',
   sections: [
@@ -4203,7 +4191,6 @@ export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'StrongTek balance board and all stroke recovery gear.' },
     { href: '/blog/best-ankle-brace-stroke-survivor', label: 'Best ankle braces for stroke survivors', blurb: 'Stabilize before you challenge.' },
     { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home', blurb: 'Take balance work into the walking pattern.' },
     { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'The right shoe pairs with balance work.' },
@@ -4242,7 +4229,7 @@ export const POST_BRAIN_BOOKS = makeBlogPost({
     "Brain games help, but pick aphasia-friendly formats if language is affected.",
   ],
   subhead: 'Cognitive recovery after stroke follows the same principle as physical recovery: the brain rewires based on what you practice. The games and books below are the tools I use. Here is why they work.',
-  ctaPrimary: { href: '/recovery/shop', label: 'See all stroke recovery gear' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/1648769039', label: 'Check the recommended brain games on Amazon' },
   ctaSecondary: { href: '/blog/memory-problems-after-stroke', label: 'Memory problems guide' },
   image: '/images/blog/brain-books-stroke.jpg',
   sections: [
@@ -4319,7 +4306,6 @@ export const POST_BRAIN_BOOKS = makeBlogPost({
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Brain games, puzzles, and all stroke recovery gear in one place.' },
     { href: '/blog/memory-problems-after-stroke', label: 'Memory problems after stroke', blurb: 'Why memory changes after stroke and what actually helps.' },
     { href: '/blog/pseudobulbar-affect-after-stroke', label: 'Pseudobulbar affect after stroke', blurb: 'When the emotional response doesn\'t match the feeling.' },
     { href: '/blog/managing-fatigue-after-stroke', label: 'Fatigue after stroke', blurb: 'Why cognitive fatigue is different — and how to manage it.' },
@@ -4359,7 +4345,7 @@ export const POST_ELLIPTICAL = makeBlogPost({
     "Train at home with supervision until standing balance is reliable.",
   ],
   subhead: 'Reciprocal motion. Zero impact. Real cardio. The elliptical is underrated for hemiparetic survivors who need to rebuild endurance without wrecking joints.',
-  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaPrimary: { label: 'Check the recommended elliptical on Amazon', link: 'https://www.amazon.com/Schwinn-Fitness-430-Elliptical-Machine/dp/B004AE2TH8' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
   image: '/images/blog/elliptical-compact.jpg',
   sections: [
@@ -4469,7 +4455,7 @@ export const POST_STATIONARY_BIKE = makeBlogPost({
     "Start with short sessions and build duration as endurance returns.",
   ],
   subhead: 'Seated. Supported. Safe. The recumbent bike is how most stroke survivors should start building cardiovascular fitness — and the evidence agrees.',
-  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaPrimary: { label: 'Check the recommended bike on Amazon', link: 'https://www.amazon.com/Marcy-Recumbent-Exercise-Bike-Resistance/dp/B003DYERJO' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
   image: '/images/blog/recumbent-stationary-bike.jpg',
   sections: [
@@ -4564,7 +4550,7 @@ export const POST_TREADMILL = makeBlogPost({
     "It works with foot drop when paired with an AFO.",
   ],
   subhead: 'Gait retraining doesn\'t stop when your PT appointment ends. The right home treadmill closes that gap — if you buy correctly and use it correctly.',
-  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaPrimary: { label: 'Check the recommended treadmill on Amazon', link: 'https://www.amazon.com/NordicTrack-T-Series-Treadmill/dp/B07VPN6G54' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
   image: '/images/blog/survivor-balance-board-scene.png',
   sections: [
@@ -4650,7 +4636,7 @@ export const POST_GRIP_STRENGTHENER = makeBlogPost({
     "If you can't hold the tool yet, start with putty and assisted holds.",
   ],
   subhead: 'Grip strength is a reliable predictor of upper extremity function outcomes after stroke. Here\'s how to train it at home without making spasticity worse.',
-  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaPrimary: { label: 'Check the recommended grip trainer on Amazon', link: 'https://www.amazon.com/Gripmaster-Pro-Hand-Exerciser/dp/B0002M7F2Q' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
   image: '/images/blog/grip-strength-trainer.jpg',
   sections: [
@@ -4757,7 +4743,7 @@ export const POST_TENS_UNIT = makeBlogPost({
     "No prescription is needed to buy a home TENS unit.",
   ],
   subhead: 'Hemiplegic shoulder pain affects up to 84% of stroke survivors. Electrical stimulation is one of the most evidence-backed interventions. Here\'s what to buy and how to use it safely.',
-  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaPrimary: { label: 'Check the recommended TENS unit on Amazon', link: 'https://www.amazon.com/TENS-7000-Official-Muscle-Stimulator/dp/B001O1OUF6' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
     image: '/images/blog/tens-unit-omron.jpg',
   sections: [
@@ -4864,7 +4850,7 @@ export const POST_MASSAGE_GUN = makeBlogPost({
     "Percussion reduces tone temporarily — it does not cure spasticity.",
   ],
   subhead: 'Percussion massage before your PT session can reduce tone enough to get meaningful work done. After exercise it accelerates recovery. But there are areas you must avoid — and a technique that makes the difference.',
-  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaPrimary: { label: 'Check the recommended massage gun on Amazon', link: 'https://www.amazon.com/Therabody-Theragun-Percussive-Therapy-Attachments/dp/B086YDTLVX' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
     image: '/images/blog/massage-gun-theragun.jpg',
   sections: [
@@ -5154,7 +5140,7 @@ export const POST_ADJUSTABLE_BED = makeBlogPost({
     "An adjustable bed is worth it if positioning meaningfully affects your mornings.",
   ],
   subhead: 'How you sleep is part of your rehabilitation. Positioning affects spasticity tone, shoulder integrity, and whether you wake up ready to work or already behind.',
-  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaPrimary: { label: 'Check the recommended wedge on Amazon', link: 'https://www.amazon.com/InteVision-Foam-Wedge-Bed-Pillow/dp/B00FHKNO04' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
   image: '/images/blog/adjustable-bed-medical.jpg',
   sections: [
@@ -5247,7 +5233,7 @@ export const POST_COMPRESSION = makeBlogPost({
     "End-of-day swelling in the affected leg is normal but worth monitoring.",
   ],
   subhead: 'A swollen affected leg isn\'t just uncomfortable — it limits movement, increases DVT risk, and compounds the fatigue that already makes everything harder. Compression is the answer most survivors underuse.',
-  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaPrimary: { label: 'Check compression socks on Amazon', link: 'https://www.amazon.com/Compression-Socks-Men-Women-20-30mmhg/dp/B00U1YHUJI' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
   image: '/images/blog/compression-sock-therapy.jpg',
   sections: [
@@ -5429,7 +5415,7 @@ export const POST_WEIGHTED_VEST = makeBlogPost({
     "Center the weight rather than loading the affected side.",
   ],
   subhead: 'Adding body weight through a vest changes the proprioceptive input during walking and balance work — a different neuroplasticity stimulus that complements standard exercise without requiring different equipment.',
-  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaPrimary: { label: 'Check the recommended weighted vest on Amazon', link: 'https://www.amazon.com/ZFOsports-Weighted-Vest-Adjustable-Weight/dp/B00GG3TGTU' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
   image: '/images/blog/weighted-vest-workout.jpg',
   sections: [
@@ -5596,7 +5582,7 @@ export const POST_THRESHOLD_RAMP = makeBlogPost({
     "Medicare rarely covers home modifications, so budget for them yourself.",
   ],
   subhead: 'A threshold is a two-inch ledge. After stroke it\'s a fall risk. A $30 rubber ramp eliminates it. Most survivors don\'t buy it until after they fall. Don\'t be that survivor.',
-  ctaPrimary: { label: 'See recovery equipment', link: '/recovery/shop' },
+  ctaPrimary: { label: 'Check the recommended ramp on Amazon', link: 'https://www.amazon.com/EZ-ACCESS-TRANSITIONS-Modular-Entry-1-Inch/dp/B000I5SV3C' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
   image: '/images/blog/threshold-ramp.jpg',
   sections: [
@@ -7050,7 +7036,7 @@ export const POST_GAIT_BELT = makeBlogPost({
   subhead: 'One in three survivors falls in the first year. A gait belt turns a terrifying transfer into a controlled one — for you and whoever helps you.',
   image: '/images/blog/gait-belt-stroke-recovery.png',
   imageAlt: 'Caregiver using a gait belt to help a stroke survivor stand safely during a home transfer',
-  ctaPrimary: { href: '/recovery/store#gait-belt-1', label: 'See survivor-tested gait belts' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B0H3LJ97R8', label: 'Check gait belts on Amazon' },
   ctaSecondary: { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home' },
   sections: [
     {
@@ -7141,13 +7127,12 @@ export const POST_GAIT_BELT = makeBlogPost({
   related: [
     { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home', blurb: 'Rebuild your walk safely after the therapy stops.' },
     { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids after stroke', blurb: 'Canes, rollators, and when to use each.' },
-    { href: '/recovery/store', label: 'The Recovery Store', blurb: 'Every survivor-tested tool in one place.' },
   ],
   productCard: {
     title: 'Gait & Transfer Belt with Metal Buckle',
     description: 'Sturdy metal-buckle gait belt for safe transfers and guarded walking practice — the tool every caregiver should own first.',
-    link: '/recovery/store#gait-belt-1',
-    label: 'See it in the Recovery Store',
+    link: 'https://www.amazon.com/dp/B0H3LJ97R8',
+    label: 'Check it on Amazon',
     note: 'Curated by Nick Kremers. As an Amazon Associate, SRA earns from qualifying purchases at no extra cost to you.',
   },
 });
@@ -7172,7 +7157,7 @@ export const POST_TRANSFER_SLING = makeBlogPost({
   subhead: 'Manual transfers hurt backs and cause falls. The right sling lets a caregiver help you stand without yanking on a weak arm.',
   image: '/images/blog/transfer-sling-stroke-recovery.png',
   imageAlt: 'Padded sit-to-stand transfer sling supporting a stroke survivor during a safe transfer',
-  ctaPrimary: { href: '/recovery/store#transfer-sling-1', label: 'See transfer slings & aids' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B079VJFNJL', label: 'Check transfer slings on Amazon' },
   ctaSecondary: { href: '/blog/gait-belt-for-stroke-recovery', label: 'When to use a gait belt instead' },
   sections: [
     {
@@ -7246,13 +7231,12 @@ export const POST_TRANSFER_SLING = makeBlogPost({
   related: [
     { href: '/blog/gait-belt-for-stroke-recovery', label: 'Gait belts for stroke recovery', blurb: 'The cheapest fall-prevention tool there is.' },
     { href: '/blog/shower-safety-stroke-survivor', label: 'Shower safety after stroke', blurb: 'Where most falls happen — and how to stop them.' },
-    { href: '/recovery/store', label: 'The Recovery Store', blurb: 'Mobility and transfer aids, survivor-tested.' },
   ],
   productCard: {
     title: 'Padded Sit-to-Stand Transfer Sling',
     description: 'Padded torso sling that lets a caregiver help you stand through your core — no yanking on a weak arm.',
-    link: '/recovery/store#transfer-sling-1',
-    label: 'See it in the Recovery Store',
+    link: 'https://www.amazon.com/dp/B079VJFNJL',
+    label: 'Check it on Amazon',
     note: 'Curated by Nick Kremers. As an Amazon Associate, SRA earns from qualifying purchases at no extra cost to you.',
   },
 });
@@ -7277,7 +7261,7 @@ export const POST_HAND_SPLINT = makeBlogPost({
   subhead: 'A spastic hand that lives in a fist can stiffen into a permanent contracture. A resting splint holds it open so the tissue stays long enough to keep training.',
   image: '/images/blog/hand-splint-stroke-recovery.png',
   imageAlt: "Resting hand splint holding a stroke survivor's hand open to prevent spasticity contracture",
-  ctaPrimary: { href: '/recovery/store#spasticity-splint-1', label: 'See anti-spasticity hand splints' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B0FR96Y8C2', label: 'Check hand splints on Amazon' },
   ctaSecondary: { href: '/blog/spasticity-after-stroke', label: 'Managing spasticity after stroke' },
   sections: [
     {
@@ -7348,13 +7332,12 @@ export const POST_HAND_SPLINT = makeBlogPost({
   related: [
     { href: '/blog/spasticity-after-stroke', label: 'Spasticity after stroke', blurb: 'What causes the tightness and what actually helps.' },
     { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools', blurb: 'Rebuild grip and fine motor after stroke.' },
-    { href: '/recovery/store', label: 'The Recovery Store', blurb: 'Therapy and splinting tools, survivor-tested.' },
   ],
   productCard: {
     title: 'Anti-Spasticity Hand Splint with Training Ball',
     description: 'Resting hand splint with an adjustable finger separator and training ball to hold a spastic hand open and prevent contracture.',
-    link: '/recovery/store#spasticity-splint-1',
-    label: 'See it in the Recovery Store',
+    link: 'https://www.amazon.com/dp/B0FR96Y8C2',
+    label: 'Check it on Amazon',
     note: 'Curated by Nick Kremers. As an Amazon Associate, SRA earns from qualifying purchases at no extra cost to you.',
   },
 });
@@ -7377,7 +7360,7 @@ export const POST_WALKER = makeBlogPost({
   ],
   extraKeywords: ['walker after stroke', 'stand up walker', 'stroke walker with seat'],
   subhead: 'A walker is not just a frame with wheels. For a hemiparetic survivor, it is a transfer aid, a balance anchor, and a psychological permission slip to try walking again. Here is how to choose.',
-  ctaPrimary: { href: '/recovery/store#walker-tamubaks-1', label: 'See survivor-tested walkers' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B0DZ2D8GV1', label: 'Check walkers on Amazon' },
   ctaSecondary: { href: '/blog/best-walking-aids-stroke-survivors', label: 'Compare canes and rollators' },
   image: '/images/blog/survivor-walker-scene.png',
   imageAlt: 'Stroke survivor using a rollator walker for safe indoor mobility with caregiver support',
@@ -7464,7 +7447,6 @@ export const POST_WALKER = makeBlogPost({
     { href: '/blog/best-walking-aids-stroke-survivors', label: 'Best walking aids after stroke', blurb: 'Canes, rollators, and when to use each.' },
     { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home', blurb: 'The protocol for rebuilding independent ambulation.' },
     { href: '/blog/best-shoes-stroke-survivors', label: 'Best shoes for stroke survivors', blurb: 'The right shoe makes every walking aid more effective.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Walker and all survivor-tested gear in one place.' },
   ],
   publishedDate: '2026-07-25',
   productCard: {
@@ -7500,7 +7482,7 @@ export const POST_SIT_TO_STAND_LIFT = makeBlogPost({
   ],
   extraKeywords: ['patient lift stroke', 'sit to stand lift elderly', 'powered transfer lift stroke'],
   subhead: 'Manual transfers hurt backs and cause falls. A powered sit-to-stand lift lets a single caregiver safely move a survivor from bed to chair without lifting. Here is when you need one and how to choose.',
-  ctaPrimary: { href: '/recovery/store#sit-to-stand-lift-perlecare-1', label: 'See sit-to-stand lifts' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B0GDFSGTNN', label: 'Check sit-to-stand lifts on Amazon' },
   ctaSecondary: { href: '/blog/transfer-sling-sit-to-stand-stroke', label: 'Compare transfer slings' },
   image: '/images/blog/survivor-transfer-scene.png',
   imageAlt: 'Caregiver using a transfer sling to help a stroke survivor stand from a chair safely',
@@ -7555,7 +7537,6 @@ export const POST_SIT_TO_STAND_LIFT = makeBlogPost({
     { href: '/blog/transfer-sling-sit-to-stand-stroke', label: 'Transfer slings for stroke', blurb: 'The step below a lift \u2014 for partial weight-bearing transfers.' },
     { href: '/blog/gait-belt-for-stroke-recovery', label: 'Gait belts for stroke', blurb: 'The cheapest safety tool for guarded transfers.' },
     { href: '/blog/best-wheelchair-stroke-survivor', label: 'Best wheelchair for stroke', blurb: 'When transfers are not yet possible at all.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Lifts, slings, belts, and all transfer gear in one place.' },
   ],
   publishedDate: '2026-07-25',
   productCard: {
@@ -7591,7 +7572,7 @@ export const POST_MIRROR_THERAPY = makeBlogPost({
   ],
   extraKeywords: ['mirror box therapy stroke', 'visual feedback stroke recovery', 'hand recovery mirror therapy'],
   subhead: 'Mirror therapy is one of the most evidence-backed, low-cost methods for hand recovery after stroke. A $40 box and 15 minutes a day can produce measurable cortical change. Here is how it works and how to do it right.',
-  ctaPrimary: { href: '/recovery/store#mirror-therapy-box-odoxia-1', label: 'See mirror therapy boxes' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B0DP34JVXX', label: 'Check mirror therapy boxes on Amazon' },
   ctaSecondary: { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Add hand therapy tools' },
   image: '/images/blog/survivor-mirror-therapy-scene.png',
   imageAlt: 'Mirror therapy setup for stroke hand recovery with hands positioned on both sides of a mirror',
@@ -7656,7 +7637,6 @@ export const POST_MIRROR_THERAPY = makeBlogPost({
     { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Best hand therapy tools', blurb: 'Putty, grip trainers, and finger exercisers for the active work after mirror therapy.' },
     { href: '/blog/best-robotic-glove-stroke-recovery', label: 'Best robotic glove', blurb: 'EMG-assisted movement for when the hand begins to fire again.' },
     { href: '/blog/spasticity-hand-splint-stroke', label: 'Spasticity hand splint', blurb: 'Prevent contracture while the hand rebuilds.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Mirror therapy box and all hand rehab gear in one place.' },
   ],
   publishedDate: '2026-07-25',
   productCard: {
@@ -7692,7 +7672,7 @@ export const POST_LEG_ELEVATION = makeBlogPost({
   ],
   extraKeywords: ['stroke leg swelling pillow', 'edema pillow stroke', 'circulation pillow stroke survivor'],
   subhead: 'The affected leg swells after stroke \u2014 from reduced mobility, venous pooling, and lymphatic slowdown. A leg elevation pillow is a simple, low-cost tool that reduces swelling and makes the leg more comfortable for therapy and walking practice.',
-  ctaPrimary: { href: '/recovery/store#leg-elevation-pillow-cloudbliss-1', label: 'See leg elevation pillows' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B0DP2WW15F', label: 'Check leg elevation pillows on Amazon' },
   ctaSecondary: { href: '/blog/compression-garments-stroke-recovery-edema', label: 'Compare compression garments' },
   image: '/images/blog/survivor-leg-elevation-scene.png',
   imageAlt: "Leg elevation pillow supporting a stroke survivor's legs while resting on a couch",
@@ -7757,7 +7737,6 @@ export const POST_LEG_ELEVATION = makeBlogPost({
     { href: '/blog/compression-garments-stroke-recovery-edema', label: 'Compression garments for edema', blurb: 'The daytime complement to leg elevation.' },
     { href: '/blog/best-adjustable-bed-wedge-pillow-stroke-recovery', label: 'Best adjustable bed wedge', blurb: 'Whole-body positioning for overnight comfort and drainage.' },
     { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab', blurb: 'Address the gait issue that reduces leg pumping during walking.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'Leg elevation pillow and all edema management gear in one place.' },
   ],
   publishedDate: '2026-07-25',
   productCard: {
@@ -7790,7 +7769,7 @@ export const POST_EXERCISE_BIKE_STROKE = makeBlogPost({
   ],
   extraKeywords: ['recumbent bike stroke recovery', 'pedal exerciser stroke', 'passive exercise bike stroke', 'stationary bike after stroke'],
   subhead: 'After my stroke at 36, my left leg was too weak to push a regular bike. I started on a passive motorized cycle — the pedals moved my legs, not the other way around. Six months later I graduated to active resistance. Here is the full progression and the equipment that makes it possible.',
-  ctaPrimary: { href: '/recovery/store#recumbent-bike-marcy-1', label: 'Browse exercise bikes' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B002KV383O', label: 'Check exercise bikes on Amazon' },
   ctaSecondary: { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Add resistance bands' },
   image: '/images/blog/recumbent-stationary-bike.jpg',
   sections: [
@@ -7902,7 +7881,6 @@ export const POST_EXERCISE_BIKE_STROKE = makeBlogPost({
     { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Resistance bands', blurb: 'The companion strength tool that pairs perfectly with bike cardio.' },
     { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab', blurb: 'Address the gait issue that makes pedaling asymmetrical.' },
     { href: '/blog/spasticity-after-stroke', label: 'Spasticity management', blurb: 'Muscle tightness that affects pedaling smoothness and range of motion.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'All exercise bikes, pedal exercisers, and cardio gear in one place.' },
   ],
   publishedDate: '2026-07-25',
   productCard: {
@@ -7935,7 +7913,7 @@ export const POST_SHOES_GENDER_STYLE = makeBlogPost({
   ],
   extraKeywords: ['stroke shoes', 'best shoes for stroke patients women', 'best shoes for stroke patients men', 'sandals for stroke patients', 'AFO compatible shoes stroke'],
   subhead: 'After my stroke at 36, I could not tie laces with my affected hand. My foot was swollen, my ankle was unstable, and my AFO brace required extra depth. Shoes became a medical device with a fashion problem. Here is what works — by gender, by need, and by style.',
-  ctaPrimary: { href: '/recovery/store#shoes-brooks-1', label: 'Browse shoes' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B0DHR6WR4D', label: 'Check recovery shoes on Amazon' },
   ctaSecondary: { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO and drop foot guide' },
   image: '/images/blog/brooks-adrenaline-gts-product.jpg',
   sections: [
@@ -8055,7 +8033,6 @@ export const POST_SHOES_GENDER_STYLE = makeBlogPost({
     { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO and drop foot', blurb: 'The brace that makes shoe selection necessary in the first place.' },
     { href: '/blog/foot-drop-rehab-equipment-review', label: 'Foot drop rehab gear', blurb: 'Exercises and tools that strengthen the ankle and improve gait.' },
     { href: '/blog/best-leg-elevation-pillow-stroke-recovery', label: 'Leg elevation pillow', blurb: 'Reduces the foot swelling that changes shoe fit throughout the day.' },
-    { href: '/recovery/shop', label: 'Recovery Store', blurb: 'All shoes, AFOs, balancers, and accessories in one place.' },
   ],
   publishedDate: '2026-07-25',
   productCard: {
@@ -8085,7 +8062,6 @@ export const POST_STROKED_OUT_BOOK_REVIEW = makeBlogPost({
   extraKeywords: ['Stroked-Out Sasquatch', 'stroke survivor book', 'stroke recovery motivation'],
   subhead: 'Recovery is not a slogan. It is the ordinary, stubborn work of building a life after your brain changes. This is the book behind that approach.',
   ctaPrimary: { href: 'https://amzn.to/4ikLfGH', label: 'Get Stroked-Out Sasquatch' },
-  ctaSecondary: { href: '/recovery/store', label: 'Browse recovery gear' },
   image: '/images/blog/brain-books-stroke.jpg',
   cluster: 'recovery-basics',
   takeaways: [
@@ -8306,7 +8282,7 @@ export const POST_STROKE_CARDIO_MOBILITY_GEAR = makeBlogPost({
   keyword: 'stroke recovery cardio equipment',
   extraKeywords: ['seated exercise after stroke', 'ankle rehabilitation device', 'mobility gear stroke survivor'],
   subhead: 'The best tool is the one that matches today’s ability, leaves room to progress, and can be used safely and consistently.',
-  ctaPrimary: { href: '/recovery/store', label: 'Browse the Recovery Store' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B0CR7JDT9G', label: 'Check a seated cardio pick on Amazon' },
   ctaSecondary: { href: '/blog/gait-training-home-stroke-recovery', label: 'Read the gait guide' },
   image: '/images/blog/recumbent-stationary-bike.jpg',
   cluster: 'fitness',
@@ -8347,7 +8323,6 @@ export const POST_STROKE_CARDIO_MOBILITY_GEAR = makeBlogPost({
     { href: '/blog/gait-training-home-stroke-recovery', label: 'Gait training at home', blurb: 'Set up walking practice around safety and repeatable progress.' },
     { href: '/blog/afo-vs-electric-ankle-trainer', label: 'AFO vs. electric ankle trainer', blurb: 'Understand the different jobs these tools perform.' },
     { href: '/blog/best-pedal-exerciser-stroke-recovery', label: 'Best pedal exercisers', blurb: 'A focused guide to low-profile seated pedaling.' },
-    { href: '/recovery/store', label: 'Recovery Store', blurb: 'Browse survivor-tested mobility and therapy tools.' },
   ],
   publishedDate: '2026-08-21',
   productCard: { title: 'Explore the supplied cardio and mobility picks', description: 'See the current Amazon listings for the equipment discussed in this guide.', link: 'https://www.amazon.com/dp/B0CR7JDT9G', label: 'Check the supplied Amazon listing', note: 'Affiliate disclosure: SRA may earn from qualifying purchases at no extra cost to you. Availability and specifications can change; verify before buying.' },
@@ -8362,7 +8337,7 @@ export const POST_STROKE_HAND_BRAIN_TOOLS = makeBlogPost({
   keyword: 'stroke recovery hand therapy tools',
   extraKeywords: ['hand exercises after stroke', 'cognitive recovery tools', 'therapy putty stroke'],
   subhead: 'Your hand and your thinking skills may need different kinds of practice. Here is how to choose tools that make the next rep possible.',
-  ctaPrimary: { href: '/recovery/store', label: 'Shop hand and brain tools' },
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B0DL8364Q7', label: 'Check hand and brain tools on Amazon' },
   ctaSecondary: { href: '/blog/best-hand-therapy-tools-stroke-recovery', label: 'Read the hand therapy guide' },
   image: '/images/blog/grip-strength-trainer.jpg',
   cluster: 'upper-limb',
@@ -8421,7 +8396,7 @@ export const POST_STROKE_HOME_SAFETY_ADAPTIVE_GEAR = makeBlogPost({
   extraKeywords: ['adaptive equipment after stroke', 'caregiver transfer equipment', 'stroke bathroom safety'],
   subhead: 'Independence is not doing everything without help. It is having the right setup, the right support, and a safer next step.',
   ctaPrimary: { href: '/blog/complete-stroke-recovery-home-kit', label: 'See the home kit guide' },
-  ctaSecondary: { href: '/recovery/store', label: 'Browse adaptive gear' },
+  ctaSecondary: { href: 'https://www.amazon.com/dp/B0DYV5N6XR', label: 'Check adaptive utensils on Amazon' },
   image: '/images/blog/adaptive-utensils.jpg',
   cluster: 'home-safety',
   takeaways: ['Preventing a fall is more important than testing a device alone.', 'Transfers need training, correct sizing, and caregiver body mechanics.', 'Adaptive utensils can support dignity while skills continue to change.', 'A product listing is not an installation or fitting assessment.'],
@@ -8562,7 +8537,7 @@ export const BLOG_HUB: SsrPageConfig = {
     eyebrow: 'Blog',
     subhead: 'Honest, in-the-trenches answers to the questions stroke survivors actually ask. Written by Nick Kremers and the SRA team.',
     ctaPrimary: { href: '/recovery/pricing', label: 'Open the full library' },
-    ctaSecondary: { href: '/recovery/store', label: 'Shop survivor-tested recovery gear' },
+    ctaSecondary: { href: '/recovery', label: 'Explore Stroke Recovery Academy' },
   },
   sections: [
     {
