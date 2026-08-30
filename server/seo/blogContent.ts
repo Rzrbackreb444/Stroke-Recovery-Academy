@@ -3662,7 +3662,7 @@ export const POST_PUSHUP_STANDS_REVIEW = makeBlogPost({
           name: 'Perfect Fitness Pushup Stands',
           price: '$19.99',
           link: 'https://www.amazon.com/dp/B00MBEVV8S',
-          note: 'Fixed molded ABS handles, padded non-skid grips, 360 stability platform, stack for storage. Keeps the wrist neutral. Also in the Recovery Store.',
+          note: 'Fixed molded ABS handles, padded non-skid grips, 360 stability platform, stack for storage. Keeps the wrist neutral. See the direct Amazon listing.',
         },
         {
           name: 'Perfect Fitness Push-Up Bars — rotating handles',
@@ -3694,7 +3694,7 @@ export const POST_PUSHUP_STANDS_REVIEW = makeBlogPost({
     description: 'Fixed padded handles on a 360 stability platform keep the wrist neutral and the base planted — built for survivors who need stability, not spin. $19.99.',
     link: 'https://www.amazon.com/dp/B00MBEVV8S',
     label: 'Check Current Price on Amazon',
-    note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
+    note: 'Direct Amazon listing. Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
     title: 'The full upper body rebuild is in the book',
@@ -3731,7 +3731,7 @@ export const POST_BARS_VS_STANDS = makeBlogPost({
       h2: 'Rotating push-up bars or fixed pushup stands — which should a stroke survivor pick?',
       paragraphs: [
         'Pick by your deficit, not by star ratings. If your biggest barrier is wrist pain or forearm tone that fights a locked hand position, choose the rotating Perfect Fitness Push-Up Bars (ASIN B008DNAJ5M) — the handles turn with your forearm and shed torque at the wrist. If your biggest barrier is balance and a base that feels unsafe when one side is weaker, choose the fixed Perfect Fitness Pushup Stands (ASIN B00MBEVV8S, $19.99) — the 360 stability platform plants into the floor and does not spin.',
-        'Both raise the hand so the wrist stays off the floor, both cost around $20, and both live in the Recovery Store. This is not a "better product" question. It is a "which of your problems is louder" question.',
+        'Both raise the hand so the wrist stays off the floor, and both cost around $20. This is not a "better product" question. It is a "which of your problems is louder" question.',
       ],
     },
     {
@@ -3751,7 +3751,7 @@ export const POST_BARS_VS_STANDS = makeBlogPost({
     {
       h2: 'Head-to-head comparison table',
       paragraphs: [
-        'Both tools are recommended in the Recovery Store. Use this table to match the tool to your dominant deficit, then read the picks below.',
+        'Both tools are linked directly below. Use this table to match the tool to your dominant deficit, then read the picks below.',
       ],
       table: {
         headers: ['Factor', 'Rotating Push-Up Bars (B008DNAJ5M)', 'Fixed Pushup Stands (B00MBEVV8S)'],
@@ -3780,7 +3780,7 @@ export const POST_BARS_VS_STANDS = makeBlogPost({
           name: 'Perfect Fitness Push-Up Bars — rotating handles',
           price: '$24.99',
           link: 'https://www.amazon.com/dp/B008DNAJ5M',
-          note: 'Rotating handles reduce wrist torque, non-slip base, foam grips. Already in the Recovery Store and Nick\'s pick for tone-dominant wrists.',
+          note: 'Rotating handles reduce wrist torque, non-slip base, foam grips. Nick\'s pick for tone-dominant wrists; see the direct Amazon listing.',
         },
       ],
     },
@@ -3797,7 +3797,7 @@ export const POST_BARS_VS_STANDS = makeBlogPost({
           name: 'Perfect Fitness Pushup Stands',
           price: '$19.99',
           link: 'https://www.amazon.com/dp/B00MBEVV8S',
-          note: 'Fixed padded handles on a 360 stability platform. Planted, no spin — built for stability and one-sided weakness. Also in the Recovery Store.',
+          note: 'Fixed padded handles on a 360 stability platform. Planted, no spin — built for stability and one-sided weakness. See the direct Amazon listing.',
         },
       ],
       relatedLinks: [
@@ -3817,7 +3817,7 @@ export const POST_BARS_VS_STANDS = makeBlogPost({
     { q: 'Which push-up equipment is best for wrist pain after stroke?', a: 'Rotating push-up bars. Because the handle pivots as your forearm supinates and pronates, torque at the wrist drops and the joint follows its natural arc instead of being pinned in one position — which usually means less pain and less spastic firing.' },
     { q: 'Which push-up handles help most with balance and one-sided weakness?', a: 'Fixed pushup stands with a wide 360 stability platform. The base plants into the floor and does not spin, so the weaker side always has a solid anchor to press against even when the strong side pushes harder.' },
     { q: 'Do I need both push-up bars and pushup stands?', a: 'Not required, but many survivors keep both. At about $20 each, the rotating bars cover high-tone days and the fixed stands cover low-balance days. Owning both lets you train through whatever tone and stability you have on a given day.' },
-    { q: 'How much do these Perfect Fitness push-up tools cost?', a: 'The fixed Perfect Fitness Pushup Stands are $19.99 and the rotating Perfect Fitness Push-Up Bars are around $24.99. Both are in the Recovery Store with affiliate links.' },
+    { q: 'How much do these Perfect Fitness push-up tools cost?', a: 'The fixed Perfect Fitness Pushup Stands are $19.99 and the rotating Perfect Fitness Push-Up Bars are around $24.99. Both are linked directly to Amazon.' },
   ],
   related: [
     { href: '/blog/perfect-fitness-pushup-stands-review-stroke-recovery', label: 'Perfect Fitness Pushup Stands review', blurb: 'The full survivor review of the fixed-stand option.' },
@@ -3831,7 +3831,7 @@ export const POST_BARS_VS_STANDS = makeBlogPost({
     description: 'The fixed, stability-first option — 360 platform, neutral wrist, $19.99. Pair it with the rotating bars for tone-dominant days.',
     link: 'https://www.amazon.com/dp/B00MBEVV8S',
     label: 'Check Current Price on Amazon',
-    note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
+    note: 'Direct Amazon listing. Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
     title: 'The full pressing progression is in the book',
@@ -3903,7 +3903,7 @@ export const POST_AFO_OSSUR = makeBlogPost({
         {
           name: 'Ossur AFO Dynamic Brace — best for active gait recovery',
           link: 'https://www.amazon.com/dp/B07XNQB9RK',
-          note: 'Dynamic spring-loaded design allows push-off motion. Adjustable tension. More natural gait pattern than rigid. Good for survivors with partial dorsiflexion return. Also in the Recovery Store.',
+          note: 'Dynamic spring-loaded design allows push-off motion. Adjustable tension. More natural gait pattern than rigid. Good for survivors with partial dorsiflexion return. See the direct Amazon listing.',
         },
       ],
       image: {
@@ -4137,7 +4137,7 @@ export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
         {
           name: 'StrongTek Professional Balance Board — rocker/wobble combo',
           link: 'https://www.amazon.com/dp/B07D8J6BHR',
-          note: 'Anti-slip surface, comfortable standing edge, 300 lb capacity. Can be used flat (stability board), as a rocker (one axis), or as a wobble board. Also in the Recovery Store.',
+          note: 'Anti-slip surface, comfortable standing edge, 300 lb capacity. Can be used flat (stability board), as a rocker (one axis), or as a wobble board. See the direct Amazon listing.',
         },
       ],
       image: {
@@ -4152,9 +4152,9 @@ export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
         'Balance boards are not the only proprioceptive tools. A balance pad creates gentle instability without the fall risk of a rocker or wobble board. A slant board maintains ankle dorsiflexion range, which is prerequisite to stable standing. These tools work alongside the balance board, not instead of it.',
       ],
       products: [
-        { name: 'High-Density TPE Balance Pad', link: 'https://www.amazon.com/dp/B0DM5WN3J7', note: 'Foam balance pad with non-slip surface. Safer than a board for early-stage proprioceptive retraining. Also in the Recovery Store.' },
-        { name: 'Revbalance 101 v2 Balance Board', link: 'https://www.amazon.com/dp/B00AAXD6X0', note: 'True wobble board with 360-degree instability. The next step after rocker board mastery. Also in the Recovery Store.' },
-        { name: 'Adjustable Wooden Slant Board — 5-Angle Calf Stretcher', link: 'https://www.amazon.com/dp/B0FNCPG6V6', note: '5-angle progression for controlled dorsiflexion stretching. Maintains ankle range of motion that balance work depends on. Also in the Recovery Store.' },
+        { name: 'High-Density TPE Balance Pad', link: 'https://www.amazon.com/dp/B0DM5WN3J7', note: 'Foam balance pad with non-slip surface. Safer than a board for early-stage proprioceptive retraining. See the direct Amazon listing.' },
+        { name: 'Revbalance 101 v2 Balance Board', link: 'https://www.amazon.com/dp/B00AAXD6X0', note: 'True wobble board with 360-degree instability. The next step after rocker board mastery. See the direct Amazon listing.' },
+        { name: 'Adjustable Wooden Slant Board — 5-Angle Calf Stretcher', link: 'https://www.amazon.com/dp/B0FNCPG6V6', note: '5-angle progression for controlled dorsiflexion stretching. Maintains ankle range of motion that balance work depends on. See the direct Amazon listing.' },
       ],
     },
     {
@@ -4202,7 +4202,7 @@ export const POST_BALANCE_BOARD_GUIDE = makeBlogPost({
     description: 'Rocker and wobble modes. Anti-slip. 300 lb capacity. The balance board most commonly used in stroke home rehab.',
     link: 'https://www.amazon.com/dp/B07D8J6BHR',
     label: 'Check Current Price on Amazon',
-    note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
+    note: 'Direct Amazon listing. Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
     title: 'The full balance rebuild system is in the book',
@@ -4255,12 +4255,12 @@ export const POST_BRAIN_BOOKS = makeBlogPost({
         {
           name: '399 Games, Puzzles & Trivia for Stroke Recovery',
           link: 'https://www.amazon.com/dp/1648769039',
-          note: 'Designed specifically for stroke survivors — graduated difficulty, multiple cognitive domains (word find, trivia, logic, fill-in), large print. The most clinically cited workbook in stroke OT home programs. Also in the Recovery Store.',
+          note: 'Designed specifically for stroke survivors — graduated difficulty, multiple cognitive domains (word find, trivia, logic, fill-in), large print. The most clinically cited workbook in stroke OT home programs. See the direct Amazon listing.',
         },
         {
           name: 'Large Print Word Search for Stroke Survivors',
           link: 'https://www.amazon.com/dp/B09MYQWG2M',
-          note: 'Extra-large print, designed for post-stroke visual processing changes, gradual difficulty progression. Good for survivors with visual field deficits. Also in the Recovery Store.',
+          note: 'Extra-large print, designed for post-stroke visual processing changes, gradual difficulty progression. Good for survivors with visual field deficits. See the direct Amazon listing.',
         },
         {
           name: 'Easy Crossword Puzzles for Adults — large print',
@@ -4317,7 +4317,7 @@ export const POST_BRAIN_BOOKS = makeBlogPost({
     description: 'Designed specifically for stroke survivors. Large print. Graduated difficulty. Multiple cognitive domains. The most clinically used stroke cognitive workbook.',
     link: 'https://www.amazon.com/dp/1648769039',
     label: 'Check Current Price on Amazon',
-    note: 'Also in the Recovery Store. Affiliate link — small commission at no cost to you.',
+    note: 'Direct Amazon listing. Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
     title: 'Cognitive recovery is covered in the book',
@@ -4398,7 +4398,7 @@ export const POST_ELLIPTICAL = makeBlogPost({
       body: `<p>The Niceday Elliptical packs a 16-inch stride and 16-level magnetic resistance into a compact footprint that fits in most apartments and home gyms. The 400 lb loading capacity means stability is not a concern even for larger survivors. The shorter stride (16" vs 20") can be an advantage for stroke survivors with limited hip extension — the affected leg does not need to reach as far to complete the cycle.</p>
 <p>The tradeoff: no moving handlebars, so the bilateral arm-leg coordination benefit of a full-size elliptical is reduced. If you are using the elliptical primarily for leg cardio and will do arm work separately (resistance bands, hand therapy), this is a reasonable compromise for the space savings.</p>`,
       products: [
-        { name: 'Niceday Elliptical Exercise Machine', link: 'https://www.amazon.com/dp/B08V8M5ZGS', note: '16-inch stride, 16-level magnetic resistance, 400 lb capacity. Compact footprint ideal for home stroke recovery cardio. Also in the Recovery Store.' },
+        { name: 'Niceday Elliptical Exercise Machine', link: 'https://www.amazon.com/dp/B08V8M5ZGS', note: '16-inch stride, 16-level magnetic resistance, 400 lb capacity. Compact footprint ideal for home stroke recovery cardio. See the direct Amazon listing.' },
       ],
     },
     {
@@ -4679,7 +4679,7 @@ export const POST_GRIP_STRENGTHENER = makeBlogPost({
       body: `<p>Most grip tools give you no feedback. You squeeze, you hope it is getting stronger, and you guess. The FitBeast kit replaces guessing with numbers: a digital grip strength tester that measures force in real time, plus an adjustable gripper (22–132 lbs) and individual finger exerciser. The tracker is the motivator — when you see the number climb from 15 lbs to 35 lbs, the invisible process becomes visible.</p>
 <p>Use the digital tester once per week as a benchmark. Do your daily grip and finger work with the adjustable gripper and finger exerciser. Track the weekly number. Progress is not always felt, but it is always measurable.</p>`,
       products: [
-        { name: 'FitBeast Digital Grip Strength Trainer Kit (3-in-1 Advanced)', link: 'https://www.amazon.com/dp/B0FM7LXWZ5', note: 'Digital tester + adjustable gripper + finger exerciser. Measures progress numerically. Also in the Recovery Store.' },
+        { name: 'FitBeast Digital Grip Strength Trainer Kit (3-in-1 Advanced)', link: 'https://www.amazon.com/dp/B0FM7LXWZ5', note: 'Digital tester + adjustable gripper + finger exerciser. Measures progress numerically. See the direct Amazon listing.' },
       ],
     },
     {
@@ -4687,7 +4687,7 @@ export const POST_GRIP_STRENGTHENER = makeBlogPost({
       body: `<p>Wrist control is prerequisite to functional grasp, but most stroke hand rehab skips it. The Marcy Wrist and Forearm Developer trains wrist flexion, extension, and rotation against adjustable resistance. The compact wedge design sits on a desk or table — no gym required.</p>
 <p>Use it before grip work: 2 sets of 15 reps each direction (flexion, extension, pronation, supination). A stable wrist makes every grip exercise more effective and reduces compensatory shoulder elevation.</p>`,
       products: [
-        { name: 'Marcy Wrist and Forearm Developer/Strengthener', link: 'https://www.amazon.com/dp/B00076SPZY', note: 'Wedge-style wrist and forearm trainer. Compact desk use. The overlooked prerequisite to functional grasp. Also in the Recovery Store.' },
+        { name: 'Marcy Wrist and Forearm Developer/Strengthener', link: 'https://www.amazon.com/dp/B00076SPZY', note: 'Wedge-style wrist and forearm trainer. Compact desk use. The overlooked prerequisite to functional grasp. See the direct Amazon listing.' },
       ],
     },
     {
@@ -4783,7 +4783,7 @@ export const POST_TENS_UNIT = makeBlogPost({
 <p>For post-stroke shoulder pain, most PTs recommend starting with Normal mode, intensity at the threshold of sensation without muscle contraction, 20–30 minutes per session. The TENS 7000 bundle includes pads, leads, and a carrying case.</p>`,
       products: [
         { name: 'TENS 7000 Digital TENS Unit', link: 'https://www.amazon.com/TENS-7000-Official-Muscle-Stimulator/dp/B001O1OUF6', note: 'Clinical-standard consumer TENS unit. Dual channel, 5 modes, 0–100 mA. Most PT-recommended device for home post-stroke shoulder pain management.' },
-        { name: 'TENS 7000 Bundle with Accessories', link: 'https://www.amazon.com/dp/B00NCRE4GO', note: 'Same TENS 7000 unit with full accessory bundle: pads, leads, carrying case. Ready to use immediately. Also in the Recovery Store.' },
+        { name: 'TENS 7000 Bundle with Accessories', link: 'https://www.amazon.com/dp/B00NCRE4GO', note: 'Same TENS 7000 unit with full accessory bundle: pads, leads, carrying case. Ready to use immediately. See the direct Amazon listing.' },
       ],
     },
     {
@@ -7407,7 +7407,7 @@ export const POST_WALKER = makeBlogPost({
         {
           name: 'TAMUBAKS Adjustable Medical Walker with Stand-Up Support',
           link: 'https://www.amazon.com/dp/B0DZ2D8GV1',
-          note: 'Height-adjustable frame with stand-up support handles and non-slip rubber tips. Designed for safe transfers and stable ambulation. Also in the Recovery Store.',
+          note: 'Height-adjustable frame with stand-up support handles and non-slip rubber tips. Designed for safe transfers and stable ambulation. See the direct Amazon listing.',
         },
       ],
       image: {
@@ -7508,7 +7508,7 @@ export const POST_SIT_TO_STAND_LIFT = makeBlogPost({
         {
           name: 'PERLECARE Sit to Stand Lift',
           link: 'https://www.amazon.com/dp/B0GDFSGTNN',
-          note: 'Electric sit-to-stand patient lift for safe powered transfers. Eliminates caregiver lifting and prevents falls. Also in the Recovery Store.',
+          note: 'Electric sit-to-stand patient lift for safe powered transfers. Eliminates caregiver lifting and prevents falls. See the direct Amazon listing.',
         },
       ],
     },
@@ -7602,7 +7602,7 @@ export const POST_MIRROR_THERAPY = makeBlogPost({
         {
           name: 'ODOXIA Mirror Therapy Box for Stroke Recovery',
           link: 'https://www.amazon.com/dp/B0DP34JVXX',
-          note: 'Portable mirror box designed for consistent mirror therapy setup. Also in the Recovery Store.',
+          note: 'Portable mirror box designed for consistent mirror therapy setup. See the direct Amazon listing.',
         },
       ],
       image: {
@@ -7703,7 +7703,7 @@ export const POST_LEG_ELEVATION = makeBlogPost({
         {
           name: 'CloudBliss Leg Elevation Pillow',
           link: 'https://www.amazon.com/dp/B0DP2WW15F',
-          note: 'Memory foam leg elevation pillow with 30-degree incline. Designed for edema reduction and circulation improvement. Also in the Recovery Store.',
+          note: 'Memory foam leg elevation pillow with 30-degree incline. Designed for edema reduction and circulation improvement. See the direct Amazon listing.',
         },
       ],
       image: {
@@ -7819,7 +7819,7 @@ export const POST_EXERCISE_BIKE_STROKE = makeBlogPost({
           name: 'Tabeke Under-Desk Pedal Exerciser',
           link: 'https://www.amazon.com/dp/B09NS2L9KG',
           price: '$45.99',
-          note: 'Ultra-quiet magnetic resistance with 8 levels. No assembly required — unfold and pedal. Also in the Recovery Store.',
+          note: 'Ultra-quiet magnetic resistance with 8 levels. No assembly required — unfold and pedal. See the direct Amazon listing.',
         },
         {
           name: 'Sunny Health & Fitness Smart Pedal Exerciser',
@@ -7845,7 +7845,7 @@ export const POST_EXERCISE_BIKE_STROKE = makeBlogPost({
           name: 'Marcy Recumbent Exercise Bike',
           link: 'https://www.amazon.com/dp/B002KV383O',
           price: '$279.99',
-          note: 'Recumbent bike with supportive seat back, low step-through frame, and adjustable magnetic resistance. Also in the Recovery Store.',
+          note: 'Recumbent bike with supportive seat back, low step-through frame, and adjustable magnetic resistance. See the direct Amazon listing.',
         },
       ],
       image: {
@@ -7934,7 +7934,7 @@ export const POST_SHOES_GENDER_STYLE = makeBlogPost({
           name: 'Brooks Adrenaline GTS — Wide / Extra Depth',
           link: 'https://www.amazon.com/dp/B0DHR6WR4D',
           price: '$139.95',
-          note: 'GuideRails holistic support with wide sizing and AFO-compatible depth. Available in men\'s and women\'s widths. Also in the Recovery Store.',
+          note: 'GuideRails holistic support with wide sizing and AFO-compatible depth. Available in men\'s and women\'s widths. See the direct Amazon listing.',
         },
         {
           name: 'Skechers Hands Free Slip-ins',
@@ -7996,7 +7996,7 @@ export const POST_SHOES_GENDER_STYLE = makeBlogPost({
           name: 'EasyPulse AFO Brace',
           link: 'https://www.amazon.com/dp/B0DCVGD2W8',
           price: '$79.99',
-          note: 'Medical-grade drop foot support that fits in regular shoes. The shoe and the brace work as a system. Also in the Recovery Store.',
+          note: 'Medical-grade drop foot support that fits in regular shoes. The shoe and the brace work as a system. See the direct Amazon listing.',
         },
         {
           name: 'EvenUp Shoe Balancer',
@@ -8008,7 +8008,7 @@ export const POST_SHOES_GENDER_STYLE = makeBlogPost({
           name: 'Metal Shoe Horn Long Handle for Seniors',
           link: 'https://www.amazon.com/dp/B01LBLH4FA',
           price: '$9.99',
-          note: '14+ inch extra-long metal shoehorn. Eliminates bending and reaching when putting on shoes with one functional hand. Also in the Recovery Store.',
+          note: '14+ inch extra-long metal shoehorn. Eliminates bending and reaching when putting on shoes with one functional hand. See the direct Amazon listing.',
         },
       ],
     },
@@ -8092,7 +8092,7 @@ export const POST_STROKED_OUT_BOOK_REVIEW = makeBlogPost({
       'Read it critically. Keep what helps, adapt what does not, and bring questions to your care team. Your recovery is yours; a book should give you agency, not take away your judgment.',
     ] },
     { h2: 'Where it fits in the bigger recovery system', paragraphs: [
-      'The book works best alongside medical follow-up, therapy, sleep and mood support, safe equipment, and a way to track small wins. Pair the mindset work with the practical guides in this cluster and with the survivor-tested Recovery Store.',
+      'The book works best alongside medical follow-up, therapy, sleep and mood support, safe equipment, and a way to track small wins. Pair the mindset work with the practical guides in this cluster and with the survivor-tested equipment recommendations.',
     ] },
   ],
   faqs: [

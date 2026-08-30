@@ -5,6 +5,12 @@ description: How product cards and book promos are rendered on SSR blog posts vi
 
 **Pattern:** Optional `productCard` and `bookPromo` fields on `SsrPageConfig` (in `server/seo/ssrShell.ts`). When present, `renderSsrPage()` emits an `.sra-affiliate` section after the FAQs and before the final CTA.
 
+**Rule:** Product-intent blog content should link directly to the relevant Amazon listing; do not route article readers through the Academy recovery store.
+
+**Why:** The article is the high-intent recommendation surface, and an intermediary store adds friction while weakening the intended affiliate funnel.
+
+**How to apply:** Use the specific ASIN/product URL for hero CTAs and product cards, keep the affiliate tag and `sponsored nofollow` attributes, and remove generic store links from article related-content lists.
+
 **Why:** Product showcase posts need a prominent product card with the Amazon affiliate link, plus a book promo to cross-sell the book. The book promo uses a gold border to distinguish it from the product card.
 
 **How to apply:**
