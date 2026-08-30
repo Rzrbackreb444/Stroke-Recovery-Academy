@@ -129,6 +129,8 @@ import {
   aiVoicePresets,
   creditLedger,
   usageEvents,
+  blogOutboundClicks,
+  blogGuideViews,
   marketplaceListings,
   bookEditions,
   bookOrders,
@@ -13212,6 +13214,152 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
     } catch (error) {
       console.error("Error fetching recovery blog:", error);
       res.status(500).json({ message: "Failed to fetch blog posts" });
+    }
+  });
+
+  // Anonymous retailer-click tracking for the static buying guides. The event
+  // contains only editorial dimensions; it intentionally has no user/IP data.
+  app.post('/api/analytics/blog-outbound-click', publicPostLimiter, async (req, res) => {
+    const articleSlug = typeof req.body?.articleSlug === 'string' ? req.body.articleSlug.trim() : '';
+    const productCategory = typeof req.body?.productCategory === 'string' ? req.body.productCategory.trim().toLowerCase() : '';
+    const recommendation = typeof req.body?.recommendation === 'string' ? req.body.recommendation.trim() : '';
+
+    if (
+      !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(articleSlug) ||
+      articleSlug.length > 120 ||
+      !/^[a-z0-9][a-z0-9 _-]{0,59}$/.test(productCategory) ||
+      !recommendation ||
+      recommendation.length > 240
+    ) {
+      return res.status(400).json({ message: 'Invalid blog click event' });
+    }
+
+    try {
+      await db.insert(blogOutboundClicks).values({
+        articleSlug,
+        productCategory,
+        recommendation,
+      });
+      return res.status(204).end();
+    } catch (error) {
+      console.error('Error recording blog outbound click:', error);
+      return res.status(204).end();
+    }
+  });
+
+  // Anonymous guide-view tracking for the static buying guides. The event
+  // contains only the article slug; it intentionally has no user/IP data.
+  app.post('/api/analytics/blog-view', publicPostLimiter, async (req, res) => {
+    const articleSlug = typeof req.body?.articleSlug === 'string' ? req.body.articleSlug.trim() : '';
+
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(articleSlug) || articleSlug.length > 120) {
+      return res.status(400).json({ message: 'Invalid blog view event' });
+    }
+
+    try {
+      await db.insert(blogGuideViews).values({ articleSlug });
+      return res.status(204).end();
+    } catch (error) {
+      // Analytics must never interfere with rendering or navigation.
+      console.error('Error recording blog guide view:', error);
+      return res.status(204).end();
+    }
+  });
+
+  app.get('/api/admin/blog/outbound-clicks', isAuthenticated, requireAdmin, async (req, res) => {
+    const requestedDays = Number(req.query.days);
+    const days = Number.isFinite(requestedDays) ? Math.min(365, Math.max(1, Math.floor(requestedDays))) : 30;
+
+    try {
+      const result = await db.execute(sql`
+        WITH guide_views AS (
+          SELECT
+            article_slug,
+            COUNT(*)::int AS views,
+            MAX(created_at) AS latest_view
+          FROM blog_guide_views
+          WHERE created_at >= NOW() - (${days} * INTERVAL '1 day')
+          GROUP BY article_slug
+        ),
+        guide_clicks AS (
+          SELECT
+            article_slug,
+            COUNT(*)::int AS clicks,
+            MAX(created_at) AS latest_click
+          FROM blog_outbound_clicks
+          WHERE created_at >= NOW() - (${days} * INTERVAL '1 day')
+          GROUP BY article_slug
+        ),
+        guide_summary AS (
+          SELECT
+            COALESCE(guide_views.article_slug, guide_clicks.article_slug) AS article_slug,
+            COALESCE(guide_views.views, 0)::int AS views,
+            COALESCE(guide_clicks.clicks, 0)::int AS clicks,
+            guide_views.latest_view,
+            guide_clicks.latest_click
+          FROM guide_views
+          FULL OUTER JOIN guide_clicks
+            ON guide_clicks.article_slug = guide_views.article_slug
+        )
+        SELECT
+          article_slug,
+          views,
+          clicks,
+          ROUND((clicks::numeric / NULLIF(views, 0)) * 100, 2) AS click_through_rate,
+          latest_view,
+          latest_click
+        FROM guide_summary
+        ORDER BY clicks DESC, views DESC, article_slug ASC
+      `);
+      const guides = (result.rows as any[]).map((row) => {
+        const views = Number(row.views || 0);
+        const clicks = Number(row.clicks || 0);
+        return {
+          articleSlug: row.article_slug,
+          views,
+          clicks,
+          clickThroughRate: views > 0 ? Number(row.click_through_rate || 0) : null,
+          latestView: row.latest_view,
+          latestClick: row.latest_click,
+        };
+      });
+
+      const detailResult = await db.execute(sql`
+        SELECT
+          article_slug,
+          product_category,
+          recommendation,
+          COUNT(*)::int AS clicks,
+          MAX(created_at) AS latest_click
+        FROM blog_outbound_clicks
+        WHERE created_at >= NOW() - (${days} * INTERVAL '1 day')
+        GROUP BY article_slug, product_category, recommendation
+        ORDER BY clicks DESC, article_slug ASC, recommendation ASC
+      `);
+      const rows = (detailResult.rows as any[]).map((row) => ({
+        articleSlug: row.article_slug,
+        productCategory: row.product_category,
+        recommendation: row.recommendation,
+        clicks: Number(row.clicks || 0),
+        latestClick: row.latest_click,
+      }));
+      const totalViews = guides.reduce((sum, row) => sum + row.views, 0);
+      const totalClicks = guides.reduce((sum, row) => sum + row.clicks, 0);
+      return res.json({
+        rangeDays: days,
+        totals: {
+          views: totalViews,
+          clicks: totalClicks,
+          clickThroughRate: totalViews > 0 ? Number(((totalClicks / totalViews) * 100).toFixed(2)) : null,
+          guides: guides.length,
+          recommendations: new Set(rows.map((row) => row.recommendation)).size,
+        },
+        guides,
+        rows,
+      });
+    } catch (error) {
+      console.error('Error fetching blog outbound clicks:', error);
+      return res.status(500).json({ message: 'Failed to fetch blog outbound clicks' });
     }
   });
 

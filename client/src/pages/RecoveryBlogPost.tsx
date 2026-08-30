@@ -53,6 +53,22 @@ function productActionLabel(productName: string): string {
   return `See ${productName} on Amazon`;
 }
 
+function trackBlogOutboundClick(slug: string, productCategory: string, recommendation: string): void {
+  const body = JSON.stringify({ articleSlug: slug, productCategory, recommendation });
+  if (navigator.sendBeacon && navigator.sendBeacon(
+      "/api/analytics/blog-outbound-click",
+      new Blob([body], { type: "application/json" }),
+    )) {
+    return;
+  }
+  void fetch("/api/analytics/blog-outbound-click", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => {});
+}
+
 function productBuyingCheck(category: string): string {
   switch (category) {
     case "mobility":
@@ -664,6 +680,7 @@ export default function RecoveryBlogPost() {
                     </div>
                     <a
                       href={buildAmazonUrl(product.amazonUrl, amazonTag)}
+                      onClick={() => trackBlogOutboundClick(slug || "", product.category, product.name)}
                       target="_blank"
                       rel="noopener noreferrer sponsored nofollow"
                       className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-md bg-[#E2741B] px-5 py-3 text-sm font-semibold text-black hover:bg-[#F08A2E] focus:outline-none focus:ring-2 focus:ring-[#E2741B] focus:ring-offset-2 focus:ring-offset-[#1a1a1a]"
@@ -776,6 +793,7 @@ export default function RecoveryBlogPost() {
                         </div>
                         <a
                           href={buildAmazonUrl(product.amazonUrl, amazonTag)}
+                          onClick={() => trackBlogOutboundClick(slug || "", product.category, product.name)}
                           target="_blank"
                           rel="noopener noreferrer sponsored nofollow"
                           className="mt-4 inline-flex min-h-11 items-center justify-center gap-1 rounded-md bg-[#E2741B] px-3 py-2 text-xs font-semibold text-black hover:bg-[#F08A2E] focus:outline-none focus:ring-2 focus:ring-[#E2741B] focus:ring-offset-2 focus:ring-offset-[#111]"

@@ -69,6 +69,7 @@ test('the four new guides stay registered, render through SSR, and remain in the
   }
 });
 
+
 test('the crawler-facing sitemap endpoint publishes all four recovery guides', async () => {
   const app = express();
   registerCrawlerSitemapRoute(app);
@@ -165,5 +166,27 @@ test('purchase-intent recommendations stay matched to their supplied destination
     const html = renderRoute(slug);
     assert.match(html, new RegExp(product.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     assert.match(html, new RegExp(destination.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+});
+
+test('buying-guide retailer links carry anonymous click dimensions and a fire-and-forget tracker', () => {
+  for (const slug of PURCHASE_INTENT_SLUGS) {
+    const html = renderRoute(slug);
+    assert.match(html, /\/api\/analytics\/blog-view/);
+    assert.match(html, /articleSlug: "[a-z0-9-]+"/);
+    assert.match(html, /\/api\/analytics\/blog-outbound-click/);
+
+    const retailerAnchors = [...html.matchAll(/<a href="([^"]+)"[^>]*>/g)]
+      .map((match) => match[0])
+      .filter((anchor) => /(?:amazon\.com|amzn\.to)/i.test(anchor));
+    assert.ok(retailerAnchors.length > 0, `${slug} should render retailer links`);
+
+    for (const anchor of retailerAnchors) {
+      assert.match(anchor, /data-sra-outbound-click="true"/);
+      assert.match(anchor, /data-article-slug="[^"]+"/);
+      assert.match(anchor, /data-product-category="[^"]+"/);
+      assert.match(anchor, /data-recommendation="[^"]+"/);
+      assert.match(anchor, /rel="[^"]*sponsored[^"]*nofollow[^"]*"/);
+    }
   }
 });

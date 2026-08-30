@@ -13,6 +13,7 @@ import {
   CreditCard, 
   TrendingUp, 
   Shield, 
+  BookOpen,
   Plus,
   Infinity,
   ChevronLeft,
@@ -26,6 +27,7 @@ import {
   ArrowDownRight,
   Star,
   Check,
+  MousePointerClick,
   X as XIcon,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -590,6 +592,206 @@ interface AnalyticsData {
   };
 }
 
+interface BlogOutboundClickReport {
+  rangeDays: number;
+  totals: {
+    views: number;
+    clicks: number;
+    clickThroughRate: number | null;
+    guides: number;
+    recommendations: number;
+  };
+  guides: Array<{
+    articleSlug: string;
+    views: number;
+    clicks: number;
+    clickThroughRate: number | null;
+    latestView: string | null;
+    latestClick: string | null;
+  }>;
+  rows: Array<{
+    articleSlug: string;
+    productCategory: string;
+    recommendation: string;
+    clicks: number;
+    latestClick: string;
+  }>;
+}
+
+const BLOG_OUTBOUND_RANGE_OPTIONS = [
+  { days: 7, label: "Last 7 days" },
+  { days: 30, label: "Last 30 days" },
+  { days: 90, label: "Last 90 days" },
+  { days: 180, label: "Last 180 days" },
+  { days: 365, label: "Last 365 days" },
+];
+
+function BlogOutboundClicksTab() {
+  const [rangeDays, setRangeDays] = useState(30);
+  const { data, isLoading, error } = useQuery<BlogOutboundClickReport>({
+    queryKey: ["/api/admin/blog/outbound-clicks", { days: rangeDays }],
+    refetchInterval: 60000,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <Card>
+        <CardContent className="p-6 flex items-center gap-3 text-red-400">
+          <AlertCircle className="h-5 w-5" />
+          <span>Failed to load buying-guide click report.</span>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="space-y-1">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-[#E2741B]" />
+            Buying-guide interest
+          </h2>
+          <p className="text-sm text-gray-400 sm:max-w-xl">
+            Anonymous guide views and outbound retailer clicks from the last {data.rangeDays} days. Click-through rate indicates product interest, not a verified purchase.
+          </p>
+        </div>
+        <div className="flex flex-col gap-1 sm:items-end">
+          <Label htmlFor="blog-outbound-range" className="text-xs uppercase tracking-wide text-gray-400">
+            Date range
+          </Label>
+          <Select
+            value={String(rangeDays)}
+            onValueChange={(value) => setRangeDays(Number(value))}
+          >
+            <SelectTrigger
+              id="blog-outbound-range"
+              className="w-full sm:w-44"
+              data-testid="select-blog-outbound-range"
+              aria-label="Buying-guide report date range"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {BLOG_OUTBOUND_RANGE_OPTIONS.map((option) => (
+                <SelectItem key={option.days} value={String(option.days)}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard title="Guide views" value={data.totals.views} icon={BookOpen} />
+        <StatCard title="Retailer clicks" value={data.totals.clicks} icon={MousePointerClick} />
+        <StatCard title="Guides tracked" value={data.totals.guides} icon={BookOpen} />
+        <StatCard
+          title="Click-through rate"
+          value={data.totals.clickThroughRate === null ? "—" : `${data.totals.clickThroughRate.toFixed(2)}%`}
+          icon={TrendingUp}
+          subtitle="Clicks ÷ views"
+        />
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Guide performance</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          {data.guides.length === 0 ? (
+            <div className="p-6 text-sm text-gray-400" data-testid="text-no-blog-guide-views">
+              No buying-guide views or retailer clicks recorded in this range yet.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="border-b border-[#333] text-left text-xs uppercase tracking-wide text-gray-500">
+                  <tr>
+                    <th className="p-4">Guide</th>
+                    <th className="p-4 text-right">Views</th>
+                    <th className="p-4 text-right">Retailer clicks</th>
+                    <th className="p-4 text-right">Click-through rate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.guides.map((guide) => (
+                    <tr
+                      key={guide.articleSlug}
+                      className="border-b border-[#333] last:border-0"
+                      data-testid={`row-blog-guide-${guide.articleSlug}`}
+                    >
+                      <td className="p-4 font-medium whitespace-nowrap">{guide.articleSlug}</td>
+                      <td className="p-4 text-right tabular-nums">{guide.views.toLocaleString()}</td>
+                      <td className="p-4 text-right tabular-nums">{guide.clicks.toLocaleString()}</td>
+                      <td className="p-4 text-right font-semibold tabular-nums">
+                        {guide.clickThroughRate === null ? "—" : `${guide.clickThroughRate.toFixed(2)}%`}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Clicks by guide and recommendation</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          {data.rows.length === 0 ? (
+            <div className="p-6 text-sm text-gray-400" data-testid="text-no-blog-outbound-clicks">
+              No buying-guide retailer clicks recorded in this range yet.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="border-b border-[#333] text-left text-xs uppercase tracking-wide text-gray-500">
+                  <tr>
+                    <th className="p-4">Guide</th>
+                    <th className="p-4">Category</th>
+                    <th className="p-4">Recommendation</th>
+                    <th className="p-4 text-right">Clicks</th>
+                    <th className="p-4 text-right">Latest</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.rows.map((row) => (
+                    <tr
+                      key={`${row.articleSlug}-${row.productCategory}-${row.recommendation}`}
+                      className="border-b border-[#333] last:border-0"
+                      data-testid={`row-blog-click-${row.articleSlug}-${row.recommendation}`}
+                    >
+                      <td className="p-4 font-medium whitespace-nowrap">{row.articleSlug}</td>
+                      <td className="p-4 text-gray-400">{row.productCategory}</td>
+                      <td className="p-4 min-w-[260px]">{row.recommendation}</td>
+                      <td className="p-4 text-right font-semibold tabular-nums">{row.clicks.toLocaleString()}</td>
+                      <td className="p-4 text-right whitespace-nowrap text-gray-400">
+                        {new Date(row.latestClick).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 function AnalyticsTab() {
   const { data, isLoading, error } = useQuery<AnalyticsData>({
     queryKey: ["/api/admin/analytics"],
@@ -878,9 +1080,10 @@ export default function AdminPanel() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 mb-6">
+          <TabsList className="grid w-full grid-cols-7 mb-6">
             <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
             <TabsTrigger value="analytics" data-testid="tab-analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="blog-clicks" data-testid="tab-blog-clicks">Buying Guides</TabsTrigger>
             <TabsTrigger value="revenue" data-testid="tab-revenue">Revenue</TabsTrigger>
             <TabsTrigger value="credits" data-testid="tab-credits">Credits</TabsTrigger>
             <TabsTrigger value="users" data-testid="tab-users">Users</TabsTrigger>
@@ -889,6 +1092,10 @@ export default function AdminPanel() {
 
           <TabsContent value="analytics" className="space-y-6">
             <AnalyticsTab />
+          </TabsContent>
+
+          <TabsContent value="blog-clicks" className="space-y-6">
+            <BlogOutboundClicksTab />
           </TabsContent>
 
           <TabsContent value="spotlight" className="space-y-6">

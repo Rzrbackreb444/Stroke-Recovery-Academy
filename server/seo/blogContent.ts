@@ -19,6 +19,7 @@ interface BlogPostInput {
   faqs: FAQItem[];
   related: InternalLink[];
   takeaways?: string[];
+  productCategory?: string;
   publishedDate?: string;
   productCard?: {
     title?: string;
@@ -185,6 +186,7 @@ function makeBlogPost(p: BlogPostInput): SsrPageConfig {
     faqs: p.faqs,
     related: p.related,
     takeaways: p.takeaways,
+    productCategory: p.productCategory,
     keywords: [p.keyword, 'stroke recovery', 'sasquatch method', ...(p.extraKeywords || [])],
     schemaType: 'Article',
     breadcrumbs: [
@@ -8421,6 +8423,7 @@ export const POST_STROKE_HOME_SAFETY_ADAPTIVE_GEAR = makeBlogPost({
   ctaSecondary: { href: 'https://www.amazon.com/dp/B0DYV5N6XR', label: 'Check adaptive utensils on Amazon' },
   image: '/images/blog/adaptive-utensils.jpg',
   cluster: 'home-safety',
+  productCategory: 'adaptive',
   takeaways: ['Preventing a fall is more important than testing a device alone.', 'Transfers need training, correct sizing, and caregiver body mechanics.', 'Adaptive utensils can support dignity while skills continue to change.', 'A product listing is not an installation or fitting assessment.'],
   sections: [
     { h2: 'Safety starts with the task, not the product', paragraphs: [
@@ -8483,6 +8486,7 @@ export const POST_BEST_STROKE_RECOVERY_EQUIPMENT_HOME = makeBlogPost({
   ctaSecondary: { href: '/blog/stroke-recovery-home-safety-and-adaptive-gear', label: 'Read the home-safety guide' },
   image: '/images/blog/survivor-shower-safety-scene.png',
   cluster: 'home-safety',
+  productCategory: 'adaptive',
   takeaways: [
     'The best first purchase is the one that addresses the highest-risk daily task, not the most impressive-looking device.',
     'Transfer and bathing equipment need sizing, setup, and hands-on instruction—not just an online order.',
@@ -8609,6 +8613,7 @@ export const POST_STROKE_TRANSFER_EQUIPMENT_CAREGIVER = makeBlogPost({
   ctaSecondary: { href: '/blog/gait-belt-for-stroke-recovery', label: 'Read the gait-belt guide' },
   image: '/images/blog/wheelchair-drive-medical.jpg',
   cluster: 'mobility',
+  productCategory: 'adaptive',
   takeaways: [
     'A lift, slide board, gait belt, and positioning pad solve different transfer problems.',
     'Never pull on the affected arm or use a device without learning the manufacturer’s technique.',
@@ -8915,6 +8920,7 @@ export const POST_SEATED_CARDIO_AFTER_STROKE = makeBlogPost({
   ctaSecondary: { href: '/blog/stroke-recovery-cardio-and-mobility-gear-guide', label: 'Compare cardio and mobility gear' },
   image: '/images/blog/recumbent-stationary-bike.jpg',
   cluster: 'fitness',
+  productCategory: 'mobility',
   takeaways: [
     'Active pedaling, passive motorized movement, and general seated activity are not interchangeable.',
     'The transfer onto and off the equipment is part of the safety decision.',

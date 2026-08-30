@@ -40,3 +40,5 @@
 - [Rebase test conflict recovery](rebase-test-conflict-recovery.md) — after rebases, verify merged tests structurally; conflict markers can hide malformed interleavings
 - [React unmount browser coverage](react-unmount-browser-coverage.md) — use client-side route changes to observe effect cleanup; hard navigation can tear down the page first
 - [Authenticated route integration fixtures](authenticated-route-integration-fixtures.md) — whole-app HTTP tests need production-shaped sessions and timer interception before route-module import
+- [Blog outbound click privacy](blog-outbound-click-privacy.md) — buying-guide click analytics keeps only editorial dimensions and uses fire-and-forget delivery
+- [Neon route-test teardown](neon-route-test-teardown.md) — route integration tests may need to unref idle Neon sockets after pool shutdown
