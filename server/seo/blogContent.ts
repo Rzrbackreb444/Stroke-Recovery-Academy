@@ -1845,13 +1845,13 @@ export const POST_SHOWER_SAFETY = makeBlogPost({
   ],
   image: '/images/blog/shower-safety-dark.png',
   subhead: 'I fell twice in the shower. The second fall was the last one because I finally installed the right gear. Here is the setup that kept me safe for six years.',
-  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See shower safety gear on Amazon' },
+  ctaPrimary: { href: 'https://amzn.to/4ydBDT9', label: 'Check the tub transfer bench on Amazon' },
   ctaSecondary: { href: '/for/caregivers', label: 'For caregivers' },
   productCard: {
-    title: 'Shower Safety Kit',
-    description: 'Shower chair, professional grab bars, non-slip mat, and handheld showerhead. The exact setup I used for 6+ years without a single fall.',
-    link: 'https://a.co/d/0dvZe7BM',
-    label: 'See shower safety gear on Amazon',
+    title: 'Drive Medical Tub Transfer Bench',
+    description: 'Height-adjustable tub transfer bench for seated entry and exit. Verify dimensions, stability, and fit with a qualified professional before use.',
+    link: 'https://amzn.to/4ydBDT9',
+    label: 'Check the tub transfer bench on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
   bookPromo: {
@@ -1916,7 +1916,8 @@ export const POST_SHOWER_SAFETY = makeBlogPost({
       ],
       products: [
         { name: 'Drive Medical Premium Shower Chair with Back and Padded Arms', link: 'https://www.amazon.com/dp/B013AX88P2', note: 'Height-adjustable with backrest and padded arms. Eliminates balance risk entirely. See the direct Amazon listing.' },
-        { name: 'PerfectMed Spill-Proof Urinals for Men (2 Pack)', link: 'https://www.amazon.com/dp/B07YMHR8SJ', note: '32 oz portable urinals with glow-in-the-dark lids. Eliminates nighttime bathroom trips — the single biggest fall risk window after stroke. See the direct Amazon listing.' },
+        { name: 'Drive Medical Tub Transfer Bench for Bathtub, Height Adjustable', link: 'https://amzn.to/4ydBDT9', note: 'Supplied destination for tub transfers. Verify tub dimensions, seat height, weight capacity, and installation before use.' },
+        { name: 'PerfectMed Spill-Proof Urinals for Men (2 Pack)', link: 'https://amzn.to/4gB6yTv', note: '32 oz portable urinals with glow-in-the-dark lids. Eliminates nighttime bathroom trips — the single biggest fall risk window after stroke. See the direct Amazon listing.' },
       ],
     },
     {
@@ -1975,14 +1976,14 @@ export const POST_ADAPTIVE_EATING = makeBlogPost({
     "Adaptive tools work at restaurants too, so eating out stays on the table.",
   ],
   subhead: 'The first time I tried to eat with one hand after my stroke, I knocked a bowl of soup across the table. These utensils were the bridge between that moment and feeding myself with dignity.',
-  ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See adaptive utensils on Amazon' },
+  ctaPrimary: { href: 'https://amzn.to/4hWFuPw', label: 'Check the Cozentra adaptive utensils on Amazon' },
   ctaSecondary: { href: '/blog/foot-drop-rehab-equipment-review', label: 'Read the foot drop guide' },
   image: '/images/blog/adaptive-utensils.jpg',
   productCard: {
-    title: 'Adaptive Eating Utensil Set',
-    description: 'Rocker knife, weighted spoon, plate guard, and non-slip mat. The bridge from "I cannot eat" to independent meals.',
-    link: 'https://a.co/d/0dvZe7BM',
-    label: 'See adaptive utensils on Amazon',
+    title: 'Cozentra Adjustable Adaptive Utensils',
+    description: 'A four-piece adaptive utensil set with adjustable locking positions for changing grip and wrist control.',
+    link: 'https://amzn.to/4hWFuPw',
+    label: 'Check adaptive utensils on Amazon',
     note: 'Affiliate link — I earn a small commission at no extra cost to you.',
   },
   bookPromo: {
@@ -3047,7 +3048,7 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
         'Use the reacher for tasks that are still outside your current hand capability: pulling on socks, picking up dropped items, retrieving objects from cabinets. Keep doing the hand work. The reacher handles the rest for now.',
       ],
       products: [
-        { name: 'FitPlus Reacher Grabber Tool — 32 Inch Extra Long', link: 'https://www.amazon.com/dp/B0CSPTWZYH', note: '32-inch extra-long reacher with rotating jaw and magnetic tip. One-handed operation. The ADL bridge while hand function rebuilds. See the direct Amazon listing.' },
+        { name: 'Grabber Reacher Tool — 32 Inch Extra Long Foldable Gripper', link: 'https://amzn.to/4wXG6YS', note: 'Supplied destination for one-handed reaching and retrieving items without bending. Verify grip force and reacher fit for the intended user.' },
       ],
     },
   ],
@@ -3215,14 +3216,14 @@ export const POST_WHEELCHAIR = makeBlogPost({
   h1: 'Best wheelchairs for stroke survivors',
   keyword: 'best wheelchair for stroke survivor',
   takeaways: [
-    "The Drive Medical Expedition Transport Wheelchair is Nick's recommended pick.",
+    "The Rubicon DX12 Premium Electric Wheelchair is one supplied option to compare.",
     "Choose transport vs self-propelled based on who does the pushing.",
     "One arm can hemi-propel a wheelchair with the right seat height setup.",
     "Positioning prevents shoulder injury and reinforces good posture.",
     "A wheelchair is a stage in the mobility story, not a verdict.",
   ],
   subhead: 'A wheelchair is not the end of the mobility story. It is a tool — one that should support your posture, your transfers, and your independence as aggressively as possible. Here is how to choose.',
-  ctaPrimary: { href: 'https://www.amazon.com/Drive-Medical-Lightweight-Expedition-Wheelchair/dp/B00537S944', label: 'Check the recommended wheelchair on Amazon' },
+  ctaPrimary: { href: 'https://amzn.to/46uq6mi', label: 'Check the Rubicon DX12 wheelchair on Amazon' },
   ctaSecondary: { href: '/blog/best-mobility-scooter-stroke-survivor', label: 'Considering a scooter instead?' },
   image: '/images/blog/wheelchair-drive-medical.jpg',
   sections: [
@@ -3259,9 +3260,24 @@ export const POST_WHEELCHAIR = makeBlogPost({
       h2: 'Recommended wheelchair',
       products: [
         {
-          name: 'Drive Medical Expedition Lightweight Transport Wheelchair',
-          link: 'https://www.amazon.com/Drive-Medical-Lightweight-Expedition-Wheelchair/dp/B00537S944',
-          note: '19-inch seat, flip-back padded armrests, swing-away footrests for easy transfers, 300 lb capacity, folds flat for transport. The most widely used entry-level transport wheelchair in US hospital discharge programs.',
+          name: 'Rubicon DX12 Premium Electric Wheelchair',
+          link: 'https://amzn.to/46uq6mi',
+          note: 'Supplied electric-wheelchair listing. Verify fit, battery, transport, airline, and caregiver requirements before purchase.',
+        },
+        {
+          name: '20-inch Extra-Wide Foldable Electric Wheelchair',
+          link: 'https://amzn.to/45VPIZk',
+          note: 'Supplied extra-wide electric-wheelchair listing. Confirm seat width, total weight, range, charging, and transfer clearance.',
+        },
+        {
+          name: 'M4 Electric Wheelchair for Adults',
+          link: 'https://amzn.to/4xx8134',
+          note: 'Supplied self-balancing motorized wheelchair listing. Review balance requirements, controls, turning space, and supervision needs.',
+        },
+        {
+          name: 'Pride Jazzy EVO 613 Li Power Chair',
+          link: 'https://amzn.to/3ULxvLr',
+          note: 'Supplied power-chair listing. Confirm seating assessment, service coverage, battery details, and home accessibility before ordering.',
         },
       ],
       image: {
@@ -3321,10 +3337,10 @@ export const POST_WHEELCHAIR = makeBlogPost({
   ],
   publishedDate: '2026-06-05',
   productCard: {
-    title: 'Drive Medical Expedition Transport Wheelchair',
-    description: 'Flip-back armrests, swing-away footrests, 300 lb capacity, folds flat. The most common hospital-discharge transport wheelchair.',
-    link: 'https://www.amazon.com/Drive-Medical-Lightweight-Expedition-Wheelchair/dp/B00537S944',
-    label: 'Check Current Price on Amazon',
+    title: 'Compare supplied wheelchair options',
+    description: 'Compare electric and power-chair options against posture, transfers, home access, transport, and propulsion needs.',
+    link: 'https://amzn.to/46uq6mi',
+    label: 'Check wheelchair options on Amazon',
     note: 'Affiliate link — small commission at no cost to you.',
   },
   bookPromo: {
@@ -8408,20 +8424,22 @@ export const POST_STROKE_HOME_SAFETY_ADAPTIVE_GEAR = makeBlogPost({
     { h2: 'Transfers and caregiver protection', paragraphs: [
       'A hydraulic patient lift may be appropriate when a survivor cannot safely bear weight, but it is not a casual household appliance. Sling size, attachment points, brake use, clearance, and caregiver training all matter. Never improvise a sling or lift someone by pulling the affected arm.',
     ], products: [
-      { name: 'Invacare Hydraulic Patient Lift', link: 'https://www.amazon.com/dp/B075JZDSWZ', note: 'Supplied destination. Confirm capacity, sling fit, floor clearance, and hands-on training with a qualified professional.' },
+      { name: 'Joerns Hoyer Advance Electric Portable Patient Lift', link: 'https://amzn.to/4cgQm7b', note: 'Supplied patient-lift destination. Confirm capacity, sling fit, floor clearance, charging, and hands-on training with a qualified professional.' },
+      { name: 'Slide Board', link: 'https://amzn.to/4gJ70xK', note: 'Supplied lateral-transfer destination. Use only after a therapist or trained caregiver confirms the board, surface height, and transfer technique are appropriate.' },
+      { name: 'Multipurpose 72 x 40 inch Positioning Bed Pad with Reinforced Handles', link: 'https://amzn.to/4qJ43Sr', note: 'Supplied positioning-pad destination. Confirm handle placement, skin protection, caregiver technique, and weight capacity before repositioning.' },
+      { name: '10-Function Electric ICU Home Nursing Bed', link: 'https://amzn.to/4dbquKe', note: 'Supplied home-care bed destination. Verify mattress compatibility, dimensions, rail needs, electrical requirements, and professional setup.' },
     ] },
     { h2: 'Bathroom and nighttime risk', paragraphs: [
       'A shower chair, properly installed grab bar, non-slip surface, and clear path can matter more than a clever gadget. Suction grab bars are not a substitute for structural installation. Keep frequently used items within reach and consider a plan for nighttime toileting that does not require rushing.',
     ], products: [
-      { name: 'Drive Medical Premium Shower Chair', link: 'https://www.amazon.com/dp/B013AX88P2', note: 'Supplied destination. Check width, height, floor stability, and whether the bathroom layout allows a safe transfer.' },
-      { name: 'Spill-Proof Portable Urinals', link: 'https://www.amazon.com/dp/B07YMHR8SJ', note: 'Supplied destination. A bedside option may reduce nighttime trips for some people, but discuss hygiene and positioning.' },
+      { name: 'Drive Medical Tub Transfer Bench for Bathtub, Height Adjustable', link: 'https://amzn.to/4ydBDT9', note: 'Supplied tub-transfer destination. Check tub width, seat height, floor stability, and whether the bathroom layout allows a safe transfer.' },
+      { name: 'Spill-Proof Portable Urinals', link: 'https://amzn.to/4gB6yTv', note: 'Supplied destination. A bedside option may reduce nighttime trips for some people, but discuss hygiene and positioning.' },
       { name: 'Long-Handle Metal Shoe Horn', link: 'https://www.amazon.com/dp/B01LBLH4FA', note: 'Supplied destination. Helpful for reach and dressing; still check that the shoe is stable and secure.' },
     ] },
     { h2: 'Eating with one-sided weakness or tremor', paragraphs: [
       'Weighted, angled, or built-up-handle utensils can reduce the grip and wrist demands of eating. They do not solve swallowing risk. If coughing, wet voice, pocketing food, or unexplained weight loss is present, contact the appropriate medical or speech-swallowing professional.',
     ], products: [
-      { name: 'Angled Weighted Adaptive Utensils', link: 'https://www.amazon.com/dp/B0DYV5N6XR', note: 'Supplied destination. Compare weight and angle with the user’s actual wrist control and comfort.' },
-      { name: 'Built-Up-Handle Adaptive Utensils', link: 'https://www.amazon.com/dp/B0C5CYGZDY', note: 'Supplied destination. A thicker handle may reduce pinch demand; test grip without creating wrist strain.' },
+      { name: 'Cozentra Adjustable Adaptive Utensils 4-Piece Set', link: 'https://amzn.to/4hWFuPw', note: 'Supplied destination. Compare locking positions, handle size, and utensil weight with the user’s actual wrist control and comfort.' },
     ] },
     { h2: 'The caregiver checklist', paragraphs: [
       'Write down who can help, which transfers require two people, where the equipment is stored, and what “stop” symptoms look like. Recheck the setup after strength, vision, sensation, or walking changes. The safest product is one that remains appropriate as recovery evolves.',
@@ -8440,7 +8458,7 @@ export const POST_STROKE_HOME_SAFETY_ADAPTIVE_GEAR = makeBlogPost({
     { href: '/blog/threshold-ramp-stroke-recovery', label: 'Threshold ramps', blurb: 'Make doorways and transitions easier to evaluate.' },
   ],
   publishedDate: '2026-08-21',
-  productCard: { title: 'Supplied home-safety and adaptive picks', description: 'Review the current Amazon listings for transfer, bathroom, dressing, and eating support.', link: 'https://www.amazon.com/dp/B075JZDSWZ', label: 'Check the supplied Amazon listing', note: 'Affiliate disclosure: SRA earns from qualifying purchases at no extra cost to you. Equipment is not medical advice; verify fit, capacity, installation, and training.' },
+  productCard: { title: 'Supplied home-safety and adaptive picks', description: 'Review the current Amazon listings for transfer, bathroom, dressing, and eating support.', link: 'https://amzn.to/4cgQm7b', label: 'Check the supplied Amazon listing', note: 'Affiliate disclosure: SRA earns from qualifying purchases at no extra cost to you. Equipment is not medical advice; verify fit, capacity, installation, and training.' },
   bookPromo: { title: 'Recovery is bigger than equipment', description: 'The survivor-led book connects safer daily living with the long game of rebuilding function and independence.', link: 'https://amzn.to/4ikLfGH', label: 'Read Stroked-Out Sasquatch' },
 });
 
