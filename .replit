@@ -7,7 +7,7 @@ channel = "stable-24_05"
 
 [deployment]
 deploymentTarget = "autoscale"
-build = ["bash", "-c", "rm -rf dist && NODE_OPTIONS='--max-old-space-size=6144' npm run build && test -f dist/public/index.html && test -f dist/index.js"]
+build = ["bash", "-c", "npm run test:migrations && rm -rf dist && NODE_OPTIONS='--max-old-space-size=6144' npm run build && test -f dist/public/index.html && test -f dist/index.js"]
 run = ["bash", "-c", "NODE_ENV=production node dist/index.js"]
 
 [[ports]]
@@ -37,6 +37,10 @@ args = "Start application"
 task = "workflow.run"
 args = "typecheck"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "migrations"
+
 [[workflows.workflow]]
 name = "Start application"
 author = "agent"
@@ -53,6 +57,17 @@ author = "agent"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npx tsc --noEmit --pretty false"
+
+[workflows.workflow.metadata]
+isValidation = true
+
+[[workflows.workflow]]
+name = "migrations"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run test:migrations"
 
 [workflows.workflow.metadata]
 isValidation = true

@@ -15,6 +15,18 @@ an unrelated shared service.
 **How to apply:** Run the dedicated recovery durability test command; it creates and
 destroys an isolated cluster unless RECOVERY_TEST_DATABASE_URL is explicitly supplied.
 
+Migration rollout checks also need the pgvector extension compiled for the local
+PostgreSQL major version. The Nix package is installed as a system dependency,
+and extension-aware tests start a temporary PostgreSQL installation that exposes
+its control files and shared library.
+
+**Why:** The local PostgreSQL image does not include pgvector in its extension
+directory, and a mismatched PostgreSQL-major build fails only when the server
+loads the extension.
+
+**How to apply:** Keep the PostgreSQL and pgvector package majors aligned when
+changing the disposable database image or the migration test prerequisites.
+
 Unexpected disconnects from an active node-postgres client must have a client-level
 error listener; a pool-level listener alone cannot catch the error while the client
 is checked out for a Drizzle transaction.
