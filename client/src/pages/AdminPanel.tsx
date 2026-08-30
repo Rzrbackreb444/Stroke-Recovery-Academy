@@ -618,9 +618,18 @@ interface BlogOutboundClickReport {
   }>;
 }
 
+const BLOG_OUTBOUND_RANGE_OPTIONS = [
+  { days: 7, label: "Last 7 days" },
+  { days: 30, label: "Last 30 days" },
+  { days: 90, label: "Last 90 days" },
+  { days: 180, label: "Last 180 days" },
+  { days: 365, label: "Last 365 days" },
+];
+
 function BlogOutboundClicksTab() {
+  const [rangeDays, setRangeDays] = useState(30);
   const { data, isLoading, error } = useQuery<BlogOutboundClickReport>({
-    queryKey: ["/api/admin/blog/outbound-clicks"],
+    queryKey: ["/api/admin/blog/outbound-clicks", { days: rangeDays }],
     refetchInterval: 60000,
   });
 
@@ -645,14 +654,41 @@ function BlogOutboundClicksTab() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-semibold flex items-center gap-2">
-          <TrendingUp className="h-5 w-5 text-[#E2741B]" />
-          Buying-guide interest
-        </h2>
-        <p className="text-sm text-gray-400 mt-1">
-          Anonymous guide views and outbound retailer clicks from the last {data.rangeDays} days. Click-through rate indicates product interest, not a verified purchase.
-        </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="space-y-1">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-[#E2741B]" />
+            Buying-guide interest
+          </h2>
+          <p className="text-sm text-gray-400 sm:max-w-xl">
+            Anonymous guide views and outbound retailer clicks from the last {data.rangeDays} days. Click-through rate indicates product interest, not a verified purchase.
+          </p>
+        </div>
+        <div className="flex flex-col gap-1 sm:items-end">
+          <Label htmlFor="blog-outbound-range" className="text-xs uppercase tracking-wide text-gray-400">
+            Date range
+          </Label>
+          <Select
+            value={String(rangeDays)}
+            onValueChange={(value) => setRangeDays(Number(value))}
+          >
+            <SelectTrigger
+              id="blog-outbound-range"
+              className="w-full sm:w-44"
+              data-testid="select-blog-outbound-range"
+              aria-label="Buying-guide report date range"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {BLOG_OUTBOUND_RANGE_OPTIONS.map((option) => (
+                <SelectItem key={option.days} value={String(option.days)}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
