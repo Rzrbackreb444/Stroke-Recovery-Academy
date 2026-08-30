@@ -212,12 +212,12 @@ function makeBlogPost(p: BlogPostInput): SsrPageConfig {
 export const POST_REHAB_DURATION = makeBlogPost({
   slug: 'how-long-does-stroke-rehab-take',
   title: 'How Long Does Stroke Rehab Take? An Honest Survivor Answer',
-  description: 'How long stroke rehab really takes — by phase, by severity, and by what actually drives recovery. Written by a 7-year survivor who recovered 90%.',
+  description: 'How long stroke rehab can take by phase and severity, with a survivor’s perspective on practice, support, and setting realistic next steps.',
   h1: 'How long does stroke rehab take?',
   keyword: 'how long does stroke rehab take',
   takeaways: [
-    "Recovery is fastest in months 1–6, but documented functional gains continue at years 3, 5, and 7.",
-    "Daily reps are the one timeline driver you control — and the biggest lever for moderate strokes.",
+    "Recovery is often fastest in the first months, but progress can continue beyond the early window.",
+    "Practice is one factor you can influence, alongside medical care, support, sleep, mood, and access to therapy.",
     "The insurance cliff at month 3–6 marks the switch to self-directed recovery, not the end of gains.",
     "Nick went from complete left-side paralysis to 90% function over 7 years of daily home training.",
     "Plateaus mean your current training stopped challenging you, not that recovery is over.",
@@ -251,16 +251,16 @@ export const POST_REHAB_DURATION = makeBlogPost({
     {
       h2: 'What actually drives the timeline',
       paragraphs: [
-        'Three variables explain most of the variance in recovery time: severity of the initial stroke, age at the time of stroke, and total daily reps performed during the rehabilitation window. The third one is the only one you can control. It is also the largest in effect size for moderate strokes.',
-        'Survivors who do the Sasquatch Method daily routine report functional improvements 12–24 months after the "official" rehab window closed. The brain rewires when you give it a reason to. Stop giving it a reason and the rewiring stops.',
+        'Recovery timelines reflect many factors, including stroke severity and location, age, health, access to therapy, mood, sleep, support, and practice. Practice is one part of that picture—not a guarantee or a substitute for care.',
+        'Some survivors notice useful changes months or years after the early rehabilitation window, while others experience plateaus or lasting limitations. A qualified professional can help set a safe, individualized progression.',
       ],
     },
     {
       h2: 'Realistic expectations by severity',
       paragraphs: [
-        'Mild stroke: Most function returns in 3–6 months. Residual symptoms (fatigue, slight word-finding issues, balance) can persist for years and respond to daily training.',
-        'Moderate stroke: Significant function returns in 6–18 months. Independence in most daily activities is the typical 12-month outcome with consistent therapy and home practice.',
-        'Severe stroke: Recovery is measured in years, not months. The 5-year outcome can be dramatically better than the 6-month outcome — but only if daily training continues. Nick\'s recovery from complete left-side paralysis to 90% function took 7 years of daily work.',
+        'Mild stroke: Function may return relatively quickly, but fatigue, word-finding, balance, or other symptoms can persist and deserve follow-up.',
+        'Moderate stroke: Progress may unfold over months or longer. Goals should be based on the person’s current abilities, response to therapy, and daily environment.',
+        'Severe stroke: Progress can take years and may include lasting disability. Nick’s recovery from complete left-side paralysis to the level of function he describes took 7 years of daily work.',
       ],
     },
     {
@@ -292,10 +292,10 @@ export const POST_REHAB_DURATION = makeBlogPost({
     },
   ],
   faqs: [
-    { q: 'Is stroke recovery really lifelong?', a: 'Yes. Functional improvements are documented at 5+ years post-stroke in survivors who continue daily training. The brain retains plasticity for life — the rate slows but the capacity remains.' },
-    { q: 'When do you plateau after a stroke?', a: 'Plateaus are usually a sign that the current training stimulus has stopped being challenging, not that recovery is over. Increasing complexity, novelty, or intensity typically restarts gains within 4–8 weeks.' },
-    { q: 'How many hours of therapy do you need per day?', a: 'Research suggests 3+ hours of meaningful task practice per day during the subacute window produces the best outcomes. After insurance coverage ends, this means home practice — which is what the Daily Routine is built for.' },
-    { q: 'Can stroke recovery happen after 5 years?', a: 'Yes. Constraint-induced movement therapy, intensive aphasia programs, and structured home routines have produced measurable gains in survivors 5, 10, and even 15 years post-stroke.' },
+     { q: 'Is stroke recovery really lifelong?', a: 'Recovery and adaptation can continue over time, but the pace and amount of change vary widely. Keep goals and precautions individualized with your care team.' },
+     { q: 'When do you plateau after a stroke?', a: 'A plateau can have many causes, including fatigue, pain, mood, an unchanged practice plan, or a lasting impairment. Discuss a plateau with a qualified professional before changing intensity or technique.' },
+     { q: 'How many hours of therapy do you need per day?', a: 'There is no single daily target for everyone. The right amount depends on the task, ability, fatigue, medical precautions, and professional plan. More is not always better if form or safety deteriorates.' },
+     { q: 'Can stroke recovery happen after 5 years?', a: 'Some people make useful changes years after stroke, while others have lasting limitations. Ask a qualified professional which goals and forms of practice are appropriate now.' },
     { q: 'Why does my recovery feel slow?', a: 'The early gains are dramatic and visible. Later gains are smaller and require more reps for the same visible result. This is normal and not a sign that you are done. Track small metrics weekly and you will see the trajectory.' },
   ],
   related: [
@@ -345,8 +345,8 @@ export const POST_FULL_RECOVERY = makeBlogPost({
     {
       h2: 'What the research actually says',
       paragraphs: [
-        'About 10% of survivors have a complete recovery, 25% have minor impairments, 40% have moderate impairments requiring some special care, 10% require nursing home care, and 15% die soon after stroke. These numbers are population averages — they describe what the average survivor receiving average care experiences. They do not describe what is possible.',
-        'Survivors who train daily, who address depression aggressively, who treat sleep as part of their recovery program, and who maintain practice for years tend to land in much better outcomes than the population averages predict.',
+        'Published outcome estimates vary by study, definition, stroke type, severity, age, follow-up period, and access to care. A single percentage cannot predict what will happen to one survivor, so be cautious with neat online recovery statistics.',
+        'Practice, mood, sleep, medical follow-up, support, and access to rehabilitation can all matter, but none guarantees a particular outcome. Use research to frame questions rather than to forecast one person’s future.',
       ],
     },
     {
@@ -387,11 +387,11 @@ export const POST_FULL_RECOVERY = makeBlogPost({
     },
   ],
   faqs: [
-    { q: 'What percentage of stroke survivors fully recover?', a: 'Roughly 10% achieve a complete recovery as conventionally defined. Another 25% have only minor impairments and live functionally normal lives. With aggressive long-term training, many survivors exceed their initial population-average prognosis.' },
+    { q: 'What percentage of stroke survivors fully recover?', a: 'There is no single percentage that can predict an individual outcome. Estimates vary depending on how “full recovery” is defined and which survivors a study follows.' },
     { q: 'Can the brain heal itself after a stroke?', a: 'The dead tissue does not regenerate. But healthy brain regions can take over the work of damaged regions through neuroplasticity. This is the entire mechanism of stroke recovery.' },
     { q: 'How long until you know how much function will return?', a: 'The first 90 days predict a lot. The first year predicts more. But survivors continue to gain function for years with consistent training. Do not let a 6-month assessment define your 5-year outcome.' },
-    { q: 'Do younger survivors recover more fully?', a: 'On average yes — younger brains have more plasticity and longer time horizons. But the single biggest predictor of outcome at 5 years is daily practice, not age.' },
-    { q: 'Is recovery linear?', a: 'No. Recovery comes in waves with plateaus, setbacks, and breakthrough moments. Plateaus are not the end. They are the brain consolidating before the next jump.' },
+    { q: 'Do younger survivors recover more fully?', a: 'Age can be one factor among many, but it does not determine an individual’s path. Stroke characteristics, health, rehabilitation, support, and personal goals all matter.' },
+    { q: 'Is recovery linear?', a: 'No. Recovery can include progress, plateaus, setbacks, and changes in what independence means. A plateau is worth discussing with a qualified professional rather than interpreting on its own.' },
   ],
   related: [
     { href: '/blog/brooks-shoes-stroke-recovery-survivor-review', label: 'Brooks Cascadia survivor review', blurb: 'The real review nobody else can give you — from walker to trail.' },
@@ -8463,8 +8463,8 @@ export const POST_STROKE_HOME_SAFETY_ADAPTIVE_GEAR = makeBlogPost({
   related: [
     { href: '/blog/shower-safety-stroke-survivor', label: 'Shower safety after stroke', blurb: 'A room-by-room approach to reducing bathroom falls.' },
     { href: '/blog/complete-stroke-recovery-home-kit', label: 'Complete home kit', blurb: 'A broader checklist from day one through long-term recovery.' },
-    { href: '/blog/best-adaptive-eating-utensils-stroke', label: 'Adaptive eating utensils', blurb: 'Compare handles, angles, and weights.' },
-    { href: '/blog/threshold-ramp-stroke-recovery', label: 'Threshold ramps', blurb: 'Make doorways and transitions easier to evaluate.' },
+    { href: '/blog/adaptive-eating-utensils-stroke', label: 'Adaptive eating utensils', blurb: 'Compare handles, angles, and weights.' },
+    { href: '/blog/threshold-ramps-grab-bars-stroke-home-accessibility', label: 'Threshold ramps', blurb: 'Make doorways and transitions easier to evaluate.' },
   ],
   publishedDate: '2026-08-21',
   productCard: { title: 'Supplied home-safety and adaptive picks', description: 'Review the current Amazon listings for transfer, bathroom, dressing, and eating support.', link: 'https://amzn.to/4cgQm7b', label: 'Check the supplied Amazon listing', note: 'Affiliate disclosure: SRA earns from qualifying purchases at no extra cost to you. Equipment is not medical advice; verify fit, capacity, installation, and training.' },
@@ -8652,6 +8652,15 @@ export const POST_STROKE_TRANSFER_EQUIPMENT_CAREGIVER = makeBlogPost({
       ],
     },
     {
+      h2: 'Lift recliners are a different category',
+      paragraphs: [
+        'A powered lift recliner can help some people move between sitting and standing from a supportive chair, but it is not a patient lift and it does not replace a trained transfer plan. Check the chair width, weight capacity, seat height, footrest clearance, power needs, and whether the user can control their trunk and feet throughout the movement. A therapist or equipment professional can help decide whether a lift recliner matches the person’s current abilities.',
+      ],
+      products: [
+        { name: 'CANMOV Extra-Wide Power Lift Recliner', link: 'https://www.amazon.com/dp/B0DTKCX2GT', note: 'Supplied Amazon destination. Confirm current dimensions, capacity, remote controls, clearance, return terms, and whether the chair’s movement fits the user’s trained sit-to-stand plan.' },
+      ],
+    },
+    {
       h2: 'Slide boards and positioning pads',
       paragraphs: [
         'Slide boards require a controlled, taught technique. The board, clothing, skin, surface height, brakes, and the caregiver’s position all affect the transfer. A positioning pad can help with turning or repositioning, but handles must be used as instructed and the user’s skin should be checked after movement.',
@@ -8714,7 +8723,7 @@ export const POST_ADAPTIVE_UTENSILS_AFTER_STROKE = makeBlogPost({
   extraKeywords: ['weighted utensils stroke', 'built up handle utensils', 'stroke feeding equipment'],
   subhead: 'The right fork is not the heaviest fork. Match the handle, angle, and weight to the hand that will actually use it.',
   ctaPrimary: { href: 'https://amzn.to/4hWFuPw', label: 'See Cozentra adaptive utensils on Amazon' },
-  ctaSecondary: { href: '/blog/best-adaptive-eating-utensils-stroke', label: 'Read the utensil comparison' },
+  ctaSecondary: { href: '/blog/adaptive-eating-utensils-stroke', label: 'Read the utensil comparison' },
   image: '/images/blog/adaptive-utensils.jpg',
   cluster: 'home-safety',
   takeaways: [
@@ -8792,7 +8801,7 @@ export const POST_ADAPTIVE_UTENSILS_AFTER_STROKE = makeBlogPost({
     { q: 'Should I buy a full adaptive utensil set?', a: 'A full set is convenient, but a single spoon or fork may reveal whether a feature actually helps before you spend more.' },
   ],
   related: [
-    { href: '/blog/best-adaptive-eating-utensils-stroke', label: 'Best adaptive eating utensils', blurb: 'A broader comparison of handles, angles, and weights.' },
+    { href: '/blog/adaptive-eating-utensils-stroke', label: 'Best adaptive eating utensils', blurb: 'A broader comparison of handles, angles, and weights.' },
     { href: '/blog/stroke-recovery-home-safety-and-adaptive-gear', label: 'Home safety and adaptive gear', blurb: 'Connect mealtime independence to the wider setup.' },
     { href: '/blog/stroke-recovery-hand-and-brain-tools-guide', label: 'Hand and brain tools', blurb: 'Choose practice tools by the movement they train.' },
   ],
@@ -8989,7 +8998,7 @@ export const POST_SEATED_CARDIO_AFTER_STROKE = makeBlogPost({
   related: [
     { href: '/blog/stroke-recovery-cardio-and-mobility-gear-guide', label: 'Cardio and mobility gear guide', blurb: 'Compare seated cardio with walking aids and ankle tools.' },
     { href: '/blog/best-pedal-exerciser-stroke-recovery', label: 'Best pedal exercisers', blurb: 'A focused look at low-profile seated pedaling.' },
-    { href: '/blog/stroke-recovery-exercises-at-home-daily-routine', label: 'Daily home exercise routine', blurb: 'Turn equipment into a repeatable practice plan.' },
+    { href: '/learn/stroke-recovery-exercises-at-home', label: 'Daily home exercise routine', blurb: 'Turn equipment into a repeatable practice plan.' },
   ],
   publishedDate: '2026-08-29',
   productCard: {
@@ -9093,18 +9102,18 @@ injectClusterLinks();
 export const BLOG_HUB: SsrPageConfig = {
   url: '/blog',
   title: 'Stroke Recovery Blog | Survivor-Written Guides',
-  description: 'Survivor-written, evidence-based guides on stroke recovery: timelines, prevention, fatigue, spasticity, memory, driving, nutrition, and the long-game playbook.',
+  description: 'Survivor-written recovery education and practical guides on timelines, prevention, fatigue, spasticity, memory, driving, nutrition, and the long game.',
   h1: 'The Stroke Recovery Blog',
   hero: {
     eyebrow: 'Blog',
-    subhead: 'Honest, in-the-trenches answers to the questions stroke survivors actually ask. Written by Nick Kremers and the SRA team.',
+    subhead: 'Honest, in-the-trenches answers to the questions stroke survivors actually ask. Written from lived experience and checked for clarity.',
     ctaPrimary: { href: '/recovery/pricing', label: 'Open the full library' },
     ctaSecondary: { href: '/recovery', label: 'Explore Stroke Recovery Academy' },
   },
   sections: [
     {
       h2: 'Understanding Your Stroke',
-      paragraphs: ['The first questions every survivor asks — timeline, recovery ceiling, warning signs, prevention, and the type-of-stroke distinction that shapes your next 90 days.', 'As an Amazon Associate, Stroke Recovery Academy earns from qualifying purchases. Product links below are affiliate links — your price is unchanged.'],
+      paragraphs: ['The first questions every survivor asks — timeline, recovery expectations, warning signs, prevention, and the type-of-stroke distinction that shapes the next step.', 'As an Amazon Associate, Stroke Recovery Academy earns from qualifying purchases. Product links below are affiliate links — your price is unchanged.'],
       rawHtml: `<div class="sra-related-grid">
   <a href="/blog/how-long-does-stroke-rehab-take" class="sra-related-card"><span class="sra-related-label">How Long Does Stroke Rehab Actually Take?</span><span class="sra-related-blurb">The honest timeline — week 1 to year 5 — with what the research actually says.</span></a>
   <a href="/blog/can-you-fully-recover-from-a-stroke" class="sra-related-card"><span class="sra-related-label">Can You Fully Recover From a Stroke?</span><span class="sra-related-blurb">What "full recovery" means, what the ceiling actually is, and how Nick got to 90%.</span></a>
@@ -9117,7 +9126,7 @@ export const BLOG_HUB: SsrPageConfig = {
     },
     {
       h2: 'Symptoms & Daily Challenges',
-      paragraphs: ['Fatigue, spasticity, memory fog, emotional lability — the secondary effects nobody warned you about. Here\'s what causes them and what actually helps.'],
+      paragraphs: ['Fatigue, spasticity, memory fog, and emotional changes can complicate daily life. These guides explain common experiences and practical questions to take to a care team.'],
       rawHtml: `<div class="sra-related-grid">
   <a href="/blog/fatigue-after-stroke" class="sra-related-card"><span class="sra-related-label">Fatigue After Stroke</span><span class="sra-related-blurb">Why post-stroke fatigue isn't laziness — and the protocols that move the needle.</span></a>
   <a href="/blog/spasticity-after-stroke" class="sra-related-card"><span class="sra-related-label">Spasticity After Stroke</span><span class="sra-related-blurb">The tight, resistant muscles explained — causes, treatment, and daily management.</span></a>
@@ -9128,7 +9137,7 @@ export const BLOG_HUB: SsrPageConfig = {
     },
     {
       h2: 'Mobility, Drop Foot & Getting Around',
-      paragraphs: ['Drop foot, gait retraining, AFOs, wheelchairs, grab bars — the equipment and protocols that move survivors from bed to independent walking.'],
+      paragraphs: ['Drop foot, gait retraining, AFOs, wheelchairs, and grab bars: equipment and practice ideas to evaluate with the person’s abilities, home layout, and care team in mind.'],
       rawHtml: `<div class="sra-related-grid">
   <a href="/blog/foot-drop-rehab-equipment-review" class="sra-related-card"><span class="sra-related-label">Foot Drop Rehab Equipment — A Survivor's Review</span><span class="sra-related-blurb">The gear that actually helps foot drop and what Nick uses every day.</span></a>
   <a href="/blog/afo-vs-electric-ankle-trainer" class="sra-related-card"><span class="sra-related-label">AFO vs. Electric Ankle Trainer</span><span class="sra-related-blurb">Static brace vs. functional electrical stimulation — which is right for you.</span></a>
@@ -9151,7 +9160,7 @@ export const BLOG_HUB: SsrPageConfig = {
     },
     {
       h2: 'Home Exercise & Strength Training',
-      paragraphs: ['Resistance bands, pedal exercisers, stationary bikes, balance boards — the home gym toolkit that replaces expensive gym memberships and keeps the daily reps going.'],
+      paragraphs: ['Resistance bands, pedal exercisers, stationary bikes, and balance boards: home practice tools to consider when they fit the person’s current abilities and safety plan.'],
       rawHtml: `<div class="sra-related-grid">
   <a href="/blog/best-resistance-bands-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Resistance Bands for Stroke Recovery</span><span class="sra-related-blurb">The most versatile recovery tool — ranked by resistance level and grip design.</span></a>
   <a href="/blog/best-pedal-exerciser-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Pedal Exerciser for Stroke Recovery</span><span class="sra-related-blurb">Seated cycling for arms and legs when you can't walk yet.</span></a>
@@ -9167,7 +9176,7 @@ export const BLOG_HUB: SsrPageConfig = {
     },
     {
       h2: 'Hand & Upper Body Rehab',
-      paragraphs: ['The affected hand is the hardest thing to get back after stroke. These are the tools — from $20 putty to $500 robotic gloves — that rebuild the neural pathway.'],
+      paragraphs: ['Hand recovery can involve grip, release, dexterity, sensation, and functional tasks. These guides compare tools by the movement they are intended to support.'],
       rawHtml: `<div class="sra-related-grid">
   <a href="/blog/best-hand-therapy-tools-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Hand Therapy Tools for Stroke Recovery</span><span class="sra-related-blurb">Putty, finger stretchers, fine-motor trainers — the full toolkit ranked.</span></a>
   <a href="/blog/best-robotic-glove-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Robotic Glove for Stroke Hand Recovery</span><span class="sra-related-blurb">Powered exoskeleton gloves that drive neuroplasticity in the affected hand.</span></a>
@@ -9179,7 +9188,7 @@ export const BLOG_HUB: SsrPageConfig = {
     },
     {
       h2: 'Daily Living & Home Setup',
-      paragraphs: ['Adaptive utensils, shower safety, blood pressure monitors, smart home tech — the unglamorous modifications that restore independence and reduce fall risk.'],
+      paragraphs: ['Adaptive utensils, shower safety, blood-pressure monitors, and smart-home tools can support daily routines when they fit the person and the home.'],
       rawHtml: `<div class="sra-related-grid">
   <a href="/blog/adaptive-eating-utensils-stroke" class="sra-related-card"><span class="sra-related-label">Adaptive Eating Utensils for Stroke Survivors</span><span class="sra-related-blurb">The forks, spoons, and plates that make eating independent again.</span></a>
   <a href="/blog/shower-safety-stroke-survivor" class="sra-related-card"><span class="sra-related-label">Shower Safety for Stroke Survivors</span><span class="sra-related-blurb">Grab bars, shower chairs, handheld heads — preventing the #1 in-home injury.</span></a>
@@ -9193,7 +9202,7 @@ export const BLOG_HUB: SsrPageConfig = {
     },
     {
       h2: 'Pain Relief & Recovery Technology',
-      paragraphs: ['TENS units, percussion therapy, red light — three technologies that reduce spasticity and pain. Here\'s what the evidence says and what Nick actually uses.'],
+      paragraphs: ['TENS units, percussion therapy, and red light are different technologies with different precautions. These guides explain questions to ask before trying them.'],
       rawHtml: `<div class="sra-related-grid">
   <a href="/blog/best-tens-unit-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best TENS Unit for Stroke Recovery</span><span class="sra-related-blurb">Electrical muscle stimulation for pain management and nerve reactivation.</span></a>
   <a href="/blog/best-massage-gun-stroke-spasticity" class="sra-related-card"><span class="sra-related-label">Best Massage Gun for Stroke Spasticity</span><span class="sra-related-blurb">High-frequency percussion therapy that breaks spastic tone before exercise.</span></a>
@@ -9202,7 +9211,7 @@ export const BLOG_HUB: SsrPageConfig = {
     },
     {
       h2: 'Brain, Speech & Cognitive Recovery',
-      paragraphs: ['Aphasia apps, memory games, brain-training books — the cognitive rehabilitation tools that complement speech therapy and rebuild neural pathways between sessions.'],
+      paragraphs: ['Aphasia apps, memory games, and brain-training books can complement professional care and give some people structured practice between sessions.'],
       rawHtml: `<div class="sra-related-grid">
   <a href="/blog/best-brain-games-books-stroke-cognitive-recovery" class="sra-related-card"><span class="sra-related-label">Best Brain Games and Books for Cognitive Recovery</span><span class="sra-related-blurb">The exercises and reads that build new neural pathways — ranked by evidence.</span></a>
   <a href="/blog/best-speech-therapy-apps-tools-aphasia-stroke" class="sra-related-card"><span class="sra-related-label">Best Speech Therapy Apps for Aphasia</span><span class="sra-related-blurb">The apps and devices that bridge the gap between weekly therapy sessions.</span></a>
@@ -9210,7 +9219,7 @@ export const BLOG_HUB: SsrPageConfig = {
     },
     {
       h2: 'Nutrition, Supplements & What to Eat',
-      paragraphs: ['The anti-inflammatory diet that reduces second-stroke risk, and an honest look at which supplements have real evidence behind them — and which are hype.'],
+      paragraphs: ['Nutrition, prevention, and supplements deserve careful questions about the person’s medications, swallowing needs, and health history—not broad promises.'],
       rawHtml: `<div class="sra-related-grid">
   <a href="/blog/best-foods-for-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Best Foods for Stroke Recovery</span><span class="sra-related-blurb">The evidence-based diet that reduces inflammation and rebuilds brain function.</span></a>
   <a href="/blog/supplements-stroke-recovery" class="sra-related-card"><span class="sra-related-label">Supplements for Stroke Recovery</span><span class="sra-related-blurb">What the research actually says — what helps, what's hype, and what to avoid.</span></a>
@@ -9218,7 +9227,7 @@ export const BLOG_HUB: SsrPageConfig = {
     },
     {
       h2: 'Gear Guides, Gift Ideas & Getting Started',
-      paragraphs: ['Don\'t know where to start? These guides cut through the noise — the complete home kit, the gift guide survivors actually want, and resources for finding real coaching help.'],
+      paragraphs: ['Don\'t know where to start? These guides organize common questions about home equipment, gifts, and finding appropriate recovery support.'],
       rawHtml: `<div class="sra-related-grid">
   <a href="/blog/complete-stroke-recovery-home-kit" class="sra-related-card"><span class="sra-related-label">Complete Stroke Recovery Home Kit</span><span class="sra-related-blurb">The 15 items that should be in every survivor's home — from day 1 to year 7.</span></a>
   <a href="/blog/stroke-recovery-gift-guide" class="sra-related-card"><span class="sra-related-label">Stroke Recovery Gift Guide</span><span class="sra-related-blurb">What stroke survivors actually want — from someone who's been there.</span></a>
@@ -9227,9 +9236,9 @@ export const BLOG_HUB: SsrPageConfig = {
     },
   ],
   faqs: [
-    { q: 'Who writes these posts?', a: 'Nick Kremers (founder, 7-year stroke survivor) and the Stroke Recovery Academy clinical advisory team. All medical content is reviewed for accuracy.' },
+    { q: 'Who writes these posts?', a: 'Nick Kremers, a stroke survivor and founder of Stroke Recovery Academy, writes the survivor-led perspective. Posts are educational and are not a substitute for personalized medical advice.' },
     { q: 'How often are new posts added?', a: 'New posts are added regularly based on the questions survivors send us. If there is a topic you want covered, tell us.' },
-    { q: 'Is the medical information reviewed?', a: 'Yes. All content is reviewed against current stroke recovery research and against clinical practice. We cite where the evidence comes from.' },
+    { q: 'How should I use health information here?', a: 'Use it to frame questions and compare practical options, then confirm personal recommendations, precautions, and treatment decisions with a qualified professional.' },
     { q: 'Can I share these posts?', a: 'Please do. Every share helps another survivor find the playbook nobody handed them in the hospital.' },
   ],
   related: ALL_BLOG_POSTS.map(p => ({

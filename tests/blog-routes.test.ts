@@ -167,6 +167,29 @@ test('purchase-intent recommendations stay matched to their supplied destination
     assert.match(html, new RegExp(product.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     assert.match(html, new RegExp(destination.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
+
+  const transferGuide = renderRoute('/blog/stroke-transfer-equipment-caregiver-guide');
+  assert.match(transferGuide, /CANMOV Extra-Wide Power Lift Recliner/);
+  assert.match(transferGuide, /https:\/\/www\.amazon\.com\/dp\/B0DTKCX2GT/);
+});
+
+test('blog trust and accessibility signals stay honest and usable', () => {
+  const registrySlugs = new Set(ALL_BLOG_POSTS.map(post => post.url));
+
+  for (const slug of PURCHASE_INTENT_SLUGS) {
+    const html = renderRoute(slug);
+    assert.match(html, /Survivor-led education and lived experience/);
+    assert.match(html, /This article is not medical advice/);
+    assert.doesNotMatch(html, /Medically reviewed by SRA clinical advisory team/);
+    assert.doesNotMatch(html, /ratingValue.*4\.5/);
+    assert.match(html, /<h1 id="article-title">/);
+    assert.match(html, /<th scope="col">/);
+
+    const internalBlogLinks = [...html.matchAll(/href="(\/blog\/[^"]+)"/g)].map(([, href]) => href);
+    for (const href of internalBlogLinks) {
+      assert.ok(registrySlugs.has(href), `${slug} contains an unregistered internal blog link: ${href}`);
+    }
+  }
 });
 
 test('buying-guide retailer links carry anonymous click dimensions and a fire-and-forget tracker', () => {

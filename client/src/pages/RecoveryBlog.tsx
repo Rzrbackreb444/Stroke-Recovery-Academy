@@ -116,8 +116,8 @@ export default function RecoveryBlog() {
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <RecoveryHeader />
       <RecoverySEO
-        title="Stroke Recovery Blog — Expert Insights & Survivor Stories"
-        description="Evidence-based stroke recovery articles by Nick Kremers — survivor who went from 0% to 90% recovery. Get actionable rehab tips, neuroplasticity strategies, mindset tools, and real survivor stories."
+        title="Stroke Recovery Blog — Survivor-Led Guides & Stories"
+        description="Survivor-led stroke recovery education by Nick Kremers, with practical guides, lived experience, and questions to take to your care team."
         canonical="/recovery/blog"
         keywords={[
           "stroke recovery blog", "stroke survivor stories", "stroke rehab tips", "neuroplasticity after stroke",
@@ -129,9 +129,9 @@ export default function RecoveryBlog() {
         speakableSelectors={["h1", ".blog-hero-text", ".featured-article-excerpt"]}
         breadcrumbs={[{ name: "Recovery Hub", url: "/recovery" }, { name: "Blog", url: "/recovery/blog" }]}
         faq={[
-          { question: "How long does stroke recovery take?", answer: "Stroke recovery is a lifelong process, but the most significant gains typically happen in the first 3-6 months. Nick Kremers went from 0% to 90% functional recovery over 2+ years of consistent rehabilitation." },
-          { question: "What are the most effective stroke recovery exercises?", answer: "The most effective stroke recovery exercises focus on high repetition and task-specific training: mirror therapy, constraint-induced movement therapy, finger extension exercises, and gait training. Research shows 400-1,000 repetitions per session drive the strongest neuroplastic changes." },
-          { question: "Can stroke survivors fully recover?", answer: "Many stroke survivors achieve significant recovery — some reaching near-full function. Nick Kremers went from 0% mobility to 90% function through relentless daily rehabilitation." },
+          { question: "How long does stroke recovery take?", answer: "Recovery is different for every person and can continue over time. Use these articles to frame questions about goals, practice, fatigue, and support, then discuss personal expectations with your care team." },
+          { question: "What are the most effective stroke recovery exercises?", answer: "The right exercise depends on the person’s goals, movement, sensation, fatigue, and precautions. A physical or occupational therapist can help choose task-specific practice and a safe progression." },
+          { question: "Can stroke survivors fully recover?", answer: "Outcomes vary widely. Some people regain much of their previous function, while others live with lasting changes. The most useful next step is an individualized plan rather than a guaranteed timeline." },
         ]}
       />
 
@@ -142,7 +142,7 @@ export default function RecoveryBlog() {
             Recovery Blog
           </h1>
           <p className="text-gray-400 text-base sm:text-lg">
-            Expert insights, recovery strategies, and survivor stories from Nick Kremers
+             Survivor-led recovery education, practical guides, and stories from Nick Kremers
           </p>
           <Link href="/recovery">
             <Button className="mt-4 bg-[#E2741B] text-black font-semibold hover:bg-[#F08A2E]">
@@ -151,9 +151,25 @@ export default function RecoveryBlog() {
           </Link>
         </div>
 
+        <Card className="mb-8 border-[#E2741B]/30 bg-[#1a1a1a] p-5 sm:p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-white">A grounded place to start</h2>
+              <p className="mt-1 max-w-3xl text-sm leading-relaxed text-gray-300">
+                These posts combine lived experience with practical questions and source links where available. They are educational—not a diagnosis or a substitute for advice from your clinician.
+              </p>
+            </div>
+            <Link href="/recovery/university" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-md border border-[#E2741B]/50 px-4 py-2 text-sm font-medium text-[#F0A15A] hover:bg-[#E2741B]/10">
+              Browse the learning path <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </Card>
+
         <div className="relative mb-5">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
+          <label htmlFor="blog-search" className="sr-only">Search recovery articles</label>
           <Input
+            id="blog-search"
             placeholder="Search articles..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -169,7 +185,8 @@ export default function RecoveryBlog() {
               variant={activeCategory === cat.id ? "default" : "outline"}
               size="sm"
               onClick={() => setActiveCategory(cat.id)}
-              className={activeCategory === cat.id ? "bg-[#E2741B] text-black" : "border-[#333] text-gray-300"}
+              aria-pressed={activeCategory === cat.id}
+              className={`min-h-11 ${activeCategory === cat.id ? "bg-[#E2741B] text-black" : "border-[#333] text-gray-300"}`}
               data-testid={`button-category-${cat.id}`}
             >
               {cat.label} ({cat.id === "all" ? totalPostCount : categoryCountMap[cat.id] || 0})
@@ -379,8 +396,8 @@ export default function RecoveryBlog() {
         <Card className="bg-gradient-to-br from-[#E2741B]/20 to-[#1a1a1a] border-[#E2741B]/30 p-6 sm:p-8 mt-12 text-center">
           <h2 className="text-xl sm:text-2xl font-bold mb-3">Want to Share Your Recovery Story?</h2>
           <p className="text-gray-300 mb-6 max-w-2xl mx-auto text-sm sm:text-base">
-            Your journey could inspire thousands of other survivors. Submit your story and help build
-            the world's largest collection of stroke recovery experiences.
+             Your journey may help another survivor feel less alone. Share what you are comfortable sharing
+             and help grow a practical, survivor-led recovery community.
           </p>
           <Link href="/recovery/community">
             <Button className="bg-[#E2741B] text-black font-semibold">

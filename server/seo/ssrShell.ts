@@ -572,8 +572,8 @@ function inlineCss(): string {
   --sra-border: #333;
   --sra-text: #f5f1e6;
   --sra-text-dim: #a8a39a;
-  --sra-gold: #C9941A;
-  --sra-gold-soft: rgba(201, 148, 26, 0.15);
+  --sra-gold: #E2741B;
+  --sra-gold-soft: rgba(226, 116, 27, 0.15);
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
@@ -615,6 +615,10 @@ a:hover { text-decoration: underline; }
 .sra-crumbs { font-size: 13px; color: var(--sra-text-dim); margin-bottom: 24px; }
 .sra-crumbs a { color: var(--sra-text-dim); }
 .sra-crumb-sep { margin: 0 6px; }
+.sra-crumbs a, .sra-toc a, .sra-related-inline a, .sra-related-card, .sra-citation-link { min-height: 44px; }
+.sra-crumbs a, .sra-toc a, .sra-related-inline a, .sra-citation-link { display: inline-flex; align-items: center; }
+.sra-toc a:focus-visible, .sra-related-inline a:focus-visible, .sra-related-card:focus-visible, .sra-citation-link:focus-visible, .sra-btn-primary:focus-visible, .sra-btn-secondary:focus-visible, .sra-nav a:focus-visible { outline: 3px solid var(--sra-gold); outline-offset: 3px; }
+a:focus-visible { outline: 3px solid var(--sra-gold); outline-offset: 3px; }
 .sra-hero { padding: 24px 0 32px; border-bottom: 1px solid var(--sra-border); margin-bottom: 32px; }
 .sra-hero-img { width: 100%; max-height: 320px; object-fit: cover; border-radius: 8px; border: 1px solid var(--sra-border); margin-bottom: 24px; display: block; }
 .sra-eyebrow {
@@ -630,7 +634,7 @@ a:hover { text-decoration: underline; }
 }
 .sra-hero p { font-size: 19px; color: var(--sra-text-dim); margin: 0 0 24px; max-width: 720px; }
 .sra-cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
-.sra-affiliate-banner { margin: 0 0 24px; padding: 10px 16px; background: var(--sra-bg-card); border: 1px solid var(--sra-border); border-radius: 6px; font-size: 12px; color: var(--sra-text-dim); }
+.sra-affiliate-banner { margin: 0 0 24px; padding: 12px 16px; background: var(--sra-bg-card); border: 1px solid var(--sra-border); border-radius: 6px; font-size: 14px; color: var(--sra-text-dim); }
 .sra-btn-primary {
   background: var(--sra-gold); color: #000 !important; padding: 12px 24px;
   border-radius: 4px; font-weight: 600; display: inline-block;
@@ -655,11 +659,12 @@ a:hover { text-decoration: underline; }
   flex-shrink: 0;
 }
 .sra-author a { color: var(--sra-text); font-weight: 500; }
+.sra-editorial-note { display: block; margin-top: 6px; color: var(--sra-text-dim); font-size: 13px; line-height: 1.5; max-width: 680px; }
 .sra-section { margin: 32px 0; }
 .sra-section h2 {
   font-family: 'Crimson Pro', 'Playfair Display', Georgia, serif;
   font-size: 28px; font-weight: 700; color: var(--sra-text);
-  margin: 0 0 16px; line-height: 1.25;
+  margin: 0 0 16px; line-height: 1.25; scroll-margin-top: 88px;
 }
 .sra-section p { margin: 0 0 16px; color: var(--sra-text); }
 .sra-section ul { padding-left: 22px; margin: 0 0 16px; }
@@ -672,9 +677,9 @@ a:hover { text-decoration: underline; }
 .sra-faq h2 { font-family: 'Crimson Pro', Georgia, serif; font-size: 24px; margin: 0 0 16px; color: var(--sra-text); }
 .sra-faq-item { border-top: 1px solid var(--sra-border); padding: 14px 0; }
 .sra-faq-item:first-of-type { border-top: 0; padding-top: 4px; }
-.sra-faq-item summary { cursor: pointer; font-weight: 600; color: var(--sra-text); list-style: none; padding: 4px 0; }
+.sra-faq-item summary { cursor: pointer; font-weight: 600; color: var(--sra-text); list-style: none; padding: 4px 0; min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .sra-faq-item summary::-webkit-details-marker { display: none; }
-.sra-faq-item summary::after { content: '+'; color: var(--sra-gold); float: right; font-size: 18px; }
+.sra-faq-item summary::after { content: '+'; color: var(--sra-gold); font-size: 18px; flex-shrink: 0; }
 .sra-faq-item[open] summary::after { content: '–'; }
 .sra-faq-item p { margin: 8px 0 4px; color: var(--sra-text-dim); }
 .sra-related { margin: 48px 0 16px; }
@@ -753,7 +758,7 @@ a:hover { text-decoration: underline; }
 .sra-product-card-link { display: inline-block; background: var(--sra-gold); color: #000 !important; padding: 11px 16px; min-height: 44px; border-radius: 4px; font-size: 13px; font-weight: 700; margin-top: auto; align-self: flex-start; }
 .sra-product-card-link:hover { text-decoration: none; opacity: 0.9; }
 .sra-table-wrap { margin: 20px 0; overflow-x: auto; }
-.sra-table { width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid var(--sra-border); border-radius: 6px; overflow: hidden; }
+.sra-table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px; border: 1px solid var(--sra-border); border-radius: 6px; overflow: hidden; }
 .sra-table thead { background: var(--sra-bg-card); }
 .sra-table th { padding: 12px 14px; text-align: left; font-weight: 600; color: var(--sra-gold); border-bottom: 1px solid var(--sra-border); font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; }
 .sra-table td { padding: 12px 14px; border-bottom: 1px solid var(--sra-border); color: var(--sra-text); }
@@ -777,11 +782,15 @@ a:hover { text-decoration: underline; }
 @media (max-width: 600px) {
   .sra-header { padding: 12px 16px; }
   .sra-logo-text { display: none; }
-  .sra-nav { gap: 14px; }
+  .sra-nav { gap: 8px 14px; justify-content: flex-end; }
+  .sra-nav a { font-size: 13px; }
   .sra-page { padding: 20px 16px 64px; }
   .sra-hero h1 { font-size: 32px; }
   .sra-product-grid { grid-template-columns: 1fr; }
   .sra-quick-pick { padding: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
 }
 `;
 }
@@ -792,8 +801,10 @@ export function renderSsrPage(cfg: SsrPageConfig): string {
   const faqSchema = buildFaqSchema(cfg.faqs);
   const breadcrumbSchema = buildBreadcrumbSchema(cfg);
   const howToSchema = buildHowToSchema(cfg);
-  const reviewSchema = buildProductReviewSchema(cfg);
   const videoSchema = buildVideoObjectSchema(cfg);
+  const publishedDate = cfg.publishedDate || '2026-01-15';
+  const modifiedDate = cfg.modifiedDate || publishedDate;
+  const isBlogArticle = cfg.url.startsWith('/blog/') && cfg.url !== '/blog';
 
   const hero = cfg.hero;
   const ctaPrimary = hero.ctaPrimary || { href: '/api/login', label: 'Start free' };
@@ -825,8 +836,8 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 <meta property="og:site_name" content="Stroke Recovery Academy" />
 <meta property="og:locale" content="en_US" />
 <meta property="article:author" content="Nick Kremers" />
-<meta property="article:published_time" content="${escAttr(cfg.publishedDate || '2026-01-15')}" />
-<meta property="article:modified_time" content="${escAttr(cfg.modifiedDate || new Date().toISOString().split('T')[0])}" />
+<meta property="article:published_time" content="${escAttr(publishedDate)}" />
+<meta property="article:modified_time" content="${escAttr(modifiedDate)}" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@strokerecovery" />
 <meta name="twitter:title" content="${escAttr(cfg.title)}" />
@@ -846,7 +857,6 @@ ${cfg.keywords && cfg.keywords.length > 0 ? `<meta name="keywords" content="${es
 ${faqSchema ? `<script type="application/ld+json">${jsonLd(faqSchema)}</script>` : ''}
 ${breadcrumbSchema ? `<script type="application/ld+json">${jsonLd(breadcrumbSchema)}</script>` : ''}
 ${howToSchema ? `<script type="application/ld+json">${jsonLd(howToSchema)}</script>` : ''}
-${reviewSchema ? `<script type="application/ld+json">${jsonLd(reviewSchema)}</script>` : ''}
 ${videoSchema ? `<script type="application/ld+json">${jsonLd(videoSchema)}</script>` : ''}
 </head>
 <body>
@@ -856,10 +866,10 @@ ${renderHeader()}
   <div class="sra-hero">
     ${cfg.image ? `<img src="${cfg.image}" alt="${escAttr(cfg.imageAlt || cfg.title)}" class="sra-hero-img" loading="eager" />` : ''}
     ${hero.eyebrow ? `<div class="sra-eyebrow">${esc(hero.eyebrow)}</div>` : ''}
-    <h1>${esc(cfg.h1)}</h1>
+    <h1 id="article-title">${esc(cfg.h1)}</h1>
     <p>${esc(hero.subhead)}</p>
     <div class="sra-cta-row">
-      <a href="${escAttr(tagAmazonLink(ctaPrimary.href))}" class="sra-btn-primary"${externalLinkAttrs(ctaPrimary.href)}${isAmazonLink(ctaPrimary.href) ? outboundTrackingAttrs(cfg, ctaPrimary.label) : ''}>${esc(ctaPrimary.label)}</a>
+      <a href="${escAttr(tagAmazonLink(ctaPrimary.href))}" class="sra-btn-primary"${externalLinkAttrs(ctaPrimary.href)}${isAmazonLink(ctaPrimary.href) ? outboundTrackingAttrs(cfg, ctaPrimary.label) : ''}>${esc(ctaPrimary.label)}${isAmazonLink(ctaPrimary.href) ? ' <span aria-hidden="true">↗</span>' : ''}</a>
       ${ctaSecondary ? `<a href="${escAttr(tagAmazonLink(ctaSecondary.href))}" class="sra-btn-secondary"${externalLinkAttrs(ctaSecondary.href)}${isAmazonLink(ctaSecondary.href) ? outboundTrackingAttrs(cfg, ctaSecondary.label) : ''}>${esc(ctaSecondary.label)}</a>` : ''}
     </div>
   </div>
@@ -884,18 +894,18 @@ ${renderHeader()}
   </section>
   ` : ''}
 
-  <div class="sra-author">
+  <div class="sra-author" aria-label="Article information">
     <img src="${AUTHOR.image}" alt="${AUTHOR.name}" class="sra-author-img" loading="lazy" width="44" height="44" />
     <div>
-      Written by <a href="${AUTHOR.url}">Nick Kremers</a> · 7-year stroke survivor.
-      <br /><span style="font-size:12px;">Last reviewed: ${esc(cfg.modifiedDate || new Date().toISOString().split('T')[0])}</span>
-      <br /><span style="font-size:12px; color: var(--sra-text-dim);">${estimateReadingTime(cfg.sections)} min read · ${cfg.sections.reduce((a, s) => {
+      Written by <a href="${AUTHOR.url}">Nick Kremers</a> · stroke survivor and recovery educator.
+      <br /><span>Published: ${esc(publishedDate)}${modifiedDate !== publishedDate ? ` · Updated: ${esc(modifiedDate)}` : ''}</span>
+      <br /><span>${estimateReadingTime(cfg.sections)} min read · ${cfg.sections.reduce((a, s) => {
         let w = 0;
         if (s.paragraphs) w += s.paragraphs.reduce((x, p) => x + p.split(/\s+/).length, 0);
         if (s.bullets) w += s.bullets.reduce((x, b) => x + b.split(/\s+/).length, 0);
         return a + w;
       }, 0).toLocaleString()} words</span>
-      <br /><span class="sra-medical-badge" style="font-size:12px; color: var(--sra-gold);">Medically reviewed by SRA clinical advisory team</span>
+      ${isBlogArticle ? '<span class="sra-editorial-note">Survivor-led education and lived experience. This article is not medical advice; use qualified professionals for personal assessment, diagnosis, or treatment decisions.</span>' : ''}
     </div>
   </div>
 

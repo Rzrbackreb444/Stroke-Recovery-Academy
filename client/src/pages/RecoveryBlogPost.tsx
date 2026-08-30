@@ -15,7 +15,7 @@ import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import {
   ArrowLeft, Clock, Calendar, User, Eye, Heart,
   Share2, BookOpen, ArrowRight, Twitter, Linkedin,
-  Link2, ShieldCheck, List, ChevronDown, ChevronUp, Star
+  Link2, List, ChevronDown, ChevronUp, Star
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { buildAmazonUrl } from "@/lib/amazonLink";
@@ -461,23 +461,11 @@ export default function RecoveryBlogPost() {
 
   const schemaGraph: object[] = [
     {
-      "@type": "MedicalWebPage",
+      "@type": "WebPage",
       "@id": `${postUrl}#webpage`,
       "url": postUrl,
       "name": post.title,
       "description": post.excerpt || '',
-      "about": {
-        "@type": "MedicalCondition",
-        "name": "Stroke Recovery",
-        "url": "https://en.wikipedia.org/wiki/Stroke_recovery"
-      },
-      "audience": { "@type": "MedicalAudience", "audienceType": "Patient" },
-      "lastReviewed": post.updatedAt || post.createdAt,
-      "reviewedBy": {
-        "@type": "Person",
-        "@id": `${baseUrl}#nick-kremers`,
-        "name": "Nick Kremers"
-      },
       "mainContentOfPage": { "@id": `${postUrl}#article` }
     },
     {
@@ -525,10 +513,10 @@ export default function RecoveryBlogPost() {
       "@type": "Person",
       "@id": `${baseUrl}#nick-kremers`,
       "name": "Nick Kremers",
-      "jobTitle": "Stroke Recovery Coach & Educator",
+      "jobTitle": "Stroke Survivor & Peer Educator",
       "description": authorBioText,
       "url": `${baseUrl}/recovery`,
-      "knowsAbout": ["stroke recovery", "neuroplasticity", "hemorrhagic stroke", "rehabilitation", "SASCH method", "stroke survivor"]
+      "knowsAbout": ["lived stroke recovery", "daily routines after stroke", "peer support", "stroke survivor experience"]
     }
   ];
 
@@ -559,7 +547,7 @@ export default function RecoveryBlogPost() {
         title={`${post.title} | Stroke Recovery Academy`}
         description={post.excerpt || `Read this article by ${authorName} on Stroke Recovery Academy.`}
         canonical={`/recovery/blog/${post.slug}`}
-        keywords={[...(post.tags || []), "stroke recovery", "Nick Kremers", post.category, "stroke survivor", "medical"]}
+        keywords={[...(post.tags || []), "stroke recovery", "Nick Kremers", post.category, "stroke survivor", "recovery education"]}
         pageType="article"
         author={authorName}
         image={post.heroImageUrl || undefined}
@@ -618,8 +606,8 @@ export default function RecoveryBlogPost() {
               {formatDate(post.createdAt)}
             </span>
             <span className="flex items-center gap-1.5 text-[#E2741B]">
-              <ShieldCheck className="h-4 w-4" />
-              Reviewed {formatShortDate(post.updatedAt || post.createdAt)}
+              <Calendar className="h-4 w-4" />
+              Updated {formatShortDate(post.updatedAt || post.createdAt)}
             </span>
             <span className="flex items-center gap-1.5">
               <Clock className="h-4 w-4" />
@@ -709,7 +697,9 @@ export default function RecoveryBlogPost() {
               <div className="lg:hidden mb-8 bg-[#1a1a1a] border border-[#333] rounded-md overflow-hidden">
                 <button
                   onClick={() => setMobileTocOpen(o => !o)}
-                  className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-white"
+                  className="min-h-11 w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-white"
+                  aria-expanded={mobileTocOpen}
+                  aria-controls="mobile-article-toc"
                   data-testid="button-mobile-toc-toggle"
                 >
                   <span className="flex items-center gap-2">
@@ -719,7 +709,7 @@ export default function RecoveryBlogPost() {
                   {mobileTocOpen ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
                 </button>
                 {mobileTocOpen && (
-                  <nav className="px-4 pb-4 border-t border-[#333] pt-3 space-y-1">
+                  <nav id="mobile-article-toc" aria-label="In this article" className="px-4 pb-4 border-t border-[#333] pt-3 space-y-1">
                     {tocItems.map(item => (
                       <a
                         key={item.id}
@@ -737,6 +727,7 @@ export default function RecoveryBlogPost() {
 
             <article
               ref={articleRef}
+              aria-labelledby="text-article-title"
               className="prose-recovery"
               dangerouslySetInnerHTML={{ __html: renderedContent }}
               data-testid="article-content"
@@ -825,30 +816,33 @@ export default function RecoveryBlogPost() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="border-[#333] text-[#1DA1F2]"
+                  className="min-h-11 min-w-11 border-[#333] text-[#1DA1F2]"
                   onClick={shareTwitter}
                   data-testid="button-share-twitter"
                   title="Share on Twitter / X"
+                  aria-label="Share on Twitter or X"
                 >
                   <Twitter className="h-4 w-4" />
                 </Button>
                 <Button
                   variant="outline"
                   size="icon"
-                  className="border-[#333] text-[#0A66C2]"
+                  className="min-h-11 min-w-11 border-[#333] text-[#0A66C2]"
                   onClick={shareLinkedIn}
                   data-testid="button-share-linkedin"
                   title="Share on LinkedIn"
+                  aria-label="Share on LinkedIn"
                 >
                   <Linkedin className="h-4 w-4" />
                 </Button>
                 <Button
                   variant="outline"
                   size="icon"
-                  className="border-[#333] text-gray-400"
+                  className="min-h-11 min-w-11 border-[#333] text-gray-400"
                   onClick={copyLink}
                   data-testid="button-copy-link"
                   title="Copy link"
+                  aria-label="Copy article link"
                 >
                   <Link2 className="h-4 w-4" />
                 </Button>
