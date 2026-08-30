@@ -57,7 +57,7 @@ export interface SsrPageConfig {
   faqs: FAQItem[];
   related: InternalLink[];
   publishedDate?: string;            // ISO; defaults to a fixed date
-  modifiedDate?: string;             // ISO; defaults to today
+  modifiedDate?: string;             // ISO; defaults to publishedDate
   keywords?: string[];
   schemaType?: 'Article' | 'MedicalWebPage' | 'WebPage';
   breadcrumbs?: { name: string; href: string }[];
@@ -245,7 +245,7 @@ function estimateReadingTime(sections: ContentSection[]): number {
 function buildArticleSchema(cfg: SsrPageConfig): object {
   const url = `${SITE_URL}${cfg.url}`;
   const date = cfg.publishedDate || '2026-01-15';
-  const modified = cfg.modifiedDate || new Date().toISOString().split('T')[0];
+  const modified = cfg.modifiedDate || date;
   const readTime = estimateReadingTime(cfg.sections);
   // Prefer the featured image, then first section image, then default
   const featuredImage = cfg.image;
@@ -317,48 +317,6 @@ function buildHowToSchema(cfg: SsrPageConfig): object | null {
       text: step.text,
       ...(step.image ? { image: { '@type': 'ImageObject', url: `${SITE_URL}${step.image}` } } : {}),
     })),
-  };
-}
-
-function buildProductReviewSchema(cfg: SsrPageConfig): object | null {
-  const pc = cfg.productCard;
-  if (!pc) return null;
-  const url = `${SITE_URL}${cfg.url}`;
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'Review',
-    name: pc.title || pc.name || cfg.h1,
-    reviewBody: pc.description,
-    url,
-    author: {
-      '@type': 'Person',
-      name: AUTHOR.name,
-      url: AUTHOR.url,
-      image: AUTHOR.image,
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Stroke Recovery Academy',
-      url: SITE_URL,
-    },
-    reviewRating: {
-      '@type': 'Rating',
-      ratingValue: '4.5',
-      bestRating: '5',
-      worstRating: '1',
-    },
-    itemReviewed: {
-      '@type': 'Product',
-      name: pc.title || pc.name || cfg.h1,
-      description: pc.description,
-      url: pc.link,
-      offers: {
-        '@type': 'Offer',
-        url: pc.link,
-        priceCurrency: 'USD',
-        availability: 'https://schema.org/InStock',
-      },
-    },
   };
 }
 
@@ -496,6 +454,7 @@ function renderSections(sections: ContentSection[], cfg: SsrPageConfig): string 
     const html = s.rawHtml || s.body || '';
     const slug = heading ? sectionSlug(heading) : `section-${idx}`;
     const id = heading ? `id="${slug}"` : '';
+    const headingId = heading ? `${slug}-heading` : '';
     // normalise image to object form
     const img = s.image
       ? (typeof s.image === 'string'
@@ -503,8 +462,8 @@ function renderSections(sections: ContentSection[], cfg: SsrPageConfig): string 
           : s.image)
       : null;
     return `
-<section class="sra-section" ${id}>
-  ${heading ? `<h2>${esc(heading)}</h2>` : ''}
+<section class="sra-section" ${id}${heading ? ` aria-labelledby="${headingId}"` : ''}>
+  ${heading ? `<h2 id="${headingId}">${esc(heading)}</h2>` : ''}
   ${Array.isArray(s.paragraphs) && s.paragraphs.length > 0 ? s.paragraphs.map(p => `<p>${esc(p)}</p>`).join('\n  ') : ''}
   ${s.bullets && s.bullets.length > 0 ? `<ul>${s.bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
   ${img ? `<figure class="sra-blog-fig">
@@ -523,7 +482,7 @@ function renderSections(sections: ContentSection[], cfg: SsrPageConfig): string 
   ).join(' ')}</div>` : ''}
   ${s.table && s.table.headers.length > 0 ? `<div class="sra-table-wrap">
     <table class="sra-table">
-      <thead><tr>${s.table.headers.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead>
+       <thead><tr>${s.table.headers.map(h => `<th scope="col">${esc(h)}</th>`).join('')}</tr></thead>
       <tbody>${s.table.rows.map(row => `<tr>${row.map(cell => `<td>${esc(cell)}</td>`).join('')}</tr>`).join('')}</tbody>
     </table>
     ${s.table.caption ? `<div class="sra-table-caption">${esc(s.table.caption)}</div>` : ''}
@@ -578,7 +537,6 @@ function renderRelated(related: InternalLink[]): string {
   ${related.map(r => `
     <a href="${escAttr(r.href)}" class="sra-related-card">
       <span class="sra-related-label">${esc(r.label)}</span>
-      // nosemgrep: javascript.lang.security.html-in-template-string
       ${r.blurb ? `<span class="sra-related-blurb">${esc(r.blurb)}</span>` : ''}
     </a>`).join('\n  ')}
   </div>
