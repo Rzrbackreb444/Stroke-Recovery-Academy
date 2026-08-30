@@ -595,10 +595,20 @@ interface AnalyticsData {
 interface BlogOutboundClickReport {
   rangeDays: number;
   totals: {
+    views: number;
     clicks: number;
+    clickThroughRate: number | null;
     guides: number;
     recommendations: number;
   };
+  guides: Array<{
+    articleSlug: string;
+    views: number;
+    clicks: number;
+    clickThroughRate: number | null;
+    latestView: string | null;
+    latestClick: string | null;
+  }>;
   rows: Array<{
     articleSlug: string;
     productCategory: string;
@@ -637,19 +647,67 @@ function BlogOutboundClicksTab() {
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-semibold flex items-center gap-2">
-          <MousePointerClick className="h-5 w-5 text-[#E2741B]" />
-          Buying-guide retailer clicks
+          <TrendingUp className="h-5 w-5 text-[#E2741B]" />
+          Buying-guide interest
         </h2>
         <p className="text-sm text-gray-400 mt-1">
-          Anonymous outbound clicks from the last {data.rangeDays} days. This reports interest, not purchases.
+          Anonymous guide views and outbound retailer clicks from the last {data.rangeDays} days. Click-through rate indicates product interest, not a verified purchase.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard title="Guide views" value={data.totals.views} icon={BookOpen} />
         <StatCard title="Retailer clicks" value={data.totals.clicks} icon={MousePointerClick} />
-        <StatCard title="Guides with clicks" value={data.totals.guides} icon={BookOpen} />
-        <StatCard title="Recommendations" value={data.totals.recommendations} icon={BarChart3} />
+        <StatCard title="Guides tracked" value={data.totals.guides} icon={BookOpen} />
+        <StatCard
+          title="Click-through rate"
+          value={data.totals.clickThroughRate === null ? "—" : `${data.totals.clickThroughRate.toFixed(2)}%`}
+          icon={TrendingUp}
+          subtitle="Clicks ÷ views"
+        />
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Guide performance</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          {data.guides.length === 0 ? (
+            <div className="p-6 text-sm text-gray-400" data-testid="text-no-blog-guide-views">
+              No buying-guide views or retailer clicks recorded in this range yet.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="border-b border-[#333] text-left text-xs uppercase tracking-wide text-gray-500">
+                  <tr>
+                    <th className="p-4">Guide</th>
+                    <th className="p-4 text-right">Views</th>
+                    <th className="p-4 text-right">Retailer clicks</th>
+                    <th className="p-4 text-right">Click-through rate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.guides.map((guide) => (
+                    <tr
+                      key={guide.articleSlug}
+                      className="border-b border-[#333] last:border-0"
+                      data-testid={`row-blog-guide-${guide.articleSlug}`}
+                    >
+                      <td className="p-4 font-medium whitespace-nowrap">{guide.articleSlug}</td>
+                      <td className="p-4 text-right tabular-nums">{guide.views.toLocaleString()}</td>
+                      <td className="p-4 text-right tabular-nums">{guide.clicks.toLocaleString()}</td>
+                      <td className="p-4 text-right font-semibold tabular-nums">
+                        {guide.clickThroughRate === null ? "—" : `${guide.clickThroughRate.toFixed(2)}%`}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

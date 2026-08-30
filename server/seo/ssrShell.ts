@@ -190,6 +190,28 @@ function outboundTrackingScript(): string {
 </script>`;
 }
 
+function guideViewTrackingScript(cfg: SsrPageConfig): string {
+  if (!cfg.url.startsWith('/blog/') || cfg.url === '/blog') return '';
+
+  // This is intentionally anonymous and fire-and-forget. A page load is a
+  // view, while the server stores only the editorial article slug.
+  const articleSlug = JSON.stringify(cfg.url.slice('/blog/'.length));
+  return `<script>
+(function () {
+  var body = JSON.stringify({ articleSlug: ${articleSlug} });
+  if (navigator.sendBeacon && navigator.sendBeacon('/api/analytics/blog-view', new Blob([body], { type: 'application/json' }))) {
+    return;
+  }
+  fetch('/api/analytics/blog-view', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: body,
+    keepalive: true
+  }).catch(function () {});
+})();
+</script>`;
+}
+
 function esc(s: string | undefined | null): string {
   if (s == null) return '';
   return String(s)
@@ -949,6 +971,7 @@ ${renderHeader()}
   ${renderRelated(cfg.related)}
 </main>
 ${renderFooter()}
+${guideViewTrackingScript(cfg)}
 ${cfg.url.startsWith('/blog/') && cfg.url !== '/blog' ? outboundTrackingScript() : ''}
 </body>
 </html>`;

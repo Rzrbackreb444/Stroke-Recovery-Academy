@@ -172,6 +172,8 @@ test('purchase-intent recommendations stay matched to their supplied destination
 test('buying-guide retailer links carry anonymous click dimensions and a fire-and-forget tracker', () => {
   for (const slug of PURCHASE_INTENT_SLUGS) {
     const html = renderRoute(slug);
+    assert.match(html, /\/api\/analytics\/blog-view/);
+    assert.match(html, /articleSlug: "[a-z0-9-]+"/);
     assert.match(html, /\/api\/analytics\/blog-outbound-click/);
 
     const retailerAnchors = [...html.matchAll(/<a href="([^"]+)"[^>]*>/g)]
