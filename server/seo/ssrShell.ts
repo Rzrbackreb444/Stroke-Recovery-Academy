@@ -24,7 +24,7 @@ export interface ContentSection {
   /** Footnote-style external citation links rendered below section content */
   externalLinks?: { label: string; href?: string; url?: string; note?: string }[];
   /** Inline product cards — affiliate tag applied server-side via tagAmazonLink */
-  products?: { name: string; price?: string; link: string; note: string }[];
+  products?: { name: string; price?: string; link: string; note: string; category?: string }[];
   /** Inline cross-links to related posts — renders a "Also check out" line in the section */
   relatedLinks?: { href: string; label: string }[];
   /**
@@ -86,6 +86,8 @@ export interface SsrPageConfig {
   cluster?: string;
   /** Key takeaways — rendered as a highlighted summary box after the hero */
   takeaways?: string[];
+  /** Product category used for anonymous outbound-click reporting. */
+  productCategory?: string;
   /** Optional video — enables VideoObject schema for rich video snippets */
   video?: {
     name: string;
@@ -139,6 +141,53 @@ function buyingCheckText(): string {
 
 function externalLinkAttrs(url: string): string {
   return /^https?:\/\//i.test(url) ? ' target="_blank" rel="noopener noreferrer sponsored nofollow"' : '';
+}
+
+function inferredProductCategory(recommendation: string, fallback = 'other'): string {
+  const value = recommendation.toLowerCase();
+  if (/brain|book|puzzle|cognitive|aphasia|speech|journal/.test(value)) return 'brain';
+  if (/utensil|shower|tub|transfer|lift|reacher|dressing|toilet|cuff|adaptive|safety/.test(value)) return 'adaptive';
+  if (/grip|strength|band|weight|push-up|gym|resistance/.test(value)) return 'strength';
+  if (/therapy|glove|putty|splint|mirror|saebo|tens|nmes|exercise/.test(value)) return 'therapy';
+  if (/bike|elliptical|pedal|shoe|afo|walker|cane|scooter|gait|ankle|mobility/.test(value)) return 'mobility';
+  return fallback;
+}
+
+function outboundTrackingAttrs(cfg: SsrPageConfig, recommendation: string, category?: string): string {
+  if (!cfg.url.startsWith('/blog/')) return '';
+  const articleSlug = cfg.url.slice('/blog/'.length);
+  const productCategory = category || inferredProductCategory(recommendation, cfg.productCategory || 'other');
+  return ` data-sra-outbound-click="true" data-article-slug="${escAttr(articleSlug)}" data-product-category="${escAttr(productCategory)}" data-recommendation="${escAttr(recommendation)}"`;
+}
+
+function outboundTrackingScript(): string {
+  // This is intentionally anonymous and fire-and-forget. Navigation must never
+  // wait for analytics, and the payload contains no browser identity.
+  return `<script>
+(function () {
+  function record(link) {
+    var body = JSON.stringify({
+      articleSlug: link.getAttribute('data-article-slug'),
+      productCategory: link.getAttribute('data-product-category'),
+      recommendation: link.getAttribute('data-recommendation')
+    });
+    if (navigator.sendBeacon && navigator.sendBeacon('/api/analytics/blog-outbound-click', new Blob([body], { type: 'application/json' }))) {
+      return;
+    }
+    fetch('/api/analytics/blog-outbound-click', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: body,
+      keepalive: true
+    }).catch(function () {});
+  }
+  document.addEventListener('click', function (event) {
+    var target = event.target;
+    var link = target && target.closest ? target.closest('a[data-sra-outbound-click]') : null;
+    if (link) record(link);
+  }, { passive: true });
+})();
+</script>`;
 }
 
 function esc(s: string | undefined | null): string {
@@ -419,7 +468,7 @@ function sectionSlug(heading: string): string {
     .replace(/^-|-$/g, '');
 }
 
-function renderSections(sections: ContentSection[]): string {
+function renderSections(sections: ContentSection[], cfg: SsrPageConfig): string {
   return sections.map((s, idx) => {
     const heading = s.h2 || s.heading || '';
     const html = s.rawHtml || s.body || '';
@@ -445,7 +494,7 @@ function renderSections(sections: ContentSection[]): string {
     <div class="sra-product-card-kicker">Recommended for this guide</div>
     <div class="sra-product-card-name">${esc(p.name)}</div>
     <p class="sra-product-card-note">${esc(p.note)}</p>
-    <a href="${escAttr(tagAmazonLink(p.link))}" class="sra-product-card-link" target="_blank" rel="noopener noreferrer sponsored nofollow" aria-label="${escAttr(`See ${p.name} on Amazon`)}">See ${esc(p.name)} on Amazon <span aria-hidden="true">↗</span></a>
+     <a href="${escAttr(tagAmazonLink(p.link))}" class="sra-product-card-link" target="_blank" rel="noopener noreferrer sponsored nofollow"${outboundTrackingAttrs(cfg, p.name, p.category)} aria-label="${escAttr(`See ${p.name} on Amazon`)}">See ${esc(p.name)} on Amazon <span aria-hidden="true">↗</span></a>
   </div>`).join('')}</div>` : ''}
   ${s.externalLinks && s.externalLinks.length > 0 ? `<div class="sra-citations" role="list" aria-label="Sources">${s.externalLinks.map(l =>
     `<a href="${escAttr(l.href || l.url || '#')}" class="sra-citation-link" target="_blank" rel="noopener noreferrer" role="listitem">${esc(l.label)}</a>${l.note ? ` <span class="sra-citation-note">${esc(l.note)}</span>` : ''}`
@@ -830,8 +879,8 @@ ${renderHeader()}
     <h1>${esc(cfg.h1)}</h1>
     <p>${esc(hero.subhead)}</p>
     <div class="sra-cta-row">
-      <a href="${escAttr(tagAmazonLink(ctaPrimary.href))}" class="sra-btn-primary"${externalLinkAttrs(ctaPrimary.href)}>${esc(ctaPrimary.label)}</a>
-      ${ctaSecondary ? `<a href="${escAttr(tagAmazonLink(ctaSecondary.href))}" class="sra-btn-secondary"${externalLinkAttrs(ctaSecondary.href)}>${esc(ctaSecondary.label)}</a>` : ''}
+      <a href="${escAttr(tagAmazonLink(ctaPrimary.href))}" class="sra-btn-primary"${externalLinkAttrs(ctaPrimary.href)}${isAmazonLink(ctaPrimary.href) ? outboundTrackingAttrs(cfg, ctaPrimary.label) : ''}>${esc(ctaPrimary.label)}</a>
+      ${ctaSecondary ? `<a href="${escAttr(tagAmazonLink(ctaSecondary.href))}" class="sra-btn-secondary"${externalLinkAttrs(ctaSecondary.href)}${isAmazonLink(ctaSecondary.href) ? outboundTrackingAttrs(cfg, ctaSecondary.label) : ''}>${esc(ctaSecondary.label)}</a>` : ''}
     </div>
   </div>
 
@@ -851,7 +900,7 @@ ${renderHeader()}
     <h2>${esc(productCard.title || productCard.name || 'Recommended product')}</h2>
     <p>${esc(productCard.description || '')}</p>
     <p class="sra-quick-pick-check"><strong>Before you buy:</strong> ${esc(buyingCheckText())}</p>
-    <a href="${escAttr(tagAmazonLink(productCard.link))}" class="sra-btn-primary"${externalLinkAttrs(productCard.link)} aria-label="${escAttr(amazonCtaLabel(productCard.label, productCard.title || productCard.name || 'this product'))}">${esc(amazonCtaLabel(productCard.label, productCard.title || productCard.name || 'this product'))} <span aria-hidden="true">↗</span></a>
+     <a href="${escAttr(tagAmazonLink(productCard.link))}" class="sra-btn-primary"${externalLinkAttrs(productCard.link)}${isAmazonLink(productCard.link) ? outboundTrackingAttrs(cfg, productCard.title || productCard.name || productCard.label) : ''} aria-label="${escAttr(amazonCtaLabel(productCard.label, productCard.title || productCard.name || 'this product'))}">${esc(amazonCtaLabel(productCard.label, productCard.title || productCard.name || 'this product'))} <span aria-hidden="true">↗</span></a>
   </section>
   ` : ''}
 
@@ -870,7 +919,7 @@ ${renderHeader()}
     </div>
   </div>
 
-  ${renderSections(cfg.sections)}
+  ${renderSections(cfg.sections, cfg)}
 
   ${renderFaqs(cfg.faqs)}
 
@@ -878,7 +927,7 @@ ${renderHeader()}
   <section class="sra-affiliate">
     <h2>${esc(productCard.title || productCard.name || '')}</h2>
     <p>${esc(productCard.description)}</p>
-    <a href="${escAttr(tagAmazonLink(productCard.link))}" class="sra-btn-primary"${externalLinkAttrs(productCard.link)} aria-label="${escAttr(productCard.label)}">${esc(amazonCtaLabel(productCard.label, productCard.title || productCard.name || 'this product'))} ${isAmazonLink(productCard.link) ? '<span aria-hidden="true">↗</span>' : ''}</a>
+     <a href="${escAttr(tagAmazonLink(productCard.link))}" class="sra-btn-primary"${externalLinkAttrs(productCard.link)}${isAmazonLink(productCard.link) ? outboundTrackingAttrs(cfg, productCard.title || productCard.name || productCard.label) : ''} aria-label="${escAttr(productCard.label)}">${esc(amazonCtaLabel(productCard.label, productCard.title || productCard.name || 'this product'))} ${isAmazonLink(productCard.link) ? '<span aria-hidden="true">↗</span>' : ''}</a>
     ${productCard.note ? `<div class="sra-affiliate-note">${esc(productCard.note)}</div>` : ''}
   </section>
   ` : ''}
@@ -887,7 +936,7 @@ ${renderHeader()}
   <section class="sra-affiliate" style="border-color: var(--sra-gold);">
     <h2 style="color: var(--sra-gold);">${esc(bookPromo.title)}</h2>
     <p>${esc(bookPromo.description)}</p>
-    <a href="${escAttr(tagAmazonLink(bookPromo.link))}" class="sra-btn-primary"${externalLinkAttrs(bookPromo.link)}>${esc(bookPromo.label)}</a>
+     <a href="${escAttr(tagAmazonLink(bookPromo.link))}" class="sra-btn-primary"${externalLinkAttrs(bookPromo.link)}${isAmazonLink(bookPromo.link) ? outboundTrackingAttrs(cfg, bookPromo.title) : ''}>${esc(bookPromo.label)}</a>
   </section>
   ` : ''}
 
@@ -900,6 +949,7 @@ ${renderHeader()}
   ${renderRelated(cfg.related)}
 </main>
 ${renderFooter()}
+${cfg.url.startsWith('/blog/') && cfg.url !== '/blog' ? outboundTrackingScript() : ''}
 </body>
 </html>`;
 }

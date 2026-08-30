@@ -2766,6 +2766,19 @@ export const blogPosts = pgTable("blog_posts", {
   seoLastAuditedAt: timestamp("seo_last_audited_at"),
 });
 
+// Anonymous outbound retailer clicks from the static buying-guide blog.
+// Deliberately stores no user, IP address, referrer, or destination URL.
+export const blogOutboundClicks = pgTable("blog_outbound_clicks", {
+  id: serial("id").primaryKey(),
+  articleSlug: text("article_slug").notNull(),
+  productCategory: text("product_category").notNull(),
+  recommendation: text("recommendation").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  index("idx_blog_outbound_clicks_article").on(table.articleSlug, table.createdAt),
+  index("idx_blog_outbound_clicks_recommendation").on(table.recommendation, table.createdAt),
+]);
+
 export const blogPostReactions = pgTable("blog_post_reactions", {
   id: serial("id").primaryKey(),
   postId: integer("post_id").notNull().references(() => blogPosts.id, { onDelete: "cascade" }),
