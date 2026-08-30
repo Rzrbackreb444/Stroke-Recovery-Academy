@@ -13,6 +13,14 @@ const GUIDE_SLUGS = [
   '/blog/stroke-recovery-home-safety-and-adaptive-gear',
 ] as const;
 
+const PURCHASE_INTENT_SLUGS = [
+  '/blog/best-stroke-recovery-equipment-for-home',
+  '/blog/stroke-transfer-equipment-caregiver-guide',
+  '/blog/adaptive-utensils-after-stroke-buying-guide',
+  '/blog/tub-transfer-bench-after-stroke-buying-guide',
+  '/blog/seated-cardio-equipment-after-stroke',
+] as const;
+
 type RouteHandler = (_req: unknown, res: {
   set: (name: string, value: string) => void;
   send: (html: string) => void;
@@ -118,5 +126,44 @@ test('affiliate CTAs preserve supplied short links and safely tag full Amazon li
   } finally {
     if (previousTag === undefined) delete process.env.AMAZON_AFFILIATE_TAG;
     else process.env.AMAZON_AFFILIATE_TAG = previousTag;
+  }
+});
+
+test('purchase-intent guides have buyer-useful structure and product-specific Amazon CTAs', () => {
+  const registrySlugs = new Set(ALL_BLOG_POSTS.map(post => post.url));
+
+  for (const slug of PURCHASE_INTENT_SLUGS) {
+    assert.ok(registrySlugs.has(slug), `${slug} is missing from the blog registry`);
+
+    const html = renderRoute(slug);
+    assert.match(html, /"@type":"FAQPage"/, `${slug} should include FAQ schema`);
+    assert.match(html, /Before you buy|What to verify|What .* verify|Questions to ask/i, `${slug} should include buying checks`);
+    assert.match(html, /<table[^>]*>/, `${slug} should include a comparison table`);
+    assert.match(html, /See .* on Amazon|Review .* on Amazon/i, `${slug} should use a product-specific Amazon CTA`);
+    assert.doesNotMatch(html, />Check Current Price(?:\s|<)/, `${slug} should not use the generic price CTA`);
+
+    const amazonAnchors = [...html.matchAll(/<a href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)]
+      .filter(([, href]) => /(?:amazon\.com|amzn\.to)/i.test(href));
+    assert.ok(amazonAnchors.length > 0, `${slug} should render direct Amazon links`);
+    for (const [anchor] of amazonAnchors) {
+      assert.match(anchor, /target="_blank"/);
+      assert.match(anchor, /rel="[^"]*noopener[^"]*noreferrer[^"]*sponsored[^"]*nofollow[^"]*"/);
+    }
+  }
+});
+
+test('purchase-intent recommendations stay matched to their supplied destinations', () => {
+  const expectedProducts = new Map([
+    ['/blog/best-stroke-recovery-equipment-for-home', ['Drive Medical Tub Transfer Bench', 'https://amzn.to/4ydBDT9']],
+    ['/blog/stroke-transfer-equipment-caregiver-guide', ['Joerns Hoyer Advance Electric Portable Patient Lift', 'https://amzn.to/4cgQm7b']],
+    ['/blog/adaptive-utensils-after-stroke-buying-guide', ['Cozentra Adjustable Adaptive Utensils 4-Piece Set', 'https://amzn.to/4hWFuPw']],
+    ['/blog/tub-transfer-bench-after-stroke-buying-guide', ['Drive Medical Tub Transfer Bench for Bathtub', 'https://amzn.to/4ydBDT9']],
+    ['/blog/seated-cardio-equipment-after-stroke', ['MERACH Recumbent Exercise Bike', 'https://www.amazon.com/dp/B0CR7JDT9G']],
+  ]);
+
+  for (const [slug, [product, destination]] of expectedProducts) {
+    const html = renderRoute(slug);
+    assert.match(html, new RegExp(product.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    assert.match(html, new RegExp(destination.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
 });
