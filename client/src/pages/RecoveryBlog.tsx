@@ -10,7 +10,7 @@ import RecoveryHeader from "@/components/RecoveryHeader";
 import RecoverySEO from "@/components/RecoverySEO";
 import SasquatchChatWidget from "@/components/recovery/SasquatchChatWidget";
 import {
-  BookOpen, Search, Calendar, Clock, User, ArrowRight, ShoppingBag,
+  BookOpen, Search, Calendar, Clock, User, ArrowRight,
   Eye, Heart, MessageCircle, TrendingUp, Sparkles
 } from "lucide-react";
 
@@ -144,10 +144,9 @@ export default function RecoveryBlog() {
           <p className="text-gray-400 text-base sm:text-lg">
             Expert insights, recovery strategies, and survivor stories from Nick Kremers
           </p>
-          <Link href="/recovery/store">
+          <Link href="/recovery">
             <Button className="mt-4 bg-[#E2741B] text-black font-semibold hover:bg-[#F08A2E]">
-              <ShoppingBag className="h-4 w-4 mr-2" />
-              Shop survivor-tested recovery gear
+              Explore Stroke Recovery Academy
             </Button>
           </Link>
         </div>
