@@ -136,6 +136,12 @@ const SLUG_TO_CLUSTER: Record<string, string> = {
   'stroke-recovery-cardio-and-mobility-gear-guide': 'fitness',
   'stroke-recovery-hand-and-brain-tools-guide': 'upper-limb',
   'stroke-recovery-home-safety-and-adaptive-gear': 'home-safety',
+  // Purchase-intent equipment cluster
+  'best-stroke-recovery-equipment-for-home': 'home-safety',
+  'stroke-transfer-equipment-caregiver-guide': 'mobility',
+  'adaptive-utensils-after-stroke-buying-guide': 'home-safety',
+  'tub-transfer-bench-after-stroke-buying-guide': 'home-safety',
+  'seated-cardio-equipment-after-stroke': 'fitness',
 };
 
 function injectClusterLinks(): void {
@@ -8463,6 +8469,533 @@ export const POST_STROKE_HOME_SAFETY_ADAPTIVE_GEAR = makeBlogPost({
 });
 
 // =============================================================================
+// 23. New buyer-intent equipment cluster
+// =============================================================================
+export const POST_BEST_STROKE_RECOVERY_EQUIPMENT_HOME = makeBlogPost({
+  slug: 'best-stroke-recovery-equipment-for-home',
+  title: 'Best Stroke Recovery Equipment for Home: 2026 Guide',
+  description: 'A practical, safety-first guide to stroke recovery equipment for home: transfers, bathing, hand practice, seated cardio, and buying checks.',
+  h1: 'Best stroke recovery equipment for home',
+  keyword: 'best stroke recovery equipment for home',
+  extraKeywords: ['stroke rehab equipment', 'home therapy equipment after stroke', 'stroke recovery products'],
+  subhead: 'Do not buy a pile of gadgets. Match the equipment to the exact task that is unsafe, exhausting, or impossible today.',
+  ctaPrimary: { href: 'https://amzn.to/4ydBDT9', label: 'See a tub transfer bench on Amazon' },
+  ctaSecondary: { href: '/blog/stroke-recovery-home-safety-and-adaptive-gear', label: 'Read the home-safety guide' },
+  image: '/images/blog/survivor-shower-safety-scene.png',
+  cluster: 'home-safety',
+  takeaways: [
+    'The best first purchase is the one that addresses the highest-risk daily task, not the most impressive-looking device.',
+    'Transfer and bathing equipment need sizing, setup, and hands-on instruction—not just an online order.',
+    'A home exercise tool is useful only when the survivor can use it consistently and safely at the current ability level.',
+    'Listings change. Confirm dimensions, capacity, fit, compatibility, warranty, and returns before buying.',
+  ],
+  sections: [
+    {
+      h2: 'What “best” should mean after a stroke',
+      paragraphs: [
+        '“Best” is not a universal product ranking. The right equipment depends on the task, the survivor’s strength and sensation, the home layout, who is available to help, and what a therapist has already assessed. A transfer aid that is sensible for one person may be unsafe for another.',
+        'Use this guide as a buying framework. Start by naming the moment that breaks down: getting from bed to chair, bathing, eating, dressing, walking, or completing short exercise. Then choose a tool that makes that specific moment more repeatable. If the equipment changes a transfer, bears weight, fits the body, or is used near water, get professional instruction before relying on it.',
+      ],
+    },
+    {
+      h2: 'Quick comparison by problem',
+      paragraphs: ['This is a starting map, not a prescription. The “first question” column is what to verify before spending money.'],
+      table: {
+        headers: ['If the main problem is…', 'Equipment category', 'First question to answer'],
+        rows: [
+          ['A risky bed, chair, or wheelchair transfer', 'Lift, sling, slide board, or gait belt', 'Can the survivor bear weight, and who has been trained to assist?'],
+          ['A tub or shower transfer', 'Transfer bench, shower chair, grab bars', 'Will it fit the bathroom and can the user transfer without reaching over a gap?'],
+          ['One-sided eating or weak grip', 'Weighted, angled, or built-up utensils', 'Which handle, angle, and weight can the user control comfortably?'],
+          ['Seated movement or low endurance', 'Pedal exerciser or recumbent bike', 'Can the user get on and off safely and keep both feet positioned?'],
+          ['Hand practice', 'Putty, bands, finger tools, or a kit', 'Is the goal grip, release, pinch, isolated fingers, or a real task?'],
+        ],
+        caption: 'Equipment should support an assessed task; it should not replace an assessment.',
+      },
+    },
+    {
+      h2: 'Start with safety and transfers',
+      paragraphs: [
+        'A patient lift, slide board, positioning pad, or gait belt can reduce the physical load of a transfer, but each tool has a different job. A lift is not interchangeable with a slide board, and a gait belt is not a suspension device. Do not pull on the affected arm or improvise a sling.',
+      ],
+      products: [
+        { name: 'Joerns Hoyer Advance Electric Portable Patient Lift', link: 'https://amzn.to/4cgQm7b', note: 'For a trained caregiver evaluating a lift option. Confirm capacity, sling compatibility, floor clearance, charging, and hands-on instruction before use.' },
+        { name: 'Slide Board', link: 'https://amzn.to/4gJ70xK', note: 'For a trained lateral-transfer setup. Confirm surface heights, board length, skin protection, and the transfer technique with a therapist.' },
+        { name: 'Multipurpose Positioning Bed Pad with Reinforced Handles', link: 'https://amzn.to/4qJ43Sr', note: 'For repositioning plans that have been taught by a qualified professional. Check handle placement, capacity, and skin protection.' },
+      ],
+    },
+    {
+      h2: 'Make bathing and nighttime routines less risky',
+      paragraphs: [
+        'Bathrooms combine water, hard surfaces, tight turns, and urgency. A transfer bench can be useful when the tub wall is the obstacle; a shower chair may fit better in a walk-in shower. Neither one makes a transfer automatically safe. Measure first, install structural supports correctly, and practice with supervision.',
+      ],
+      products: [
+        { name: 'Drive Medical Tub Transfer Bench', link: 'https://amzn.to/4ydBDT9', note: 'Supplied destination. Measure tub width, seat height, bathroom clearance, and floor stability before ordering or using.' },
+        { name: 'Spill-Proof Portable Urinals', link: 'https://amzn.to/4gB6yTv', note: 'A bedside option may reduce some nighttime trips. Consider hygiene, positioning, privacy, and the person’s ability to use it safely.' },
+        { name: 'Long-Handle Metal Shoe Horn', link: 'https://www.amazon.com/dp/B01LBLH4FA', note: 'A reach and dressing aid, not a balance aid. Confirm the shoe is stable and secure before walking.' },
+      ],
+      relatedLinks: [
+        { href: '/blog/shower-safety-stroke-survivor', label: 'See the full shower-safety checklist' },
+        { href: '/blog/tub-transfer-bench-after-stroke-buying-guide', label: 'Compare tub transfer bench features' },
+      ],
+    },
+    {
+      h2: 'Choose practice tools by the movement you need',
+      paragraphs: [
+        'A grip trainer is not the same as a release trainer. A powered device is not the same as active strengthening. A puzzle is not a replacement for speech-language therapy. The most useful tool is the one that lets the survivor practice the target movement with good enough form to repeat it and record what happened.',
+      ],
+      products: [
+        { name: 'CanDo TheraPutty Hand Exercise Putty Set', link: 'https://www.amazon.com/dp/B00NBEX874', note: 'Useful for graded hand and pinch practice when approved. Choose resistance for controlled movement, not maximum squeeze.' },
+        { name: 'Fit Simplify Resistance Bands Set', link: 'https://www.amazon.com/dp/B01AVDVHTI', note: 'Useful for graded seated or supported exercise. Anchor securely and keep the affected limb in an approved position.' },
+        { name: 'MERACH Recumbent Exercise Bike', link: 'https://www.amazon.com/dp/B0CR7JDT9G', note: 'A seated cardio option to evaluate. Confirm transfers, foot security, pedal control, and clearance with the care team.' },
+      ],
+    },
+    {
+      h2: 'The buyer checklist that prevents expensive mistakes',
+      paragraphs: [
+        'Before pressing Buy Now, write down the user’s height, weight, affected side, shoe or clothing size, the available floor and doorway measurements, and the exact task the product must support. Read the manufacturer’s capacity and setup instructions rather than relying on a product title.',
+      ],
+      bullets: [
+        'Measure the home first: tub, doorway, bed height, chair height, and turning space.',
+        'Confirm the weight limit and whether the limit includes the user plus equipment.',
+        'Check whether the product is right- or left-sided, adjustable, foldable, powered, or dependent on a second person.',
+        'Ask who will teach the first use and what symptoms mean “stop.”',
+        'Review the current return policy, warranty, shipping dimensions, and replacement parts.',
+        'Recheck fit as recovery, tone, swelling, vision, or balance changes.',
+      ],
+    },
+    {
+      h2: 'A sensible order of purchase',
+      paragraphs: [
+        'If money is limited, address immediate fall and transfer risks before buying progression equipment. Next, choose the small adaptive tool that restores a daily task—eating, dressing, or reaching. Only then add exercise equipment that the survivor can use consistently. This order protects the budget and keeps the home from filling with tools nobody can safely use.',
+        'Equipment is one part of recovery. It should make practice or daily life more manageable, not promise a particular outcome. Bring the product page, measurements, and questions to a therapist, nurse, physician, or qualified equipment professional when the task is complex.',
+      ],
+      externalLinks: [
+        { label: 'American Stroke Association: Life After Stroke', href: 'https://www.stroke.org/en/life-after-stroke', note: 'Recovery and life-after-stroke education.' },
+        { label: 'NHS: Stroke recovery', href: 'https://www.nhs.uk/conditions/stroke/recovery/', note: 'General recovery information and rehabilitation context.' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'What is the best piece of stroke recovery equipment to buy first?', a: 'Start with the task that is creating the greatest immediate safety or independence problem. For many homes that may be a bathing or transfer setup, but a therapist or qualified professional should help prioritize it.' },
+    { q: 'Does home therapy equipment replace physical or occupational therapy?', a: 'No. Equipment can make practice possible between visits, but it does not replace assessment, fitting, progression, or supervision when those are needed.' },
+    { q: 'How do I know if a product is safe after a stroke?', a: 'Check the fit, dimensions, capacity, setup, and instructions, then ask the appropriate clinician or trained supplier to review how it will be used in the actual home.' },
+    { q: 'Should I buy an expensive powered rehabilitation device?', a: 'Price does not establish fit or benefit. Define the movement goal, confirm precautions and sizing, compare lower-cost options, and understand what the device can and cannot do before buying.' },
+  ],
+  related: [
+    { href: '/blog/stroke-recovery-home-safety-and-adaptive-gear', label: 'Home safety and adaptive gear', blurb: 'A room-by-room safety-first equipment guide.' },
+    { href: '/blog/stroke-transfer-equipment-caregiver-guide', label: 'Transfer equipment for caregivers', blurb: 'Compare lifts, boards, pads, and training questions.' },
+    { href: '/blog/stroke-recovery-cardio-and-mobility-gear-guide', label: 'Cardio and mobility gear', blurb: 'Match seated exercise and mobility tools to ability.' },
+    { href: '/blog/stroke-recovery-hand-and-brain-tools-guide', label: 'Hand and brain tools', blurb: 'Choose graded practice without recovery hype.' },
+  ],
+  publishedDate: '2026-08-29',
+  productCard: {
+    title: 'Tub transfer bench for a bathroom-first setup',
+    description: 'If bathing or getting over the tub wall is the immediate problem, start by reviewing this transfer-bench listing and measuring your bathroom before ordering.',
+    link: 'https://amzn.to/4ydBDT9',
+    label: 'See the tub transfer bench on Amazon',
+    note: 'Affiliate disclosure: SRA may earn from qualifying purchases at no extra cost to you. A listing is not a fitting or installation assessment.',
+  },
+});
+
+export const POST_STROKE_TRANSFER_EQUIPMENT_CAREGIVER = makeBlogPost({
+  slug: 'stroke-transfer-equipment-caregiver-guide',
+  title: 'Stroke Transfer Equipment for Caregivers: What to Buy',
+  description: 'Compare patient lifts, slide boards, positioning pads, and gait belts after stroke. Learn the safety questions to answer before buying.',
+  h1: 'Stroke transfer equipment for caregivers',
+  keyword: 'stroke transfer equipment for caregivers',
+  extraKeywords: ['patient lift after stroke', 'slide board stroke transfer', 'caregiver transfer safety'],
+  subhead: 'The safest transfer tool is the one that matches weight-bearing ability, surfaces, caregiver training, and the actual space in the home.',
+  ctaPrimary: { href: 'https://amzn.to/4cgQm7b', label: 'Review the patient lift on Amazon' },
+  ctaSecondary: { href: '/blog/gait-belt-for-stroke-recovery', label: 'Read the gait-belt guide' },
+  image: '/images/blog/wheelchair-drive-medical.jpg',
+  cluster: 'mobility',
+  takeaways: [
+    'A lift, slide board, gait belt, and positioning pad solve different transfer problems.',
+    'Never pull on the affected arm or use a device without learning the manufacturer’s technique.',
+    'Capacity, sling or board fit, brakes, clearance, skin protection, and caregiver body mechanics all matter.',
+    'A product listing cannot tell you whether a transfer is appropriate for this person and this home.',
+  ],
+  sections: [
+    {
+      h2: 'Start with the transfer, not the shopping cart',
+      paragraphs: [
+        'Write down the exact transfer: bed to wheelchair, wheelchair to toilet, chair to standing, or repositioning in bed. Note how much the survivor can bear through each leg, whether they can follow instructions, whether the caregiver can get close, and whether the surfaces are level. Those details determine the equipment category.',
+        'If the survivor has new weakness, severe pain, a suspected injury, breathing trouble, or a sudden neurological change, stop the transfer plan and seek appropriate medical help. This guide is for equipment questions, not emergency decisions.',
+      ],
+    },
+    {
+      h2: 'Which tool does which job?',
+      table: {
+        headers: ['Tool', 'Designed to help with', 'Do not assume'],
+        rows: [
+          ['Patient lift and sling', 'Transfers when a person cannot safely stand or bear enough weight', 'That one sling fits every body or that one caregiver is always enough'],
+          ['Slide board', 'A trained lateral transfer between surfaces with suitable height and clearance', 'That it is safe without protecting skin or controlling the weak side'],
+          ['Gait belt', 'Hands-on guarding or assisted walking when a trained helper can use it correctly', 'That it can lift or suspend a person'],
+          ['Positioning pad', 'Repositioning in bed when taught and sized appropriately', 'That pulling handles replaces a coordinated care plan'],
+        ],
+        caption: 'Follow the device instructions and obtain hands-on training for complex transfers.',
+      },
+    },
+    {
+      h2: 'Patient lifts: capacity is only the beginning',
+      paragraphs: [
+        'A powered or hydraulic lift may reduce the need for a caregiver to manually lift, but it introduces its own checklist: sling size, attachment points, battery or pump operation, wheel clearance, doorway width, bed height, brakes, and a place to charge or store it. Ask the supplier or clinician to demonstrate the exact sling and lift combination.',
+      ],
+      products: [
+        { name: 'Joerns Hoyer Advance Electric Portable Patient Lift', link: 'https://amzn.to/4cgQm7b', note: 'Supplied destination. Confirm capacity, sling fit, floor clearance, charging, brake use, and hands-on training before use.' },
+        { name: '10-Function Electric ICU Home Nursing Bed', link: 'https://amzn.to/4dbquKe', note: 'Supplied destination. Verify mattress compatibility, dimensions, rail needs, electrical requirements, and professional setup.' },
+      ],
+    },
+    {
+      h2: 'Slide boards and positioning pads',
+      paragraphs: [
+        'Slide boards require a controlled, taught technique. The board, clothing, skin, surface height, brakes, and the caregiver’s position all affect the transfer. A positioning pad can help with turning or repositioning, but handles must be used as instructed and the user’s skin should be checked after movement.',
+      ],
+      products: [
+        { name: 'Slide Board', link: 'https://amzn.to/4gJ70xK', note: 'Supplied lateral-transfer destination. Confirm board length, surface height, skin protection, and technique with a therapist or trained caregiver.' },
+        { name: 'Multipurpose Positioning Bed Pad with Reinforced Handles', link: 'https://amzn.to/4qJ43Sr', note: 'Supplied destination. Confirm handle placement, weight capacity, skin protection, and caregiver technique before repositioning.' },
+      ],
+    },
+    {
+      h2: 'The caregiver safety checklist',
+      bullets: [
+        'Lock wheelchair, bed, and lift brakes where the instructions require it.',
+        'Clear cords, rugs, footrests, and obstacles before starting.',
+        'Protect the affected shoulder and never pull the affected arm.',
+        'Use the correct sling, loop, board, belt, or pad for the person and the task.',
+        'Keep communication simple and agree on “ready,” “stop,” and “pause.”',
+        'Check skin, pain, breathing, and fatigue after the transfer.',
+        'Get a second trained person when the care plan or device instructions call for one.',
+      ],
+    },
+    {
+      h2: 'Questions to ask before buying',
+      paragraphs: [
+        'Ask: What is the user’s current weight-bearing status? Which side is weaker? What is the exact weight and sling size? Can the equipment turn through every doorway? Who will teach us? What happens if the battery fails? How do we inspect the skin? What changes mean we should stop? A legitimate recommendation should make these questions easier to answer, not hide them behind a “safe” badge.',
+      ],
+      externalLinks: [
+        { label: 'AOTA: Stroke and occupational therapy', href: 'https://www.aota.org/practice/rehabilitation/disability-and-rehabilitation/stroke', note: 'Occupational therapy context for function and daily activities.' },
+        { label: 'American Stroke Association: Caregiving after stroke', href: 'https://www.stroke.org/en/life-after-stroke/stroke-family-caregiver', note: 'Caregiver education and support.' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'What is the safest transfer equipment after a stroke?', a: 'There is no single safest device. The right choice depends on weight-bearing ability, cognition, body size, surfaces, caregiver training, and the home layout.' },
+    { q: 'Can I use a gait belt to lift someone?', a: 'A gait belt is for trained guarding or assistance, not for suspending or manually lifting a person. Follow professional instruction and the manufacturer’s guidance.' },
+    { q: 'Does a patient lift eliminate the need for training?', a: 'No. Sling placement, attachment points, clearance, brakes, and communication still matter. Get hands-on instruction before the first real transfer.' },
+    { q: 'How do I choose a slide board?', a: 'Measure the surface heights and clearance, confirm the user’s skin and transfer needs, and have a therapist or trained caregiver verify the board and technique.' },
+  ],
+  related: [
+    { href: '/blog/gait-belt-for-stroke-recovery', label: 'Gait belt guide', blurb: 'When a belt helps and what it cannot do.' },
+    { href: '/blog/transfer-sling-sit-to-stand-stroke', label: 'Sit-to-stand transfer sling', blurb: 'A focused look at torso-support slings.' },
+    { href: '/blog/stroke-recovery-home-safety-and-adaptive-gear', label: 'Home safety and adaptive gear', blurb: 'Put transfer choices in the wider home setup.' },
+  ],
+  publishedDate: '2026-08-29',
+  productCard: {
+    title: 'Patient lift for a trained transfer plan',
+    description: 'Review the supplied lift listing only after confirming the person’s transfer needs, sling size, capacity, clearance, and caregiver training.',
+    link: 'https://amzn.to/4cgQm7b',
+    label: 'Review the patient lift on Amazon',
+    note: 'Affiliate disclosure: SRA may earn from qualifying purchases at no extra cost to you. This listing is not a substitute for a transfer assessment.',
+  },
+});
+
+export const POST_ADAPTIVE_UTENSILS_AFTER_STROKE = makeBlogPost({
+  slug: 'adaptive-utensils-after-stroke-buying-guide',
+  title: 'Adaptive Utensils After Stroke: Weighted vs. Angled',
+  description: 'Learn how to choose adaptive utensils after stroke by grip, tremor, wrist control, and fatigue—with direct product options and safety checks.',
+  h1: 'Adaptive utensils after stroke: how to choose',
+  keyword: 'adaptive utensils after stroke',
+  extraKeywords: ['weighted utensils stroke', 'built up handle utensils', 'stroke feeding equipment'],
+  subhead: 'The right fork is not the heaviest fork. Match the handle, angle, and weight to the hand that will actually use it.',
+  ctaPrimary: { href: 'https://amzn.to/4hWFuPw', label: 'See Cozentra adaptive utensils on Amazon' },
+  ctaSecondary: { href: '/blog/best-adaptive-eating-utensils-stroke', label: 'Read the utensil comparison' },
+  image: '/images/blog/adaptive-utensils.jpg',
+  cluster: 'home-safety',
+  takeaways: [
+    'Choose utensils by the movement that is difficult: gripping, wrist positioning, reaching the mouth, or controlling tremor.',
+    'Weighted and angled are different features; built-up handles may matter more than either one.',
+    'Adaptive utensils do not assess or treat swallowing safety.',
+    'Try a low-cost option, observe the actual meal, and change the setup as control and fatigue change.',
+  ],
+  sections: [
+    {
+      h2: 'The decision starts at the meal',
+      paragraphs: [
+        'Watch one normal meal without correcting everything. Does the utensil slip? Does the wrist collapse? Does the person have to twist the forearm? Is the handle too thin? Does fatigue make the last half of the meal impossible? Those observations are more useful than a product label that says “for tremors.”',
+        'If there is coughing, choking, a wet or gurgly voice, food pocketing, or unexplained weight loss, adaptive utensils are not the answer to that problem. Ask the appropriate medical or swallowing professional for an assessment.',
+      ],
+    },
+    {
+      h2: 'Weighted, angled, and built-up handles',
+      table: {
+        headers: ['Feature', 'May help with', 'Check before buying'],
+        rows: [
+          ['Weighted handle', 'A hand that benefits from extra mass for control', 'Whether the added weight increases fatigue or is too much to lift'],
+          ['Angled utensil', 'Limited wrist movement or difficulty bringing food to the mouth', 'Whether the angle works on the affected side and for the user’s range'],
+          ['Built-up handle', 'Weak grip, arthritis, or limited finger closure', 'Diameter, texture, cleanability, and whether it can be held without pain'],
+          ['Cuff or strap', 'A utensil that cannot be held conventionally', 'Skin comfort, release ability, cleaning, and professional guidance'],
+        ],
+        caption: 'These features support a task; none of them guarantees independent eating.',
+      },
+    },
+    {
+      h2: 'Product options to compare',
+      paragraphs: ['Use the options below as a feature comparison, not a clinical ranking. Read the current listing for dimensions, weight, materials, and included pieces.'],
+      products: [
+        { name: 'Cozentra Adjustable Adaptive Utensils 4-Piece Set', link: 'https://amzn.to/4hWFuPw', note: 'Supplied destination. Compare locking positions, handle size, and utensil weight with the user’s wrist control and comfort.' },
+        { name: '4-Piece Angled Weighted Adaptive Utensils', link: 'https://www.amazon.com/dp/B0DYV5N6XR', note: 'An angled, weighted option to evaluate. Check whether the weight helps control or simply increases fatigue.' },
+        { name: 'Adaptive Utensils for Hand Tremors', link: 'https://www.amazon.com/dp/B0C5CYGZDY', note: 'Built-up handles may reduce the pinch demand. Confirm diameter, texture, and ease of cleaning.' },
+        { name: 'EazyHold Adaptive Grip Handle', link: 'https://www.amazon.com/dp/B01FL158BI', note: 'A cuff-style option to investigate when a conventional handle cannot stay in the hand. Verify size, skin comfort, and professional fit.' },
+      ],
+    },
+    {
+      h2: 'A five-minute fit test',
+      steps: [
+        { name: 'Set up the meal', text: 'Use the person’s normal chair, plate, food, and affected-side setup. Do not test only at a counter.' },
+        { name: 'Try the least demanding feature first', text: 'Compare handle size, angle, or weight one at a time so you know what changed.' },
+        { name: 'Watch the whole movement', text: 'Look for slipping, wrist collapse, shoulder hiking, breath-holding, spills, pain, or fatigue—not just whether the first bite works.' },
+        { name: 'Recheck after a short break', text: 'A utensil that works for two bites but causes exhaustion may not be the right daily tool.' },
+        { name: 'Ask for guidance when the pattern is unclear', text: 'Bring the utensil and a short video or description to an occupational therapist when possible.' },
+      ],
+    },
+    {
+      h2: 'What to verify on the listing',
+      bullets: [
+        'Handle diameter, total weight, length, and whether the angle or cuff is adjustable.',
+        'Which pieces are included and whether replacements are available.',
+        'Dishwasher guidance, materials, and cleaning around straps or joints.',
+        'Whether the set is designed for right-handed, left-handed, or either use.',
+        'Return terms in case the feature that looked helpful is uncomfortable in a real meal.',
+      ],
+    },
+    {
+      h2: 'Make the tool part of independence—not pressure',
+      paragraphs: [
+        'The goal is a safer, less exhausting meal, not proving that someone can do everything one-handed. Set the food and utensil within reach, use a non-slip mat if appropriate, allow time, and accept help when fatigue or safety requires it. The best adaptive tool is one the person is willing and able to use again tomorrow.',
+      ],
+      externalLinks: [
+        { label: 'American Stroke Association: Effects of stroke', href: 'https://www.stroke.org/en/about-stroke/effects-of-stroke', note: 'General information about post-stroke effects.' },
+        { label: 'NHS: Stroke recovery', href: 'https://www.nhs.uk/conditions/stroke/recovery/', note: 'General rehabilitation context.' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Are weighted utensils better after stroke?', a: 'Not automatically. Added weight may help some people control a utensil, while it may increase fatigue for others. Compare weight with grip, strength, and the actual meal task.' },
+    { q: 'What utensil is best for hand tremors after stroke?', a: 'There is no universal best utensil. Consider whether the person needs weight, a larger handle, an angle, or a cuff, then test comfort and control in a real meal.' },
+    { q: 'Can adaptive utensils prevent choking?', a: 'No. They may help with holding or positioning food, but swallowing safety requires assessment by an appropriate qualified professional.' },
+    { q: 'Should I buy a full adaptive utensil set?', a: 'A full set is convenient, but a single spoon or fork may reveal whether a feature actually helps before you spend more.' },
+  ],
+  related: [
+    { href: '/blog/best-adaptive-eating-utensils-stroke', label: 'Best adaptive eating utensils', blurb: 'A broader comparison of handles, angles, and weights.' },
+    { href: '/blog/stroke-recovery-home-safety-and-adaptive-gear', label: 'Home safety and adaptive gear', blurb: 'Connect mealtime independence to the wider setup.' },
+    { href: '/blog/stroke-recovery-hand-and-brain-tools-guide', label: 'Hand and brain tools', blurb: 'Choose practice tools by the movement they train.' },
+  ],
+  publishedDate: '2026-08-29',
+  productCard: {
+    title: 'Cozentra adjustable adaptive utensils',
+    description: 'Review the handle, angle, weight, and locking positions against the user’s actual wrist control before ordering.',
+    link: 'https://amzn.to/4hWFuPw',
+    label: 'See Cozentra utensils on Amazon',
+    note: 'Affiliate disclosure: SRA may earn from qualifying purchases at no extra cost to you. Adaptive utensils support eating mechanics; they do not assess swallowing.',
+  },
+});
+
+export const POST_TUB_TRANSFER_BENCH_AFTER_STROKE = makeBlogPost({
+  slug: 'tub-transfer-bench-after-stroke-buying-guide',
+  title: 'Tub Transfer Bench After Stroke: How to Choose One',
+  description: 'How to choose a tub transfer bench after stroke: measure the bathroom, compare features, and plan a safer first transfer.',
+  h1: 'How to choose a tub transfer bench after stroke',
+  keyword: 'tub transfer bench after stroke',
+  extraKeywords: ['shower transfer bench stroke', 'bathroom equipment after stroke', 'tub safety for stroke survivors'],
+  subhead: 'The bench has to fit the tub, the bathroom, and the person—not just look sturdy in a product photo.',
+  ctaPrimary: { href: 'https://amzn.to/4ydBDT9', label: 'See the tub transfer bench on Amazon' },
+  ctaSecondary: { href: '/blog/shower-safety-stroke-survivor', label: 'Open the shower-safety checklist' },
+  image: '/images/blog/survivor-shower-safety-scene.png',
+  cluster: 'home-safety',
+  takeaways: [
+    'Measure before shopping: tub width, wall height, floor clearance, seat height, and doorway access.',
+    'A transfer bench bridges the tub wall; it does not replace grab bars, a shower chair, or transfer training.',
+    'Check weight capacity, seat height, back and arm configuration, drainage, and stability.',
+    'Practice the first transfer with the appropriate professional or trained caregiver—not during an urgent nighttime trip.',
+  ],
+  sections: [
+    {
+      h2: 'Why a transfer bench may be the right category',
+      paragraphs: [
+        'A tub transfer bench lets a person sit before moving the legs over the tub wall. That can change the task from stepping over a barrier to performing a controlled seated transfer. It is not automatically the best choice: some bathrooms have too little clearance, some users need a different transfer plan, and some tubs or floors are not compatible.',
+        'The question is not “Which bench has the highest rating?” It is “Can this person get onto the bench, move across the tub edge, and get off without a dangerous reach, twist, slide, or loss of balance?”',
+      ],
+    },
+    {
+      h2: 'Measure these six things first',
+      bullets: [
+        'Tub rim height from the floor and the inside tub width.',
+        'Available wall and floor space beside the tub for the long leg of the bench.',
+        'Doorway width and the route needed to bring the bench into the bathroom.',
+        'User height, weight, hip width, and the seat height needed for feet to contact the floor.',
+        'Location and type of existing grab bars or structural supports.',
+        'Whether the bathroom floor is level, dry enough, and clear of loose mats or cords.',
+      ],
+    },
+    {
+      h2: 'Features that matter more than marketing language',
+      table: {
+        headers: ['Feature', 'Why it matters', 'What to verify'],
+        rows: [
+          ['Adjustable legs', 'Helps level the seat across different floor and tub heights', 'Each leg locks securely and the final seat height supports the user'],
+          ['Sliding or swivel seat', 'May reduce twisting during the transfer', 'Locking mechanism, clearance, and whether the user can control it'],
+          ['Back and arm supports', 'May add support during seated movement', 'Whether they fit the tub and allow caregiver access'],
+          ['Drainage holes and non-slip feet', 'Reduce pooling and unwanted movement', 'Foot condition, floor compatibility, and cleaning'],
+          ['Weight capacity', 'Sets the manufacturer’s stated limit', 'Current limit, user plus clothing/equipment, and a safety margin'],
+        ],
+        caption: 'A feature only helps when it fits the actual bathroom and transfer technique.',
+      },
+    },
+    {
+      h2: 'A supplied bench to evaluate',
+      paragraphs: [
+        'The Drive Medical tub transfer bench is a reasonable listing to inspect when the tub wall is the main obstacle. Treat the listing as a starting point: confirm the measurements against your tub, read the current instructions, and ask a therapist or trained caregiver to review the transfer.',
+      ],
+      products: [
+        { name: 'Drive Medical Tub Transfer Bench for Bathtub, Height Adjustable', link: 'https://amzn.to/4ydBDT9', note: 'Supplied destination. Check tub width, seat height, floor stability, leg adjustment, and whether the bathroom layout allows a controlled transfer.' },
+        { name: 'Drive Medical Premium Shower Chair with Back and Padded Arms', link: 'https://www.amazon.com/dp/B013AX88P2', note: 'A shower-chair alternative to compare when stepping over a tub wall is not the primary issue. Verify shower dimensions and transfer plan.' },
+      ],
+    },
+    {
+      h2: 'The first-use plan',
+      steps: [
+        { name: 'Set up the bathroom', text: 'Remove loose rugs and obstacles, place needed items within reach, and keep the floor as dry as possible.' },
+        { name: 'Check the bench', text: 'Confirm every leg is level and locked, feet are stable, and the bench is positioned as instructed.' },
+        { name: 'Practice the motion', text: 'Use the trained sequence slowly: sit, move across, bring the legs over the tub, and reverse the process.' },
+        { name: 'Inspect after use', text: 'Check the feet, fasteners, skin, and any area where the person felt pressure, pain, or instability.' },
+      ],
+    },
+    {
+      h2: 'What a bench cannot solve',
+      paragraphs: [
+        'A bench does not diagnose balance problems, provide a structural grab bar, prevent every fall, or make a wet bathroom safe by itself. It also does not address sudden weakness or a new neurological symptom. Keep emergency planning separate from equipment shopping, and ask the care team what changes should trigger a call.',
+      ],
+      externalLinks: [
+        { label: 'American Stroke Association: Life after stroke', href: 'https://www.stroke.org/en/life-after-stroke', note: 'General recovery and daily-life education.' },
+        { label: 'NHS: Stroke recovery', href: 'https://www.nhs.uk/conditions/stroke/recovery/', note: 'General rehabilitation information.' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Is a tub transfer bench safe after a stroke?', a: 'It may be appropriate for some bathrooms and users, but safety depends on fit, setup, transfer ability, and training. Have the actual bathroom and technique reviewed when possible.' },
+    { q: 'How do I measure for a tub transfer bench?', a: 'Measure the tub rim and inside width, floor and seat heights, available clearance, doorway route, and the user’s size. Compare those measurements with the current manufacturer specifications.' },
+    { q: 'Do I still need grab bars with a transfer bench?', a: 'Often a bench does not replace properly installed structural supports. Ask a qualified professional which supports fit the wall, task, and transfer plan.' },
+    { q: 'Can one caregiver help with a tub transfer?', a: 'That depends on the person, setup, and training. Follow the care plan and device instructions rather than assuming one helper is enough.' },
+  ],
+  related: [
+    { href: '/blog/shower-safety-stroke-survivor', label: 'Shower safety after stroke', blurb: 'A broader bathroom risk and setup checklist.' },
+    { href: '/blog/stroke-recovery-home-safety-and-adaptive-gear', label: 'Home safety and adaptive gear', blurb: 'Compare bathroom equipment with transfer and eating support.' },
+    { href: '/blog/complete-stroke-recovery-home-kit', label: 'Complete home kit', blurb: 'Phase home purchases around real recovery needs.' },
+  ],
+  publishedDate: '2026-08-29',
+  productCard: {
+    title: 'Drive Medical tub transfer bench',
+    description: 'Review the current bench dimensions against your tub and bathroom before ordering. The bench is a tool for a trained transfer plan, not a guarantee of safety.',
+    link: 'https://amzn.to/4ydBDT9',
+    label: 'See the tub transfer bench on Amazon',
+    note: 'Affiliate disclosure: SRA may earn from qualifying purchases at no extra cost to you. Verify fit, capacity, installation, and training.',
+  },
+});
+
+export const POST_SEATED_CARDIO_AFTER_STROKE = makeBlogPost({
+  slug: 'seated-cardio-equipment-after-stroke',
+  title: 'Seated Cardio Equipment After Stroke: Bike or Pedals?',
+  description: 'Compare recumbent bikes, pedal exercisers, and powered mini ellipticals after stroke by transfers, control, space, and progression.',
+  h1: 'Seated cardio equipment after stroke',
+  keyword: 'seated cardio equipment after stroke',
+  extraKeywords: ['recumbent bike stroke recovery', 'pedal exerciser after stroke', 'low impact cardio stroke'],
+  subhead: 'Choose the setup you can get onto, control, and repeat—not the machine with the longest feature list.',
+  ctaPrimary: { href: 'https://www.amazon.com/dp/B0CR7JDT9G', label: 'See the recumbent bike on Amazon' },
+  ctaSecondary: { href: '/blog/stroke-recovery-cardio-and-mobility-gear-guide', label: 'Compare cardio and mobility gear' },
+  image: '/images/blog/recumbent-stationary-bike.jpg',
+  cluster: 'fitness',
+  takeaways: [
+    'Active pedaling, passive motorized movement, and general seated activity are not interchangeable.',
+    'The transfer onto and off the equipment is part of the safety decision.',
+    'Start with foot security, posture, clearance, and a manageable dose before increasing resistance or time.',
+    'Ask the care team about cardiac, blood-pressure, seizure, fatigue, tone, and balance precautions.',
+  ],
+  sections: [
+    {
+      h2: 'What are you trying to improve?',
+      paragraphs: [
+        '“Cardio” can mean several different goals: tolerating more activity, practicing active leg movement, building endurance, or keeping a limb moving when voluntary control is limited. A recumbent bike requires a transfer and active pedaling. A low pedal exerciser keeps the user seated but still needs foot placement and control. A powered mini elliptical may move the legs for the user, which is a different kind of practice.',
+        'That distinction matters because a product page can make all three sound like a workout. Before buying, name the movement you want to practice and ask what level of assistance is appropriate.',
+      ],
+    },
+    {
+      h2: 'Bike, pedal exerciser, or powered mini elliptical?',
+      table: {
+        headers: ['Option', 'May fit when…', 'Verify first'],
+        rows: [
+          ['Recumbent exercise bike', 'A back-supported seat and step-through frame fit the transfer plan', 'Seat position, transfer clearance, foot straps, pedal control, and storage'],
+          ['Under-desk pedal exerciser', 'The user can sit securely and reach the pedals from a familiar chair', 'Pedal height, device sliding, foot security, resistance, and the chair’s stability'],
+          ['Powered mini elliptical', 'A seated passive-motion option has been discussed with the care team', 'Motor movement, foot containment, remote use, noise, and the difference between passive and active work'],
+        ],
+        caption: 'These categories have different demands and should not be sold as equivalent.',
+      },
+    },
+    {
+      h2: 'Options to evaluate',
+      paragraphs: ['The products below are supplied destinations for comparison. Current specifications, price, and availability belong to the retailer listing.'],
+      products: [
+        { name: 'MERACH Recumbent Exercise Bike', link: 'https://www.amazon.com/dp/B0CR7JDT9G', note: 'Back-supported seated option. Confirm transfers, frame clearance, seat adjustment, pedal straps, and whether the user can stop safely.' },
+        { name: 'DeskCycle Under Desk Pedal Exerciser', link: 'https://www.amazon.com/dp/B07BDRFMZK', note: 'Low-profile seated pedaling option. Check pedal reach, device movement, chair stability, and starting resistance.' },
+        { name: 'VIVURN Under-Desk Electric Mini Elliptical', link: 'https://www.amazon.com/dp/B0GJDQX576', note: 'Powered seated-motion option. Discuss foot security, posture, motorized movement, and precautions before use.' },
+      ],
+    },
+    {
+      h2: 'The transfer is part of the workout',
+      paragraphs: [
+        'A machine that is easy to pedal but difficult to get onto may not be the best home choice. Measure the route, turning space, seat height, and whether a caregiver must assist. Keep the first sessions supervised if balance, sensation, weakness, fatigue, or confusion makes setup difficult.',
+      ],
+      bullets: [
+        'Use a stable chair or the machine’s supported seat as instructed.',
+        'Secure feet without tightening straps over numb or fragile skin.',
+        'Keep the emergency stop or power control within reach.',
+        'Start with a short, easy session and record how the person feels afterward.',
+        'Stop for new chest pain, severe shortness of breath, faintness, sudden neurological symptoms, or symptoms the care team has identified as concerning.',
+      ],
+    },
+    {
+      h2: 'How to compare a listing honestly',
+      paragraphs: [
+        'Ignore broad promises and look for the details that affect real use: total footprint, assembled weight, seat travel, pedal height, strap design, resistance range, motor modes, noise, warranty, and return process. If the listing does not make a safety-critical specification clear, treat that uncertainty as a reason to ask the seller or clinician—not as permission to guess.',
+      ],
+      externalLinks: [
+        { label: 'American Stroke Association: Physical activity after stroke', href: 'https://www.stroke.org/en/healthy-living/fitness-and-stroke', note: 'General activity education; individual precautions still apply.' },
+        { label: 'NHS: Stroke recovery', href: 'https://www.nhs.uk/conditions/stroke/recovery/', note: 'General rehabilitation information.' },
+      ],
+    },
+  ],
+  faqs: [
+    { q: 'Is a recumbent bike good after a stroke?', a: 'It may suit some survivors because it offers a supported seated position, but transfers, foot control, fatigue, and medical precautions must be considered first.' },
+    { q: 'Are pedal exercisers safe for stroke survivors?', a: 'They may be appropriate for some people, but the chair, foot placement, affected-leg control, resistance, and supervision all matter. Start with professional guidance when needed.' },
+    { q: 'Does a powered mini elliptical strengthen the legs?', a: 'Powered movement is not the same as active strengthening. Clarify whether the device is moving the legs, assisting them, or requiring the user to pedal.' },
+    { q: 'How long should I exercise on seated equipment?', a: 'There is no universal duration. Start with the dose recommended for the individual, monitor symptoms and recovery, and progress gradually with the care team.' },
+  ],
+  related: [
+    { href: '/blog/stroke-recovery-cardio-and-mobility-gear-guide', label: 'Cardio and mobility gear guide', blurb: 'Compare seated cardio with walking aids and ankle tools.' },
+    { href: '/blog/best-pedal-exerciser-stroke-recovery', label: 'Best pedal exercisers', blurb: 'A focused look at low-profile seated pedaling.' },
+    { href: '/blog/stroke-recovery-exercises-at-home-daily-routine', label: 'Daily home exercise routine', blurb: 'Turn equipment into a repeatable practice plan.' },
+  ],
+  publishedDate: '2026-08-29',
+  productCard: {
+    title: 'MERACH recumbent exercise bike',
+    description: 'A back-supported seated option to evaluate when the transfer, pedal control, and available floor space fit the user’s plan.',
+    link: 'https://www.amazon.com/dp/B0CR7JDT9G',
+    label: 'See the recumbent bike on Amazon',
+    note: 'Affiliate disclosure: SRA may earn from qualifying purchases at no extra cost to you. Active exercise and powered movement are not interchangeable; verify fit and precautions.',
+  },
+});
+
+// =============================================================================
 // Aggregator
 // =============================================================================
 export const ALL_BLOG_POSTS: SsrPageConfig[] = [
@@ -8540,6 +9073,11 @@ export const ALL_BLOG_POSTS: SsrPageConfig[] = [
   POST_STROKE_CARDIO_MOBILITY_GEAR,
   POST_STROKE_HAND_BRAIN_TOOLS,
   POST_STROKE_HOME_SAFETY_ADAPTIVE_GEAR,
+  POST_BEST_STROKE_RECOVERY_EQUIPMENT_HOME,
+  POST_STROKE_TRANSFER_EQUIPMENT_CAREGIVER,
+  POST_ADAPTIVE_UTENSILS_AFTER_STROKE,
+  POST_TUB_TRANSFER_BENCH_AFTER_STROKE,
+  POST_SEATED_CARDIO_AFTER_STROKE,
 ];
 
 // Inject cross-cluster internal links now that every post is registered

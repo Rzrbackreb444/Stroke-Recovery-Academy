@@ -119,6 +119,24 @@ function tagAmazonLink(url: string): string {
   }
 }
 
+function isAmazonLink(url: string): boolean {
+  try {
+    const hostname = new URL(url).hostname.toLowerCase();
+    return hostname.includes('amazon.') || hostname === 'a.co' || hostname.endsWith('.a.co') || hostname === 'amzn.to';
+  } catch {
+    return false;
+  }
+}
+
+function amazonCtaLabel(label: string, productName: string): string {
+  const generic = /^(check(?: the)?(?: current)? price(?: on amazon)?|check it(?: on amazon)?|check the supplied amazon listing|see the supplied amazon listing)$/i;
+  return generic.test(label.trim()) ? `See ${productName} on Amazon` : label;
+}
+
+function buyingCheckText(): string {
+  return 'Before ordering, confirm the current size, fit, dimensions, capacity, compatibility, and return details on the retailer page.';
+}
+
 function externalLinkAttrs(url: string): string {
   return /^https?:\/\//i.test(url) ? ' target="_blank" rel="noopener noreferrer sponsored nofollow"' : '';
 }
@@ -424,9 +442,10 @@ function renderSections(sections: ContentSection[]): string {
   </figure>` : ''}
   ${s.products && s.products.length > 0 ? `<div class="sra-product-grid">${s.products.map(p => `
   <div class="sra-product-card">
+    <div class="sra-product-card-kicker">Recommended for this guide</div>
     <div class="sra-product-card-name">${esc(p.name)}</div>
     <p class="sra-product-card-note">${esc(p.note)}</p>
-    <a href="${escAttr(tagAmazonLink(p.link))}" class="sra-product-card-link" target="_blank" rel="noopener noreferrer sponsored nofollow">Check Current Price on Amazon ↗</a>
+    <a href="${escAttr(tagAmazonLink(p.link))}" class="sra-product-card-link" target="_blank" rel="noopener noreferrer sponsored nofollow" aria-label="${escAttr(`See ${p.name} on Amazon`)}">See ${esc(p.name)} on Amazon <span aria-hidden="true">↗</span></a>
   </div>`).join('')}</div>` : ''}
   ${s.externalLinks && s.externalLinks.length > 0 ? `<div class="sra-citations" role="list" aria-label="Sources">${s.externalLinks.map(l =>
     `<a href="${escAttr(l.href || l.url || '#')}" class="sra-citation-link" target="_blank" rel="noopener noreferrer" role="listitem">${esc(l.label)}</a>${l.note ? ` <span class="sra-citation-note">${esc(l.note)}</span>` : ''}`
@@ -654,6 +673,19 @@ a:hover { text-decoration: underline; }
 .sra-affiliate p { color: var(--sra-text-dim); margin: 0 0 16px; }
 .sra-affiliate .sra-btn-primary { display: inline-block; }
 .sra-affiliate-note { font-size: 12px; color: var(--sra-text-dim); margin-top: 12px; font-style: italic; }
+.sra-quick-pick {
+  margin: 0 0 32px; padding: 24px;
+  background: linear-gradient(135deg, var(--sra-gold-soft), var(--sra-bg-card));
+  border: 1px solid var(--sra-gold); border-radius: 8px;
+}
+.sra-quick-pick-kicker, .sra-product-card-kicker {
+  color: var(--sra-gold); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.sra-quick-pick h2 { font-family: 'Crimson Pro', Georgia, serif; font-size: 27px; margin: 6px 0 10px; color: var(--sra-text); }
+.sra-quick-pick p { color: var(--sra-text-dim); margin: 0 0 14px; }
+.sra-quick-pick-check { font-size: 13px; border-top: 1px solid var(--sra-border); padding-top: 12px; }
+.sra-quick-pick .sra-btn-primary { margin-top: 4px; }
 .sra-final-cta h2 { font-family: 'Crimson Pro', Georgia, serif; font-size: 28px; color: var(--sra-text); margin: 0 0 12px; }
 .sra-final-cta p { color: var(--sra-text-dim); margin: 0 0 20px; }
 .sra-footer { border-top: 1px solid var(--sra-border); background: var(--sra-bg); padding: 40px 24px 24px; margin-top: 64px; }
@@ -685,10 +717,11 @@ a:hover { text-decoration: underline; }
 .sra-related-inline a:hover { text-decoration: underline; }
 .sra-product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 20px 0; }
 .sra-product-card { background: var(--sra-bg-card); border: 1px solid var(--sra-border); border-radius: 6px; padding: 18px; display: flex; flex-direction: column; gap: 6px; }
-.sra-product-card-name { font-weight: 700; font-size: 15px; color: var(--sra-text); }
+.sra-product-card-kicker { font-size: 10px; letter-spacing: 0.08em; }
+.sra-product-card-name { font-weight: 700; font-size: 15px; color: var(--sra-text); margin-top: 2px; }
 .sra-product-card-price { font-size: 13px; color: var(--sra-gold); font-weight: 600; }
 .sra-product-card-note { font-size: 13px; color: var(--sra-text-dim); margin: 4px 0 8px; line-height: 1.5; }
-.sra-product-card-link { display: inline-block; background: var(--sra-gold); color: #000 !important; padding: 9px 18px; border-radius: 4px; font-size: 13px; font-weight: 700; margin-top: auto; align-self: flex-start; }
+.sra-product-card-link { display: inline-block; background: var(--sra-gold); color: #000 !important; padding: 11px 16px; min-height: 44px; border-radius: 4px; font-size: 13px; font-weight: 700; margin-top: auto; align-self: flex-start; }
 .sra-product-card-link:hover { text-decoration: none; opacity: 0.9; }
 .sra-table-wrap { margin: 20px 0; overflow-x: auto; }
 .sra-table { width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid var(--sra-border); border-radius: 6px; overflow: hidden; }
@@ -719,6 +752,7 @@ a:hover { text-decoration: underline; }
   .sra-page { padding: 20px 16px 64px; }
   .sra-hero h1 { font-size: 32px; }
   .sra-product-grid { grid-template-columns: 1fr; }
+  .sra-quick-pick { padding: 20px; }
 }
 `;
 }
@@ -811,6 +845,16 @@ ${renderHeader()}
 
   ${renderTableOfContents(cfg.sections)}
 
+  ${productCard && isAmazonLink(productCard.link) ? `
+  <section class="sra-quick-pick" aria-label="Quick product recommendation">
+    <div class="sra-quick-pick-kicker">Start here</div>
+    <h2>${esc(productCard.title || productCard.name || 'Recommended product')}</h2>
+    <p>${esc(productCard.description || '')}</p>
+    <p class="sra-quick-pick-check"><strong>Before you buy:</strong> ${esc(buyingCheckText())}</p>
+    <a href="${escAttr(tagAmazonLink(productCard.link))}" class="sra-btn-primary"${externalLinkAttrs(productCard.link)} aria-label="${escAttr(amazonCtaLabel(productCard.label, productCard.title || productCard.name || 'this product'))}">${esc(amazonCtaLabel(productCard.label, productCard.title || productCard.name || 'this product'))} <span aria-hidden="true">↗</span></a>
+  </section>
+  ` : ''}
+
   <div class="sra-author">
     <img src="${AUTHOR.image}" alt="${AUTHOR.name}" class="sra-author-img" loading="lazy" width="44" height="44" />
     <div>
@@ -834,7 +878,7 @@ ${renderHeader()}
   <section class="sra-affiliate">
     <h2>${esc(productCard.title || productCard.name || '')}</h2>
     <p>${esc(productCard.description)}</p>
-    <a href="${escAttr(tagAmazonLink(productCard.link))}" class="sra-btn-primary" target="_blank" rel="noopener noreferrer sponsored nofollow">${esc(productCard.label)}</a>
+    <a href="${escAttr(tagAmazonLink(productCard.link))}" class="sra-btn-primary"${externalLinkAttrs(productCard.link)} aria-label="${escAttr(productCard.label)}">${esc(amazonCtaLabel(productCard.label, productCard.title || productCard.name || 'this product'))} ${isAmazonLink(productCard.link) ? '<span aria-hidden="true">↗</span>' : ''}</a>
     ${productCard.note ? `<div class="sra-affiliate-note">${esc(productCard.note)}</div>` : ''}
   </section>
   ` : ''}
