@@ -21,6 +21,23 @@ const PURCHASE_INTENT_SLUGS = [
   '/blog/seated-cardio-equipment-after-stroke',
 ] as const;
 
+// Baseline from the attached Search Console export:
+// Last 24 hours, 151 impressions, 2 clicks. Priority pages were already
+// appearing mostly between positions 5 and 12 but had no recorded clicks.
+const SEARCH_CONSOLE_PRIORITY_SLUGS = [
+  '/blog/best-ankle-brace-stroke-survivor',
+  '/blog/best-massage-gun-stroke-spasticity',
+  '/blog/best-stationary-bike-stroke-recovery',
+  '/blog/best-shoes-stroke-survivors',
+  '/blog/best-walker-stroke-survivor',
+  '/blog/hot-tub-hydrotherapy-stroke-recovery',
+  '/blog/best-adjustable-bed-wedge-pillow-stroke-recovery',
+  '/blog/adaptive-eating-utensils-stroke',
+  '/blog/best-resistance-bands-stroke-recovery',
+  '/blog/best-hand-therapy-tools-stroke-recovery',
+  '/blog/best-exercise-bike-stroke-patient',
+] as const;
+
 type RouteHandler = (_req: unknown, res: {
   set: (name: string, value: string) => void;
   send: (html: string) => void;
@@ -212,4 +229,41 @@ test('buying-guide retailer links carry anonymous click dimensions and a fire-an
       assert.match(anchor, /rel="[^"]*sponsored[^"]*nofollow[^"]*"/);
     }
   }
+});
+
+test('Search Console priority pages have display-safe, intent-aligned metadata', () => {
+  const postsByUrl = new Map(ALL_BLOG_POSTS.map((post) => [post.url, post]));
+
+  for (const slug of SEARCH_CONSOLE_PRIORITY_SLUGS) {
+    const post = postsByUrl.get(slug);
+    assert.ok(post, `${slug} should remain in the blog registry`);
+    assert.ok(post.title.length <= 60, `${slug} title is too long: ${post.title.length} characters`);
+    assert.ok(
+      post.description.length >= 140 && post.description.length <= 160,
+      `${slug} description should be 140–160 characters: ${post.description.length}`,
+    );
+    assert.ok(post.hero.subhead.length > 80, `${slug} should answer the search intent in its opening`);
+  }
+
+  const priorityTitles = SEARCH_CONSOLE_PRIORITY_SLUGS.map((slug) => postsByUrl.get(slug)!.title);
+  assert.equal(new Set(priorityTitles).size, priorityTitles.length, 'priority pages should have unique titles');
+});
+
+test('exercise-bike pages target distinct intents and link readers between them', () => {
+  const postsByUrl = new Map(ALL_BLOG_POSTS.map((post) => [post.url, post]));
+  const stationaryBike = postsByUrl.get('/blog/best-stationary-bike-stroke-recovery');
+  const exerciseBike = postsByUrl.get('/blog/best-exercise-bike-stroke-patient');
+
+  assert.ok(stationaryBike);
+  assert.ok(exerciseBike);
+  assert.match(stationaryBike.title, /stationary bike/i);
+  assert.match(stationaryBike.title, /recumbent vs upright/i);
+  assert.doesNotMatch(stationaryBike.description, /passive cycle|pedal exerciser/i);
+  assert.match(exerciseBike.title, /exercise bike/i);
+  assert.match(exerciseBike.description, /passive cycle/i);
+
+  const stationaryHtml = renderRoute('/blog/best-stationary-bike-stroke-recovery');
+  const exerciseHtml = renderRoute('/blog/best-exercise-bike-stroke-patient');
+  assert.match(stationaryHtml, /Compare passive cycles and pedal exercisers by recovery stage/);
+  assert.match(exerciseHtml, /Choose between recumbent and upright stationary bikes/);
 });

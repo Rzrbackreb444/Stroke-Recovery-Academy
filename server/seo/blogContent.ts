@@ -1705,10 +1705,11 @@ export const POST_HOME_BP_MONITOR = makeBlogPost({
 // =============================================================================
 export const POST_RESISTANCE_BANDS = makeBlogPost({
   slug: 'best-resistance-bands-stroke-recovery',
-  title: 'The Best Resistance Bands for Stroke Recovery (That I Actually Used)',
-  description: 'The resistance bands that helped me rebuild strength after stroke. How to use them safely, which types to buy, and why they beat weights in the first year.',
-  h1: 'The best resistance bands for stroke recovery',
+  title: 'Best Resistance Bands After Stroke: Safe Buying Guide',
+  description: 'Compare resistance bands for stroke recovery by grip, tension, and setup. Learn how to choose a starting level and practice without reinforcing compensation.',
+  h1: 'Best resistance bands after stroke',
   keyword: 'best resistance bands stroke recovery',
+  extraKeywords: ['best resistance bands after stroke', 'resistance bands for stroke patients'],
   takeaways: [
     "The Resistance Band Set rebuilt Nick's left side for about $20 before any dumbbell.",
     "Bands beat weights early because they load safely without dropping on you.",
@@ -1716,7 +1717,7 @@ export const POST_RESISTANCE_BANDS = makeBlogPost({
     "Bands can be used carefully with spastic muscles when you avoid overloading.",
     "Six daily exercises bridge you from bands to the gym as you progress.",
   ],
-  subhead: 'I rebuilt my left side with a $20 set of resistance bands before I ever touched a dumbbell. Here is the exact set I used and how to use them without hurting yourself.',
+  subhead: 'Looking for the best resistance bands after stroke? Start with the lightest useful tension, a grip you can control, and exercises that do not reinforce compensation.',
   ctaPrimary: { href: 'https://a.co/d/0dvZe7BM', label: 'See band sets on Amazon' },
   ctaSecondary: { href: '/programs/daily-routine', label: 'The Daily Routine' },
   productCard: {
@@ -1972,10 +1973,11 @@ export const POST_SHOWER_SAFETY = makeBlogPost({
 // =============================================================================
 export const POST_ADAPTIVE_EATING = makeBlogPost({
   slug: 'adaptive-eating-utensils-stroke',
-  title: 'Adaptive Eating Utensils for Stroke: What I Used When One Hand Did the Work of Two',
-  description: 'The adaptive eating utensils that helped me feed myself with one functional hand after stroke. Real recommendations, real prices, and what to skip.',
+  title: 'Best Adaptive Eating Utensils After Stroke',
+  description: 'Compare adaptive eating utensils after stroke by handle, angle, weight, and grip. Find practical options for one-handed meals and safer independent eating.',
   h1: 'Adaptive eating utensils for stroke survivors',
   keyword: 'adaptive eating utensils stroke',
+  extraKeywords: ['adaptive equipment for eating', 'adaptive eating equipment', 'one-handed eating utensils after stroke'],
   takeaways: [
     "The Adaptive Eating Utensil Set bridged Nick from spilled meals back to eating one-handed.",
     "One-handed eating is a solvable problem with the right utensils, not a permanent loss.",
@@ -1983,7 +1985,7 @@ export const POST_ADAPTIVE_EATING = makeBlogPost({
     "Most survivors transition back to normal utensils as grip and control return.",
     "Adaptive tools work at restaurants too, so eating out stays on the table.",
   ],
-  subhead: 'The first time I tried to eat with one hand after my stroke, I knocked a bowl of soup across the table. These utensils were the bridge between that moment and feeding myself with dignity.',
+  subhead: 'Looking for adaptive equipment for eating after stroke? The right handle, angle, or weight can make one-handed meals easier without taking away your independence.',
   ctaPrimary: { href: 'https://amzn.to/4hWFuPw', label: 'Check the Cozentra adaptive utensils on Amazon' },
   ctaSecondary: { href: '/blog/foot-drop-rehab-equipment-review', label: 'Read the foot drop guide' },
   image: '/images/blog/adaptive-utensils.jpg',
@@ -2649,10 +2651,11 @@ export const POST_ROBOTIC_GLOVE = makeBlogPost({
 // =============================================================================
 export const POST_BEST_SHOES = makeBlogPost({
   slug: 'best-shoes-stroke-survivors',
-  title: 'Best Shoes for Stroke Patients: Men, Women, AFO & Slip-On Picks',
-  description: 'The best shoes for stroke patients by gender and need — men, women, AFO-compatible, slip-on, and sandals. A 7-year survivor\'s footwear guide that actually works.',
-  h1: 'Best shoes for stroke patients by gender and need',
-  keyword: 'best shoes for stroke patients',
+  title: 'Best Shoes for Walking After Stroke: AFO & Slip-On Picks',
+  description: 'Find shoes for walking after stroke, including AFO-friendly, wide, secure, and slip-on options. Use this survivor-led fit and safety checklist.',
+  h1: 'Best shoes for walking after stroke',
+  keyword: 'best shoes for walking after stroke',
+  extraKeywords: ['best shoes for stroke patients', 'AFO-friendly shoes after stroke', 'shoes for stroke patients women'],
   takeaways: [
     "The Brooks Adrenaline GTS 24 is the PT-recommended stability benchmark shoe.",
     "Your shoe decides whether you trip, compensate wrong, or actually walk well.",
@@ -2660,7 +2663,7 @@ export const POST_BEST_SHOES = makeBlogPost({
     "Skechers GoWalk Arch Fit Slip-Ins solve one-handed on-off without laces.",
     "AFO users need extra depth and a specific fitting protocol.",
   ],
-  subhead: 'After my stroke at 36, footwear stopped being a fashion decision. Your shoe determines whether you trip, compensate wrong, or actually walk with confidence. Here is what works.',
+  subhead: 'Looking for the best shoes for walking after a stroke? Prioritize a stable heel, enough depth for an AFO or swelling, and an entry you can manage safely.',
   ctaPrimary: { href: 'https://www.amazon.com/Brooks-Mens-Adrenaline-Supportive-Running/dp/B0D93BZ61K', label: 'Check the recommended shoes on Amazon' },
   ctaSecondary: { href: '/blog/afo-vs-electric-ankle-trainer', label: 'Drop foot solutions' },
     image: '/images/blog/brooks-adrenaline-gts-product.jpg',
@@ -2928,10 +2931,11 @@ export const POST_WALKING_AIDS = makeBlogPost({
 // =============================================================================
 export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
   slug: 'best-hand-therapy-tools-stroke-recovery',
-  title: 'Best Hand Therapy Tools for Stroke Recovery (2026)',
-  description: 'Therapy putty, grip trainers, finger exercisers — the tools that fill the gap between OT sessions and actually move the needle. A survivor\'s honest breakdown.',
-  h1: 'Best hand therapy tools for stroke recovery',
+  title: 'Best Hand Therapy Tools After Stroke: Buying Guide',
+  description: 'Compare hand therapy tools after stroke, including putty, grip trainers, and finger exercisers. Match each tool to your current movement goal and safety needs.',
+  h1: 'Best hand therapy tools after stroke',
   keyword: 'best hand therapy tools stroke recovery',
+  extraKeywords: ['best hand therapy tools after stroke', 'hand therapy equipment for stroke patients'],
   takeaways: [
     "Theraputty Hand Exercise Putty is the foundation of a home hand program.",
     "Sixty minutes of OT a week isn't enough — fill the hours between sessions.",
@@ -2939,7 +2943,7 @@ export const POST_HAND_THERAPY_TOOLS = makeBlogPost({
     "Use a Theragun to manage spasticity before each hand session.",
     "A structured 20-minute daily hand session is what actually rebuilds function.",
   ],
-  subhead: 'Sixty minutes of OT per week isn\'t enough. The survivors who rebuild hand function are the ones filling the hours between sessions. Here are the tools that make those hours count.',
+  subhead: 'Looking for the best hand therapy tools after stroke? Match putty, grip trainers, and finger exercisers to one clear movement goal between therapy sessions.',
   ctaPrimary: { href: 'https://www.amazon.com/dp/B001AW1PE0', label: 'Check the recommended hand tool on Amazon' },
   ctaSecondary: { href: '/blog/best-robotic-glove-stroke-recovery', label: 'Consider a robotic glove too' },
   image: '/images/blog/theraputty-putty-red.jpg',
@@ -3989,10 +3993,11 @@ export const POST_AFO_OSSUR = makeBlogPost({
 // =============================================================================
 export const POST_ANKLE_BRACE = makeBlogPost({
   slug: 'best-ankle-brace-stroke-survivor',
-  title: 'Best Ankle Braces for Stroke Survivors: Stabilizers That Work',
-  description: 'A lace-up ankle brace isn\'t an AFO — but for mild instability and partial dorsiflexion, it\'s often all you need. A survivor\'s guide to ankle stabilizers.',
+  title: 'Best AFO & Ankle Braces After Stroke: Fit Guide',
+  description: 'Compare ankle braces and AFOs for stroke-related instability and foot drop. Learn which support fits your walking stage, plus sizing and safety checks.',
   h1: 'Best ankle braces for stroke survivors',
   keyword: 'ankle brace for stroke survivors',
+  extraKeywords: ['best leg brace for stroke patients', 'best AFO for stroke patients', 'ankle brace after stroke'],
   takeaways: [
     "The Vive Lace-Up Ankle Brace is Nick's recommended stabilizer pick.",
     "Not every drop foot needs a full AFO — match support to the actual deficit.",
@@ -4000,7 +4005,7 @@ export const POST_ANKLE_BRACE = makeBlogPost({
     "Fit the brace snug but not so tight it cuts circulation.",
     "Many survivors step down from an AFO to a lace-up brace as control improves.",
   ],
-  subhead: 'Not every drop foot needs a full AFO. Not every ankle instability needs a rigid brace. Here is how to figure out which level of support your ankle actually needs — and which products deliver it.',
+  subhead: 'Looking for the best leg brace or AFO for a stroke patient? First separate foot drop from ankle instability, then choose the lightest support that fits your current walking needs.',
   ctaPrimary: { href: 'https://www.amazon.com/Vive-Laced-Ankle-Brace-Compression/dp/B073RKSNXX', label: 'Check the recommended ankle brace on Amazon' },
   ctaSecondary: { href: '/blog/best-afo-brace-drop-foot', label: 'Need more? See full AFO guide' },
     image: '/images/blog/ossur-afo-product.jpg',
@@ -4467,10 +4472,11 @@ export const POST_ELLIPTICAL = makeBlogPost({
 
 export const POST_STATIONARY_BIKE = makeBlogPost({
   slug: 'best-stationary-bike-stroke-recovery',
-  title: 'Best Exercise Bikes for Stroke Patients: Stationary, Recumbent & Upright Compared',
-  description: 'Looking for the best exercise bike for a stroke patient? Recumbent, upright, and pedal exercisers ranked by recovery stage. A 7-year survivor explains which bike works and why.',
-  h1: 'Best Exercise Bikes for Stroke Patients',
-  keyword: 'best stationary bike stroke recovery',
+  title: 'Best Stationary Bike After Stroke: Recumbent vs Upright',
+  description: 'Compare recumbent and upright stationary bikes after stroke. See which setup fits balance, fatigue, foot drop, and a safe seated cardio routine.',
+  h1: 'Best stationary bike after stroke: recumbent vs upright',
+  keyword: 'best stationary bike after stroke',
+  extraKeywords: ['stationary bike for stroke patients', 'recumbent vs upright bike after stroke'],
   takeaways: [
     "The Marcy Recumbent Bike ME-709 is Nick's recommended pick.",
     "Seated and supported, a recumbent bike is the safest way to start cardio.",
@@ -4478,7 +4484,7 @@ export const POST_STATIONARY_BIKE = makeBlogPost({
     "Recumbent beats upright for most survivors early in recovery.",
     "Start with short sessions and build duration as endurance returns.",
   ],
-  subhead: 'Seated. Supported. Safe. The recumbent bike is how most stroke survivors should start building cardiovascular fitness — and the evidence agrees.',
+  subhead: 'Comparing the best stationary bike after stroke? A recumbent bike usually gives more back support and easier entry; an upright bike may fit later-stage balance goals.',
   ctaPrimary: { label: 'Check the recommended bike on Amazon', link: 'https://www.amazon.com/Marcy-Recumbent-Exercise-Bike-Resistance/dp/B003DYERJO' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
   image: '/images/blog/recumbent-stationary-bike.jpg',
@@ -4488,6 +4494,9 @@ export const POST_STATIONARY_BIKE = makeBlogPost({
       body: `<p>I started on a recumbent bike three weeks post-discharge. Couldn't stand for more than a minute without significant fatigue, balance was unreliable, affected leg wasn't doing much. The recumbent didn't care. Back supported, pedals out in front, nothing to fall off of. Fifteen minutes at almost zero resistance. That was enough to start.</p>
 <p>The recumbent vs. upright decision isn't about fitness preference — it's a clinical one. If you have: significant trunk weakness, balance deficits that require concentration to maintain, or fatigue that limits standing tolerance, start recumbent. Move to upright when your PT clears you for seated-balance work without back support.</p>
 <p>The upright bike gets added value for core engagement and posture — but that value is zero if you're gripping the handlebars to stay upright rather than pedaling effectively.</p>`,
+      relatedLinks: [
+        { href: '/blog/best-exercise-bike-stroke-patient', label: 'Compare passive cycles and pedal exercisers by recovery stage' },
+      ],
       image: '/images/blog/recumbent-stationary-bike.jpg',
     },
     {
@@ -4862,10 +4871,11 @@ export const POST_TENS_UNIT = makeBlogPost({
 
 export const POST_MASSAGE_GUN = makeBlogPost({
   slug: 'best-massage-gun-stroke-spasticity',
-  title: 'Best Massage Guns for Stroke Recovery: Spasticity, Length & Safety Guide',
-  description: 'Massage gun for stroke recovery — percussion therapy that reduces spasticity, improves muscle length, and preps the affected limb for exercise. A survivor\'s safety-first guide.',
+  title: 'Best Massage Gun for Stroke Spasticity: Safety Guide',
+  description: 'Considering a massage gun after stroke? Compare percussion options for spasticity, what to avoid, and how to use muscle-only treatment safely.',
   h1: 'Best massage gun for stroke recovery and spasticity relief',
   keyword: 'best massage gun stroke spasticity',
+  extraKeywords: ['massage gun for stroke patients', 'massage gun for stroke spasticity'],
   takeaways: [
     "The Theragun Pro is Nick's recommended clinical-standard percussion pick.",
     "Percussion before PT can lower tone enough to get real work done.",
@@ -4873,7 +4883,7 @@ export const POST_MASSAGE_GUN = makeBlogPost({
     "The Hypervolt 2 is the best mid-range alternative.",
     "Percussion reduces tone temporarily — it does not cure spasticity.",
   ],
-  subhead: 'Percussion massage before your PT session can reduce tone enough to get meaningful work done. After exercise it accelerates recovery. But there are areas you must avoid — and a technique that makes the difference.',
+  subhead: 'Looking for a massage gun for stroke spasticity? Treat this as a short-term muscle warm-up, not a cure, and learn the areas and sensations that require extra caution.',
   ctaPrimary: { label: 'Check the recommended massage gun on Amazon', link: 'https://www.amazon.com/Therabody-Theragun-Percussive-Therapy-Attachments/dp/B086YDTLVX' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
     image: '/images/blog/massage-gun-theragun.jpg',
@@ -5152,10 +5162,11 @@ export const POST_RED_LIGHT = makeBlogPost({
 
 export const POST_ADJUSTABLE_BED = makeBlogPost({
   slug: 'best-adjustable-bed-wedge-pillow-stroke-recovery',
-  title: 'Best Adjustable Beds and Wedge Pillows for Stroke Recovery: Sleep, Positioning, and Spasticity',
-  description: 'Bed positioning after stroke directly affects spasticity, shoulder subluxation, aspiration risk, and sleep quality. Here\'s what to buy and how to set it up correctly.',
-  h1: 'Best Adjustable Beds and Wedge Pillows for Stroke Recovery',
-  keyword: 'best adjustable bed wedge pillow stroke recovery',
+  title: 'Best Bed Wedge Pillow After Stroke: Positioning Guide',
+  description: 'Compare bed wedge pillows and adjustable bases after stroke. Learn how to evaluate elevation, shoulder support, comfort, fit, and caregiver setup safely.',
+  h1: 'Best bed wedge pillow after stroke',
+  keyword: 'best bed wedge pillow after stroke',
+  extraKeywords: ['best adjustable bed after stroke', 'stroke recovery positioning pillow'],
   takeaways: [
     "The InteVision Foam Wedge Bed Pillow is Nick's recommended pick.",
     "How you sleep is part of rehab — positioning affects tone and shoulder integrity.",
@@ -5163,7 +5174,7 @@ export const POST_ADJUSTABLE_BED = makeBlogPost({
     "Protect the affected shoulder by choosing your sleep side carefully.",
     "An adjustable bed is worth it if positioning meaningfully affects your mornings.",
   ],
-  subhead: 'How you sleep is part of your rehabilitation. Positioning affects spasticity tone, shoulder integrity, and whether you wake up ready to work or already behind.',
+  subhead: 'Looking for the best bed wedge pillow after stroke? Start with the position you need to hold, then check elevation, shoulder support, comfort, and safe caregiver setup.',
   ctaPrimary: { label: 'Check the recommended wedge on Amazon', link: 'https://www.amazon.com/InteVision-Foam-Wedge-Bed-Pillow/dp/B00FHKNO04' },
   ctaSecondary: { label: 'Get the book', link: '/book' },
   image: '/images/blog/adjustable-bed-medical.jpg',
@@ -6159,10 +6170,11 @@ export const POST_PARALLEL_BARS = makeBlogPost({
 // =============================================================================
 export const POST_HYDROTHERAPY = makeBlogPost({
   slug: 'hot-tub-hydrotherapy-stroke-recovery',
-  title: 'Hot Tub Hydrotherapy for Stroke Recovery: Why I Spent $5,000 and Don\'t Regret It',
-  description: 'Hydrotherapy for stroke recovery — how hot tubs reduce spasticity, improve circulation, and rebuild proprioception. Real brands, real prices, and the setup that actually works.',
+  title: 'Hot Tub Hydrotherapy After Stroke: Safety & Setup',
+  description: 'Learn how survivors and caregivers can evaluate hot-tub hydrotherapy after stroke, including temperature, transfers, sensation, and safer setup questions.',
   h1: 'Hot tub hydrotherapy for stroke recovery',
   keyword: 'hot tub hydrotherapy stroke recovery',
+  extraKeywords: ['hot tub for stroke spasticity', 'hydrotherapy after stroke', 'warm water therapy after stroke', 'hydrotherapy for stroke', 'hot tub for spasticity', 'aquatic therapy at home', 'stroke muscle relaxation', 'spa therapy for stroke', 'home hydrotherapy', 'affiliate'],
   takeaways: [
     "The Empava 4-Person Hot Tub (~$2,500) is Nick's recommended entry-point pick.",
     "Warm-water hydrotherapy can reset the spasticity that wrecks sleep.",
@@ -6170,8 +6182,7 @@ export const POST_HYDROTHERAPY = makeBlogPost({
     "Keep the water warm but not scalding — follow the recovery temperature protocol.",
     "Enter with a rail or caregiver if balance is a problem.",
   ],
-  extraKeywords: ['hydrotherapy for stroke', 'hot tub for spasticity', 'warm water therapy', 'aquatic therapy at home', 'stroke muscle relaxation', 'spa therapy for stroke', 'home hydrotherapy', 'affiliate'],
-  subhead: 'At month six, my spasticity was so bad I could not sleep through the night. A hot tub changed that. Here is the real cost, the real brands, and the real protocol.',
+  subhead: 'Considering hot-tub hydrotherapy after stroke? Start with temperature, transfer safety, skin sensation, and caregiver access before comparing models or prices.',
   ctaPrimary: { href: 'https://www.amazon.com/s?k=hot+tub+hydrotherapy+stroke', label: 'Browse hot tubs on Amazon' },
   ctaSecondary: { href: '/blog/spasticity-after-stroke', label: 'Spasticity guide' },
     image: '/images/blog/hot-tub-hydrotherapy.webp',
@@ -7371,10 +7382,11 @@ export const POST_HAND_SPLINT = makeBlogPost({
 // =============================================================================
 export const POST_WALKER = makeBlogPost({
   slug: 'best-walker-stroke-survivor',
-  title: 'Best Walker for Stroke Survivors: Stand-Up Support and Safe Transfers',
-  description: 'The wrong walker tilts you toward your weak side. The right walker has stand-up grips, adjustable height, and a base that stays planted. A 7-year survivor\'s guide.',
-  h1: 'Best walker for stroke survivors',
-  keyword: 'best walker for stroke survivor',
+  title: 'Best Walker for Stroke Patients: Safe Support Guide',
+  description: 'Compare walkers for stroke patients by balance, transfers, hand grip, and walking stage. Learn which features help caregivers and survivors stay safer.',
+  h1: 'Best walker for stroke patients',
+  keyword: 'best walker for stroke patients',
+  extraKeywords: ['best walker for stroke survivors', 'walker after stroke', 'stroke walker with stand-up support', 'stand up walker', 'stroke walker with seat'],
   takeaways: [
     "The TAMUBAKS Adjustable Medical Walker with Stand-Up Support is Nick's recommended pick.",
     "For a hemiparetic survivor a walker is a transfer aid and balance anchor.",
@@ -7382,8 +7394,7 @@ export const POST_WALKER = makeBlogPost({
     "Set walker height to counter hemiplegic posture, not just your height.",
     "Move to a rollator or cane only when balance is reliably safe.",
   ],
-  extraKeywords: ['walker after stroke', 'stand up walker', 'stroke walker with seat'],
-  subhead: 'A walker is not just a frame with wheels. For a hemiparetic survivor, it is a transfer aid, a balance anchor, and a psychological permission slip to try walking again. Here is how to choose.',
+  subhead: 'Looking for the best walker for stroke patients? Match the frame to balance, transfers, hand grip, and walking stage instead of choosing by wheel count alone.',
   ctaPrimary: { href: 'https://www.amazon.com/dp/B0DZ2D8GV1', label: 'Check walkers on Amazon' },
   ctaSecondary: { href: '/blog/best-walking-aids-stroke-survivors', label: 'Compare canes and rollators' },
   image: '/images/blog/survivor-walker-scene.png',
@@ -7780,10 +7791,11 @@ export const POST_LEG_ELEVATION = makeBlogPost({
 
 export const POST_EXERCISE_BIKE_STROKE = makeBlogPost({
   slug: 'best-exercise-bike-stroke-patient',
-  title: 'Best Exercise Bikes for Stroke Patients: Recumbent, Pedal & Passive Options',
-  description: 'A stroke changes what "cardio" means. Recumbent bikes, under-desk pedal exercisers, and passive motorized cycles each serve a different recovery stage. A 7-year survivor breaks down what works.',
+  title: 'Best Exercise Bike for Stroke Patients: Progression Guide',
+  description: 'Compare passive cycles, pedal exercisers, and recumbent bikes for stroke patients. Match equipment to leg strength, balance, fatigue, and recovery stage.',
   h1: 'Best exercise bikes for stroke patients',
   keyword: 'best exercise bike for stroke patient',
+  extraKeywords: ['best exercise bike for stroke patients', 'passive cycle after stroke', 'pedal exerciser after stroke', 'recumbent bike stroke recovery', 'pedal exerciser stroke', 'passive exercise bike stroke', 'stationary bike after stroke'],
   takeaways: [
     "The Marcy Recumbent Exercise Bike is Nick's recommended pick.",
     "A passive motorized cycle moves your legs when they can't push yet (0–3 months).",
@@ -7791,8 +7803,7 @@ export const POST_EXERCISE_BIKE_STROKE = makeBlogPost({
     "Move to a recumbent bike from 3–12 months and beyond.",
     "Pedal with both legs so the affected side gets trained, not carried.",
   ],
-  extraKeywords: ['recumbent bike stroke recovery', 'pedal exerciser stroke', 'passive exercise bike stroke', 'stationary bike after stroke'],
-  subhead: 'After my stroke at 36, my left leg was too weak to push a regular bike. I started on a passive motorized cycle — the pedals moved my legs, not the other way around. Six months later I graduated to active resistance. Here is the full progression and the equipment that makes it possible.',
+  subhead: 'Looking for the best exercise bike for a stroke patient? Start by matching passive cycling, a pedal exerciser, or a recumbent bike to current leg strength and balance.',
   ctaPrimary: { href: 'https://www.amazon.com/dp/B002KV383O', label: 'Check exercise bikes on Amazon' },
   ctaSecondary: { href: '/blog/best-resistance-bands-stroke-recovery', label: 'Add resistance bands' },
   image: '/images/blog/recumbent-stationary-bike.jpg',
@@ -7802,6 +7813,9 @@ export const POST_EXERCISE_BIKE_STROKE = makeBlogPost({
       paragraphs: [
         'Upright bikes require balance, hip stability, and the ability to lift the leg high enough to clear the pedal at top dead center. Most stroke survivors lack one or more of these in early recovery. The risk is not just frustration — it is a fall, a compensatory pattern that reinforces the wrong muscles, or a decision to stop exercising entirely.',
         'The three alternatives that actually work: recumbent bikes (seated with back support, low step-through), under-desk pedal exercisers (seated, no balance required, minimal resistance), and passive motorized cycles (the machine moves your legs for you). Each serves a different stage.',
+      ],
+      relatedLinks: [
+        { href: '/blog/best-stationary-bike-stroke-recovery', label: 'Choose between recumbent and upright stationary bikes' },
       ],
     },
     {
