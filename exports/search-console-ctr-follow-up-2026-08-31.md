@@ -1,4 +1,4 @@
-# Search Console CTR follow-up
+# Search Console CTR follow-up — valid post-recrawl export unavailable
 
 **Property:** `https://strokerecoveryacademy.com/`  
 **Search type:** Web  
@@ -6,17 +6,25 @@
 **Exported:** August 31, 2026  
 **Window in export:** Last 24 hours, charted August 30–31, 2026 (UTC-05:00)
 
+> **Status: blocked for a true before/after comparison.** The supplied August
+> archive is not the required post-recrawl window of at least seven days. No
+> valid second export is present in the project, so this report does not claim
+> that the metadata changes increased clicks or CTR.
+
 ## Measurement status
 
 The supplied archive is the original 151-impression / 2-click snapshot used to
-choose the priority pages. It is not a second post-recrawl window. The older
-June 7 archive does not contain these 11 blog URLs, so it cannot serve as a
-valid before/after comparison.
+choose the priority pages. Its `Filters.csv` explicitly records `Search
+type=Web` and `Time range=Last 24 hours`; it is not a second post-recrawl
+window. The available June 7 archive does record a seven-day window, but its
+`Pages.csv` contains no rows for these 11 blog URLs, so it cannot serve as a
+valid before/after comparison. The available exports therefore do not include
+both the required URLs and a qualifying post-recrawl date range.
 
-The 11-page table below is therefore the **current recorded baseline**. Deltas
-are intentionally `N/A`, not zero. A valid follow-up still requires a new
-Search Console `Pages.csv` export for the same 11 exact URLs after Google has
-recrawled the updated metadata.
+The 11-page table below is therefore the **current recorded baseline**, not a
+follow-up result. Deltas are intentionally `N/A`, not zero. A valid follow-up
+still requires a new Search Console `Pages.csv` export for the same 11 exact
+URLs after Google has recrawled the updated metadata.
 
 ## Site-level snapshot
 
@@ -56,11 +64,15 @@ used for the URL comparison because the requested comparison is by page.
 Eight of the 11 pages are averaging positions 10 or better, but none of those
 impressions produced a click in this short window. The three pages above
 position 10 are the shoes page (11.10), walker page (12.50), and adaptive
-utensils page (21.43).
+utensils page (21.43). There is no winning snippet within the priority set in
+this baseline: every priority URL has 0 clicks and 0% CTR. The only clicks in
+the export belong to two non-priority pages, so they are not evidence that any
+priority-page snippet won.
 
 ## Highest-impact next adjustment
 
-Prioritize the **massage-gun snippet** before changing internal links:
+Once a qualifying post-recrawl export exists, prioritize the **massage-gun
+snippet** before changing internal links:
 
 - It has the second-highest priority-page exposure: **13 impressions**.
 - It has the strongest average position in the priority set: **5.62**.
@@ -84,8 +96,10 @@ Recommended next test, with the existing URL unchanged:
 Do not interpret this one-day result as proof of a title win. Export the same
 11 URLs again after recrawl and compare clicks, impressions, CTR, and
 impression-weighted position over at least a 7-day window. If massage-gun
-exposure remains high with a zero CTR, ship that snippet revision and then
-re-measure before changing its internal-link pathway.
+exposure remains high with a zero CTR in that qualifying window, ship that
+snippet revision and then re-measure before changing its internal-link
+pathway. Until then, preserve all 11 URLs and do not change production
+metadata based on this one-day baseline alone.
 
 ## Next export checklist
 
