@@ -29,7 +29,9 @@ function loadGAScript(id: string): Promise<void> {
 }
 
 export async function initializeGA() {
-  if (!GA_ID || typeof window === "undefined" || isInitialized) return;
+  // Local previews commonly block third-party analytics scripts. Do not
+  // turn that expected development limitation into a browser-console error.
+  if (!GA_ID || import.meta.env.DEV || typeof window === "undefined" || isInitialized) return;
 
   try {
     await loadGAScript(GA_ID);
@@ -46,7 +48,7 @@ export async function initializeGA() {
 
     isInitialized = true;
   } catch (error) {
-    console.error("Failed to initialize Google Analytics:", error);
+    console.warn("Google Analytics unavailable; continuing without analytics.", error);
   }
 }
 

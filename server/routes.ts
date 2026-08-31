@@ -269,7 +269,12 @@ async function initStripe() {
       .then(() => console.log('Stripe data synced'))
       .catch((err: any) => console.error('Error syncing Stripe data:', err));
   } catch (error) {
-    console.error('Failed to initialize Stripe:', error);
+    const message = error instanceof Error ? error.message : String(error);
+    if (message.includes('Stripe development connection not found')) {
+      console.warn('[startup] Stripe development connection not configured; billing is unavailable locally.');
+    } else {
+      console.error('Failed to initialize Stripe:', error);
+    }
   }
 }
 
@@ -14400,6 +14405,18 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
+  // Keep fixed exercise endpoints before /:slug so "scores" is not treated
+  // as an exercise slug.
+  app.get('/api/exercises/scores', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req)!;
+      const scores = await storage.getUserExerciseScores(userId);
+      res.json(scores);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch scores" });
+    }
+  });
+
   app.get('/api/exercises/:slug', async (req, res) => {
     try {
       const exercise = await storage.getTherapeuticExerciseBySlug(req.params.slug);
@@ -14445,16 +14462,6 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       res.json(sessions);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch sessions" });
-    }
-  });
-
-  app.get('/api/exercises/scores', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = getUserId(req)!;
-      const scores = await storage.getUserExerciseScores(userId);
-      res.json(scores);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch scores" });
     }
   });
 

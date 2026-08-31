@@ -180,6 +180,8 @@ function getGemini(): GoogleGenAI | null {
   }
 }
 
+let geminiFallbackLogged = false;
+
 async function generateRecommendations(args: {
   surface: string;
   completedToday: StepKey[];
@@ -305,10 +307,13 @@ async function generateRecommendations(args: {
     if (cleanItems.length === 0) throw new Error("empty");
     return cleanItems;
   } catch (e: any) {
-    console.warn(
-      "[journey/recommendations] gemini failed, using fallback:",
-      e?.message || e,
-    );
+    if (!geminiFallbackLogged) {
+      geminiFallbackLogged = true;
+      console.warn(
+        "[journey/recommendations] Gemini unavailable; serving static fallback:",
+        e?.message || e,
+      );
+    }
     return STATIC_FALLBACK[args.surface] ?? STATIC_FALLBACK.journey;
   }
 }
