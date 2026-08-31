@@ -13,6 +13,8 @@
     "test:recovery-plan-migration": "RECOVERY_PLAN_MIGRATION_DB=1 tsx --test tests/recoveryPlanMigration.test.ts",
     "test:migrations": "MIGRATIONS_DB=1 tsx --test tests/migrationRunner.test.ts",
     "test:recovery-seo": "tsx --test tests/recovery-seo-schema.test.ts",
+    "test:search-console-comparison": "tsx --test tests/search-console-comparison.test.ts",
+    "compare:search-console": "tsx scripts/searchConsoleComparison.ts",
     "check": "tsc",
     "db:push": "drizzle-kit push"
   },
