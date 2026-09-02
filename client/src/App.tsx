@@ -62,6 +62,7 @@ const PuzzleBookEditor = lazy(() => import("@/pages/PuzzleBookEditor"));
 const BookPublishFlow = lazy(() => import("@/pages/BookPublishFlow"));
 const BookCompanion = lazy(() => import("@/pages/BookCompanion"));
 const BookBuy = lazy(() => import("@/pages/BookBuy"));
+const StuckProduct = lazy(() => import("@/pages/StuckProduct"));
 const BookRead = lazy(() => import("@/pages/BookRead"));
 const Book90DayTemplate = lazy(() => import("@/pages/Book90DayTemplate"));
 const BookSlugRedirect = lazy(() => import("@/pages/BookSlugRedirect"));
@@ -794,6 +795,8 @@ function Router() {
       <Route path="/book/index" component={BookCompanion} />
       <Route path="/book/companion" component={BookCompanion} />
       <Route path="/book/buy" component={BookBuy} />
+      <Route path="/stuck" component={StuckProduct} />
+      <Route path="/recovery/stuck" component={StuckProduct} />
       <Route path="/book/read" component={BookRead} />
       <Route path="/book/90-day-template" component={Book90DayTemplate} />
       <Route path="/protocols" component={BookSlugRedirect} />
