@@ -256,6 +256,27 @@ export const ROUTES: RouteEntry[] = [
     changefreq: "weekly",
     priority: 0.95,
   },
+  // ─── STUCK workbook product surface ─────────────────────────────────────
+  {
+    pattern: /^\/stuck\/?$/,
+    canonical: "/stuck",
+    category: "content",
+    intent: "transactional",
+    schemaType: "Product",
+    title: "STUCK — Break a Stroke Recovery Plateau | Stroke Recovery Academy",
+    description:
+      "The survivor-built STUCK workbook uses the T.L.E.C.A. framework to help stroke survivors turn a recovery plateau into the next safe experiment. PDF from $14.99.",
+    keywords: [
+      "stroke recovery plateau workbook",
+      "stroke recovery workbook PDF",
+      "break through stroke recovery plateau",
+      "recovery plateau after stroke",
+      "stroke survivor workbook",
+    ],
+    author: "platform",
+    changefreq: "weekly",
+    priority: 0.95,
+  },
   {
     pattern: /^\/book\/read\/?$/,
     canonical: "/book/read",

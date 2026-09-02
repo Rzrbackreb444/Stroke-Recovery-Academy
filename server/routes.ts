@@ -16156,6 +16156,43 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
     }
   });
 
+  // STUCK PRODUCT STOREFRONT — the dedicated survivor-built workbook listing.
+  app.get('/api/stuck/storefront', async (_req, res) => {
+    try {
+      const { db } = await import('./db');
+      const { marketplaceListings, bookEditions } = await import('@shared/schema');
+      const { STUCK_PRODUCT_TITLE } = await import('@shared/stuckProduct');
+      const { eq, and } = await import('drizzle-orm');
+      const [listing] = await db.select().from(marketplaceListings)
+        .where(and(
+          eq(marketplaceListings.title, STUCK_PRODUCT_TITLE),
+          eq(marketplaceListings.status, 'published'),
+        ))
+        .limit(1);
+      if (!listing) return res.status(404).json({ message: 'STUCK storefront not seeded yet' });
+      const editions = await db.select({
+        id: bookEditions.id,
+        editionType: bookEditions.editionType,
+        price: bookEditions.price,
+        currency: bookEditions.currency,
+      }).from(bookEditions)
+        .where(and(eq(bookEditions.listingId, listing.id), eq(bookEditions.isActive, true)));
+      res.json({
+        id: listing.id,
+        title: listing.title,
+        subtitle: listing.subtitle,
+        description: listing.description,
+        coverImageUrl: listing.coverImageUrl,
+        pageCount: listing.pageCount,
+        wordCount: listing.wordCount,
+        editions,
+      });
+    } catch (error) {
+      console.error('STUCK storefront error', error);
+      res.status(500).json({ message: 'Failed to load STUCK storefront' });
+    }
+  });
+
   // ───────────────────────────────────────────────────────────────────────
   // BOOK ENTITLEMENT — does the current user own a paid digital edition?
   // Drives the /book/read paywall and the "Read your book" CTA on /book/buy.
@@ -16188,6 +16225,29 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
     } catch (e: any) {
       console.error('book entitlement error', e);
       res.status(500).json({ message: 'Failed to check entitlement' });
+    }
+  });
+
+  // STUCK ENTITLEMENT — links a paid STUCK edition to the account download.
+  app.get('/api/stuck/entitlement', isAuthenticated, async (req: any, res) => {
+    try {
+      const customerId = getUserId(req)!;
+      const { STUCK_DOWNLOAD_SENTINEL, STUCK_BUNDLE_DOWNLOAD_SENTINEL } = await import('@shared/stuckProduct');
+      const allowedSentinels = new Set([STUCK_DOWNLOAD_SENTINEL, STUCK_BUNDLE_DOWNLOAD_SENTINEL]);
+      const paidStatuses = new Set(['paid', 'processing', 'shipped', 'delivered']);
+      const orders = await storage.getCustomerOrders(customerId);
+      for (const order of orders) {
+        if (!paidStatuses.has(order.status)) continue;
+        const items = await storage.getOrderItems(order.id);
+        const item = items.find((candidate) => allowedSentinels.has(candidate.downloadUrl || ''));
+        if (item) {
+          return res.json({ owns: true, orderId: order.id, itemId: item.id, orderNumber: order.orderNumber });
+        }
+      }
+      res.json({ owns: false });
+    } catch (error) {
+      console.error('STUCK entitlement error', error);
+      res.status(500).json({ message: 'Failed to check STUCK entitlement' });
     }
   });
 
@@ -16253,29 +16313,39 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
         return res.status(410).json({ message: 'Download link expired' });
       }
 
-      // Resolve sentinel → real disk path. Only allow the canonical book.
-      if (item.downloadUrl !== 'secure://book/full.pdf') {
-        return res.status(404).json({ message: 'Not found' });
-      }
-
+      // Resolve approved sentinels to local files. Never accept an arbitrary
+      // database URL here; that would turn an order into an open proxy.
+      const { STUCK_DOWNLOAD_SENTINEL, STUCK_BUNDLE_DOWNLOAD_SENTINEL } = await import('@shared/stuckProduct');
       const path = await import('path');
-      const pdfPath = path.resolve(
-        process.cwd(),
-        'attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION.pdf',
-      );
+      const downloads: Record<string, { file: string; filename: string }> = {
+        'secure://book/full.pdf': {
+          file: path.resolve(process.cwd(), 'attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION.pdf'),
+          filename: 'The-Ultimate-Stroke-Recovery-Revolution.pdf',
+        },
+        [STUCK_DOWNLOAD_SENTINEL]: {
+          file: path.resolve(process.cwd(), 'attached_assets/STUCK_-_The_Sasquatch_Formula_for_Breaking_a_Recovery_Plateau__1788321677906.pdf'),
+          filename: 'STUCK-The-Sasquatch-Formula.pdf',
+        },
+        [STUCK_BUNDLE_DOWNLOAD_SENTINEL]: {
+          file: path.resolve(process.cwd(), 'attached_assets/stuck/STUCK-66-Day-Rebuild-Bundle.pdf'),
+          filename: 'STUCK-66-Day-Rebuild-Bundle.pdf',
+        },
+      };
+      const download = downloads[item.downloadUrl];
+      if (!download) return res.status(404).json({ message: 'Not found' });
       // inline=1 → render in browser PDF viewer (used by /book/read).
       // default → force download.
       const inline = req.query.inline === '1';
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader(
         'Content-Disposition',
-        `${inline ? 'inline' : 'attachment'}; filename="The-Ultimate-Stroke-Recovery-Revolution.pdf"`,
+        `${inline ? 'inline' : 'attachment'}; filename="${download.filename}"`,
       );
       // Don't let the secured bytes get cached by intermediaries.
       res.setHeader('Cache-Control', 'private, no-store');
       // X-Frame-Options must allow same-origin so /book/read can iframe it.
       res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-      res.sendFile(pdfPath);
+      res.sendFile(download.file);
     } catch (e: any) {
       console.error('download error', e);
       res.status(500).json({ message: 'Download failed' });
