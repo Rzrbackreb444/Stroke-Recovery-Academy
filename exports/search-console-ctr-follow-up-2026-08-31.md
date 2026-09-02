@@ -110,3 +110,20 @@ metadata based on this one-day baseline alone.
 5. Join on the full canonical URL; do not join on title, query, or URL fragments.
 6. Calculate `CTR = clicks / impressions`, and calculate aggregate position
    weighted by impressions.
+
+## Automated comparison
+
+The repeatable validator lives in `scripts/searchConsoleComparison.ts`. Run it
+with the complete Search Console ZIP (or an extracted directory), rather than
+with `Pages.csv` alone:
+
+```bash
+npm run compare:search-console -- \
+  --export attached_assets/your-search-console-export.zip
+```
+
+It uses `exports/search-console-baseline-2026-08-31.csv` by default and fails
+before producing a report unless the archive is Web search, contains at least
+seven distinct recorded days, and contains every one of the 11 exact priority
+URLs. Use `--format csv` or `--format json` for machine-readable output, and
+`--baseline <Pages.csv>` to compare against a different 11-URL baseline.
