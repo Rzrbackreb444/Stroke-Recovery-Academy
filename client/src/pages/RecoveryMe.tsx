@@ -177,6 +177,15 @@ export default function RecoveryMe() {
             <Button
               variant="outline"
               size="sm"
+              onClick={() => setLocation("/settings/profile")}
+              className="border-[#333] bg-transparent text-gray-300"
+              data-testid="button-edit-survivor-profile"
+            >
+              Edit survivor profile
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => setLocation("/recovery/onboarding")}
               className="border-[#333] bg-transparent text-gray-300"
               data-testid="button-rescore"

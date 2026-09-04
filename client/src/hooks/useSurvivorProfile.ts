@@ -26,6 +26,20 @@ export type SurvivorProfile = {
   recoveryGoals: string[] | null;
   currentChallenges: string[] | null;
   customGoal: string | null;
+  goalDetails: Array<{
+    horizon: "short" | "long";
+    domain: "physical" | "cognitive" | "speech" | "emotional" | "memory" | "other";
+    goal: string;
+    status?: string;
+  }> | null;
+  assessmentScores: {
+    physical?: number;
+    cognitive?: number;
+    speech?: number;
+    emotional?: number;
+    memory?: number;
+  } | null;
+  assessmentNotes: string | null;
   equipment: string[] | null;
   mobilityAids: string[] | null;
   dailyTimeBudgetMinutes: number | null;
@@ -45,9 +59,13 @@ export type SurvivorProfile = {
   currentIntakeStep: number | null;
   updatedAt: string;
   intakeComplete: boolean;
+  profileProvenance: Record<string, { source: string; updatedAt: string }>;
 };
 
 const QK = ["/api/survivor/profile"] as const;
+export type SurvivorProfilePatch = Partial<SurvivorProfile> & {
+  profileSource?: "survivor_intake" | "survivor_profile_settings" | "recovery_onboarding";
+};
 
 export function useSurvivorProfile() {
   const { isAuthenticated } = useAuth();
@@ -69,7 +87,7 @@ export function useSurvivorProfile() {
   //   • newer keys always overwrite older keys in the pending payload
   //   • every patch() call resolves only after the merged payload is durable
   // ─────────────────────────────────────────────────────────────────────────
-  const pendingRef = useRef<Partial<SurvivorProfile> | null>(null);
+  const pendingRef = useRef<SurvivorProfilePatch | null>(null);
   const inFlightRef = useRef(false);
   const waitersRef = useRef<Array<{ resolve: (v: any) => void; reject: (e: any) => void }>>([]);
 
@@ -99,7 +117,7 @@ export function useSurvivorProfile() {
   }, []);
 
   const patch = useCallback(
-    (delta: Partial<SurvivorProfile>) => {
+    (delta: SurvivorProfilePatch) => {
       pendingRef.current = { ...(pendingRef.current || {}), ...delta };
       const promise = new Promise((resolve, reject) => {
         waitersRef.current.push({ resolve, reject });

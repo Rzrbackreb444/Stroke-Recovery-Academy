@@ -152,7 +152,7 @@ export default function SurvivorIntake() {
     if (debounceRef.current) window.clearTimeout(debounceRef.current);
     debounceRef.current = window.setTimeout(() => {
       const { id, userId, intakeCompletedAt, intakeComplete, updatedAt, ...patchable } = next as any;
-      patch(patchable).catch(() => {});
+       patch({ ...patchable, profileSource: "survivor_intake" }).catch(() => {});
     }, 700);
   };
 
@@ -198,7 +198,7 @@ export default function SurvivorIntake() {
     const next = Math.min(stepIdx + 1, TOTAL_STEPS - 1);
     const { id, userId, intakeCompletedAt, intakeComplete, updatedAt, ...patchable } = draft as any;
     try {
-      await patch({ ...patchable, currentIntakeStep: next });
+       await patch({ ...patchable, currentIntakeStep: next, profileSource: "survivor_intake" });
     } catch (e: any) {
       toast({
         title: "Couldn't save your last step",

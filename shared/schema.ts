@@ -482,6 +482,22 @@ export const userProfiles = pgTable("user_profiles", {
   recoveryGoals: text("recovery_goals").array(),
   currentChallenges: text("current_challenges").array(),
   customGoal: text("custom_goal"),
+  // Structured goals and scale scores are the canonical inputs for planning.
+  // The legacy survivor_goals/sasquatch_assessments tables remain as history.
+  goalDetails: jsonb("goal_details").$type<Array<{
+    horizon: "short" | "long";
+    domain: "physical" | "cognitive" | "speech" | "emotional" | "memory" | "other";
+    goal: string;
+    status?: string;
+  }>>(),
+  assessmentScores: jsonb("assessment_scores").$type<{
+    physical?: number;
+    cognitive?: number;
+    speech?: number;
+    emotional?: number;
+    memory?: number;
+  }>(),
+  assessmentNotes: text("assessment_notes"),
   equipment: text("equipment").array(),
   mobilityAids: text("mobility_aids").array(),
 
@@ -511,6 +527,12 @@ export const userProfiles = pgTable("user_profiles", {
   intakeCompletedAt: timestamp("intake_completed_at"),
   currentIntakeStep: integer("current_intake_step").default(0),
 
+  // Per-field audit trail for survivor-entered and normalized legacy values.
+  // Shape: { fieldName: { source: string, updatedAt: ISO timestamp } }
+  profileProvenance: jsonb("profile_provenance").$type<Record<string, {
+    source: string;
+    updatedAt: string;
+  }>>().notNull().default({}),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 }, (t) => ({
   userIdx: uniqueIndex("user_profiles_user_id_unique").on(t.userId),

@@ -32,6 +32,10 @@ import {
   recordRecoveryFunnelEvent,
 } from "./services/recoveryFunnelService";
 import {
+  getCanonicalSurvivorProfile,
+  updateCanonicalSurvivorProfile,
+} from "./survivorProfileService";
+import {
   AUTHOR_BRAIN_CONTENT_TYPES,
   AUTHOR_BRAIN_MAX_CHAPTER_DESCRIPTION_LENGTH,
   AUTHOR_BRAIN_MAX_CHAPTER_TITLE_LENGTH,
@@ -10005,6 +10009,19 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         todayVerdict?: string | null;
         tomorrowSuggestion?: string | null;
         hasLoggedToday?: boolean;
+         profile?: {
+           preferredName?: string | null;
+           goals?: string[];
+           challenges?: string[];
+           deficits?: Record<string, number> | null;
+           assessmentScores?: Record<string, number> | null;
+           dailyTimeBudgetMinutes?: number | null;
+           energyPattern?: string | null;
+           mobilityAids?: string[];
+           equipment?: string[];
+           story?: string | null;
+           updatedAt?: string | null;
+         } | null;
       } | undefined;
 
       let coachPersona: { name: string; creed: string; archetypeKey: string } | null = null;
@@ -10017,7 +10034,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
           // day instead of generic "keep pushing" lines.
           const { loadPersonaFor } = await import('./personaRoutes');
           const todayKey = localDateKey(new Date());
-          const [exerciseScores, streakData, milestonesData, userData, personaRow, neverZero, todayAudit] = await Promise.all([
+          const [exerciseScores, streakData, milestonesData, userData, personaRow, neverZero, todayAudit, survivorProfile] = await Promise.all([
             storage.getUserExerciseScores(userId).catch((err) => { console.error('[coach] getUserExerciseScores failed:', err); return []; }),
             storage.getUserStreak(userId).catch(() => ({ currentStreak: 0 })),
             storage.getUserMilestones(userId).catch(() => []),
@@ -10025,6 +10042,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
             loadPersonaFor(userId).catch(() => null),
             storage.getNeverZeroData(userId).catch(() => null),
             storage.getNeverZeroAuditByDate(userId, todayKey).catch(() => null),
+           getCanonicalSurvivorProfile(userId).catch(() => null),
           ]);
 
           if (personaRow) {
@@ -10053,6 +10071,22 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
             todayVerdict: todayAudit?.verdict ?? null,
             tomorrowSuggestion: todayAudit?.tomorrow ?? null,
             hasLoggedToday: todayLogs.length > 0,
+             profile: survivorProfile ? {
+               preferredName: survivorProfile.preferredName,
+               goals: [
+                 ...(survivorProfile.recoveryGoals ?? []),
+                 ...(survivorProfile.customGoal ? [survivorProfile.customGoal] : []),
+               ],
+               challenges: survivorProfile.currentChallenges ?? [],
+               deficits: survivorProfile.deficits as Record<string, number> | null,
+               assessmentScores: survivorProfile.assessmentScores as Record<string, number> | null,
+               dailyTimeBudgetMinutes: survivorProfile.dailyTimeBudgetMinutes,
+               energyPattern: survivorProfile.energyPattern,
+               mobilityAids: survivorProfile.mobilityAids ?? [],
+               equipment: survivorProfile.equipment ?? [],
+               story: survivorProfile.story,
+               updatedAt: survivorProfile.updatedAt?.toISOString?.() ?? String(survivorProfile.updatedAt ?? ""),
+             } : null,
           };
         } catch (e) {
           console.error('Error fetching user context:', e);
@@ -11118,6 +11152,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       const { db: dbInst } = await import('./db');
       const { sasquatchAssessments, survivorGoals, survivorPlans } = await import('../shared/schema');
       const { eq, desc } = await import('drizzle-orm');
+      const profile = await getCanonicalSurvivorProfile(userId);
 
       const [latestAssessment] = await dbInst
         .select()
@@ -11159,6 +11194,10 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         latestAssessment: latestAssessment || null,
         history,
         goals,
+        profile: profile ? {
+          ...profile,
+          intakeComplete: !!profile.intakeCompletedAt,
+        } : null,
         plan: latestPlan?.plan || null,
         planGeneratedAt: latestPlan?.generatedAt || null,
       });
@@ -11240,35 +11279,22 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
 
       // ── Read survivor profile so we can personalize. Optional: a brand-new
       // user without intake data will still get a sensible default.
-      let profile: {
+       let profile: {
         deficits?: Record<string, number> | null;
         mobilityAids?: string[] | null;
         equipment?: string[] | null;
         recoveryGoals?: string[] | null;
+         goalDetails?: Array<{ goal: string; domain: string; horizon: string }> | null;
+         assessmentScores?: Record<string, number> | null;
+         assessmentNotes?: string | null;
         dailyTimeBudgetMinutes?: number | null;
         energyPattern?: string | null;
         intakeCompletedAt?: Date | string | null;
       } | null = null;
       try {
-        const profRows = await db.execute(
-          sql`SELECT deficits, mobility_aids, equipment, recovery_goals,
-                     daily_time_budget_minutes, energy_pattern, intake_completed_at
-              FROM user_profiles WHERE user_id = ${userId} LIMIT 1`
-        );
-        const r = profRows.rows[0] as any;
-        if (r) {
-          profile = {
-            deficits: r.deficits ?? null,
-            mobilityAids: r.mobility_aids ?? null,
-            equipment: r.equipment ?? null,
-            recoveryGoals: r.recovery_goals ?? null,
-            dailyTimeBudgetMinutes: r.daily_time_budget_minutes ?? null,
-            energyPattern: r.energy_pattern ?? null,
-            intakeCompletedAt: r.intake_completed_at ?? null,
-          };
-        }
+         profile = await getCanonicalSurvivorProfile(userId);
       } catch {
-        // user_profiles unavailable — fall through with profile = null
+         // A missing legacy profile must not block a Today session.
       }
 
       // Derive the safest first-session level from intake deficits + aids.
@@ -11564,6 +11590,10 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         }, tx);
         return created;
       });
+      await updateCanonicalSurvivorProfile(userId, {
+        assessmentScores: { physical, cognitive, speech, emotional, memory },
+        assessmentNotes: normalizedNotes,
+      }, "recovery_onboarding");
       res.json(row);
     } catch (error) {
       console.error('Error saving assessment:', error);
@@ -11589,6 +11619,15 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         }
       }
       const inserted = await replaceSurvivorGoals(userId, goals);
+      await updateCanonicalSurvivorProfile(userId, {
+        recoveryGoals: goals.map((goal: any) => String(goal.goal).trim()),
+        goalDetails: goals.map((goal: any) => ({
+          horizon: goal.horizon,
+          domain: goal.domain,
+          goal: String(goal.goal).trim(),
+          status: "active",
+        })),
+      }, "recovery_onboarding");
       res.json(inserted);
     } catch (error) {
       console.error('Error saving goals:', error);
@@ -11609,16 +11648,27 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       // guarded table setup uses the default connection.
       await ensureRecoveryFunnelTable();
 
-      const [assessment] = await dbInst
+       const profile = await getCanonicalSurvivorProfile(userId);
+       const [assessment] = await dbInst
         .select()
         .from(sasquatchAssessments)
         .where(eq(sasquatchAssessments.userId, userId))
         .orderBy(desc(sasquatchAssessments.takenAt))
         .limit(1);
 
-      if (!assessment) {
+       if (!assessment || !profile?.assessmentScores) {
         return res.status(400).json({ message: 'Take the Sasquatch Scale first.' });
       }
+       const canonicalScores = profile.assessmentScores;
+       const effectiveAssessment = {
+         ...assessment,
+         physical: canonicalScores.physical ?? assessment.physical,
+         cognitive: canonicalScores.cognitive ?? assessment.cognitive,
+         speech: canonicalScores.speech ?? assessment.speech,
+         emotional: canonicalScores.emotional ?? assessment.emotional,
+         memory: canonicalScores.memory ?? assessment.memory,
+         notes: profile.assessmentNotes ?? assessment.notes,
+       };
 
       const [existingPlan] = await dbInst
         .select()
@@ -11626,7 +11676,10 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         .where(and(eq(survivorPlans.userId, userId), eq(survivorPlans.assessmentId, assessment.id)))
         .orderBy(desc(survivorPlans.generatedAt))
         .limit(1);
-      if (existingPlan?.plan) {
+       const scoreUpdatedAt = profile.profileProvenance?.assessmentScores?.updatedAt;
+       const planIsCurrent = !existingPlan || !scoreUpdatedAt
+         || new Date(scoreUpdatedAt).getTime() <= new Date(existingPlan.generatedAt).getTime();
+       if (existingPlan?.plan && planIsCurrent) {
         // A retry may be completing a plan written by an older request. Keep
         // both milestone repairs atomic so a failed second write does not
         // leave the funnel reporting only half of onboarding.
@@ -11641,10 +11694,13 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         return res.json({ plan: existingPlan.plan, generatedAt: existingPlan.generatedAt, reused: true });
       }
 
-      const goals = await dbInst
+       const legacyGoals = await dbInst
         .select()
         .from(survivorGoals)
         .where(eq(survivorGoals.userId, userId));
+       const goals = profile.goalDetails?.length
+         ? profile.goalDetails
+         : legacyGoals;
 
       // Pull real catalog so we never invent exercises that don't exist on the platform.
       const { recoveryExercises } = await import('../shared/schema');
@@ -11660,13 +11716,13 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
 
       // Pick exercises matched to the survivor's weakest domains and current level.
       const ranked = [
-        ['physical', assessment.physical],
-        ['cognitive', assessment.cognitive],
-        ['speech', assessment.speech],
-        ['emotional', assessment.emotional],
-        ['memory', assessment.memory],
+         ['physical', effectiveAssessment.physical],
+         ['cognitive', effectiveAssessment.cognitive],
+         ['speech', effectiveAssessment.speech],
+         ['emotional', effectiveAssessment.emotional],
+         ['memory', effectiveAssessment.memory],
       ].sort((a, b) => (a[1] as number) - (b[1] as number));
-      const physScore = assessment.physical as number;
+       const physScore = effectiveAssessment.physical as number;
       const userLevel: 'beginner' | 'moderate' | 'advanced' =
         physScore <= 3 ? 'beginner' : physScore <= 6 ? 'moderate' : 'advanced';
 
@@ -11713,23 +11769,23 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         });
       }
 
-      const apiKey = process.env.GEMINI_API_KEY || process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
+       const apiKey = process.env.GEMINI_API_KEY || process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
       let plan: any;
 
       const catalogList = catalog
         .map((e: any) => `- ${e.slug} (${e.category}/${e.position}/${e.level}): ${e.name}`)
         .join('\n');
 
-      if (apiKey) {
+       if (apiKey) {
          const prompt = `You are Sasquatch Coach — a hard-edged, deeply caring stroke recovery guide who speaks like a Southern raspy mountain man. Build a 7-day education, reflection, and clinician-approved routine planning draft for this survivor.
 
 SASQUATCH SCALE (1=lowest, 10=highest):
-- Physical: ${assessment.physical}/10
-- Cognitive: ${assessment.cognitive}/10
-- Speech: ${assessment.speech}/10
-- Emotional: ${assessment.emotional}/10
-- Memory: ${assessment.memory}/10
-${assessment.notes ? `Notes from survivor: ${assessment.notes}` : ''}
+ - Physical: ${effectiveAssessment.physical}/10
+ - Cognitive: ${effectiveAssessment.cognitive}/10
+ - Speech: ${effectiveAssessment.speech}/10
+ - Emotional: ${effectiveAssessment.emotional}/10
+ - Memory: ${effectiveAssessment.memory}/10
+ ${effectiveAssessment.notes ? `Notes from survivor: ${effectiveAssessment.notes}` : ''}
 
 GOALS:
 ${goals.map((g: any) => `- [${g.horizon}/${g.domain}] ${g.goal}`).join('\n') || '- (none captured)'}
@@ -11797,11 +11853,11 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
       if (!plan) {
         // Deterministic fallback so flow is never broken if AI is unavailable.
         const domains = [
-          ['physical', assessment.physical],
-          ['cognitive', assessment.cognitive],
-          ['speech', assessment.speech],
-          ['emotional', assessment.emotional],
-          ['memory', assessment.memory],
+           ['physical', effectiveAssessment.physical],
+           ['cognitive', effectiveAssessment.cognitive],
+           ['speech', effectiveAssessment.speech],
+           ['emotional', effectiveAssessment.emotional],
+           ['memory', effectiveAssessment.memory],
         ].sort((a, b) => (a[1] as number) - (b[1] as number));
         const weakest = domains.slice(0, 3).map((d) => d[0]);
         plan = {
@@ -11849,8 +11905,12 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
           userId,
           assessmentId: assessment.id,
           plan,
-        }).onConflictDoNothing({
+        }).onConflictDoUpdate({
           target: survivorPlans.assessmentId,
+          set: {
+            plan,
+            generatedAt: drizzleSql`now()`,
+          },
         }).returning();
         if (!effectivePlan) {
           [effectivePlan] = await tx
