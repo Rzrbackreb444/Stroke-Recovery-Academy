@@ -8,6 +8,7 @@ import RecoveryHeader from "@/components/RecoveryHeader";
 import RecoverySEO from "@/components/RecoverySEO";
 import Footer from "@/components/Footer";
 import CrisisCard, { type CrisisResource } from "@/components/recovery/CrisisCard";
+import { CoachNextStepCard } from "@/components/recovery/CoachNextStepCard";
 import { useAuth } from "@/hooks/useAuth";
 import { safeAccentForDark } from "@/lib/personaContrast";
 import { RecommendationCards } from "@/components/RecommendationCard";
@@ -22,9 +23,9 @@ interface Message {
 }
 
 const STARTER_PROMPTS = [
-  "My arm isn't improving — what should I focus on today?",
+  "My arm isn't improving — help me choose a manageable focus for today.",
   "I'm feeling discouraged. Help me get back on track.",
-  "What's one exercise I can do right now?",
+  "Help me choose between a guided rep, reflection, or intentional rest.",
   "How do I stay consistent when progress feels invisible?",
 ];
 
@@ -323,6 +324,14 @@ export default function SasquatchCoach() {
             </button>
           </div>
         </div>
+
+        <CoachNextStepCard
+          signedIn={!!user}
+          onPrompt={(prompt) => {
+            setInput(prompt);
+            requestAnimationFrame(() => textareaRef.current?.focus());
+          }}
+        />
 
         {/* Messages */}
         <div className="flex-1 space-y-4 mb-6 min-h-0">

@@ -9801,7 +9801,7 @@ Respond in JSON format:
   // SASQUATCH COACH AI COMPANION ROUTES
   // ----------------------------------------------------------------------------
 
-  const getSasquatchCoachPrompt = (persona?: { name: string; creed: string; archetypeKey: string } | null) => {
+      const getSasquatchCoachPrompt = (persona?: { name: string; creed: string; archetypeKey: string } | null) => {
     const personaBlock = persona
       ? `\n\nUSER'S FORGED PERSONA (use this to address them):\n- They have forged an alter-ego called "${persona.name}" (${persona.archetypeKey} archetype).\n- Their creed: "${persona.creed}"\n- Address them as "${persona.name}" when offering tough love or accountability moments. Reference their creed naturally when motivation is needed. Don't overuse — once or twice per response is plenty. The persona is THEIR weapon; you are honoring it, not lecturing about it.\n`
       : "";
@@ -9870,6 +9870,15 @@ RESPONSE STYLE:
 - Body of the reply ends with one specific next move OR one honest question — not both.
 - Use humor when it fits. Recovery needs laughter too.
 - Be real, not robotic. Friend first.
+
+      SAFETY & AUTONOMY BOUNDARY:
+      - You are an education, reflection, and accountability companion — not a clinician, therapist, diagnostician, triage service, or emergency monitor.
+      - Never diagnose, predict outcomes, or tell someone that a symptom is safe. New, worsening, or concerning symptoms belong with their healthcare team or emergency services.
+      - Never tell someone to start, stop, skip, double, or change medication, supplements, therapy, or treatment.
+      - Never prescribe exercise dosage, intensity, progression, or nutrition targets. Do not invent exercises. For movement questions, offer to open the survivor's guided Today session or approved Academy library and let them choose.
+      - Treat a missed rep, intentional rest, or a declined suggestion as valid information — never shame, guilt, or pressure the survivor.
+      - Do not claim that effort guarantees healing, rewiring, myelination, or a particular recovery outcome. Hope must not become a promise.
+      - Before creating a reminder, changing a plan, sharing information, or taking an action outside this conversation, ask for clear confirmation.
 
 ALWAYS END WITH A QUOTE (mandatory — every single reply, no exceptions):
 - After your main reply, add a blank line, then a short founder/survivor quote on its own line, prefixed with "— " (em dash + space).
@@ -11402,7 +11411,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       if (tooHard >= 2 && yesterdayLevel > 0) {
         recLevel = yesterdayLevel - 1;
         basis = 'yesterday_too_hard';
-        reason = `Yesterday you marked ${tooHard} exercises "too much." Today we're dropping one level so your nervous system can rebuild. This is the work — recovery isn't linear.`;
+        reason = `Yesterday you marked ${tooHard} exercises "too much." Today we're dropping one level so the starting point fits better. Recovery isn't linear.`;
       }
       // Rule 2 — step up if a strong day with no "too hard"
       else if (totalFb >= 4 && tooHard === 0 && good >= Math.ceil(totalFb * 0.6) && yesterdayLevel < 4) {
@@ -11427,7 +11436,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         } else if (hard >= good) {
           reason = `Yesterday was a grinder — ${hard} hard, ${good} strong. We'll stay at ${getLevelName(yesterdayLevel)} and let your body settle.`;
         } else {
-          reason = `Steady wins. Continuing at ${getLevelName(yesterdayLevel)} so the new pathways stay myelinating.`;
+          reason = `Steady wins. Continuing at ${getLevelName(yesterdayLevel)} so we can learn from today's feedback without forcing a jump.`;
         }
       }
 
@@ -11712,7 +11721,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         .join('\n');
 
       if (apiKey) {
-        const prompt = `You are Sasquatch Coach — a hard-edged, deeply caring stroke recovery guide who speaks like a Southern raspy mountain man. Build a 7-day recovery plan for this survivor.
+         const prompt = `You are Sasquatch Coach — a hard-edged, deeply caring stroke recovery guide who speaks like a Southern raspy mountain man. Build a 7-day education, reflection, and clinician-approved routine planning draft for this survivor.
 
 SASQUATCH SCALE (1=lowest, 10=highest):
 - Physical: ${assessment.physical}/10
