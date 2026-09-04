@@ -280,6 +280,12 @@ export type TodayRecommendation = {
     timeBudgetMinutes?: number | null;
     energyPattern?: string | null;
     goals?: string[] | null;
+    goalDetails?: Array<{
+      horizon: "short" | "long";
+      domain: "physical" | "cognitive" | "speech" | "emotional" | "memory" | "other";
+      goal: string;
+      status?: string;
+    }> | null;
     equipment?: string[] | null;
     mobilityAids?: string[] | null;
   };
@@ -290,6 +296,12 @@ export type PersonalizationInput = {
   timeBudgetMinutes?: number | null;
   energyPattern?: string | null; // "morning" | "afternoon" | "evening" | "variable"
   goals?: string[] | null;
+  goalDetails?: Array<{
+    horizon: "short" | "long";
+    domain: "physical" | "cognitive" | "speech" | "emotional" | "memory" | "other";
+    goal: string;
+    status?: string;
+  }> | null;
 };
 
 const TASK_MINUTES = 1.5;
