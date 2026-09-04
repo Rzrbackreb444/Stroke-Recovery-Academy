@@ -24,11 +24,31 @@ const chatWidget = await readFile(
   new URL("../client/src/components/recovery/SasquatchChatWidget.tsx", import.meta.url),
   "utf8",
 );
+const coachPage = await readFile(
+  new URL("../client/src/pages/SasquatchCoach.tsx", import.meta.url),
+  "utf8",
+);
 
 test("coach turns await durable history before returning success", () => {
   assert.match(routes, /const \{ persistChatTurn \} = await import\('\.\/sasquatchHistoryService'\);\s+await persistChatTurn\(persistUserId, message, finalResponse\)/);
   assert.match(history, /await db\.execute\(sql`[\s\S]*INSERT INTO sasquatch_chat_messages/);
   assert.doesNotMatch(history, /persistChatTurn[\s\S]{0,900}catch/);
+});
+
+test("Coach memory is explicit, owner-scoped, and keeps facts separate from observations", () => {
+  assert.match(history, /CREATE TABLE IF NOT EXISTS coach_memory_preferences[\s\S]*include_journal BOOLEAN NOT NULL DEFAULT FALSE/);
+  assert.match(history, /CREATE TABLE IF NOT EXISTS coach_memory_items[\s\S]*user_id VARCHAR NOT NULL/);
+  assert.match(history, /CREATE TABLE IF NOT EXISTS coach_memory_exclusions/);
+  assert.match(history, /WHERE user_id = \$\{userId\} AND source_type = \$\{sourceType\}/);
+  assert.match(history, /export async function getWeeklyCoachSummary/);
+  assert.match(coachPage, /Coach observations · patterns, not facts/);
+  assert.match(coachPage, /Survivor-entered facts/);
+  assert.ok(routes.includes("app.get('/api/coach/memory', isAuthenticated"));
+  assert.ok(routes.includes("app.patch('/api/coach/memory/preferences', isAuthenticated"));
+  assert.ok(routes.includes("app.patch('/api/coach/memory/items/:id', isAuthenticated"));
+  assert.ok(routes.includes("app.delete('/api/coach/memory/items/:id', isAuthenticated"));
+  assert.match(routes, /approvedMemory: approvedMemory\.map/);
+  assert.match(chatWidget, /\/api\/coach\/history/);
 });
 
 test("daily check-in serializes duplicate clicks and commits reward data atomically", () => {

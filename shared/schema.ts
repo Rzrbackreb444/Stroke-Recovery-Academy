@@ -482,6 +482,22 @@ export const userProfiles = pgTable("user_profiles", {
   recoveryGoals: text("recovery_goals").array(),
   currentChallenges: text("current_challenges").array(),
   customGoal: text("custom_goal"),
+  // Structured goals and scale scores are the canonical inputs for planning.
+  // The legacy survivor_goals/sasquatch_assessments tables remain as history.
+  goalDetails: jsonb("goal_details").$type<Array<{
+    horizon: "short" | "long";
+    domain: "physical" | "cognitive" | "speech" | "emotional" | "memory" | "other";
+    goal: string;
+    status?: string;
+  }>>(),
+  assessmentScores: jsonb("assessment_scores").$type<{
+    physical?: number;
+    cognitive?: number;
+    speech?: number;
+    emotional?: number;
+    memory?: number;
+  }>(),
+  assessmentNotes: text("assessment_notes"),
   equipment: text("equipment").array(),
   mobilityAids: text("mobility_aids").array(),
 
@@ -511,6 +527,12 @@ export const userProfiles = pgTable("user_profiles", {
   intakeCompletedAt: timestamp("intake_completed_at"),
   currentIntakeStep: integer("current_intake_step").default(0),
 
+  // Per-field audit trail for survivor-entered and normalized legacy values.
+  // Shape: { fieldName: { source: string, updatedAt: ISO timestamp } }
+  profileProvenance: jsonb("profile_provenance").$type<Record<string, {
+    source: string;
+    updatedAt: string;
+  }>>().notNull().default({}),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 }, (t) => ({
   userIdx: uniqueIndex("user_profiles_user_id_unique").on(t.userId),
@@ -6367,16 +6389,27 @@ export const insertSurvivorGoalSchema = createInsertSchema(survivorGoals).omit({
 export type SurvivorGoal = typeof survivorGoals.$inferSelect;
 export type InsertSurvivorGoal = z.infer<typeof insertSurvivorGoalSchema>;
 
-// Generated AI recovery plan — stored as JSON so we can iterate freely on shape.
+const recoveryPlanDomainSchema = z.enum([
+  "physical",
+  "cognitive",
+  "speech",
+  "emotional",
+  "memory",
+]);
 export const survivorPlans = pgTable("survivor_plans", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   assessmentId: integer("assessment_id"),
-  plan: jsonb("plan").notNull(), // { weekly: {...}, exercises: [...], brainGymMinutes, mealTargets, rest, tips: [] }
+  plan: jsonb("plan").notNull(), // RecoveryPlan JSON; see recoveryPlanSchema above.
+  reviewStatus: text("review_status").notNull().default("pending"), // pending | approved | rejected | changes_requested
+  reviewedBy: varchar("reviewed_by").references(() => users.id, { onDelete: "set null" }),
+  reviewedAt: timestamp("reviewed_at"),
+  reviewNotes: text("review_notes"),
   generatedAt: timestamp("generated_at").notNull().defaultNow(),
 }, (t) => ({
   userIdx: index("survivor_plans_user_idx").on(t.userId, t.generatedAt),
   assessmentUnique: uniqueIndex("survivor_plans_assessment_unique").on(t.assessmentId),
+  reviewStatusIdx: index("survivor_plans_review_status_idx").on(t.reviewStatus, t.generatedAt),
 }));
 
 export const insertSurvivorPlanSchema = createInsertSchema(survivorPlans).omit({
@@ -6385,6 +6418,34 @@ export const insertSurvivorPlanSchema = createInsertSchema(survivorPlans).omit({
 });
 export type SurvivorPlan = typeof survivorPlans.$inferSelect;
 export type InsertSurvivorPlan = z.infer<typeof insertSurvivorPlanSchema>;
+
+export const recoveryPlanReviewStatusSchema = z.enum([
+  "pending",
+  "approved",
+  "rejected",
+  "changes_requested",
+]);
+export type RecoveryPlanReviewStatus = z.infer<typeof recoveryPlanReviewStatusSchema>;
+
+export const recoveryPlanReviews = pgTable("recovery_plan_reviews", {
+  id: serial("id").primaryKey(),
+  planId: integer("plan_id").notNull().references(() => survivorPlans.id, { onDelete: "cascade" }),
+  actorId: varchar("actor_id").notNull(),
+  actorType: text("actor_type").notNull(), // clinician | admin
+  status: text("status").notNull(), // approved | rejected | changes_requested
+  notes: text("notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  planIdx: index("recovery_plan_reviews_plan_idx").on(t.planId, t.createdAt),
+  actorIdx: index("recovery_plan_reviews_actor_idx").on(t.actorId, t.createdAt),
+}));
+
+export const insertRecoveryPlanReviewSchema = createInsertSchema(recoveryPlanReviews).omit({
+  id: true,
+  createdAt: true,
+});
+export type RecoveryPlanReview = typeof recoveryPlanReviews.$inferSelect;
+export type InsertRecoveryPlanReview = z.infer<typeof insertRecoveryPlanReviewSchema>;
 
 // Durable milestones for the survivor onboarding-to-first-rep funnel.
 // Each milestone is recorded once per survivor; retries must not inflate counts.
@@ -7516,3 +7577,40 @@ export const insertLaundromatDiscussionReplySchema = createInsertSchema(laundrom
 export const insertLaundromatEquipmentPlanSchema = createInsertSchema(laundromatEquipmentPlans).omit({ id: true, createdAt: true, updatedAt: true });
 
 export type JobQueueJob = typeof jobQueueJobs.$inferSelect;
+
+const recoveryPlanExerciseSchema = z.object({
+  exerciseId: z.number().int().positive(),
+  slug: z.string().min(1).max(80),
+  name: z.string().min(1).max(240),
+  domain: recoveryPlanDomainSchema,
+  description: z.string().min(1).max(1200),
+  safetyNotes: z.string().min(1).max(1200),
+  clinicianReviewRequired: z.literal(true),
+}).strict();
+
+const recoveryPlanWeekSchema = z.object({
+  Mon: z.string().min(1).max(300),
+  Tue: z.string().min(1).max(300),
+  Wed: z.string().min(1).max(300),
+  Thu: z.string().min(1).max(300),
+  Fri: z.string().min(1).max(300),
+  Sat: z.string().min(1).max(300),
+  Sun: z.string().min(1).max(300),
+}).strict();
+
+export type RecoveryPlan = z.infer<typeof recoveryPlanSchema>;
+
+export const recoveryPlanSchema = z.object({
+  planVersion: z.literal(2),
+  planType: z.literal("education_and_clinician_review"),
+  summary: z.string().min(1).max(600),
+  focusDomains: z.array(recoveryPlanDomainSchema).min(1).max(5),
+  exercises: z.array(recoveryPlanExerciseSchema).min(1).max(7),
+  education: z.object({
+    brainGym: z.string().min(1).max(600),
+    nutrition: z.array(z.string().min(1).max(600)).min(1).max(5),
+  }).strict(),
+  weeklyReflection: recoveryPlanWeekSchema,
+  tips: z.array(z.string().min(1).max(600)).min(1).max(6),
+  safetyNote: z.string().min(1).max(1000),
+}).strict();

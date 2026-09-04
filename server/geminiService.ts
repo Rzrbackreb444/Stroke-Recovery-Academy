@@ -102,6 +102,20 @@ export async function generateCoachResponse(
     todayVerdict?: string | null;
     tomorrowSuggestion?: string | null;
     hasLoggedToday?: boolean;
+    profile?: {
+      preferredName?: string | null;
+      goals?: string[];
+      challenges?: string[];
+      deficits?: Record<string, number> | null;
+      assessmentScores?: Record<string, number> | null;
+      dailyTimeBudgetMinutes?: number | null;
+      energyPattern?: string | null;
+      mobilityAids?: string[];
+      equipment?: string[];
+      story?: string | null;
+      updatedAt?: string | null;
+    } | null;
+    approvedMemory?: Array<{ title: string; content: string; kind: "survivor_fact" | "saved_plan" }>;
   }
 ): Promise<{ response: string; quote?: string }> {
   try {
@@ -140,6 +154,26 @@ export async function generateCoachResponse(
         if (userContext.exerciseCount) contextLines.push(`Lifetime exercises completed: ${userContext.exerciseCount}.`);
         if (userContext.lastExercises?.length) contextLines.push(`Recent exercises: ${userContext.lastExercises.slice(0, 3).join(', ')}.`);
         if (userContext.milestones?.length) contextLines.push(`Recent milestones: ${userContext.milestones.slice(0, 2).join(', ')}.`);
+        if (userContext.profile) {
+          const profile = userContext.profile;
+          if (profile.goals?.length) contextLines.push(`Current survivor goals: ${profile.goals.slice(0, 8).join(', ')}.`);
+          if (profile.challenges?.length) contextLines.push(`Current challenges the survivor named: ${profile.challenges.slice(0, 8).join(', ')}.`);
+          if (profile.dailyTimeBudgetMinutes) contextLines.push(`Their realistic daily recovery time is ${profile.dailyTimeBudgetMinutes} minutes.`);
+          if (profile.energyPattern) contextLines.push(`Their sharpest time of day is ${profile.energyPattern}.`);
+          if (profile.mobilityAids?.length) contextLines.push(`Mobility aids available: ${profile.mobilityAids.join(', ')}.`);
+          if (profile.equipment?.length) contextLines.push(`Home equipment available: ${profile.equipment.join(', ')}.`);
+          if (profile.story) contextLines.push(`Survivor story context (use gently, never quote verbatim unless asked): ${profile.story.slice(0, 500)}`);
+        }
+        if (userContext.approvedMemory?.length) {
+          contextLines.push(
+            `APPROVED COACH MEMORY (survivor-controlled; use only when relevant, never infer a diagnosis or medical conclusion):\n${
+              userContext.approvedMemory
+                .slice(0, 12)
+                .map((item) => `- [${item.kind === "saved_plan" ? "Saved plan" : "Survivor-entered fact"}] ${item.title}: ${item.content}`)
+                .join("\n")
+            }`,
+          );
+        }
         if (contextLines.length > 0) {
           systemPrompt += `\n\nUSER CONTEXT (use this to make every reply feel personal — never echo it verbatim, weave it):\n${contextLines.join('\n')}`;
         }

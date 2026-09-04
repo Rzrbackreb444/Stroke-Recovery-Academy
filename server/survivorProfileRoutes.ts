@@ -6,6 +6,11 @@ import { storage } from "./storage";
 import { db } from "./db";
 import { userProfiles } from "@shared/schema";
 import { publicRateLimit } from "./middleware/publicRateLimit";
+import {
+  getCanonicalSurvivorProfile,
+  updateCanonicalSurvivorProfile,
+  type ProfileSource,
+} from "./survivorProfileService";
 
 const router = Router();
 
@@ -21,6 +26,11 @@ const deficitsSchema = z.object({
 }).strict().partial();
 
 const profilePatchSchema = z.object({
+  profileSource: z.enum([
+    "survivor_intake",
+    "survivor_profile_settings",
+    "recovery_onboarding",
+  ]).optional(),
   preferredName: z.string().max(80).optional().nullable(),
   pronouns: z.string().max(40).optional().nullable(),
 
@@ -33,6 +43,20 @@ const profilePatchSchema = z.object({
   recoveryGoals: z.array(z.string().max(80)).max(20).optional().nullable(),
   currentChallenges: z.array(z.string().max(120)).max(20).optional().nullable(),
   customGoal: z.string().max(280).optional().nullable(),
+  goalDetails: z.array(z.object({
+    horizon: z.enum(["short", "long"]),
+    domain: z.enum(["physical", "cognitive", "speech", "emotional", "memory", "other"]),
+    goal: z.string().min(3).max(240),
+    status: z.string().max(24).optional(),
+  })).max(20).optional().nullable(),
+  assessmentScores: z.object({
+    physical: z.number().int().min(1).max(10).optional(),
+    cognitive: z.number().int().min(1).max(10).optional(),
+    speech: z.number().int().min(1).max(10).optional(),
+    emotional: z.number().int().min(1).max(10).optional(),
+    memory: z.number().int().min(1).max(10).optional(),
+  }).strict().optional().nullable(),
+  assessmentNotes: z.string().max(1000).optional().nullable(),
   equipment: z.array(z.string().max(60)).max(40).optional().nullable(),
   mobilityAids: z.array(z.string().max(60)).max(20).optional().nullable(),
 
@@ -69,33 +93,13 @@ const perUserWriteLimit = publicRateLimit({
   keyFn: (req: any) => authedUserId(req) || req.ip || "anon",
 });
 
-// Atomic upsert keyed on userId — prevents race-condition 500s from
-// near-simultaneous PATCHes by collapsing read-then-create into a single SQL.
-async function upsertProfile(userId: string, patch: Record<string, any>) {
-  const insertValues = { userId, ...patch };
-  const updateValues: Record<string, any> = { ...patch, updatedAt: sql`now()` };
-  // Drop undefined keys so we never overwrite columns the client didn't send.
-  for (const k of Object.keys(updateValues)) {
-    if (updateValues[k] === undefined) delete updateValues[k];
-  }
-  const [row] = await db
-    .insert(userProfiles)
-    .values(insertValues as any)
-    .onConflictDoUpdate({
-      target: userProfiles.userId,
-      set: updateValues,
-    })
-    .returning();
-  return row;
-}
-
 // GET — returns the current survivor's profile, or null if none yet.
 router.get("/profile", isAuthenticated, async (req: any, res: Response) => {
   try {
     const userId = authedUserId(req);
     if (!userId) return res.status(401).json({ error: "Not authenticated" });
 
-    const profile = await storage.getUserProfile(userId);
+    const profile = await getCanonicalSurvivorProfile(userId);
     if (!profile) return res.json({ profile: null });
 
     return res.json({
@@ -116,7 +120,11 @@ router.patch("/profile", isAuthenticated, perUserWriteLimit, async (req: any, re
     const userId = authedUserId(req);
     if (!userId) return res.status(401).json({ error: "Not authenticated" });
 
-    const data = profilePatchSchema.parse(req.body);
+    const parsed = profilePatchSchema.parse(req.body);
+    const {
+      profileSource = "survivor_profile_settings",
+      ...data
+    } = parsed;
 
     const cleaned: any = { ...data };
     if (cleaned.strokeDate) {
@@ -128,7 +136,11 @@ router.patch("/profile", isAuthenticated, perUserWriteLimit, async (req: any, re
     }
     if (cleaned.caregiverEmail === "") cleaned.caregiverEmail = null;
 
-    const profile = await upsertProfile(userId, cleaned);
+    const profile = await updateCanonicalSurvivorProfile(
+      userId,
+      cleaned,
+      profileSource as ProfileSource,
+    );
 
     res.json({
       profile: {
@@ -151,18 +163,12 @@ router.post("/profile/complete", isAuthenticated, perUserWriteLimit, async (req:
     const userId = authedUserId(req);
     if (!userId) return res.status(401).json({ error: "Not authenticated" });
 
-    // Atomic: only set intakeCompletedAt if it isn't already set.
-    const [row] = await db
-      .insert(userProfiles)
-      .values({ userId, intakeCompletedAt: new Date() } as any)
-      .onConflictDoUpdate({
-        target: userProfiles.userId,
-        set: {
-          intakeCompletedAt: sql`COALESCE(${userProfiles.intakeCompletedAt}, now())`,
-          updatedAt: sql`now()`,
-        },
-      })
-      .returning();
+    const existing = await getCanonicalSurvivorProfile(userId);
+    const row = await updateCanonicalSurvivorProfile(
+      userId,
+      { intakeCompletedAt: existing?.intakeCompletedAt ?? new Date() },
+      "survivor_intake",
+    );
 
     res.json({ profile: { ...row, intakeComplete: true } });
   } catch (err: any) {

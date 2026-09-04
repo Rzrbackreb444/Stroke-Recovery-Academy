@@ -17,6 +17,7 @@ import { db } from "./db";
 import { sql } from "drizzle-orm";
 import { isAuthenticated } from "./replitAuth";
 import { getUserId } from "./lib/authUtils";
+import { getCanonicalSurvivorProfile } from "./survivorProfileService";
 import { GoogleGenAI } from "@google/genai";
 import {
   sampleQuotePool,
@@ -338,6 +339,7 @@ export function registerRecoveryJourneyRoutes(app: Express) {
           rBraingym,
           rJournal,
           rStreak,
+          profile,
         ] = await Promise.all([
           db.execute(
             sql`SELECT 1 FROM daily_checkins WHERE user_id = ${userId} AND checkin_date::date = CURRENT_DATE LIMIT 1`,
@@ -360,6 +362,7 @@ export function registerRecoveryJourneyRoutes(app: Express) {
           db.execute(
             sql`SELECT current_streak, longest_streak, total_active_days FROM user_streaks WHERE user_id = ${userId} LIMIT 1`,
           ),
+          getCanonicalSurvivorProfile(userId),
         ]);
 
         const completedMap: Record<StepKey, boolean> = {
@@ -392,6 +395,10 @@ export function registerRecoveryJourneyRoutes(app: Express) {
           completedCount,
           totalCount: steps.length,
           nextStep,
+          profile: profile ? {
+            ...profile,
+            intakeComplete: !!profile.intakeCompletedAt,
+          } : null,
         });
       } catch (e: any) {
         console.error("[journey] failed", e?.message || e);

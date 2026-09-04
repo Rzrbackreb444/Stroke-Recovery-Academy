@@ -32,6 +32,10 @@ import {
   recordRecoveryFunnelEvent,
 } from "./services/recoveryFunnelService";
 import {
+  getCanonicalSurvivorProfile,
+  updateCanonicalSurvivorProfile,
+} from "./survivorProfileService";
+import {
   AUTHOR_BRAIN_CONTENT_TYPES,
   AUTHOR_BRAIN_MAX_CHAPTER_DESCRIPTION_LENGTH,
   AUTHOR_BRAIN_MAX_CHAPTER_TITLE_LENGTH,
@@ -87,6 +91,12 @@ import {
 } from "./spotifyService";
 import { seedRecoveryData } from "./seedRecoveryData";
 import { seedCreatorToolCategories, seedWorkflowCategories } from "./seedCreatorTools";
+import {
+  buildSafeRecoveryPlan,
+  isSafeRecoveryPlan,
+  parseAiRecoveryPlanDraft,
+  pickSafeExerciseSlugs,
+} from "./recoveryPlanSafety";
 import { generate, generateStream, bookGenerator, marketingGenerator, screenplayGenerator, courseGenerator, researchGenerator, getUsageStats, type GenerateOptions } from "./aiOrchestrator";
 import { 
   generateChildStoryRequestSchema,
@@ -10005,19 +10015,34 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         todayVerdict?: string | null;
         tomorrowSuggestion?: string | null;
         hasLoggedToday?: boolean;
+        profile?: {
+          preferredName?: string | null;
+          goals?: string[];
+          challenges?: string[];
+          deficits?: Record<string, number> | null;
+          assessmentScores?: Record<string, number> | null;
+          dailyTimeBudgetMinutes?: number | null;
+          energyPattern?: string | null;
+          mobilityAids?: string[];
+          equipment?: string[];
+          story?: string | null;
+          updatedAt?: string | null;
+        } | null;
+        approvedMemory?: Array<{ title: string; content: string; kind: "survivor_fact" | "saved_plan" }>;
       } | undefined;
 
       let coachPersona: { name: string; creed: string; archetypeKey: string } | null = null;
 
-      if (req.user?.claims?.sub) {
+      if (getUserId(req)) {
         const userId = getUserId(req)!;
         try {
           // Fetch user's recovery context for personalized coaching, including
           // today's Never Zero reps + audit so Sasquatch references the actual
           // day instead of generic "keep pushing" lines.
           const { loadPersonaFor } = await import('./personaRoutes');
+          const { getCoachMemory } = await import('./sasquatchHistoryService');
           const todayKey = localDateKey(new Date());
-          const [exerciseScores, streakData, milestonesData, userData, personaRow, neverZero, todayAudit] = await Promise.all([
+          const [exerciseScores, streakData, milestonesData, userData, personaRow, neverZero, todayAudit, survivorProfile] = await Promise.all([
             storage.getUserExerciseScores(userId).catch((err) => { console.error('[coach] getUserExerciseScores failed:', err); return []; }),
             storage.getUserStreak(userId).catch(() => ({ currentStreak: 0 })),
             storage.getUserMilestones(userId).catch(() => []),
@@ -10025,7 +10050,14 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
             loadPersonaFor(userId).catch(() => null),
             storage.getNeverZeroData(userId).catch(() => null),
             storage.getNeverZeroAuditByDate(userId, todayKey).catch(() => null),
+           getCanonicalSurvivorProfile(userId).catch(() => null),
           ]);
+          const approvedMemory = await getCoachMemory(userId)
+            .then((memory) => memory.items.filter((item) => item.included))
+            .catch((err) => {
+              console.error('[coach] getCoachMemory failed:', err);
+              return [];
+            });
 
           if (personaRow) {
             coachPersona = {
@@ -10053,6 +10085,27 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
             todayVerdict: todayAudit?.verdict ?? null,
             tomorrowSuggestion: todayAudit?.tomorrow ?? null,
             hasLoggedToday: todayLogs.length > 0,
+            profile: survivorProfile ? {
+              preferredName: survivorProfile.preferredName,
+              goals: [
+                ...(survivorProfile.recoveryGoals ?? []),
+                ...(survivorProfile.customGoal ? [survivorProfile.customGoal] : []),
+              ],
+              challenges: survivorProfile.currentChallenges ?? [],
+              deficits: survivorProfile.deficits as Record<string, number> | null,
+              assessmentScores: survivorProfile.assessmentScores as Record<string, number> | null,
+              dailyTimeBudgetMinutes: survivorProfile.dailyTimeBudgetMinutes,
+              energyPattern: survivorProfile.energyPattern,
+              mobilityAids: survivorProfile.mobilityAids ?? [],
+              equipment: survivorProfile.equipment ?? [],
+              story: survivorProfile.story,
+              updatedAt: survivorProfile.updatedAt?.toISOString?.() ?? String(survivorProfile.updatedAt ?? ""),
+            } : null,
+            approvedMemory: approvedMemory.map((item) => ({
+              title: item.title,
+              content: item.content,
+              kind: item.kind,
+            })),
           };
         } catch (e) {
           console.error('Error fetching user context:', e);
@@ -10161,6 +10214,114 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     } catch (error: any) {
       console.error('Coach history clear error:', error?.message ?? error);
       res.status(500).json({ message: 'Failed to clear history' });
+    }
+  });
+
+  // Coach memory is a separate, survivor-controlled surface. It never
+  // inherits the chat transcript's client-supplied history and every query is
+  // owner-scoped through getUserId(req).
+  app.get('/api/coach/memory', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req)!;
+      const { getCoachMemory } = await import('./sasquatchHistoryService');
+      res.json(await getCoachMemory(userId));
+    } catch (error: any) {
+      console.error('Coach memory error:', error?.message ?? error);
+      res.status(500).json({ message: 'Failed to load Coach memory' });
+    }
+  });
+
+  app.patch('/api/coach/memory/preferences', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req)!;
+      const allowed = [
+        'includeCheckins',
+        'includeToday',
+        'includeJournal',
+        'includeGoals',
+        'includePlans',
+      ] as const;
+      const updates: Record<string, boolean> = {};
+      for (const key of allowed) {
+        if (req.body?.[key] !== undefined) {
+          if (typeof req.body[key] !== 'boolean') {
+            return res.status(400).json({ message: `${key} must be a boolean` });
+          }
+          updates[key] = req.body[key];
+        }
+      }
+      const { updateCoachMemoryPreferences } = await import('./sasquatchHistoryService');
+      res.json({ preferences: await updateCoachMemoryPreferences(userId, updates) });
+    } catch (error: any) {
+      console.error('Coach memory preferences error:', error?.message ?? error);
+      res.status(500).json({ message: 'Failed to update Coach memory preferences' });
+    }
+  });
+
+  app.get('/api/coach/memory/summary', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req)!;
+      const { getWeeklyCoachSummary } = await import('./sasquatchHistoryService');
+      res.json(await getWeeklyCoachSummary(userId));
+    } catch (error: any) {
+      console.error('Coach memory summary error:', error?.message ?? error);
+      res.status(500).json({ message: 'Failed to create Coach summary' });
+    }
+  });
+
+  app.patch('/api/coach/memory/items/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req)!;
+      const itemId = Number.parseInt(req.params.id, 10);
+      if (!Number.isInteger(itemId) || itemId < 1) {
+        return res.status(400).json({ message: 'Invalid memory item' });
+      }
+      const updates: { title?: string; content?: string; included?: boolean } = {};
+      if (req.body?.title !== undefined) {
+        if (typeof req.body.title !== 'string' || !req.body.title.trim()) {
+          return res.status(400).json({ message: 'title must be a non-empty string' });
+        }
+        updates.title = req.body.title;
+      }
+      if (req.body?.content !== undefined) {
+        if (typeof req.body.content !== 'string' || !req.body.content.trim()) {
+          return res.status(400).json({ message: 'content must be a non-empty string' });
+        }
+        updates.content = req.body.content;
+      }
+      if (req.body?.included !== undefined) {
+        if (typeof req.body.included !== 'boolean') {
+          return res.status(400).json({ message: 'included must be a boolean' });
+        }
+        updates.included = req.body.included;
+      }
+      if (!Object.keys(updates).length) {
+        return res.status(400).json({ message: 'No memory changes supplied' });
+      }
+      const { updateCoachMemoryItem } = await import('./sasquatchHistoryService');
+      const item = await updateCoachMemoryItem(userId, itemId, updates);
+      if (!item) return res.status(404).json({ message: 'Memory item not found' });
+      res.json({ item });
+    } catch (error: any) {
+      console.error('Coach memory item update error:', error?.message ?? error);
+      res.status(500).json({ message: 'Failed to update Coach memory item' });
+    }
+  });
+
+  app.delete('/api/coach/memory/items/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req)!;
+      const itemId = Number.parseInt(req.params.id, 10);
+      if (!Number.isInteger(itemId) || itemId < 1) {
+        return res.status(400).json({ message: 'Invalid memory item' });
+      }
+      const { deleteCoachMemoryItem } = await import('./sasquatchHistoryService');
+      const deleted = await deleteCoachMemoryItem(userId, itemId);
+      if (!deleted) return res.status(404).json({ message: 'Memory item not found' });
+      res.json({ deleted: true });
+    } catch (error: any) {
+      console.error('Coach memory item delete error:', error?.message ?? error);
+      res.status(500).json({ message: 'Failed to delete Coach memory item' });
     }
   });
 
@@ -11116,8 +11277,9 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     try {
       const userId = getUserId(req)!;
       const { db: dbInst } = await import('./db');
-      const { sasquatchAssessments, survivorGoals, survivorPlans } = await import('../shared/schema');
-      const { eq, desc } = await import('drizzle-orm');
+       const { sasquatchAssessments, survivorGoals, survivorPlans, recoveryPlanReviews } = await import('../shared/schema');
+       const { eq, desc } = await import('drizzle-orm');
+      const profile = await getCanonicalSurvivorProfile(userId);
 
       const [latestAssessment] = await dbInst
         .select()
@@ -11147,7 +11309,25 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         .limit(1);
 
       const hasAssessment = !!latestAssessment;
-      const hasPlan = !!latestPlan?.plan;
+      // Never return a legacy or malformed plan to the client. Older rows may
+      // contain the retired prescription shape; the generator will replace
+      // those rows with a safe education draft on the next request.
+      const safePlan = latestPlan?.plan && isSafeRecoveryPlan(latestPlan.plan)
+        ? latestPlan.plan
+        : null;
+       const reviewHistory = latestPlan && safePlan
+         ? await dbInst
+           .select({
+             status: recoveryPlanReviews.status,
+             actorType: recoveryPlanReviews.actorType,
+             notes: recoveryPlanReviews.notes,
+             createdAt: recoveryPlanReviews.createdAt,
+           })
+           .from(recoveryPlanReviews)
+           .where(eq(recoveryPlanReviews.planId, latestPlan.id))
+           .orderBy(desc(recoveryPlanReviews.createdAt))
+         : [];
+      const hasPlan = !!safePlan;
       const hasGoals = goals.length > 0;
       const hasOnboarded = hasAssessment && hasPlan;
       res.json({
@@ -11159,8 +11339,18 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         latestAssessment: latestAssessment || null,
         history,
         goals,
-        plan: latestPlan?.plan || null,
-        planGeneratedAt: latestPlan?.generatedAt || null,
+        profile: profile ? {
+          ...profile,
+          intakeComplete: !!profile.intakeCompletedAt,
+        } : null,
+        plan: safePlan,
+        planGeneratedAt: safePlan ? latestPlan?.generatedAt || null : null,
+         clinicianReview: safePlan && latestPlan ? {
+           status: latestPlan.reviewStatus,
+           reviewedAt: latestPlan.reviewedAt,
+           notes: latestPlan.reviewNotes,
+           history: reviewHistory,
+         } : null,
       });
     } catch (error) {
       console.error('Error fetching recovery state:', error);
@@ -11240,35 +11430,22 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
 
       // ── Read survivor profile so we can personalize. Optional: a brand-new
       // user without intake data will still get a sensible default.
-      let profile: {
+       let profile: {
         deficits?: Record<string, number> | null;
         mobilityAids?: string[] | null;
         equipment?: string[] | null;
         recoveryGoals?: string[] | null;
+         goalDetails?: Array<{ goal: string; domain: string; horizon: string }> | null;
+         assessmentScores?: Record<string, number> | null;
+         assessmentNotes?: string | null;
         dailyTimeBudgetMinutes?: number | null;
         energyPattern?: string | null;
         intakeCompletedAt?: Date | string | null;
       } | null = null;
       try {
-        const profRows = await db.execute(
-          sql`SELECT deficits, mobility_aids, equipment, recovery_goals,
-                     daily_time_budget_minutes, energy_pattern, intake_completed_at
-              FROM user_profiles WHERE user_id = ${userId} LIMIT 1`
-        );
-        const r = profRows.rows[0] as any;
-        if (r) {
-          profile = {
-            deficits: r.deficits ?? null,
-            mobilityAids: r.mobility_aids ?? null,
-            equipment: r.equipment ?? null,
-            recoveryGoals: r.recovery_goals ?? null,
-            dailyTimeBudgetMinutes: r.daily_time_budget_minutes ?? null,
-            energyPattern: r.energy_pattern ?? null,
-            intakeCompletedAt: r.intake_completed_at ?? null,
-          };
-        }
+         profile = await getCanonicalSurvivorProfile(userId);
       } catch {
-        // user_profiles unavailable — fall through with profile = null
+         // A missing legacy profile must not block a Today session.
       }
 
       // Derive the safest first-session level from intake deficits + aids.
@@ -11564,6 +11741,10 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         }, tx);
         return created;
       });
+      await updateCanonicalSurvivorProfile(userId, {
+        assessmentScores: { physical, cognitive, speech, emotional, memory },
+        assessmentNotes: normalizedNotes,
+      }, "recovery_onboarding");
       res.json(row);
     } catch (error) {
       console.error('Error saving assessment:', error);
@@ -11589,10 +11770,111 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         }
       }
       const inserted = await replaceSurvivorGoals(userId, goals);
+      await updateCanonicalSurvivorProfile(userId, {
+        recoveryGoals: goals.map((goal: any) => String(goal.goal).trim()),
+        goalDetails: goals.map((goal: any) => ({
+          horizon: goal.horizon,
+          domain: goal.domain,
+          goal: String(goal.goal).trim(),
+          status: "active",
+        })),
+      }, "recovery_onboarding");
       res.json(inserted);
     } catch (error) {
       console.error('Error saving goals:', error);
       res.status(500).json({ message: 'Failed to save goals' });
+    }
+  });
+
+  // POST /api/recovery/plan/:id/review — verified clinicians and admins record
+  // an auditable decision about an education draft.
+  app.post('/api/recovery/plan/:id/review', isAuthenticated, async (req: any, res) => {
+    try {
+      const planId = Number.parseInt(req.params.id, 10);
+      if (!Number.isSafeInteger(planId) || planId <= 0) {
+        return res.status(400).json({ message: 'Invalid plan id' });
+      }
+
+      const status = req.body?.status;
+      const validStatuses = new Set(['approved', 'rejected', 'changes_requested']);
+      if (typeof status !== 'string' || !validStatuses.has(status)) {
+        return res.status(400).json({
+          message: 'Review status must be approved, rejected, or changes_requested',
+        });
+      }
+      const notes = req.body?.notes == null ? null : req.body.notes;
+      if (notes !== null && (typeof notes !== 'string' || notes.trim().length > 2000)) {
+        return res.status(400).json({ message: 'Review notes must be 2,000 characters or fewer' });
+      }
+
+      const actorId = getUserId(req)!;
+      const { db: dbInst } = await import('./db');
+      const { users, survivorPlans, recoveryPlanReviews } = await import('../shared/schema');
+      const { eq } = await import('drizzle-orm');
+      const [actor] = await dbInst
+        .select({
+          role: users.role,
+          isVerifiedTherapist: users.isVerifiedTherapist,
+        })
+        .from(users)
+        .where(eq(users.id, actorId))
+        .limit(1);
+      const actorType = actor?.role === 'admin'
+        ? 'admin'
+        : actor?.isVerifiedTherapist
+          ? 'clinician'
+          : null;
+      if (!actorType) {
+        return res.status(403).json({ message: 'Verified clinician access required' });
+      }
+
+      const [planRow] = await dbInst
+        .select({ id: survivorPlans.id, plan: survivorPlans.plan })
+        .from(survivorPlans)
+        .where(eq(survivorPlans.id, planId))
+        .limit(1);
+      if (!planRow) return res.status(404).json({ message: 'Recovery plan not found' });
+      if (!isSafeRecoveryPlan(planRow.plan)) {
+        return res.status(400).json({ message: 'Only a safe recovery education draft can be reviewed' });
+      }
+
+      const reviewedAt = new Date();
+      const normalizedNotes = typeof notes === 'string' && notes.trim()
+        ? notes.trim()
+        : null;
+      const review = await dbInst.transaction(async (tx) => {
+        await tx.update(survivorPlans)
+          .set({
+            reviewStatus: status,
+            reviewedBy: actorId,
+            reviewedAt,
+            reviewNotes: normalizedNotes,
+          })
+          .where(eq(survivorPlans.id, planId));
+        const [created] = await tx.insert(recoveryPlanReviews).values({
+          planId,
+          actorId,
+          actorType,
+          status,
+          notes: normalizedNotes,
+          createdAt: reviewedAt,
+        }).returning();
+        return created;
+      });
+
+      res.json({
+        review: {
+          id: review.id,
+          planId: review.planId,
+          status: review.status,
+          actorType: review.actorType,
+          notes: review.notes,
+          createdAt: review.createdAt,
+        },
+      });
+    } catch (error) {
+      console.error('Error recording recovery plan review:', error);
+      res.status(500).json({ message: 'Failed to record recovery plan review' });
     }
   });
 
@@ -11609,16 +11891,27 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       // guarded table setup uses the default connection.
       await ensureRecoveryFunnelTable();
 
-      const [assessment] = await dbInst
+       const profile = await getCanonicalSurvivorProfile(userId);
+       const [assessment] = await dbInst
         .select()
         .from(sasquatchAssessments)
         .where(eq(sasquatchAssessments.userId, userId))
         .orderBy(desc(sasquatchAssessments.takenAt))
         .limit(1);
 
-      if (!assessment) {
+       if (!assessment || !profile?.assessmentScores) {
         return res.status(400).json({ message: 'Take the Sasquatch Scale first.' });
       }
+       const canonicalScores = profile.assessmentScores;
+       const effectiveAssessment = {
+         ...assessment,
+         physical: canonicalScores.physical ?? assessment.physical,
+         cognitive: canonicalScores.cognitive ?? assessment.cognitive,
+         speech: canonicalScores.speech ?? assessment.speech,
+         emotional: canonicalScores.emotional ?? assessment.emotional,
+         memory: canonicalScores.memory ?? assessment.memory,
+         notes: profile.assessmentNotes ?? assessment.notes,
+       };
 
       const [existingPlan] = await dbInst
         .select()
@@ -11626,7 +11919,10 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         .where(and(eq(survivorPlans.userId, userId), eq(survivorPlans.assessmentId, assessment.id)))
         .orderBy(desc(survivorPlans.generatedAt))
         .limit(1);
-      if (existingPlan?.plan) {
+      const scoreUpdatedAt = profile.profileProvenance?.assessmentScores?.updatedAt;
+      const planIsCurrent = !existingPlan || !scoreUpdatedAt
+        || new Date(scoreUpdatedAt).getTime() <= new Date(existingPlan.generatedAt).getTime();
+      if (existingPlan?.plan && planIsCurrent && isSafeRecoveryPlan(existingPlan.plan)) {
         // A retry may be completing a plan written by an older request. Keep
         // both milestone repairs atomic so a failed second write does not
         // leave the funnel reporting only half of onboarding.
@@ -11640,11 +11936,17 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         });
         return res.json({ plan: existingPlan.plan, generatedAt: existingPlan.generatedAt, reused: true });
       }
+      if (existingPlan?.plan) {
+        console.warn("[recovery plan] replacing a legacy or invalid stored plan with a safe education draft");
+      }
 
-      const goals = await dbInst
+       const legacyGoals = await dbInst
         .select()
         .from(survivorGoals)
         .where(eq(survivorGoals.userId, userId));
+       const goals = profile.goalDetails?.length
+         ? profile.goalDetails
+         : legacyGoals;
 
       // Pull real catalog so we never invent exercises that don't exist on the platform.
       const { recoveryExercises } = await import('../shared/schema');
@@ -11658,112 +11960,59 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       }
       const catalog = await dbInst.select().from(recoveryExercises);
 
-      // Pick exercises matched to the survivor's weakest domains and current level.
-      const ranked = [
-        ['physical', assessment.physical],
-        ['cognitive', assessment.cognitive],
-        ['speech', assessment.speech],
-        ['emotional', assessment.emotional],
-        ['memory', assessment.memory],
-      ].sort((a, b) => (a[1] as number) - (b[1] as number));
-      const physScore = assessment.physical as number;
+      // The survivor's self-assessment may narrow the approved catalog, but it
+      // never becomes a dosage or intensity instruction.
+      const physScore = effectiveAssessment.physical as number;
       const userLevel: 'beginner' | 'moderate' | 'advanced' =
         physScore <= 3 ? 'beginner' : physScore <= 6 ? 'moderate' : 'advanced';
 
-      const levelDose = (ex: any) => {
-        const sets = ex[`${userLevel}Sets`] ?? ex.beginnerSets ?? 2;
-        const reps = ex[`${userLevel}Reps`] ?? ex.beginnerReps ?? 10;
-        const hold = ex[`${userLevel}HoldSec`] ?? ex.beginnerHoldSec ?? 0;
-        return { sets, reps, hold };
-      };
-
-      // Pre-built realistic prescription drawn from the real catalog.
-      const pickFromCatalog = (): any[] => {
-        const opener = catalog.find((e: any) => e.category === 'spasticity' && e.slug === 'gentle-rocking');
-        const lowerSeated = catalog.filter((e: any) => e.category === 'lower' && e.position === 'seated');
-        const lowerStanding = catalog.filter((e: any) => e.category === 'lower' && e.position === 'standing');
-        const upperSeated = catalog.filter((e: any) => e.category === 'upper' && e.position === 'seated');
-        const hand = catalog.filter((e: any) => e.category === 'hand_fine_motor');
-        const stretches = catalog.filter((e: any) => e.category === 'stretch');
-
-        const picks: any[] = [];
-        if (opener) picks.push(opener);
-        // 2 lower body — seated for low scorers, standing for higher
-        const lowerPool = userLevel === 'beginner' ? lowerSeated : [...lowerSeated, ...lowerStanding];
-        picks.push(...lowerPool.slice(0, 2));
-        // 2 upper body
-        picks.push(...upperSeated.slice(0, 2));
-        // 1 hand/fine motor (always — survivors under-train this)
-        if (hand.length) picks.push(hand[0]);
-        // 1 stretch closer
-        if (stretches.length) picks.push(stretches[0]);
-
-        return picks.filter(Boolean).map((ex: any) => {
-          const { sets, reps, hold } = levelDose(ex);
-          return {
-            exerciseId: ex.id,
-            slug: ex.slug,
-            name: ex.name,
-            domain: ex.domain || 'physical',
-            sets,
-            reps,
-            holdSec: hold,
-            notes: ex.safetyNotes || ex.progressionRule || '',
-          };
-        });
-      }
+      const allowedLevels =
+        userLevel === 'beginner'
+          ? new Set(['beginner'])
+          : userLevel === 'moderate'
+            ? new Set(['beginner', 'moderate'])
+            : new Set(['beginner', 'moderate', 'advanced']);
+      const safeCatalog = catalog.filter((exercise: any) =>
+        allowedLevels.has(exercise.level) &&
+        typeof exercise.safetyNotes === 'string' &&
+        exercise.safetyNotes.trim().length > 0,
+      );
+      const fallbackExerciseSlugs = pickSafeExerciseSlugs(safeCatalog, userLevel);
 
       const apiKey = process.env.GEMINI_API_KEY || process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
-      let plan: any;
+      let plan: any = null;
 
-      const catalogList = catalog
+      const catalogList = safeCatalog
         .map((e: any) => `- ${e.slug} (${e.category}/${e.position}/${e.level}): ${e.name}`)
         .join('\n');
 
       if (apiKey) {
-         const prompt = `You are Sasquatch Coach — a hard-edged, deeply caring stroke recovery guide who speaks like a Southern raspy mountain man. Build a 7-day education, reflection, and clinician-approved routine planning draft for this survivor.
+        const prompt = `You are a recovery education assistant. Select approved library items for a clinician-review draft. Do not prescribe, dose, schedule, or give nutrition or medication guidance.
 
 SASQUATCH SCALE (1=lowest, 10=highest):
-- Physical: ${assessment.physical}/10
-- Cognitive: ${assessment.cognitive}/10
-- Speech: ${assessment.speech}/10
-- Emotional: ${assessment.emotional}/10
-- Memory: ${assessment.memory}/10
-${assessment.notes ? `Notes from survivor: ${assessment.notes}` : ''}
+ - Physical: ${effectiveAssessment.physical}/10
+ - Cognitive: ${effectiveAssessment.cognitive}/10
+ - Speech: ${effectiveAssessment.speech}/10
+ - Emotional: ${effectiveAssessment.emotional}/10
+ - Memory: ${effectiveAssessment.memory}/10
+ ${effectiveAssessment.notes ? `Notes from survivor: ${effectiveAssessment.notes}` : ''}
 
 GOALS:
 ${goals.map((g: any) => `- [${g.horizon}/${g.domain}] ${g.goal}`).join('\n') || '- (none captured)'}
 
 USER LEVEL (derived from physical score): ${userLevel}
 
-CRITICAL RULE: You MUST select exercises ONLY from this real platform catalog (use the slug field).
-Do NOT invent exercise names. Each prescribed exercise must reference a slug from this list:
+CRITICAL RULE: Select exercise slugs ONLY from this approved catalog. Do not invent or paraphrase items:
 
 ${catalogList}
 
-Output STRICT JSON only (no markdown fences). Schema:
+Output STRICT JSON only (no markdown fences), with exactly this schema:
 {
-  "summary": "1-2 sentence Sasquatch-voice opener",
-  "focusDomains": ["physical","cognitive",...],
-  "exercises": [
-    { "slug": "<one of the catalog slugs>", "sets": 3, "reps": 10, "holdSec": 0, "notes": "Sasquatch-voice form cue" }
-  ],
-  "brainGymMinutes": 15,
-  "mealTargets": {
-    "omega3Servings": 4,
-    "leafyGreensServings": 14,
-    "hydrationOz": 80,
-    "limit": ["added sugar","ultra-processed foods"]
-  },
-  "weeklySchedule": {
-    "Mon": ["...","..."], "Tue": [...], "Wed": [...], "Thu": [...],
-    "Fri": [...], "Sat": [...], "Sun": ["Active rest","Reflection"]
-  },
-  "tips": ["...","...","..."],
-  "safetyNote": "Not medical advice. Confirm with your doctor or therapist."
+  "exerciseSlugs": ["<one of the catalog slugs>"],
+  "focusDomains": ["physical","cognitive","speech","emotional","memory"]
 }
 
-For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 upper body, 1 hand/fine motor, 1 stretch closer. Match sets/reps/holdSec to the user level columns of each exercise.`;
+Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage, intensity, frequency, duration, meals, hydration, calories, supplements, medication guidance, progressions, schedules, or prescriptions.`;
 
         try {
           const r = await fetch(
@@ -11773,71 +12022,48 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 contents: [{ role: 'user', parts: [{ text: prompt }] }],
-                generationConfig: { temperature: 0.7, responseMimeType: 'application/json' },
+                generationConfig: { temperature: 0, responseMimeType: 'application/json' },
               }),
             }
           );
           if (r.ok) {
             const j: any = await r.json();
             const text = j?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-            try {
-              plan = JSON.parse(text);
-            } catch {
-              const m = text.match(/\{[\s\S]*\}/);
-              if (m) plan = JSON.parse(m[0]);
-            }
+            const m = text.match(/\{[\s\S]*\}/);
+            if (!m) throw new Error('Gemini returned no JSON object');
+            const draft = parseAiRecoveryPlanDraft(JSON.parse(m[0]));
+            plan = buildSafeRecoveryPlan({
+              catalog: safeCatalog,
+              exerciseSlugs: draft.exerciseSlugs,
+              focusDomains: draft.focusDomains,
+            });
           } else {
             console.error('Gemini plan call failed', r.status, await r.text());
           }
         } catch (err) {
-          console.error('Gemini plan error', err);
+          // An invalid model response is discarded, never partially merged
+          // into a plan. The deterministic catalog-only draft below remains
+          // available when the model is unavailable or unsafe.
+          console.warn('Gemini recovery plan draft rejected:', err);
         }
       }
 
       if (!plan) {
-        // Deterministic fallback so flow is never broken if AI is unavailable.
+        // Deterministic fallback so flow is never broken if AI is unavailable
+        // or its response fails validation.
         const domains = [
-          ['physical', assessment.physical],
-          ['cognitive', assessment.cognitive],
-          ['speech', assessment.speech],
-          ['emotional', assessment.emotional],
-          ['memory', assessment.memory],
+           ['physical', effectiveAssessment.physical],
+           ['cognitive', effectiveAssessment.cognitive],
+           ['speech', effectiveAssessment.speech],
+           ['emotional', effectiveAssessment.emotional],
+           ['memory', effectiveAssessment.memory],
         ].sort((a, b) => (a[1] as number) - (b[1] as number));
-        const weakest = domains.slice(0, 3).map((d) => d[0]);
-        plan = {
-          summary: "Built you a starter plan. We'll sharpen it together. Never zero — just one rep at a time.",
+        const weakest = domains.slice(0, 3).map((d) => String(d[0]));
+        plan = buildSafeRecoveryPlan({
+          catalog: safeCatalog,
+          exerciseSlugs: fallbackExerciseSlugs,
           focusDomains: weakest,
-          exercises: [
-            { name: 'Seated marches', domain: 'physical', sets: 3, reps: 12, notes: 'Slow controlled lifts.' },
-            { name: 'Sit-to-stand', domain: 'physical', sets: 3, reps: 8, notes: 'Use a sturdy chair.' },
-            { name: 'Word search drill', domain: 'cognitive', sets: 1, reps: 1, notes: '10 minutes.' },
-            { name: 'Reading aloud', domain: 'speech', sets: 1, reps: 1, notes: '5 minutes from any book.' },
-            { name: 'Box breathing', domain: 'emotional', sets: 4, reps: 4, notes: 'In 4 / hold 4 / out 4 / hold 4.' },
-            { name: 'Memory recall list', domain: 'memory', sets: 1, reps: 1, notes: 'Recite yesterday in order.' },
-          ],
-          brainGymMinutes: 15,
-          mealTargets: {
-            omega3Servings: 4,
-            leafyGreensServings: 14,
-            hydrationOz: 80,
-            limit: ['added sugar', 'ultra-processed foods'],
-          },
-          weeklySchedule: {
-            Mon: ['Physical reps', 'Brain Gym'],
-            Tue: ['Speech reading', 'Walk if able'],
-            Wed: ['Physical reps', 'Memory drill'],
-            Thu: ['Brain Gym', 'Box breathing'],
-            Fri: ['Physical reps', 'Speech reading'],
-            Sat: ['Long walk if able', 'Reflection'],
-            Sun: ['Active rest', 'Plan the week'],
-          },
-          tips: [
-            'Never zero. One rep counts.',
-            'Sleep is recovery — protect it.',
-            'Hydration first. Coffee second.',
-          ],
-          safetyNote: 'Not medical advice. Confirm with your doctor or therapist.',
-        };
+        });
       }
 
       // The plan and both funnel milestones are one logical operation. If a
@@ -11849,8 +12075,16 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
           userId,
           assessmentId: assessment.id,
           plan,
-        }).onConflictDoNothing({
+        }).onConflictDoUpdate({
           target: survivorPlans.assessmentId,
+          set: {
+            plan,
+             reviewStatus: 'pending',
+             reviewedBy: null,
+             reviewedAt: null,
+             reviewNotes: null,
+            generatedAt: drizzleSql`now()`,
+          },
         }).returning();
         if (!effectivePlan) {
           [effectivePlan] = await tx
@@ -11861,6 +12095,19 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
         }
         if (!effectivePlan) {
           throw new Error(`Recovery plan was not available for assessment ${assessment.id}`);
+        }
+        if (!isSafeRecoveryPlan(effectivePlan.plan)) {
+          [effectivePlan] = await tx
+            .update(survivorPlans)
+            .set({
+              plan,
+              reviewStatus: 'pending',
+              reviewedBy: null,
+              reviewedAt: null,
+              reviewNotes: null,
+            })
+            .where(eq(survivorPlans.id, effectivePlan.id))
+            .returning();
         }
         await recordRecoveryFunnelEvent(userId, "plan_generated", {
           planId: effectivePlan.id,

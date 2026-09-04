@@ -175,6 +175,10 @@ export default function RecoveryToday() {
           <p className="text-gray-400 text-base mb-6">
             One gentle recovery rep. Start where you are, and stop when you need to.
           </p>
+           <p className="text-xs text-gray-500 border border-[#222] rounded-md p-3 mb-4">
+             This is an optional starting point, not a prescription. Continue only
+             with activities your clinician or therapist has approved for you.
+           </p>
 
           <MedicalDisclaimerCard variant="full" />
 
