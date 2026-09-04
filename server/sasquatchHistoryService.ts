@@ -8,6 +8,25 @@ import { sql } from 'drizzle-orm';
 import { sendPushToUser } from './pushNotificationService';
 
 const HISTORY_LIMIT = 100;
+export const COACH_HISTORY_RANGE_DAYS = [7, 30, 90] as const;
+export type CoachHistoryRangeDays = (typeof COACH_HISTORY_RANGE_DAYS)[number];
+export const DEFAULT_COACH_HISTORY_RANGE_DAYS: CoachHistoryRangeDays = 7;
+
+export function parseCoachHistoryRangeDays(value: unknown): CoachHistoryRangeDays | null {
+  if (value === undefined || value === null) return DEFAULT_COACH_HISTORY_RANGE_DAYS;
+  const parsed = Number(value);
+  return COACH_HISTORY_RANGE_DAYS.includes(parsed as CoachHistoryRangeDays)
+    ? parsed as CoachHistoryRangeDays
+    : null;
+}
+
+function coachHistorySince(rangeDays: CoachHistoryRangeDays): Date {
+  return new Date(Date.now() - rangeDays * 24 * 60 * 60 * 1000);
+}
+
+function coachHistoryPeriodLabel(rangeDays: CoachHistoryRangeDays): string {
+  return `Last ${rangeDays} days`;
+}
 
 let schemaReady: Promise<void> | null = null;
 
@@ -266,8 +285,12 @@ async function upsertMemoryItem(
   `);
 }
 
-async function refreshCoachMemory(userId: string, preferences: CoachMemoryPreferences): Promise<void> {
-  const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+async function refreshCoachMemory(
+  userId: string,
+  preferences: CoachMemoryPreferences,
+  rangeDays: CoachHistoryRangeDays,
+): Promise<void> {
+  const since = coachHistorySince(rangeDays);
 
   if (preferences.includeCheckins) {
     const result = await db.execute(sql`
@@ -276,7 +299,7 @@ async function refreshCoachMemory(userId: string, preferences: CoachMemoryPrefer
       FROM daily_checkins
       WHERE user_id = ${userId} AND checkin_date >= ${since}
       ORDER BY checkin_date DESC
-      LIMIT 14
+      LIMIT 250
     `);
     for (const row of result.rows as any[]) {
       const details = [
@@ -309,7 +332,7 @@ async function refreshCoachMemory(userId: string, preferences: CoachMemoryPrefer
              COUNT(*) FILTER (WHERE reaction = 'skipped')::int AS skipped_count
       FROM routine_feedback
       WHERE user_id = ${userId}
-        AND date >= TO_CHAR(CURRENT_DATE - INTERVAL '6 days', 'YYYY-MM-DD')
+        AND date >= TO_CHAR(CURRENT_DATE - ${rangeDays - 1} * INTERVAL '1 day', 'YYYY-MM-DD')
       GROUP BY date
       ORDER BY date DESC
     `);
@@ -338,7 +361,7 @@ async function refreshCoachMemory(userId: string, preferences: CoachMemoryPrefer
       FROM recovery_journals
       WHERE user_id = ${userId} AND created_at >= ${since}
       ORDER BY created_at DESC
-      LIMIT 14
+      LIMIT 250
     `);
     for (const row of result.rows as any[]) {
       await upsertMemoryItem(userId, {
@@ -357,9 +380,9 @@ async function refreshCoachMemory(userId: string, preferences: CoachMemoryPrefer
     const result = await db.execute(sql`
       SELECT id, created_at, horizon, domain, goal, status
       FROM survivor_goals
-      WHERE user_id = ${userId} AND status <> 'dropped'
+      WHERE user_id = ${userId} AND status <> 'dropped' AND created_at >= ${since}
       ORDER BY created_at DESC
-      LIMIT 20
+      LIMIT 250
     `);
     for (const row of result.rows as any[]) {
       await upsertMemoryItem(userId, {
@@ -379,9 +402,9 @@ async function refreshCoachMemory(userId: string, preferences: CoachMemoryPrefer
       SELECT id, generated_at, plan->>'summary' AS summary,
              plan->'focusDomains' AS focus_domains
       FROM survivor_plans
-      WHERE user_id = ${userId}
+      WHERE user_id = ${userId} AND generated_at >= ${since}
       ORDER BY generated_at DESC
-      LIMIT 1
+      LIMIT 250
     `);
     for (const row of result.rows as any[]) {
       const domains = Array.isArray(row.focus_domains)
@@ -401,19 +424,23 @@ async function refreshCoachMemory(userId: string, preferences: CoachMemoryPrefer
   }
 }
 
-export async function getCoachMemory(userId: string): Promise<{
+export async function getCoachMemory(
+  userId: string,
+  rangeDays: CoachHistoryRangeDays = DEFAULT_COACH_HISTORY_RANGE_DAYS,
+): Promise<{
   preferences: CoachMemoryPreferences;
   items: CoachMemoryItem[];
 }> {
   await initSasquatchSchema();
   const preferences = await getCoachMemoryPreferences(userId);
-  await refreshCoachMemory(userId, preferences);
+  await refreshCoachMemory(userId, preferences, rangeDays);
+  const since = coachHistorySince(rangeDays);
   const result = await db.execute(sql`
     SELECT id, source_type, source_id, occurred_at, title, content, kind, included, is_edited
     FROM coach_memory_items
-    WHERE user_id = ${userId}
+    WHERE user_id = ${userId} AND occurred_at >= ${since}
     ORDER BY COALESCE(occurred_at, created_at) DESC, id DESC
-    LIMIT 100
+    LIMIT 500
   `);
   return {
     preferences,
@@ -497,13 +524,16 @@ export async function deleteCoachMemoryItem(userId: string, itemId: number): Pro
   return true;
 }
 
-export async function getWeeklyCoachSummary(userId: string): Promise<{
+export async function getWeeklyCoachSummary(
+  userId: string,
+  rangeDays: CoachHistoryRangeDays = DEFAULT_COACH_HISTORY_RANGE_DAYS,
+): Promise<{
   periodLabel: string;
   facts: CoachMemoryItem[];
   savedPlans: CoachMemoryItem[];
   observations: string[];
 }> {
-  const memory = await getCoachMemory(userId);
+  const memory = await getCoachMemory(userId, rangeDays);
   const included = memory.items.filter((item) => item.included);
   const facts = included.filter((item) => item.kind === "survivor_fact");
   const savedPlans = included.filter((item) => item.kind === "saved_plan");
@@ -514,13 +544,13 @@ export async function getWeeklyCoachSummary(userId: string): Promise<{
       .filter(Boolean),
   );
   const observations = activityDates.size
-    ? [`You left approved recovery signals on ${activityDates.size} of the last 7 days.`]
-    : ["There are no approved recovery signals from the last 7 days yet."];
+    ? [`You left approved recovery signals on ${activityDates.size} of the ${rangeDays}-day review period.`]
+    : [`There are no approved recovery signals from the ${rangeDays}-day review period yet.`];
   if (facts.some((item) => item.sourceType === "journal")) {
     observations.push("Your approved journal entries are included as survivor-entered words, not as clinical conclusions.");
   }
   return {
-    periodLabel: "Last 7 days",
+    periodLabel: coachHistoryPeriodLabel(rangeDays),
     facts,
     savedPlans,
     observations,

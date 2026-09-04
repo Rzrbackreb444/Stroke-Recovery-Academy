@@ -10261,8 +10261,15 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   app.get('/api/coach/memory/summary', isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req)!;
-      const { getWeeklyCoachSummary } = await import('./sasquatchHistoryService');
-      res.json(await getWeeklyCoachSummary(userId));
+      const { getWeeklyCoachSummary, parseCoachHistoryRangeDays } = await import('./sasquatchHistoryService');
+      const rawRangeDays = Array.isArray(req.query?.rangeDays)
+        ? req.query.rangeDays[0]
+        : req.query?.rangeDays;
+      const rangeDays = parseCoachHistoryRangeDays(rawRangeDays);
+      if (rangeDays === null) {
+        return res.status(400).json({ message: 'rangeDays must be one of 7, 30, or 90' });
+      }
+      res.json(await getWeeklyCoachSummary(userId, rangeDays));
     } catch (error: any) {
       console.error('Coach memory summary error:', error?.message ?? error);
       res.status(500).json({ message: 'Failed to create Coach summary' });
