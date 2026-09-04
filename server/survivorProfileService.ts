@@ -189,7 +189,7 @@ export async function getCanonicalSurvivorProfile(
         set: {
           ...normalized,
           profileProvenance: baseProvenance,
-          updatedAt: normalizedAt as any,
+          updatedAt: new Date(normalizedAt),
         } as any,
       })
       .returning();
@@ -250,7 +250,7 @@ export async function updateCanonicalSurvivorProfile(
       set: {
         ...cleaned,
         profileProvenance,
-        updatedAt: now as any,
+        updatedAt: new Date(now),
       } as any,
     })
     .returning();

@@ -72,7 +72,7 @@ async function postRecovery(
   path: string,
   payload: Record<string, unknown>,
   survivorCookie: string,
-): Promise<void> {
+): Promise<any> {
   const { response, body } = await jsonRequest(
     baseUrl,
     path,
@@ -80,6 +80,37 @@ async function postRecovery(
     survivorCookie,
   );
   assert.equal(response.status, 200, `${path} failed: ${JSON.stringify(body)}`);
+  return body;
+}
+
+function assertSafeEducationPlan(plan: any): void {
+  assert.equal(plan?.planVersion, 2);
+  assert.equal(plan?.planType, "education_and_clinician_review");
+  assert.ok(Array.isArray(plan?.exercises) && plan.exercises.length > 0);
+  assert.deepEqual(Object.keys(plan).sort(), [
+    "education",
+    "exercises",
+    "focusDomains",
+    "planType",
+    "planVersion",
+    "safetyNote",
+    "summary",
+    "tips",
+    "weeklyReflection",
+  ]);
+  assert.deepEqual(Object.keys(plan.education).sort(), ["brainGym", "nutrition"]);
+  for (const exercise of plan.exercises) {
+    assert.deepEqual(Object.keys(exercise).sort(), [
+      "clinicianReviewRequired",
+      "description",
+      "domain",
+      "exerciseId",
+      "name",
+      "safetyNotes",
+      "slug",
+    ]);
+  }
+  assert.doesNotMatch(JSON.stringify(plan), /invented-route-exercise|hydrationOz|"sets"|"dosage"/i);
 }
 
 async function installAssessmentFunnelFailure(pool: { query: (text: string) => Promise<unknown> }): Promise<void> {
@@ -186,10 +217,18 @@ test(
         new URL("../migrations/0011_recovery_plan_assessment_unique.sql", import.meta.url),
         "utf8",
       );
+      const canonicalProfileMigration = await readFile(
+        new URL("../migrations/0014_canonical_survivor_profile.sql", import.meta.url),
+        "utf8",
+      );
       // The integration database may have the schema table but not the latest
       // generated migration. Applying it here keeps the route assertions
       // honest and exercises the duplicate-free rollout path.
       await pool.query(planMigration);
+      // The route under test reads and updates the canonical profile during
+      // reassessment and plan generation. Keep this fixture compatible with
+      // databases created before the canonical profile migration landed.
+      await pool.query(canonicalProfileMigration);
 
       const issuer = "https://recovery-funnel-test.invalid";
       process.env.ISSUER_URL = issuer;
@@ -361,10 +400,25 @@ test(
       ]);
 
       // Keep the plan test deterministic even when the workspace has a Gemini
-      // secret configured. The route should use its documented fallback.
+      // secret configured. Each request receives a deliberately different
+      // unsafe model response so the route-level fallback is exercised.
       const originalFetch = globalThis.fetch;
       const originalGeminiKey = process.env.GEMINI_API_KEY;
       process.env.GEMINI_API_KEY = "recovery-funnel-test-key";
+      const mockedGeminiDrafts = [
+        JSON.stringify({ malformed: true }),
+        JSON.stringify({
+          exerciseSlugs: ["invented-route-exercise"],
+          focusDomains: ["physical"],
+        }),
+        JSON.stringify({
+          exerciseSlugs: ["invented-route-exercise"],
+          focusDomains: ["physical"],
+          dosage: { sets: 3, reps: 10 },
+          mealTargets: { hydrationOz: 80 },
+        }),
+      ];
+      let mockedGeminiCalls = 0;
       let concurrentPlanRequests = 0;
       let holdConcurrentPlanRequests = false;
       let releaseConcurrentPlanRequests!: () => void;
@@ -374,6 +428,7 @@ test(
       globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
         const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
         if (url.includes("generativelanguage.googleapis.com")) {
+          const mockedDraft = mockedGeminiDrafts[Math.min(mockedGeminiCalls++, mockedGeminiDrafts.length - 1)];
           if (holdConcurrentPlanRequests) {
             concurrentPlanRequests += 1;
             if (concurrentPlanRequests === 2) {
@@ -381,7 +436,12 @@ test(
             }
             await concurrentPlanRequestsReady;
           }
-          return new Response("", { status: 503 });
+          return new Response(
+            JSON.stringify({
+              candidates: [{ content: { parts: [{ text: mockedDraft }] } }],
+            }),
+            { status: 200, headers: { "Content-Type": "application/json" } },
+          );
         }
         return originalFetch(input, init);
       }) as typeof fetch;
@@ -417,6 +477,8 @@ test(
 
         // Hold both plan requests in the same generation step so neither can
         // accidentally pass only because the other happened to finish first.
+        // Their mocked Gemini replies are invented and prescription-shaped,
+        // respectively; both must fall back to the same validated draft.
         holdConcurrentPlanRequests = true;
         const concurrentPlans = await Promise.all([
           jsonRequest(
@@ -435,9 +497,31 @@ test(
         holdConcurrentPlanRequests = false;
         for (const result of concurrentPlans) {
           assert.equal(result.response.status, 200, `concurrent plan failed: ${JSON.stringify(result.body)}`);
+          assertSafeEducationPlan(result.body.plan);
         }
+        assert.equal(mockedGeminiCalls, 3, "all malformed and unsafe Gemini fixtures were exercised");
         assert.deepEqual(concurrentPlans[0].body.plan, concurrentPlans[1].body.plan);
-        assert.equal(concurrentPlans[0].body.generatedAt, concurrentPlans[1].body.generatedAt);
+        for (const result of concurrentPlans) {
+          assert.equal(typeof result.body.generatedAt, "string");
+          assert.ok(!Number.isNaN(Date.parse(result.body.generatedAt)));
+        }
+
+        const persistedPlan = await db.execute(sql`
+          SELECT plan
+            FROM survivor_plans
+           WHERE user_id = ${survivorId}
+             AND assessment_id = (
+               SELECT id
+                 FROM sasquatch_assessments
+                WHERE user_id = ${survivorId}
+                ORDER BY taken_at DESC, id DESC
+                LIMIT 1
+             )
+        `);
+        assert.equal(persistedPlan.rows.length, 1);
+        const storedPlan = (persistedPlan.rows[0] as { plan: unknown }).plan;
+        assertSafeEducationPlan(storedPlan);
+        assert.deepEqual(storedPlan, concurrentPlans[0].body.plan);
 
         const planState = await db.execute(sql`
           SELECT COUNT(*)::int AS count,
@@ -479,8 +563,16 @@ test(
           ],
         );
 
-        await postRecovery(baseUrl, "/api/recovery/plan/generate", {}, survivorCookie);
-        await postRecovery(baseUrl, "/api/recovery/plan/generate", {}, survivorCookie);
+        const retryPlans = await Promise.all([
+          postRecovery(baseUrl, "/api/recovery/plan/generate", {}, survivorCookie),
+          postRecovery(baseUrl, "/api/recovery/plan/generate", {}, survivorCookie),
+        ]);
+        for (const retry of retryPlans) {
+          assertSafeEducationPlan(retry.plan);
+        }
+        assert.deepEqual(retryPlans[0].plan, storedPlan);
+        assert.deepEqual(retryPlans[1].plan, storedPlan);
+        assert.equal(mockedGeminiCalls, 3, "safe retries should reuse the validated education draft");
 
         // Exercise the rollout itself, not only the schema declaration. A
         // clean database should install the index, while legacy duplicates
