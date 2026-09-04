@@ -5,6 +5,6 @@ export const modules: ModuleMap = {
   "./components/mockups/home-breakmold/Homepage.tsx": () => import("../components/mockups/home-breakmold/Homepage.tsx"),
   "./components/mockups/home-clean/Homepage.tsx": () => import("../components/mockups/home-clean/Homepage.tsx"),
   "./components/mockups/home-hybrid/Homepage.tsx": () => import("../components/mockups/home-hybrid/Homepage.tsx"),
-  "./components/mockups/home-warm/Homepage.tsx": () => import("../components/mockups/home-warm/Homepage.tsx"),
-  "./components/mockups/reflections/ReflectionsFlow.tsx": () => import("../components/mockups/reflections/ReflectionsFlow.tsx")
+  "./components/mockups/reflections/ReflectionsFlow.tsx": () => import("../components/mockups/reflections/ReflectionsFlow.tsx"),
+  "./components/mockups/home-warm/Homepage.tsx": () => import("../components/mockups/home-warm/Homepage.tsx")
 };

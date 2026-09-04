@@ -11325,14 +11325,16 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
        const reviewHistory = latestPlan && safePlan
          ? await dbInst
            .select({
+             id: recoveryPlanReviews.id,
              status: recoveryPlanReviews.status,
              actorType: recoveryPlanReviews.actorType,
+             actorId: recoveryPlanReviews.actorId,
              notes: recoveryPlanReviews.notes,
              createdAt: recoveryPlanReviews.createdAt,
            })
            .from(recoveryPlanReviews)
            .where(eq(recoveryPlanReviews.planId, latestPlan.id))
-           .orderBy(desc(recoveryPlanReviews.createdAt))
+           .orderBy(desc(recoveryPlanReviews.createdAt), desc(recoveryPlanReviews.id))
          : [];
       const hasPlan = !!safePlan;
       const hasGoals = goals.length > 0;
@@ -11354,6 +11356,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         planGeneratedAt: safePlan ? latestPlan?.generatedAt || null : null,
          clinicianReview: safePlan && latestPlan ? {
            status: latestPlan.reviewStatus,
+           reviewedBy: latestPlan.reviewedBy,
            reviewedAt: latestPlan.reviewedAt,
            notes: latestPlan.reviewNotes,
            history: reviewHistory,
@@ -11874,6 +11877,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
           id: review.id,
           planId: review.planId,
           status: review.status,
+          actorId: review.actorId,
           actorType: review.actorType,
           notes: review.notes,
           createdAt: review.createdAt,
