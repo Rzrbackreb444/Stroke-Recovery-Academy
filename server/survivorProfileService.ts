@@ -215,18 +215,23 @@ export async function updateCanonicalSurvivorProfile(
   }
 
   // The long intake stores simple goal strings while Recovery Onboarding
-  // stores horizon/domain metadata. Keep the structured canonical input in
-  // sync when a survivor corrects their goals in the profile editor.
+  // stores horizon/domain metadata. Keep both representations synchronized
+  // when a survivor corrects their goals in the profile editor.
   const [existing] = await database
     .select()
     .from(userProfiles)
     .where(eq(userProfiles.userId, userId))
     .limit(1);
+  if (Array.isArray(cleaned.goalDetails) && !Array.isArray(cleaned.recoveryGoals)) {
+    cleaned.recoveryGoals = cleaned.goalDetails.map((detail: any) => detail.goal);
+  }
   if (Array.isArray(cleaned.recoveryGoals) && !cleaned.goalDetails) {
     const existingDetails = (existing?.goalDetails ?? []) as Array<any>;
-    cleaned.goalDetails = cleaned.recoveryGoals.map((goal: string) => {
-      const prior = existingDetails.find((detail) => detail.goal === goal);
-      return prior ?? { horizon: "short", domain: "other", goal, status: "active" };
+    cleaned.goalDetails = cleaned.recoveryGoals.map((goal: string, index: number) => {
+      const prior = existingDetails.find((detail) => detail.goal === goal) ?? existingDetails[index];
+      return prior
+        ? { ...prior, goal }
+        : { horizon: "short", domain: "other", goal, status: "active" };
     });
   }
 

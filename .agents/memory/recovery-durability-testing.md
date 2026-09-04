@@ -38,3 +38,15 @@ pool request can succeed.
 **How to apply:** Keep the listener limited to the local node-postgres durability
 configuration and verify a retry obtains a different backend PID after the failed
 transaction.
+
+Route-level recovery integration tests may run against a database that has only
+part of the migration chain applied; fixtures must apply every migration required
+by the route's selected schema fields, not only the migration under test.
+
+**Why:** The recovery funnel fixture previously applied the assessment and
+canonical-profile migrations but omitted the later plan-review columns, causing
+valid route coverage to fail before exercising its behavior.
+
+**How to apply:** When a recovery route starts selecting or updating newly added
+plan fields, update the fixture's idempotent migration setup before diagnosing the
+route as broken.

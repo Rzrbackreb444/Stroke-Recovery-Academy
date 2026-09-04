@@ -221,6 +221,10 @@ test(
         new URL("../migrations/0014_canonical_survivor_profile.sql", import.meta.url),
         "utf8",
       );
+      const recoveryPlanReviewsMigration = await readFile(
+        new URL("../migrations/0015_recovery_plan_reviews.sql", import.meta.url),
+        "utf8",
+      );
       // The integration database may have the schema table but not the latest
       // generated migration. Applying it here keeps the route assertions
       // honest and exercises the duplicate-free rollout path.
@@ -229,6 +233,10 @@ test(
       // reassessment and plan generation. Keep this fixture compatible with
       // databases created before the canonical profile migration landed.
       await pool.query(canonicalProfileMigration);
+      // Plan generation also resets review state when replacing a legacy draft.
+      // Apply the review migration so this route-level fixture matches the
+      // current survivor_plans shape.
+      await pool.query(recoveryPlanReviewsMigration);
 
       const issuer = "https://recovery-funnel-test.invalid";
       process.env.ISSUER_URL = issuer;
@@ -501,13 +509,18 @@ test(
         }
         assert.equal(mockedGeminiCalls, 3, "all malformed and unsafe Gemini fixtures were exercised");
         assert.deepEqual(concurrentPlans[0].body.plan, concurrentPlans[1].body.plan);
+        assert.equal(
+          concurrentPlans[0].body.generatedAt,
+          concurrentPlans[1].body.generatedAt,
+          "concurrent plan responses must share one generation timestamp",
+        );
         for (const result of concurrentPlans) {
           assert.equal(typeof result.body.generatedAt, "string");
           assert.ok(!Number.isNaN(Date.parse(result.body.generatedAt)));
         }
 
         const persistedPlan = await db.execute(sql`
-          SELECT plan
+          SELECT plan, generated_at
             FROM survivor_plans
            WHERE user_id = ${survivorId}
              AND assessment_id = (
@@ -519,9 +532,15 @@ test(
              )
         `);
         assert.equal(persistedPlan.rows.length, 1);
-        const storedPlan = (persistedPlan.rows[0] as { plan: unknown }).plan;
+        const persistedPlanRow = persistedPlan.rows[0] as { plan: unknown; generated_at: string | Date };
+        const storedPlan = persistedPlanRow.plan;
         assertSafeEducationPlan(storedPlan);
         assert.deepEqual(storedPlan, concurrentPlans[0].body.plan);
+        assert.equal(
+          new Date(persistedPlanRow.generated_at).toISOString(),
+          new Date(concurrentPlans[0].body.generatedAt).toISOString(),
+          "concurrent plan responses must share the persisted generation timestamp",
+        );
 
         const planState = await db.execute(sql`
           SELECT COUNT(*)::int AS count,
@@ -572,6 +591,8 @@ test(
         }
         assert.deepEqual(retryPlans[0].plan, storedPlan);
         assert.deepEqual(retryPlans[1].plan, storedPlan);
+        assert.equal(retryPlans[0].generatedAt, concurrentPlans[0].body.generatedAt);
+        assert.equal(retryPlans[1].generatedAt, concurrentPlans[0].body.generatedAt);
         assert.equal(mockedGeminiCalls, 3, "safe retries should reuse the validated education draft");
 
         // Exercise the rollout itself, not only the schema declaration. A

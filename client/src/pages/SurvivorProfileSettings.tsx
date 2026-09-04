@@ -14,7 +14,7 @@ import {
   ShieldCheck,
   CheckCircle2,
 } from "lucide-react";
-import { useSurvivorProfile } from "@/hooks/useSurvivorProfile";
+import { useSurvivorProfile, type SurvivorGoalDetail } from "@/hooks/useSurvivorProfile";
 import { useToast } from "@/hooks/use-toast";
 
 export default function SurvivorProfileSettings() {
@@ -27,7 +27,12 @@ export default function SurvivorProfileSettings() {
 
   useEffect(() => {
     if (profile && !hydrated) {
-      setDraft(profile);
+      const details = normalizeGoalDetails(profile.recoveryGoals, profile.goalDetails);
+      setDraft({
+        ...profile,
+        recoveryGoals: details.map((detail) => detail.goal),
+        goalDetails: details,
+      });
       setHydrated(true);
     }
   }, [profile, hydrated]);
@@ -58,7 +63,15 @@ export default function SurvivorProfileSettings() {
         profileProvenance,
         ...patchable
       } = draft;
-      await patch({ ...patchable, profileSource: "survivor_profile_settings" });
+      const saved = await patch({ ...patchable, profileSource: "survivor_profile_settings" });
+      if (saved?.profile) {
+        const details = normalizeGoalDetails(saved.profile.recoveryGoals, saved.profile.goalDetails);
+        setDraft({
+          ...saved.profile,
+          recoveryGoals: details.map((detail) => detail.goal),
+          goalDetails: details,
+        });
+      }
       toast({ title: "Saved", description: "Your profile is up to date." });
     } catch (e: any) {
       toast({ title: "Save failed", description: e?.message || "Please try again.", variant: "destructive" });
@@ -78,6 +91,27 @@ export default function SurvivorProfileSettings() {
   };
 
   const setField = (k: string, v: any) => setDraft((d: any) => ({ ...d, [k]: v }));
+  const goalDetails = normalizeGoalDetails(draft.recoveryGoals, draft.goalDetails);
+  const setGoalText = (value: string) => {
+    const recoveryGoals = splitLines(value);
+    setDraft((current: any) => ({
+      ...current,
+      recoveryGoals,
+      goalDetails: normalizeGoalDetails(recoveryGoals, current.goalDetails),
+    }));
+  };
+  const setGoalDetail = (index: number, change: Partial<SurvivorGoalDetail>) => {
+    setDraft((current: any) => {
+      const next = normalizeGoalDetails(current.recoveryGoals, current.goalDetails);
+      if (!next[index]) return current;
+      next[index] = { ...next[index], ...change };
+      return {
+        ...current,
+        recoveryGoals: next.map((detail) => detail.goal),
+        goalDetails: next,
+      };
+    });
+  };
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
@@ -206,11 +240,93 @@ export default function SurvivorProfileSettings() {
             <Section title="Current focus">
               <Field label="Goals (one per line)" field="recoveryGoals" provenance={draft.profileProvenance}>
                 <Textarea
-                  value={(draft.recoveryGoals ?? []).join("\n")}
-                  onChange={(e) => setField("recoveryGoals", splitLines(e.target.value))}
+                  value={goalDetails.map((detail) => detail.goal).join("\n")}
+                  onChange={(e) => setGoalText(e.target.value)}
                   className="bg-[#0D0D0D] border-[#333] min-h-[90px]"
                   data-testid="textarea-settings-goals"
                 />
+                {goalDetails.length > 0 && (
+                  <div className="space-y-3 rounded-md border border-[#333] bg-[#0D0D0D] p-3">
+                    <div>
+                      <div className="text-xs font-semibold text-gray-300">Organize each goal</div>
+                      <div className="text-[11px] text-gray-500">
+                        Choose how Coach, Today, and your next generated plan should understand it.
+                      </div>
+                    </div>
+                    {goalDetails.map((detail, index) => (
+                      <div
+                        key={`${detail.goal}-${index}`}
+                        className="space-y-3 rounded-md border border-[#292929] bg-[#151515] p-3"
+                        data-testid={`goal-settings-card-${index}`}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="text-xs font-semibold text-gray-300">
+                            Goal {index + 1}
+                            {detail.status && (
+                              <span className="ml-2 font-normal text-gray-500">
+                                Status: {detail.status}
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-[10px] text-gray-600">Text stays above</span>
+                        </div>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="space-y-2">
+                            <div className="text-[11px] uppercase tracking-wide text-gray-500">Horizon</div>
+                            <div className="flex gap-2">
+                              {([
+                                ["short", "Short term"],
+                                ["long", "Long term"],
+                              ] as const).map(([value, label]) => (
+                                <button
+                                  key={value}
+                                  type="button"
+                                  onClick={() => setGoalDetail(index, { horizon: value })}
+                                  className={`rounded-md border px-3 py-1.5 text-xs ${
+                                    detail.horizon === value
+                                      ? "border-[#E2741B] bg-[#E2741B]/10 text-white"
+                                      : "border-[#333] text-gray-400"
+                                  }`}
+                                  data-testid={`button-settings-goal-${index}-horizon-${value}`}
+                                >
+                                  {label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="text-[11px] uppercase tracking-wide text-gray-500">Recovery area</div>
+                            <div className="flex flex-wrap gap-1.5">
+                              {([
+                                ["physical", "Physical"],
+                                ["cognitive", "Cognitive"],
+                                ["speech", "Speech"],
+                                ["emotional", "Emotional"],
+                                ["memory", "Memory"],
+                                ["other", "Other"],
+                              ] as const).map(([value, label]) => (
+                                <button
+                                  key={value}
+                                  type="button"
+                                  onClick={() => setGoalDetail(index, { domain: value })}
+                                  className={`rounded-md border px-2.5 py-1.5 text-xs ${
+                                    detail.domain === value
+                                      ? "border-[#E2741B] bg-[#E2741B]/10 text-white"
+                                      : "border-[#333] text-gray-400"
+                                  }`}
+                                  data-testid={`button-settings-goal-${index}-domain-${value}`}
+                                >
+                                  {label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    <ProfileMeta field="goalDetails" provenance={draft.profileProvenance} />
+                  </div>
+                )}
               </Field>
               <Field label="What's hardest right now? (one per line)" field="currentChallenges" provenance={draft.profileProvenance}>
                 <Textarea
@@ -498,7 +614,43 @@ function splitLines(value: string): string[] {
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean)
-    .slice(0, 40);
+    .slice(0, 20);
+}
+
+const GOAL_HORIZONS = ["short", "long"] as const;
+const GOAL_DOMAINS = ["physical", "cognitive", "speech", "emotional", "memory", "other"] as const;
+
+function normalizeGoalDetails(
+  recoveryGoals: unknown,
+  existingDetails: unknown,
+): SurvivorGoalDetail[] {
+  const details = Array.isArray(existingDetails) ? existingDetails : [];
+  const goals = Array.isArray(recoveryGoals) && recoveryGoals.length > 0
+    ? recoveryGoals.filter((goal): goal is string => typeof goal === "string").map((goal) => goal.trim()).filter(Boolean)
+    : details
+      .filter((detail): detail is Record<string, unknown> => !!detail && typeof detail === "object")
+      .map((detail) => typeof detail.goal === "string" ? detail.goal.trim() : "")
+      .filter(Boolean);
+
+  return goals.map((goal, index) => {
+    const sameText = details.find(
+      (detail) => !!detail && typeof detail === "object" && (detail as any).goal === goal,
+    ) as Record<string, unknown> | undefined;
+    const byPosition = details[index] as Record<string, unknown> | undefined;
+    const prior = sameText ?? byPosition;
+    const horizon = GOAL_HORIZONS.includes(prior?.horizon as typeof GOAL_HORIZONS[number])
+      ? prior?.horizon as SurvivorGoalDetail["horizon"]
+      : "short";
+    const domain = GOAL_DOMAINS.includes(prior?.domain as typeof GOAL_DOMAINS[number])
+      ? prior?.domain as SurvivorGoalDetail["domain"]
+      : "other";
+    return {
+      horizon,
+      domain,
+      goal,
+      status: typeof prior?.status === "string" ? prior.status : "active",
+    };
+  });
 }
 
 function ProfileMeta({

@@ -105,6 +105,12 @@ export async function generateCoachResponse(
     profile?: {
       preferredName?: string | null;
       goals?: string[];
+      goalDetails?: Array<{
+        horizon: "short" | "long";
+        domain: "physical" | "cognitive" | "speech" | "emotional" | "memory" | "other";
+        goal: string;
+        status?: string;
+      }>;
       challenges?: string[];
       deficits?: Record<string, number> | null;
       assessmentScores?: Record<string, number> | null;
@@ -157,6 +163,14 @@ export async function generateCoachResponse(
         if (userContext.profile) {
           const profile = userContext.profile;
           if (profile.goals?.length) contextLines.push(`Current survivor goals: ${profile.goals.slice(0, 8).join(', ')}.`);
+          if (profile.goalDetails?.length) {
+            contextLines.push(
+              `Structured survivor goals (horizon/recovery area/status): ${profile.goalDetails
+                .slice(0, 8)
+                .map((goal) => `[${goal.horizon}/${goal.domain}${goal.status ? `/${goal.status}` : ""}] ${goal.goal}`)
+                .join("; ")}.`,
+            );
+          }
           if (profile.challenges?.length) contextLines.push(`Current challenges the survivor named: ${profile.challenges.slice(0, 8).join(', ')}.`);
           if (profile.dailyTimeBudgetMinutes) contextLines.push(`Their realistic daily recovery time is ${profile.dailyTimeBudgetMinutes} minutes.`);
           if (profile.energyPattern) contextLines.push(`Their sharpest time of day is ${profile.energyPattern}.`);

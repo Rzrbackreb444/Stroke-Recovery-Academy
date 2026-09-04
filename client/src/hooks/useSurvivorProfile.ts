@@ -14,6 +14,13 @@ export type SurvivorDeficits = {
   sensory?: number;
 };
 
+export type SurvivorGoalDetail = {
+  horizon: "short" | "long";
+  domain: "physical" | "cognitive" | "speech" | "emotional" | "memory" | "other";
+  goal: string;
+  status?: string;
+};
+
 export type SurvivorProfile = {
   id: number;
   userId: string;
@@ -26,12 +33,7 @@ export type SurvivorProfile = {
   recoveryGoals: string[] | null;
   currentChallenges: string[] | null;
   customGoal: string | null;
-  goalDetails: Array<{
-    horizon: "short" | "long";
-    domain: "physical" | "cognitive" | "speech" | "emotional" | "memory" | "other";
-    goal: string;
-    status?: string;
-  }> | null;
+  goalDetails: SurvivorGoalDetail[] | null;
   assessmentScores: {
     physical?: number;
     cognitive?: number;

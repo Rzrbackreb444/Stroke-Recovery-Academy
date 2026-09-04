@@ -10018,6 +10018,12 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         profile?: {
           preferredName?: string | null;
           goals?: string[];
+           goalDetails?: Array<{
+             horizon: "short" | "long";
+             domain: "physical" | "cognitive" | "speech" | "emotional" | "memory" | "other";
+             goal: string;
+             status?: string;
+           }>;
           challenges?: string[];
           deficits?: Record<string, number> | null;
           assessmentScores?: Record<string, number> | null;
@@ -10091,6 +10097,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
                 ...(survivorProfile.recoveryGoals ?? []),
                 ...(survivorProfile.customGoal ? [survivorProfile.customGoal] : []),
               ],
+               goalDetails: survivorProfile.goalDetails ?? [],
               challenges: survivorProfile.currentChallenges ?? [],
               deficits: survivorProfile.deficits as Record<string, number> | null,
               assessmentScores: survivorProfile.assessmentScores as Record<string, number> | null,
@@ -11445,7 +11452,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         mobilityAids?: string[] | null;
         equipment?: string[] | null;
         recoveryGoals?: string[] | null;
-         goalDetails?: Array<{ goal: string; domain: string; horizon: string }> | null;
+          goalDetails?: Array<{ goal: string; domain: string; horizon: string; status?: string }> | null;
          assessmentScores?: Record<string, number> | null;
          assessmentNotes?: string | null;
         dailyTimeBudgetMinutes?: number | null;
@@ -11504,6 +11511,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         || (profile?.mobilityAids?.length ?? 0) > 0
         || (profile?.equipment?.length ?? 0) > 0
         || (profile?.recoveryGoals?.length ?? 0) > 0
+         || (profile?.goalDetails?.length ?? 0) > 0
         || profile?.dailyTimeBudgetMinutes
         || profile?.energyPattern
       );
@@ -11517,6 +11525,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         timeBudgetMinutes: number | null;
         energyPattern: string | null;
         goals: string[];
+        goalDetails: Array<{ goal: string; domain: string; horizon: string; status?: string }>;
         equipment: string[];
         mobilityAids: string[];
       } = {
@@ -11528,6 +11537,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         timeBudgetMinutes: profile?.dailyTimeBudgetMinutes ?? null,
         energyPattern: profile?.energyPattern ?? null,
         goals: profile?.recoveryGoals ?? [],
+        goalDetails: profile?.goalDetails ?? [],
         equipment: profile?.equipment ?? [],
         mobilityAids: profile?.mobilityAids ?? [],
       };
@@ -11930,9 +11940,15 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         .where(and(eq(survivorPlans.userId, userId), eq(survivorPlans.assessmentId, assessment.id)))
         .orderBy(desc(survivorPlans.generatedAt))
         .limit(1);
-      const scoreUpdatedAt = profile.profileProvenance?.assessmentScores?.updatedAt;
-      const planIsCurrent = !existingPlan || !scoreUpdatedAt
-        || new Date(scoreUpdatedAt).getTime() <= new Date(existingPlan.generatedAt).getTime();
+       const scoreUpdatedAt = profile.profileProvenance?.assessmentScores?.updatedAt;
+       const goalsUpdatedAt = profile.profileProvenance?.goalDetails?.updatedAt
+         ?? profile.profileProvenance?.recoveryGoals?.updatedAt;
+       const latestPlanInputUpdatedAt = [scoreUpdatedAt, goalsUpdatedAt]
+         .filter((value): value is string => !!value)
+         .map((value) => new Date(value).getTime())
+         .reduce((latest, value) => Math.max(latest, value), 0);
+       const planIsCurrent = !existingPlan || latestPlanInputUpdatedAt === 0
+         || latestPlanInputUpdatedAt <= new Date(existingPlan.generatedAt).getTime();
       if (existingPlan?.plan && planIsCurrent && isSafeRecoveryPlan(existingPlan.plan)) {
         // A retry may be completing a plan written by an older request. Keep
         // both milestone repairs atomic so a failed second write does not
@@ -12009,7 +12025,7 @@ SASQUATCH SCALE (1=lowest, 10=highest):
  ${effectiveAssessment.notes ? `Notes from survivor: ${effectiveAssessment.notes}` : ''}
 
 GOALS:
-${goals.map((g: any) => `- [${g.horizon}/${g.domain}] ${g.goal}`).join('\n') || '- (none captured)'}
+       ${goals.map((g: any) => `- [${g.horizon}/${g.domain}${g.status ? `/${g.status}` : ''}] ${g.goal}`).join('\n') || '- (none captured)'}
 
 USER LEVEL (derived from physical score): ${userLevel}
 
@@ -12094,7 +12110,6 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
              reviewedBy: null,
              reviewedAt: null,
              reviewNotes: null,
-            generatedAt: drizzleSql`now()`,
           },
         }).returning();
         if (!effectivePlan) {
