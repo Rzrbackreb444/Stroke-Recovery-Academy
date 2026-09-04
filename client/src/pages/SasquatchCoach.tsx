@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Volume2, VolumeX, Loader2, Mic, MicOff, Flame, Sparkles, ShoppingBag, LogIn } from "lucide-react";
+import { Send, Volume2, VolumeX, Loader2, Mic, MicOff, Flame, Sparkles, ShoppingBag, LogIn, Pencil, Trash2, EyeOff, Eye, Check, X } from "lucide-react";
 import { Link } from "wouter";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import RecoveryHeader from "@/components/RecoveryHeader";
 import RecoverySEO from "@/components/RecoverySEO";
 import Footer from "@/components/Footer";
@@ -22,6 +22,36 @@ interface Message {
   requireAuth?: boolean;
 }
 
+type CoachMemoryItem = {
+  id: number;
+  sourceType: string;
+  sourceId: string;
+  occurredAt: string | null;
+  title: string;
+  content: string;
+  kind: "survivor_fact" | "saved_plan";
+  included: boolean;
+  isEdited: boolean;
+};
+
+type CoachMemoryPayload = {
+  preferences: {
+    includeCheckins: boolean;
+    includeToday: boolean;
+    includeJournal: boolean;
+    includeGoals: boolean;
+    includePlans: boolean;
+  };
+  items: CoachMemoryItem[];
+};
+
+type CoachSummary = {
+  periodLabel: string;
+  facts: CoachMemoryItem[];
+  savedPlans: CoachMemoryItem[];
+  observations: string[];
+};
+
 const STARTER_PROMPTS = [
   "My arm isn't improving — help me choose a manageable focus for today.",
   "I'm feeling discouraged. Help me get back on track.",
@@ -31,6 +61,7 @@ const STARTER_PROMPTS = [
 
 export default function SasquatchCoach() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const { data: personaData } = useQuery<{ persona: { name: string; creed: string; accentColor: string } | null }>({
     queryKey: ['/api/persona/me'],
   });
@@ -64,6 +95,9 @@ export default function SasquatchCoach() {
   // Push-to-talk state (browser SpeechRecognition — free, on-device, instant).
   const [isListening, setIsListening] = useState(false);
   const [micUnsupported, setMicUnsupported] = useState(false);
+  const [summaryOpen, setSummaryOpen] = useState(false);
+  const [editingMemoryId, setEditingMemoryId] = useState<number | null>(null);
+  const [memoryDraft, setMemoryDraft] = useState<{ title: string; content: string }>({ title: "", content: "" });
   const recognitionRef = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -72,6 +106,57 @@ export default function SasquatchCoach() {
   // revoke them all on unmount. Without this they'd accumulate in browser
   // memory across a long conversation.
   const blobUrlsRef = useRef<string[]>([]);
+
+  const memoryQuery = useQuery<CoachMemoryPayload>({
+    queryKey: ["/api/coach/memory"],
+    enabled: !!user,
+  });
+  const summaryQuery = useQuery<CoachSummary>({
+    queryKey: ["/api/coach/memory/summary"],
+    enabled: !!user && summaryOpen,
+  });
+  const memoryMutation = useMutation({
+    mutationFn: async (request: {
+      method: "PATCH" | "DELETE";
+      url: string;
+      body?: Record<string, unknown>;
+    }) => {
+      const response = await fetch(request.url, {
+        method: request.method,
+        headers: request.body ? { "Content-Type": "application/json" } : undefined,
+        credentials: "include",
+        body: request.body ? JSON.stringify(request.body) : undefined,
+      });
+      if (!response.ok) throw new Error((await response.json().catch(() => ({})))?.message || "Could not update Coach memory");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/coach/memory"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/coach/memory/summary"] });
+      setEditingMemoryId(null);
+    },
+  });
+
+  const updateMemoryPreferences = (key: keyof CoachMemoryPayload["preferences"], value: boolean) => {
+    memoryMutation.mutate({
+      method: "PATCH",
+      url: "/api/coach/memory/preferences",
+      body: { [key]: value },
+    });
+  };
+
+  const startMemoryEdit = (item: CoachMemoryItem) => {
+    setEditingMemoryId(item.id);
+    setMemoryDraft({ title: item.title, content: item.content });
+  };
+
+  const sourceLabels: Record<string, string> = {
+    checkin: "Daily check-in",
+    today: "Today feedback",
+    journal: "Journal",
+    goal: "Recovery goal",
+    plan: "Saved plan",
+  };
 
   // Probe for SpeechRecognition once on mount, and clean up an in-flight
   // recognition + any orphan Blob URLs on unmount so the browser's "mic in
@@ -332,6 +417,219 @@ export default function SasquatchCoach() {
             requestAnimationFrame(() => textareaRef.current?.focus());
           }}
         />
+
+        {user && (
+          <section
+            className="mb-6 rounded-xl border border-[#2a2621] bg-[#111] p-4"
+            aria-labelledby="coach-memory-heading"
+            data-testid="section-coach-memory"
+          >
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#E2741B]">
+                  Survivor-controlled memory
+                </p>
+                <h2 id="coach-memory-heading" className="text-lg font-semibold text-white">
+                  Give Coach continuity — on your terms
+                </h2>
+                <p className="mt-1 max-w-2xl text-xs leading-relaxed text-gray-400">
+                  Coach only uses sources you turn on here. Journal and check-in details can be personal health information, so they stay off until you explicitly approve them.
+                </p>
+              </div>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className="border-[#E2741B]/40 text-[#E2741B] hover:bg-[#E2741B]/10"
+                onClick={() => setSummaryOpen((open) => !open)}
+                data-testid="button-coach-memory-summary"
+              >
+                {summaryOpen ? "Hide weekly summary" : "Show weekly summary"}
+              </Button>
+            </div>
+
+            {memoryQuery.isLoading ? (
+              <p className="mt-4 text-xs text-gray-500">Loading your memory controls…</p>
+            ) : memoryQuery.isError ? (
+              <p className="mt-4 text-xs text-amber-300">Coach memory is unavailable right now. Your chat still works normally.</p>
+            ) : memoryQuery.data ? (
+              <>
+                <div className="mt-4 grid gap-2 sm:grid-cols-2" data-testid="coach-memory-preferences">
+                  {([
+                    ["includeCheckins", "Daily check-ins", "Mood, energy, pain, effort, and words you entered"],
+                    ["includeToday", "Today feedback", "Your own reactions to suggested recovery reps"],
+                    ["includeJournal", "Private journal", "Journal words from the last 7 days — explicit consent required"],
+                    ["includeGoals", "Recovery goals", "Goals you saved, including their current status"],
+                    ["includePlans", "Saved plans", "The latest plan summary and focus areas"],
+                  ] as const).map(([key, label, description]) => (
+                    <label
+                      key={key}
+                      className="flex cursor-pointer items-start gap-2 rounded-lg border border-[#24211d] bg-[#0d0d0d] p-3 hover:border-[#E2741B]/30"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={memoryQuery.data!.preferences[key]}
+                        onChange={(event) => updateMemoryPreferences(key, event.target.checked)}
+                        disabled={memoryMutation.isPending}
+                        className="mt-0.5 accent-[#E2741B]"
+                        data-testid={`checkbox-coach-memory-${key}`}
+                      />
+                      <span>
+                        <span className="block text-sm font-medium text-gray-200">{label}</span>
+                        <span className="mt-0.5 block text-[11px] leading-relaxed text-gray-500">{description}</span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+
+                {summaryOpen && (
+                  <div className="mt-4 rounded-lg border border-[#E2741B]/25 bg-[#17130f] p-4" data-testid="card-coach-weekly-summary">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#E2741B]">Coach weekly summary · {summaryQuery.data?.periodLabel ?? "Last 7 days"}</p>
+                    {summaryQuery.isLoading ? (
+                      <p className="mt-3 text-sm text-gray-400">Putting together only the approved pieces…</p>
+                    ) : summaryQuery.isError ? (
+                      <p className="mt-3 text-sm text-amber-300">I couldn’t prepare that summary. Nothing outside your approved sources was used.</p>
+                    ) : summaryQuery.data ? (
+                      <div className="mt-3 space-y-4">
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Survivor-entered facts</p>
+                          {summaryQuery.data.facts.length ? (
+                            <ul className="mt-2 space-y-1 text-sm leading-relaxed text-gray-200">
+                              {summaryQuery.data.facts.map((item) => (
+                                <li key={`summary-fact-${item.id}`}>• {item.content}</li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="mt-2 text-sm text-gray-500">No approved survivor-entered facts for this week.</p>
+                          )}
+                        </div>
+                        {summaryQuery.data.savedPlans.length > 0 && (
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Saved plans</p>
+                            <ul className="mt-2 space-y-1 text-sm leading-relaxed text-gray-200">
+                              {summaryQuery.data.savedPlans.map((item) => (
+                                <li key={`summary-plan-${item.id}`}>• {item.content}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-wide text-[#E2741B]">Coach observations · patterns, not facts</p>
+                          <ul className="mt-2 space-y-1 text-sm leading-relaxed text-gray-300">
+                            {summaryQuery.data.observations.map((observation) => (
+                              <li key={observation}>• {observation}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                )}
+
+                <div className="mt-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">What Coach remembers</p>
+                    <p className="text-[11px] text-gray-600">{memoryQuery.data.items.length} item{memoryQuery.data.items.length === 1 ? "" : "s"}</p>
+                  </div>
+                  {memoryQuery.data.items.length ? (
+                    <div className="mt-2 space-y-2">
+                      {memoryQuery.data.items.map((item) => (
+                        <div
+                          key={item.id}
+                          className={`rounded-lg border p-3 ${item.included ? "border-[#24211d] bg-[#0d0d0d]" : "border-dashed border-[#333] bg-[#101010] opacity-60"}`}
+                          data-testid={`coach-memory-item-${item.id}`}
+                        >
+                          {editingMemoryId === item.id ? (
+                            <div className="space-y-2">
+                              <input
+                                value={memoryDraft.title}
+                                onChange={(event) => setMemoryDraft((draft) => ({ ...draft, title: event.target.value }))}
+                                className="w-full rounded border border-[#333] bg-[#0b0b0b] px-2 py-1.5 text-sm text-white"
+                                aria-label="Memory title"
+                              />
+                              <Textarea
+                                value={memoryDraft.content}
+                                onChange={(event) => setMemoryDraft((draft) => ({ ...draft, content: event.target.value }))}
+                                className="min-h-[70px] border-[#333] bg-[#0b0b0b] text-sm text-white"
+                                aria-label="Memory content"
+                              />
+                              <div className="flex gap-2">
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  className="bg-[#E2741B] text-black hover:bg-[#c96112]"
+                                  disabled={memoryMutation.isPending}
+                                  onClick={() => memoryMutation.mutate({
+                                    method: "PATCH",
+                                    url: `/api/coach/memory/items/${item.id}`,
+                                    body: memoryDraft,
+                                  })}
+                                >
+                                  <Check className="mr-1 h-3.5 w-3.5" /> Save
+                                </Button>
+                                <Button type="button" size="sm" variant="outline" className="border-[#333] text-gray-300" onClick={() => setEditingMemoryId(null)}>
+                                  <X className="mr-1 h-3.5 w-3.5" /> Cancel
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              <div className="flex items-start justify-between gap-3">
+                                <div>
+                                  <p className="text-sm font-medium text-gray-200">{item.title}</p>
+                                  <p className="mt-1 text-xs leading-relaxed text-gray-400">{item.content}</p>
+                                  <p className="mt-1 text-[10px] uppercase tracking-wide text-gray-600">
+                                    {sourceLabels[item.sourceType] ?? item.sourceType}{item.isEdited ? " · edited by you" : ""}{item.included ? "" : " · excluded from Coach"}
+                                  </p>
+                                </div>
+                                <div className="flex shrink-0 gap-1">
+                                  <button type="button" onClick={() => startMemoryEdit(item)} className="rounded p-1.5 text-gray-500 hover:bg-white/5 hover:text-white" aria-label={`Edit ${item.title}`}>
+                                    <Pencil className="h-3.5 w-3.5" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => memoryMutation.mutate({
+                                      method: "PATCH",
+                                      url: `/api/coach/memory/items/${item.id}`,
+                                      body: { included: !item.included },
+                                    })}
+                                    className="rounded p-1.5 text-gray-500 hover:bg-white/5 hover:text-white"
+                                    aria-label={item.included ? `Exclude ${item.title}` : `Include ${item.title}`}
+                                  >
+                                    {item.included ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      if (window.confirm("Delete this memory item? The original entry will not be deleted.")) {
+                                        memoryMutation.mutate({
+                                          method: "DELETE",
+                                          url: `/api/coach/memory/items/${item.id}`,
+                                        });
+                                      }
+                                    }}
+                                    className="rounded p-1.5 text-gray-500 hover:bg-red-950/50 hover:text-red-300"
+                                    aria-label={`Delete ${item.title}`}
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </button>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-2 rounded-lg border border-dashed border-[#2a2621] p-3 text-sm text-gray-500">
+                      Turn on a source above to approve recovery history for Coach.
+                    </p>
+                  )}
+                </div>
+              </>
+            ) : null}
+          </section>
+        )}
 
         {/* Messages */}
         <div className="flex-1 space-y-4 mb-6 min-h-0">

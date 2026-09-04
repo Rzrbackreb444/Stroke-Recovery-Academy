@@ -115,6 +115,7 @@ export async function generateCoachResponse(
       story?: string | null;
       updatedAt?: string | null;
     } | null;
+    approvedMemory?: Array<{ title: string; content: string; kind: "survivor_fact" | "saved_plan" }>;
   }
 ): Promise<{ response: string; quote?: string }> {
   try {
@@ -162,6 +163,16 @@ export async function generateCoachResponse(
           if (profile.mobilityAids?.length) contextLines.push(`Mobility aids available: ${profile.mobilityAids.join(', ')}.`);
           if (profile.equipment?.length) contextLines.push(`Home equipment available: ${profile.equipment.join(', ')}.`);
           if (profile.story) contextLines.push(`Survivor story context (use gently, never quote verbatim unless asked): ${profile.story.slice(0, 500)}`);
+        }
+        if (userContext.approvedMemory?.length) {
+          contextLines.push(
+            `APPROVED COACH MEMORY (survivor-controlled; use only when relevant, never infer a diagnosis or medical conclusion):\n${
+              userContext.approvedMemory
+                .slice(0, 12)
+                .map((item) => `- [${item.kind === "saved_plan" ? "Saved plan" : "Survivor-entered fact"}] ${item.title}: ${item.content}`)
+                .join("\n")
+            }`,
+          );
         }
         if (contextLines.length > 0) {
           systemPrompt += `\n\nUSER CONTEXT (use this to make every reply feel personal — never echo it verbatim, weave it):\n${contextLines.join('\n')}`;

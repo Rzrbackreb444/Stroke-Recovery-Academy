@@ -49,6 +49,50 @@ export async function initSasquatchSchema(): Promise<void> {
         PRIMARY KEY (user_id, usage_date)
       )
     `);
+    // Survivor-controlled Coach memory is intentionally separate from the
+    // chat transcript. Preferences must be explicit before any check-in,
+    // Today, journal, goal, or plan data is copied into this table.
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS coach_memory_preferences (
+        user_id VARCHAR PRIMARY KEY,
+        include_checkins BOOLEAN NOT NULL DEFAULT FALSE,
+        include_today BOOLEAN NOT NULL DEFAULT FALSE,
+        include_journal BOOLEAN NOT NULL DEFAULT FALSE,
+        include_goals BOOLEAN NOT NULL DEFAULT FALSE,
+        include_plans BOOLEAN NOT NULL DEFAULT FALSE,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `);
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS coach_memory_items (
+        id SERIAL PRIMARY KEY,
+        user_id VARCHAR NOT NULL,
+        source_type VARCHAR(32) NOT NULL,
+        source_id VARCHAR(128) NOT NULL,
+        occurred_at TIMESTAMPTZ,
+        title VARCHAR(160) NOT NULL,
+        content TEXT NOT NULL,
+        kind VARCHAR(24) NOT NULL DEFAULT 'survivor_fact',
+        included BOOLEAN NOT NULL DEFAULT TRUE,
+        is_edited BOOLEAN NOT NULL DEFAULT FALSE,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        UNIQUE (user_id, source_type, source_id)
+      )
+    `);
+    await db.execute(sql`
+      CREATE INDEX IF NOT EXISTS idx_coach_memory_user_date
+      ON coach_memory_items (user_id, occurred_at DESC)
+    `);
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS coach_memory_exclusions (
+        user_id VARCHAR NOT NULL,
+        source_type VARCHAR(32) NOT NULL,
+        source_id VARCHAR(128) NOT NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        PRIMARY KEY (user_id, source_type, source_id)
+      )
+    `);
   })().catch((error) => {
     // A failed startup must not poison the cached promise forever. The next
     // coach request should be able to retry schema setup.
@@ -103,6 +147,384 @@ export async function clearChatHistory(userId: string): Promise<number> {
     DELETE FROM sasquatch_chat_messages WHERE user_id = ${userId}
   `);
   return (result as any).rowCount ?? 0;
+}
+
+// === SURVIVOR-CONTROLLED COACH MEMORY ===
+
+export type CoachMemoryPreferences = {
+  includeCheckins: boolean;
+  includeToday: boolean;
+  includeJournal: boolean;
+  includeGoals: boolean;
+  includePlans: boolean;
+};
+
+export type CoachMemoryItem = {
+  id: number;
+  sourceType: string;
+  sourceId: string;
+  occurredAt: string | null;
+  title: string;
+  content: string;
+  kind: "survivor_fact" | "saved_plan";
+  included: boolean;
+  isEdited: boolean;
+};
+
+const EMPTY_MEMORY_PREFERENCES: CoachMemoryPreferences = {
+  includeCheckins: false,
+  includeToday: false,
+  includeJournal: false,
+  includeGoals: false,
+  includePlans: false,
+};
+
+function memoryPreferenceRow(row: any): CoachMemoryPreferences {
+  return {
+    includeCheckins: row?.include_checkins === true,
+    includeToday: row?.include_today === true,
+    includeJournal: row?.include_journal === true,
+    includeGoals: row?.include_goals === true,
+    includePlans: row?.include_plans === true,
+  };
+}
+
+function cleanMemoryText(value: unknown, maxLength = 600): string {
+  return String(value ?? "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, maxLength);
+}
+
+function memoryItemRow(row: any): CoachMemoryItem {
+  const kind = row.kind === "saved_plan" ? "saved_plan" : "survivor_fact";
+  return {
+    id: Number(row.id),
+    sourceType: String(row.source_type),
+    sourceId: String(row.source_id),
+    occurredAt: row.occurred_at ? new Date(row.occurred_at).toISOString() : null,
+    title: String(row.title),
+    content: String(row.content),
+    kind,
+    included: row.included !== false,
+    isEdited: row.is_edited === true,
+  };
+}
+
+async function getCoachMemoryPreferences(userId: string): Promise<CoachMemoryPreferences> {
+  const result = await db.execute(sql`
+    SELECT include_checkins, include_today, include_journal, include_goals, include_plans
+    FROM coach_memory_preferences
+    WHERE user_id = ${userId}
+  `);
+  return result.rows?.[0] ? memoryPreferenceRow(result.rows[0]) : EMPTY_MEMORY_PREFERENCES;
+}
+
+async function removeMemorySource(userId: string, sourceType: string): Promise<void> {
+  await db.execute(sql`
+    DELETE FROM coach_memory_items
+    WHERE user_id = ${userId} AND source_type = ${sourceType}
+  `);
+  await db.execute(sql`
+    DELETE FROM coach_memory_exclusions
+    WHERE user_id = ${userId} AND source_type = ${sourceType}
+  `);
+}
+
+async function upsertMemoryItem(
+  userId: string,
+  item: {
+    sourceType: string;
+    sourceId: string;
+    occurredAt?: string | Date | null;
+    title: string;
+    content: string;
+    kind?: "survivor_fact" | "saved_plan";
+  },
+): Promise<void> {
+  const content = cleanMemoryText(item.content);
+  if (!content) return;
+  await db.execute(sql`
+    INSERT INTO coach_memory_items
+      (user_id, source_type, source_id, occurred_at, title, content, kind)
+    SELECT
+      ${userId}, ${item.sourceType}, ${item.sourceId},
+      ${item.occurredAt ? new Date(item.occurredAt) : null},
+      ${cleanMemoryText(item.title, 160)}, ${content}, ${item.kind ?? "survivor_fact"}
+    WHERE NOT EXISTS (
+      SELECT 1 FROM coach_memory_exclusions
+      WHERE user_id = ${userId}
+        AND source_type = ${item.sourceType}
+        AND source_id = ${item.sourceId}
+    )
+    ON CONFLICT (user_id, source_type, source_id)
+    DO UPDATE SET
+      occurred_at = EXCLUDED.occurred_at,
+      title = CASE WHEN coach_memory_items.is_edited THEN coach_memory_items.title ELSE EXCLUDED.title END,
+      content = CASE WHEN coach_memory_items.is_edited THEN coach_memory_items.content ELSE EXCLUDED.content END,
+      updated_at = NOW()
+  `);
+}
+
+async function refreshCoachMemory(userId: string, preferences: CoachMemoryPreferences): Promise<void> {
+  const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+  if (preferences.includeCheckins) {
+    const result = await db.execute(sql`
+      SELECT id, checkin_date, mood_score, energy_score, pain_score, effort_score,
+             wins_today, challenges_today, gratitude
+      FROM daily_checkins
+      WHERE user_id = ${userId} AND checkin_date >= ${since}
+      ORDER BY checkin_date DESC
+      LIMIT 14
+    `);
+    for (const row of result.rows as any[]) {
+      const details = [
+        row.wins_today ? `Win: ${row.wins_today}` : null,
+        row.challenges_today ? `Challenge: ${row.challenges_today}` : null,
+        row.gratitude ? `Gratitude: ${row.gratitude}` : null,
+        row.mood_score != null ? `Mood ${row.mood_score}/10` : null,
+        row.energy_score != null ? `Energy ${row.energy_score}/10` : null,
+        row.pain_score != null ? `Pain ${row.pain_score}/10` : null,
+        row.effort_score != null ? `Effort ${row.effort_score}/10` : null,
+      ].filter(Boolean).join(" · ");
+      await upsertMemoryItem(userId, {
+        sourceType: "checkin",
+        sourceId: String(row.id),
+        occurredAt: row.checkin_date,
+        title: `Daily check-in · ${new Date(row.checkin_date).toLocaleDateString()}`,
+        content: details,
+      });
+    }
+  } else {
+    await removeMemorySource(userId, "checkin");
+  }
+
+  if (preferences.includeToday) {
+    const result = await db.execute(sql`
+      SELECT date, COUNT(*)::int AS feedback_count,
+             COUNT(*) FILTER (WHERE reaction = 'good')::int AS good_count,
+             COUNT(*) FILTER (WHERE reaction = 'hard')::int AS hard_count,
+             COUNT(*) FILTER (WHERE reaction = 'too_hard')::int AS too_hard_count,
+             COUNT(*) FILTER (WHERE reaction = 'skipped')::int AS skipped_count
+      FROM routine_feedback
+      WHERE user_id = ${userId}
+        AND date >= TO_CHAR(CURRENT_DATE - INTERVAL '6 days', 'YYYY-MM-DD')
+      GROUP BY date
+      ORDER BY date DESC
+    `);
+    for (const row of result.rows as any[]) {
+      const reactions = [
+        Number(row.good_count) ? `${row.good_count} felt right` : null,
+        Number(row.hard_count) ? `${row.hard_count} felt challenging` : null,
+        Number(row.too_hard_count) ? `${row.too_hard_count} were too hard` : null,
+        Number(row.skipped_count) ? `${row.skipped_count} skipped` : null,
+      ].filter(Boolean).join(", ");
+      await upsertMemoryItem(userId, {
+        sourceType: "today",
+        sourceId: String(row.date),
+        occurredAt: `${row.date}T12:00:00.000Z`,
+        title: `Today feedback · ${row.date}`,
+        content: `${row.feedback_count} Today response${Number(row.feedback_count) === 1 ? "" : "s"}: ${reactions || "feedback recorded"}.`,
+      });
+    }
+  } else {
+    await removeMemorySource(userId, "today");
+  }
+
+  if (preferences.includeJournal) {
+    const result = await db.execute(sql`
+      SELECT id, created_at, title, content
+      FROM recovery_journals
+      WHERE user_id = ${userId} AND created_at >= ${since}
+      ORDER BY created_at DESC
+      LIMIT 14
+    `);
+    for (const row of result.rows as any[]) {
+      await upsertMemoryItem(userId, {
+        sourceType: "journal",
+        sourceId: String(row.id),
+        occurredAt: row.created_at,
+        title: cleanMemoryText(row.title || "Journal entry", 160),
+        content: cleanMemoryText(row.content),
+      });
+    }
+  } else {
+    await removeMemorySource(userId, "journal");
+  }
+
+  if (preferences.includeGoals) {
+    const result = await db.execute(sql`
+      SELECT id, created_at, horizon, domain, goal, status
+      FROM survivor_goals
+      WHERE user_id = ${userId} AND status <> 'dropped'
+      ORDER BY created_at DESC
+      LIMIT 20
+    `);
+    for (const row of result.rows as any[]) {
+      await upsertMemoryItem(userId, {
+        sourceType: "goal",
+        sourceId: String(row.id),
+        occurredAt: row.created_at,
+        title: `${row.horizon === "long" ? "Long-term" : "Short-term"} ${row.domain} goal`,
+        content: `${row.goal}${row.status === "done" ? " (completed)" : ""}`,
+      });
+    }
+  } else {
+    await removeMemorySource(userId, "goal");
+  }
+
+  if (preferences.includePlans) {
+    const result = await db.execute(sql`
+      SELECT id, generated_at, plan->>'summary' AS summary,
+             plan->'focusDomains' AS focus_domains
+      FROM survivor_plans
+      WHERE user_id = ${userId}
+      ORDER BY generated_at DESC
+      LIMIT 1
+    `);
+    for (const row of result.rows as any[]) {
+      const domains = Array.isArray(row.focus_domains)
+        ? row.focus_domains.join(", ")
+        : cleanMemoryText(row.focus_domains, 160).replace(/^\[|\]$/g, "").replace(/"/g, "");
+      await upsertMemoryItem(userId, {
+        sourceType: "plan",
+        sourceId: String(row.id),
+        occurredAt: row.generated_at,
+        title: "Saved recovery plan",
+        content: [row.summary, domains ? `Focus areas: ${domains}` : null].filter(Boolean).join(" · "),
+        kind: "saved_plan",
+      });
+    }
+  } else {
+    await removeMemorySource(userId, "plan");
+  }
+}
+
+export async function getCoachMemory(userId: string): Promise<{
+  preferences: CoachMemoryPreferences;
+  items: CoachMemoryItem[];
+}> {
+  await initSasquatchSchema();
+  const preferences = await getCoachMemoryPreferences(userId);
+  await refreshCoachMemory(userId, preferences);
+  const result = await db.execute(sql`
+    SELECT id, source_type, source_id, occurred_at, title, content, kind, included, is_edited
+    FROM coach_memory_items
+    WHERE user_id = ${userId}
+    ORDER BY COALESCE(occurred_at, created_at) DESC, id DESC
+    LIMIT 100
+  `);
+  return {
+    preferences,
+    items: (result.rows as any[]).map(memoryItemRow),
+  };
+}
+
+export async function updateCoachMemoryPreferences(
+  userId: string,
+  updates: Partial<CoachMemoryPreferences>,
+): Promise<CoachMemoryPreferences> {
+  await initSasquatchSchema();
+  const current = await getCoachMemoryPreferences(userId);
+  const next = { ...current, ...updates };
+  await db.execute(sql`
+    INSERT INTO coach_memory_preferences
+      (user_id, include_checkins, include_today, include_journal, include_goals, include_plans)
+    VALUES
+      (${userId}, ${next.includeCheckins}, ${next.includeToday}, ${next.includeJournal},
+       ${next.includeGoals}, ${next.includePlans})
+    ON CONFLICT (user_id) DO UPDATE SET
+      include_checkins = EXCLUDED.include_checkins,
+      include_today = EXCLUDED.include_today,
+      include_journal = EXCLUDED.include_journal,
+      include_goals = EXCLUDED.include_goals,
+      include_plans = EXCLUDED.include_plans,
+      updated_at = NOW()
+  `);
+  return next;
+}
+
+export async function updateCoachMemoryItem(
+  userId: string,
+  itemId: number,
+  updates: { title?: string; content?: string; included?: boolean },
+): Promise<CoachMemoryItem | null> {
+  await initSasquatchSchema();
+  const title = updates.title === undefined ? null : cleanMemoryText(updates.title, 160);
+  const content = updates.content === undefined ? null : cleanMemoryText(updates.content);
+  const result = await db.execute(sql`
+    UPDATE coach_memory_items
+    SET title = COALESCE(${title}, title),
+        content = COALESCE(${content}, content),
+        included = COALESCE(${updates.included ?? null}, included),
+        is_edited = CASE WHEN ${title} IS NOT NULL OR ${content} IS NOT NULL THEN TRUE ELSE is_edited END,
+        updated_at = NOW()
+    WHERE id = ${itemId} AND user_id = ${userId}
+    RETURNING id, source_type, source_id, occurred_at, title, content, kind, included, is_edited
+  `);
+  const row = result.rows?.[0] as any;
+  if (!row) return null;
+  if (updates.included === false) {
+    await db.execute(sql`
+      INSERT INTO coach_memory_exclusions (user_id, source_type, source_id)
+      VALUES (${userId}, ${row.source_type}, ${row.source_id})
+      ON CONFLICT DO NOTHING
+    `);
+  } else if (updates.included === true) {
+    await db.execute(sql`
+      DELETE FROM coach_memory_exclusions
+      WHERE user_id = ${userId} AND source_type = ${row.source_type} AND source_id = ${row.source_id}
+    `);
+  }
+  return memoryItemRow(row);
+}
+
+export async function deleteCoachMemoryItem(userId: string, itemId: number): Promise<boolean> {
+  await initSasquatchSchema();
+  const result = await db.execute(sql`
+    DELETE FROM coach_memory_items
+    WHERE id = ${itemId} AND user_id = ${userId}
+    RETURNING source_type, source_id
+  `);
+  const row = result.rows?.[0] as any;
+  if (!row) return false;
+  await db.execute(sql`
+    INSERT INTO coach_memory_exclusions (user_id, source_type, source_id)
+    VALUES (${userId}, ${row.source_type}, ${row.source_id})
+    ON CONFLICT DO NOTHING
+  `);
+  return true;
+}
+
+export async function getWeeklyCoachSummary(userId: string): Promise<{
+  periodLabel: string;
+  facts: CoachMemoryItem[];
+  savedPlans: CoachMemoryItem[];
+  observations: string[];
+}> {
+  const memory = await getCoachMemory(userId);
+  const included = memory.items.filter((item) => item.included);
+  const facts = included.filter((item) => item.kind === "survivor_fact");
+  const savedPlans = included.filter((item) => item.kind === "saved_plan");
+  const activityDates = new Set(
+    facts
+      .filter((item) => item.sourceType === "checkin" || item.sourceType === "today")
+      .map((item) => item.occurredAt?.slice(0, 10))
+      .filter(Boolean),
+  );
+  const observations = activityDates.size
+    ? [`You left approved recovery signals on ${activityDates.size} of the last 7 days.`]
+    : ["There are no approved recovery signals from the last 7 days yet."];
+  if (facts.some((item) => item.sourceType === "journal")) {
+    observations.push("Your approved journal entries are included as survivor-entered words, not as clinical conclusions.");
+  }
+  return {
+    periodLabel: "Last 7 days",
+    facts,
+    savedPlans,
+    observations,
+  };
 }
 
 // === DAILY PING ===

@@ -10015,30 +10015,32 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         todayVerdict?: string | null;
         tomorrowSuggestion?: string | null;
         hasLoggedToday?: boolean;
-         profile?: {
-           preferredName?: string | null;
-           goals?: string[];
-           challenges?: string[];
-           deficits?: Record<string, number> | null;
-           assessmentScores?: Record<string, number> | null;
-           dailyTimeBudgetMinutes?: number | null;
-           energyPattern?: string | null;
-           mobilityAids?: string[];
-           equipment?: string[];
-           story?: string | null;
-           updatedAt?: string | null;
-         } | null;
+        profile?: {
+          preferredName?: string | null;
+          goals?: string[];
+          challenges?: string[];
+          deficits?: Record<string, number> | null;
+          assessmentScores?: Record<string, number> | null;
+          dailyTimeBudgetMinutes?: number | null;
+          energyPattern?: string | null;
+          mobilityAids?: string[];
+          equipment?: string[];
+          story?: string | null;
+          updatedAt?: string | null;
+        } | null;
+        approvedMemory?: Array<{ title: string; content: string; kind: "survivor_fact" | "saved_plan" }>;
       } | undefined;
 
       let coachPersona: { name: string; creed: string; archetypeKey: string } | null = null;
 
-      if (req.user?.claims?.sub) {
+      if (getUserId(req)) {
         const userId = getUserId(req)!;
         try {
           // Fetch user's recovery context for personalized coaching, including
           // today's Never Zero reps + audit so Sasquatch references the actual
           // day instead of generic "keep pushing" lines.
           const { loadPersonaFor } = await import('./personaRoutes');
+          const { getCoachMemory } = await import('./sasquatchHistoryService');
           const todayKey = localDateKey(new Date());
           const [exerciseScores, streakData, milestonesData, userData, personaRow, neverZero, todayAudit, survivorProfile] = await Promise.all([
             storage.getUserExerciseScores(userId).catch((err) => { console.error('[coach] getUserExerciseScores failed:', err); return []; }),
@@ -10050,6 +10052,12 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
             storage.getNeverZeroAuditByDate(userId, todayKey).catch(() => null),
            getCanonicalSurvivorProfile(userId).catch(() => null),
           ]);
+          const approvedMemory = await getCoachMemory(userId)
+            .then((memory) => memory.items.filter((item) => item.included))
+            .catch((err) => {
+              console.error('[coach] getCoachMemory failed:', err);
+              return [];
+            });
 
           if (personaRow) {
             coachPersona = {
@@ -10077,22 +10085,27 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
             todayVerdict: todayAudit?.verdict ?? null,
             tomorrowSuggestion: todayAudit?.tomorrow ?? null,
             hasLoggedToday: todayLogs.length > 0,
-             profile: survivorProfile ? {
-               preferredName: survivorProfile.preferredName,
-               goals: [
-                 ...(survivorProfile.recoveryGoals ?? []),
-                 ...(survivorProfile.customGoal ? [survivorProfile.customGoal] : []),
-               ],
-               challenges: survivorProfile.currentChallenges ?? [],
-               deficits: survivorProfile.deficits as Record<string, number> | null,
-               assessmentScores: survivorProfile.assessmentScores as Record<string, number> | null,
-               dailyTimeBudgetMinutes: survivorProfile.dailyTimeBudgetMinutes,
-               energyPattern: survivorProfile.energyPattern,
-               mobilityAids: survivorProfile.mobilityAids ?? [],
-               equipment: survivorProfile.equipment ?? [],
-               story: survivorProfile.story,
-               updatedAt: survivorProfile.updatedAt?.toISOString?.() ?? String(survivorProfile.updatedAt ?? ""),
-             } : null,
+            profile: survivorProfile ? {
+              preferredName: survivorProfile.preferredName,
+              goals: [
+                ...(survivorProfile.recoveryGoals ?? []),
+                ...(survivorProfile.customGoal ? [survivorProfile.customGoal] : []),
+              ],
+              challenges: survivorProfile.currentChallenges ?? [],
+              deficits: survivorProfile.deficits as Record<string, number> | null,
+              assessmentScores: survivorProfile.assessmentScores as Record<string, number> | null,
+              dailyTimeBudgetMinutes: survivorProfile.dailyTimeBudgetMinutes,
+              energyPattern: survivorProfile.energyPattern,
+              mobilityAids: survivorProfile.mobilityAids ?? [],
+              equipment: survivorProfile.equipment ?? [],
+              story: survivorProfile.story,
+              updatedAt: survivorProfile.updatedAt?.toISOString?.() ?? String(survivorProfile.updatedAt ?? ""),
+            } : null,
+            approvedMemory: approvedMemory.map((item) => ({
+              title: item.title,
+              content: item.content,
+              kind: item.kind,
+            })),
           };
         } catch (e) {
           console.error('Error fetching user context:', e);
@@ -10201,6 +10214,114 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     } catch (error: any) {
       console.error('Coach history clear error:', error?.message ?? error);
       res.status(500).json({ message: 'Failed to clear history' });
+    }
+  });
+
+  // Coach memory is a separate, survivor-controlled surface. It never
+  // inherits the chat transcript's client-supplied history and every query is
+  // owner-scoped through getUserId(req).
+  app.get('/api/coach/memory', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req)!;
+      const { getCoachMemory } = await import('./sasquatchHistoryService');
+      res.json(await getCoachMemory(userId));
+    } catch (error: any) {
+      console.error('Coach memory error:', error?.message ?? error);
+      res.status(500).json({ message: 'Failed to load Coach memory' });
+    }
+  });
+
+  app.patch('/api/coach/memory/preferences', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req)!;
+      const allowed = [
+        'includeCheckins',
+        'includeToday',
+        'includeJournal',
+        'includeGoals',
+        'includePlans',
+      ] as const;
+      const updates: Record<string, boolean> = {};
+      for (const key of allowed) {
+        if (req.body?.[key] !== undefined) {
+          if (typeof req.body[key] !== 'boolean') {
+            return res.status(400).json({ message: `${key} must be a boolean` });
+          }
+          updates[key] = req.body[key];
+        }
+      }
+      const { updateCoachMemoryPreferences } = await import('./sasquatchHistoryService');
+      res.json({ preferences: await updateCoachMemoryPreferences(userId, updates) });
+    } catch (error: any) {
+      console.error('Coach memory preferences error:', error?.message ?? error);
+      res.status(500).json({ message: 'Failed to update Coach memory preferences' });
+    }
+  });
+
+  app.get('/api/coach/memory/summary', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req)!;
+      const { getWeeklyCoachSummary } = await import('./sasquatchHistoryService');
+      res.json(await getWeeklyCoachSummary(userId));
+    } catch (error: any) {
+      console.error('Coach memory summary error:', error?.message ?? error);
+      res.status(500).json({ message: 'Failed to create Coach summary' });
+    }
+  });
+
+  app.patch('/api/coach/memory/items/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req)!;
+      const itemId = Number.parseInt(req.params.id, 10);
+      if (!Number.isInteger(itemId) || itemId < 1) {
+        return res.status(400).json({ message: 'Invalid memory item' });
+      }
+      const updates: { title?: string; content?: string; included?: boolean } = {};
+      if (req.body?.title !== undefined) {
+        if (typeof req.body.title !== 'string' || !req.body.title.trim()) {
+          return res.status(400).json({ message: 'title must be a non-empty string' });
+        }
+        updates.title = req.body.title;
+      }
+      if (req.body?.content !== undefined) {
+        if (typeof req.body.content !== 'string' || !req.body.content.trim()) {
+          return res.status(400).json({ message: 'content must be a non-empty string' });
+        }
+        updates.content = req.body.content;
+      }
+      if (req.body?.included !== undefined) {
+        if (typeof req.body.included !== 'boolean') {
+          return res.status(400).json({ message: 'included must be a boolean' });
+        }
+        updates.included = req.body.included;
+      }
+      if (!Object.keys(updates).length) {
+        return res.status(400).json({ message: 'No memory changes supplied' });
+      }
+      const { updateCoachMemoryItem } = await import('./sasquatchHistoryService');
+      const item = await updateCoachMemoryItem(userId, itemId, updates);
+      if (!item) return res.status(404).json({ message: 'Memory item not found' });
+      res.json({ item });
+    } catch (error: any) {
+      console.error('Coach memory item update error:', error?.message ?? error);
+      res.status(500).json({ message: 'Failed to update Coach memory item' });
+    }
+  });
+
+  app.delete('/api/coach/memory/items/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req)!;
+      const itemId = Number.parseInt(req.params.id, 10);
+      if (!Number.isInteger(itemId) || itemId < 1) {
+        return res.status(400).json({ message: 'Invalid memory item' });
+      }
+      const { deleteCoachMemoryItem } = await import('./sasquatchHistoryService');
+      const deleted = await deleteCoachMemoryItem(userId, itemId);
+      if (!deleted) return res.status(404).json({ message: 'Memory item not found' });
+      res.json({ deleted: true });
+    } catch (error: any) {
+      console.error('Coach memory item delete error:', error?.message ?? error);
+      res.status(500).json({ message: 'Failed to delete Coach memory item' });
     }
   });
 
