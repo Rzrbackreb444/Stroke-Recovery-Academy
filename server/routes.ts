@@ -11277,8 +11277,8 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     try {
       const userId = getUserId(req)!;
       const { db: dbInst } = await import('./db');
-      const { sasquatchAssessments, survivorGoals, survivorPlans } = await import('../shared/schema');
-      const { eq, desc } = await import('drizzle-orm');
+       const { sasquatchAssessments, survivorGoals, survivorPlans, recoveryPlanReviews } = await import('../shared/schema');
+       const { eq, desc } = await import('drizzle-orm');
       const profile = await getCanonicalSurvivorProfile(userId);
 
       const [latestAssessment] = await dbInst
@@ -11315,6 +11315,18 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       const safePlan = latestPlan?.plan && isSafeRecoveryPlan(latestPlan.plan)
         ? latestPlan.plan
         : null;
+       const reviewHistory = latestPlan && safePlan
+         ? await dbInst
+           .select({
+             status: recoveryPlanReviews.status,
+             actorType: recoveryPlanReviews.actorType,
+             notes: recoveryPlanReviews.notes,
+             createdAt: recoveryPlanReviews.createdAt,
+           })
+           .from(recoveryPlanReviews)
+           .where(eq(recoveryPlanReviews.planId, latestPlan.id))
+           .orderBy(desc(recoveryPlanReviews.createdAt))
+         : [];
       const hasPlan = !!safePlan;
       const hasGoals = goals.length > 0;
       const hasOnboarded = hasAssessment && hasPlan;
@@ -11333,6 +11345,12 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         } : null,
         plan: safePlan,
         planGeneratedAt: safePlan ? latestPlan?.generatedAt || null : null,
+         clinicianReview: safePlan && latestPlan ? {
+           status: latestPlan.reviewStatus,
+           reviewedAt: latestPlan.reviewedAt,
+           notes: latestPlan.reviewNotes,
+           history: reviewHistory,
+         } : null,
       });
     } catch (error) {
       console.error('Error fetching recovery state:', error);
@@ -11768,6 +11786,98 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
     }
   });
 
+  // POST /api/recovery/plan/:id/review — verified clinicians and admins record
+  // an auditable decision about an education draft.
+  app.post('/api/recovery/plan/:id/review', isAuthenticated, async (req: any, res) => {
+    try {
+      const planId = Number.parseInt(req.params.id, 10);
+      if (!Number.isSafeInteger(planId) || planId <= 0) {
+        return res.status(400).json({ message: 'Invalid plan id' });
+      }
+
+      const status = req.body?.status;
+      const validStatuses = new Set(['approved', 'rejected', 'changes_requested']);
+      if (typeof status !== 'string' || !validStatuses.has(status)) {
+        return res.status(400).json({
+          message: 'Review status must be approved, rejected, or changes_requested',
+        });
+      }
+      const notes = req.body?.notes == null ? null : req.body.notes;
+      if (notes !== null && (typeof notes !== 'string' || notes.trim().length > 2000)) {
+        return res.status(400).json({ message: 'Review notes must be 2,000 characters or fewer' });
+      }
+
+      const actorId = getUserId(req)!;
+      const { db: dbInst } = await import('./db');
+      const { users, survivorPlans, recoveryPlanReviews } = await import('../shared/schema');
+      const { eq } = await import('drizzle-orm');
+      const [actor] = await dbInst
+        .select({
+          role: users.role,
+          isVerifiedTherapist: users.isVerifiedTherapist,
+        })
+        .from(users)
+        .where(eq(users.id, actorId))
+        .limit(1);
+      const actorType = actor?.role === 'admin'
+        ? 'admin'
+        : actor?.isVerifiedTherapist
+          ? 'clinician'
+          : null;
+      if (!actorType) {
+        return res.status(403).json({ message: 'Verified clinician access required' });
+      }
+
+      const [planRow] = await dbInst
+        .select({ id: survivorPlans.id, plan: survivorPlans.plan })
+        .from(survivorPlans)
+        .where(eq(survivorPlans.id, planId))
+        .limit(1);
+      if (!planRow) return res.status(404).json({ message: 'Recovery plan not found' });
+      if (!isSafeRecoveryPlan(planRow.plan)) {
+        return res.status(400).json({ message: 'Only a safe recovery education draft can be reviewed' });
+      }
+
+      const reviewedAt = new Date();
+      const normalizedNotes = typeof notes === 'string' && notes.trim()
+        ? notes.trim()
+        : null;
+      const review = await dbInst.transaction(async (tx) => {
+        await tx.update(survivorPlans)
+          .set({
+            reviewStatus: status,
+            reviewedBy: actorId,
+            reviewedAt,
+            reviewNotes: normalizedNotes,
+          })
+          .where(eq(survivorPlans.id, planId));
+        const [created] = await tx.insert(recoveryPlanReviews).values({
+          planId,
+          actorId,
+          actorType,
+          status,
+          notes: normalizedNotes,
+          createdAt: reviewedAt,
+        }).returning();
+        return created;
+      });
+
+      res.json({
+        review: {
+          id: review.id,
+          planId: review.planId,
+          status: review.status,
+          actorType: review.actorType,
+          notes: review.notes,
+          createdAt: review.createdAt,
+        },
+      });
+    } catch (error) {
+      console.error('Error recording recovery plan review:', error);
+      res.status(500).json({ message: 'Failed to record recovery plan review' });
+    }
+  });
+
   // POST /api/recovery/plan/generate — call Gemini, store + return structured plan
   app.post('/api/recovery/plan/generate', isAuthenticated, async (req: any, res) => {
     try {
@@ -11969,6 +12079,10 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
           target: survivorPlans.assessmentId,
           set: {
             plan,
+             reviewStatus: 'pending',
+             reviewedBy: null,
+             reviewedAt: null,
+             reviewNotes: null,
             generatedAt: drizzleSql`now()`,
           },
         }).returning();
@@ -11985,7 +12099,13 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
         if (!isSafeRecoveryPlan(effectivePlan.plan)) {
           [effectivePlan] = await tx
             .update(survivorPlans)
-            .set({ plan })
+            .set({
+              plan,
+              reviewStatus: 'pending',
+              reviewedBy: null,
+              reviewedAt: null,
+              reviewNotes: null,
+            })
             .where(eq(survivorPlans.id, effectivePlan.id))
             .returning();
         }

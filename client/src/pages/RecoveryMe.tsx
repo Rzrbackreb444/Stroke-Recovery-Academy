@@ -67,6 +67,17 @@ interface MeState {
   goals: { id: number; horizon: string; domain: string; goal: string; status: string }[];
   plan: Plan | null;
   planGeneratedAt: string | null;
+  clinicianReview: {
+    status: "pending" | "approved" | "rejected" | "changes_requested";
+    reviewedAt: string | null;
+    notes: string | null;
+    history: {
+      status: "approved" | "rejected" | "changes_requested";
+      actorType: "clinician" | "admin";
+      notes: string | null;
+      createdAt: string;
+    }[];
+  } | null;
 }
 
 export default function RecoveryMe() {
@@ -155,6 +166,30 @@ export default function RecoveryMe() {
   const lastTakenDays = score?.takenAt
     ? Math.floor((Date.now() - new Date(score.takenAt).getTime()) / 86_400_000)
     : null;
+  const review = data.clinicianReview;
+  const reviewCopy = review?.status === "approved"
+    ? {
+        label: "Reviewed by your care team",
+        detail: "This education draft was explicitly approved by a verified clinician.",
+        color: "text-green-300",
+      }
+    : review?.status === "rejected"
+      ? {
+          label: "Not approved by your care team",
+          detail: "Your care team did not approve this draft. Do not use it to guide changes.",
+          color: "text-red-300",
+        }
+      : review?.status === "changes_requested"
+        ? {
+            label: "Changes requested by your care team",
+            detail: "Your care team asked for changes before this draft can be approved.",
+            color: "text-amber-300",
+          }
+        : {
+            label: "Educational draft — awaiting care team review",
+            detail: "This is education only. It has not been reviewed or approved by your care team.",
+            color: "text-amber-300",
+          };
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
@@ -211,6 +246,38 @@ export default function RecoveryMe() {
             </Button>
           </div>
         </div>
+
+        {plan && reviewCopy && (
+          <Card
+            className="bg-[#111] border-[#2a2a1a] p-5 rounded-md"
+            data-testid="card-clinician-review-status"
+          >
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className={`text-xs uppercase tracking-widest ${reviewCopy.color}`}>
+                  Clinician review status
+                </p>
+                <p className="mt-2 text-lg font-serif">{reviewCopy.label}</p>
+                <p className="mt-1 text-sm text-gray-400">{reviewCopy.detail}</p>
+                {review?.reviewedAt && (
+                  <p className="mt-2 text-xs text-gray-500">
+                    Last recorded {new Date(review.reviewedAt).toLocaleString()}
+                  </p>
+                )}
+              </div>
+              {review?.history?.length ? (
+                <div className="text-right text-xs text-gray-500">
+                  {review.history.length} recorded review{review.history.length === 1 ? "" : "s"}
+                </div>
+              ) : null}
+            </div>
+            {review?.notes && (
+              <p className="mt-4 border-t border-[#222] pt-3 text-sm text-gray-300">
+                Care team note: {review.notes}
+              </p>
+            )}
+          </Card>
+        )}
 
         {/* Top row: scores + today */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

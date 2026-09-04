@@ -6401,10 +6401,15 @@ export const survivorPlans = pgTable("survivor_plans", {
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   assessmentId: integer("assessment_id"),
   plan: jsonb("plan").notNull(), // RecoveryPlan JSON; see recoveryPlanSchema above.
+  reviewStatus: text("review_status").notNull().default("pending"), // pending | approved | rejected | changes_requested
+  reviewedBy: varchar("reviewed_by").references(() => users.id, { onDelete: "set null" }),
+  reviewedAt: timestamp("reviewed_at"),
+  reviewNotes: text("review_notes"),
   generatedAt: timestamp("generated_at").notNull().defaultNow(),
 }, (t) => ({
   userIdx: index("survivor_plans_user_idx").on(t.userId, t.generatedAt),
   assessmentUnique: uniqueIndex("survivor_plans_assessment_unique").on(t.assessmentId),
+  reviewStatusIdx: index("survivor_plans_review_status_idx").on(t.reviewStatus, t.generatedAt),
 }));
 
 export const insertSurvivorPlanSchema = createInsertSchema(survivorPlans).omit({
@@ -6413,6 +6418,34 @@ export const insertSurvivorPlanSchema = createInsertSchema(survivorPlans).omit({
 });
 export type SurvivorPlan = typeof survivorPlans.$inferSelect;
 export type InsertSurvivorPlan = z.infer<typeof insertSurvivorPlanSchema>;
+
+export const recoveryPlanReviewStatusSchema = z.enum([
+  "pending",
+  "approved",
+  "rejected",
+  "changes_requested",
+]);
+export type RecoveryPlanReviewStatus = z.infer<typeof recoveryPlanReviewStatusSchema>;
+
+export const recoveryPlanReviews = pgTable("recovery_plan_reviews", {
+  id: serial("id").primaryKey(),
+  planId: integer("plan_id").notNull().references(() => survivorPlans.id, { onDelete: "cascade" }),
+  actorId: varchar("actor_id").notNull(),
+  actorType: text("actor_type").notNull(), // clinician | admin
+  status: text("status").notNull(), // approved | rejected | changes_requested
+  notes: text("notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => ({
+  planIdx: index("recovery_plan_reviews_plan_idx").on(t.planId, t.createdAt),
+  actorIdx: index("recovery_plan_reviews_actor_idx").on(t.actorId, t.createdAt),
+}));
+
+export const insertRecoveryPlanReviewSchema = createInsertSchema(recoveryPlanReviews).omit({
+  id: true,
+  createdAt: true,
+});
+export type RecoveryPlanReview = typeof recoveryPlanReviews.$inferSelect;
+export type InsertRecoveryPlanReview = z.infer<typeof insertRecoveryPlanReviewSchema>;
 
 // Durable milestones for the survivor onboarding-to-first-rep funnel.
 // Each milestone is recorded once per survivor; retries must not inflate counts.
