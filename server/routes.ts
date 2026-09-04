@@ -12094,7 +12094,6 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
              reviewedBy: null,
              reviewedAt: null,
              reviewNotes: null,
-            generatedAt: drizzleSql`now()`,
           },
         }).returning();
         if (!effectivePlan) {
