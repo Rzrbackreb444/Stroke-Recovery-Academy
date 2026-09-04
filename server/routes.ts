@@ -10261,8 +10261,15 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
   app.get('/api/coach/memory/summary', isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req)!;
-      const { getWeeklyCoachSummary } = await import('./sasquatchHistoryService');
-      res.json(await getWeeklyCoachSummary(userId));
+      const { getWeeklyCoachSummary, parseCoachHistoryRangeDays } = await import('./sasquatchHistoryService');
+      const rawRangeDays = Array.isArray(req.query?.rangeDays)
+        ? req.query.rangeDays[0]
+        : req.query?.rangeDays;
+      const rangeDays = parseCoachHistoryRangeDays(rawRangeDays);
+      if (rangeDays === null) {
+        return res.status(400).json({ message: 'rangeDays must be one of 7, 30, or 90' });
+      }
+      res.json(await getWeeklyCoachSummary(userId, rangeDays));
     } catch (error: any) {
       console.error('Coach memory summary error:', error?.message ?? error);
       res.status(500).json({ message: 'Failed to create Coach summary' });
@@ -11318,14 +11325,16 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
        const reviewHistory = latestPlan && safePlan
          ? await dbInst
            .select({
+             id: recoveryPlanReviews.id,
              status: recoveryPlanReviews.status,
              actorType: recoveryPlanReviews.actorType,
+             actorId: recoveryPlanReviews.actorId,
              notes: recoveryPlanReviews.notes,
              createdAt: recoveryPlanReviews.createdAt,
            })
            .from(recoveryPlanReviews)
            .where(eq(recoveryPlanReviews.planId, latestPlan.id))
-           .orderBy(desc(recoveryPlanReviews.createdAt))
+           .orderBy(desc(recoveryPlanReviews.createdAt), desc(recoveryPlanReviews.id))
          : [];
       const hasPlan = !!safePlan;
       const hasGoals = goals.length > 0;
@@ -11347,6 +11356,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         planGeneratedAt: safePlan ? latestPlan?.generatedAt || null : null,
          clinicianReview: safePlan && latestPlan ? {
            status: latestPlan.reviewStatus,
+           reviewedBy: latestPlan.reviewedBy,
            reviewedAt: latestPlan.reviewedAt,
            notes: latestPlan.reviewNotes,
            history: reviewHistory,
@@ -11867,6 +11877,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
           id: review.id,
           planId: review.planId,
           status: review.status,
+          actorId: review.actorId,
           actorType: review.actorType,
           notes: review.notes,
           createdAt: review.createdAt,

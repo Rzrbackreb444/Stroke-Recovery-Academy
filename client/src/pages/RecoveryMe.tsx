@@ -69,10 +69,13 @@ interface MeState {
   planGeneratedAt: string | null;
   clinicianReview: {
     status: "pending" | "approved" | "rejected" | "changes_requested";
+    reviewedBy: string | null;
     reviewedAt: string | null;
     notes: string | null;
     history: {
+      id: number;
       status: "approved" | "rejected" | "changes_requested";
+      actorId: string;
       actorType: "clinician" | "admin";
       notes: string | null;
       createdAt: string;

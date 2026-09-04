@@ -51,6 +51,14 @@ test("Coach memory is explicit, owner-scoped, and keeps facts separate from obse
   assert.match(chatWidget, /\/api\/coach\/history/);
 });
 
+test("Coach recovery summaries support bounded date ranges without changing source approvals", () => {
+  assert.match(history, /COACH_HISTORY_RANGE_DAYS = \[7, 30, 90\]/);
+  assert.match(history, /getWeeklyCoachSummary\([\s\S]*rangeDays/);
+  assert.match(routes, /rangeDays must be one of 7, 30, or 90/);
+  assert.match(coachPage, /select-coach-summary-range/);
+  assert.match(coachPage, /Survivor-entered facts, saved plans, and Coach observations stay separate/);
+});
+
 test("daily check-in serializes duplicate clicks and commits reward data atomically", () => {
   assert.match(storage, /async createDailyCheckinWithRewards/);
   assert.match(storage, /db\.transaction\(async \(tx\) => \{[\s\S]*pg_advisory_xact_lock/);

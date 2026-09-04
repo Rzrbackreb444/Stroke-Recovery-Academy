@@ -52,6 +52,8 @@ type CoachSummary = {
   observations: string[];
 };
 
+type CoachHistoryRangeDays = 7 | 30 | 90;
+
 const STARTER_PROMPTS = [
   "My arm isn't improving — help me choose a manageable focus for today.",
   "I'm feeling discouraged. Help me get back on track.",
@@ -96,6 +98,7 @@ export default function SasquatchCoach() {
   const [isListening, setIsListening] = useState(false);
   const [micUnsupported, setMicUnsupported] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
+  const [summaryRangeDays, setSummaryRangeDays] = useState<CoachHistoryRangeDays>(7);
   const [editingMemoryId, setEditingMemoryId] = useState<number | null>(null);
   const [memoryDraft, setMemoryDraft] = useState<{ title: string; content: string }>({ title: "", content: "" });
   const recognitionRef = useRef<any>(null);
@@ -112,7 +115,7 @@ export default function SasquatchCoach() {
     enabled: !!user,
   });
   const summaryQuery = useQuery<CoachSummary>({
-    queryKey: ["/api/coach/memory/summary"],
+    queryKey: ["/api/coach/memory/summary", { rangeDays: summaryRangeDays }],
     enabled: !!user && summaryOpen,
   });
   const memoryMutation = useMutation({
@@ -444,7 +447,7 @@ export default function SasquatchCoach() {
                 onClick={() => setSummaryOpen((open) => !open)}
                 data-testid="button-coach-memory-summary"
               >
-                {summaryOpen ? "Hide weekly summary" : "Show weekly summary"}
+                {summaryOpen ? "Hide recovery summary" : "Review recovery history"}
               </Button>
             </div>
 
@@ -458,7 +461,7 @@ export default function SasquatchCoach() {
                   {([
                     ["includeCheckins", "Daily check-ins", "Mood, energy, pain, effort, and words you entered"],
                     ["includeToday", "Today feedback", "Your own reactions to suggested recovery reps"],
-                    ["includeJournal", "Private journal", "Journal words from the last 7 days — explicit consent required"],
+                    ["includeJournal", "Private journal", "Journal words from the selected range — explicit consent required"],
                     ["includeGoals", "Recovery goals", "Goals you saved, including their current status"],
                     ["includePlans", "Saved plans", "The latest plan summary and focus areas"],
                   ] as const).map(([key, label, description]) => (
@@ -483,8 +486,29 @@ export default function SasquatchCoach() {
                 </div>
 
                 {summaryOpen && (
-                  <div className="mt-4 rounded-lg border border-[#E2741B]/25 bg-[#17130f] p-4" data-testid="card-coach-weekly-summary">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#E2741B]">Coach weekly summary · {summaryQuery.data?.periodLabel ?? "Last 7 days"}</p>
+                  <div className="mt-4 rounded-lg border border-[#E2741B]/25 bg-[#17130f] p-4" data-testid="card-coach-history-summary">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#E2741B]">
+                        Coach recovery summary · {summaryQuery.data?.periodLabel ?? `Last ${summaryRangeDays} days`}
+                      </p>
+                      <label className="flex items-center gap-2 text-xs text-gray-400" htmlFor="coach-summary-range">
+                        Review range
+                        <select
+                          id="coach-summary-range"
+                          value={summaryRangeDays}
+                          onChange={(event) => setSummaryRangeDays(Number(event.target.value) as CoachHistoryRangeDays)}
+                          className="rounded border border-[#3a2b20] bg-[#0d0d0d] px-2 py-1.5 text-xs text-gray-200"
+                          data-testid="select-coach-summary-range"
+                        >
+                          <option value={7}>Last 7 days</option>
+                          <option value={30}>Last 30 days</option>
+                          <option value={90}>Last 90 days</option>
+                        </select>
+                      </label>
+                    </div>
+                    <p className="mt-2 text-xs leading-relaxed text-gray-500">
+                      This review uses only the source types you approved above. Survivor-entered facts, saved plans, and Coach observations stay separate.
+                    </p>
                     {summaryQuery.isLoading ? (
                       <p className="mt-3 text-sm text-gray-400">Putting together only the approved pieces…</p>
                     ) : summaryQuery.isError ? (
@@ -500,7 +524,7 @@ export default function SasquatchCoach() {
                               ))}
                             </ul>
                           ) : (
-                            <p className="mt-2 text-sm text-gray-500">No approved survivor-entered facts for this week.</p>
+                            <p className="mt-2 text-sm text-gray-500">No approved survivor-entered facts in this range.</p>
                           )}
                         </div>
                         {summaryQuery.data.savedPlans.length > 0 && (
