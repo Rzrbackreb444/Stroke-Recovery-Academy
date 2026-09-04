@@ -241,10 +241,11 @@ export default function RecoveryOnboarding() {
               />
               <h1 className="font-serif text-3xl sm:text-4xl">Let's build your plan.</h1>
               <p className="text-gray-400 max-w-xl mx-auto leading-relaxed">
-                Five quick scores. Two goals. Then your personal AI recovery
-                plan — exercises, brain gym minutes, meal targets, and a weekly
-                schedule. Takes about four minutes. We re-score every month so
-                you can see your progress in black and white.
+                Five quick scores. Two goals. Then your personal recovery
+                education draft — approved library options, reflection prompts,
+                and questions to take to your care team. Takes about four
+                minutes. We re-score every month so you can see your progress
+                in black and white.
               </p>
               <p className="text-xs text-gray-500 max-w-md mx-auto">
                 Not medical advice. Confirm anything new with your doctor or therapist.

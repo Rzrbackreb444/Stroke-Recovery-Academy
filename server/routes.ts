@@ -91,6 +91,12 @@ import {
 } from "./spotifyService";
 import { seedRecoveryData } from "./seedRecoveryData";
 import { seedCreatorToolCategories, seedWorkflowCategories } from "./seedCreatorTools";
+import {
+  buildSafeRecoveryPlan,
+  isSafeRecoveryPlan,
+  parseAiRecoveryPlanDraft,
+  pickSafeExerciseSlugs,
+} from "./recoveryPlanSafety";
 import { generate, generateStream, bookGenerator, marketingGenerator, screenplayGenerator, courseGenerator, researchGenerator, getUsageStats, type GenerateOptions } from "./aiOrchestrator";
 import { 
   generateChildStoryRequestSchema,
@@ -11182,7 +11188,13 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         .limit(1);
 
       const hasAssessment = !!latestAssessment;
-      const hasPlan = !!latestPlan?.plan;
+      // Never return a legacy or malformed plan to the client. Older rows may
+      // contain the retired prescription shape; the generator will replace
+      // those rows with a safe education draft on the next request.
+      const safePlan = latestPlan?.plan && isSafeRecoveryPlan(latestPlan.plan)
+        ? latestPlan.plan
+        : null;
+      const hasPlan = !!safePlan;
       const hasGoals = goals.length > 0;
       const hasOnboarded = hasAssessment && hasPlan;
       res.json({
@@ -11198,8 +11210,8 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
           ...profile,
           intakeComplete: !!profile.intakeCompletedAt,
         } : null,
-        plan: latestPlan?.plan || null,
-        planGeneratedAt: latestPlan?.generatedAt || null,
+        plan: safePlan,
+        planGeneratedAt: safePlan ? latestPlan?.generatedAt || null : null,
       });
     } catch (error) {
       console.error('Error fetching recovery state:', error);
@@ -11676,10 +11688,10 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         .where(and(eq(survivorPlans.userId, userId), eq(survivorPlans.assessmentId, assessment.id)))
         .orderBy(desc(survivorPlans.generatedAt))
         .limit(1);
-       const scoreUpdatedAt = profile.profileProvenance?.assessmentScores?.updatedAt;
-       const planIsCurrent = !existingPlan || !scoreUpdatedAt
-         || new Date(scoreUpdatedAt).getTime() <= new Date(existingPlan.generatedAt).getTime();
-       if (existingPlan?.plan && planIsCurrent) {
+      const scoreUpdatedAt = profile.profileProvenance?.assessmentScores?.updatedAt;
+      const planIsCurrent = !existingPlan || !scoreUpdatedAt
+        || new Date(scoreUpdatedAt).getTime() <= new Date(existingPlan.generatedAt).getTime();
+      if (existingPlan?.plan && planIsCurrent && isSafeRecoveryPlan(existingPlan.plan)) {
         // A retry may be completing a plan written by an older request. Keep
         // both milestone repairs atomic so a failed second write does not
         // leave the funnel reporting only half of onboarding.
@@ -11692,6 +11704,9 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
           }, tx);
         });
         return res.json({ plan: existingPlan.plan, generatedAt: existingPlan.generatedAt, reused: true });
+      }
+      if (existingPlan?.plan) {
+        console.warn("[recovery plan] replacing a legacy or invalid stored plan with a safe education draft");
       }
 
        const legacyGoals = await dbInst
@@ -11714,70 +11729,34 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       }
       const catalog = await dbInst.select().from(recoveryExercises);
 
-      // Pick exercises matched to the survivor's weakest domains and current level.
-      const ranked = [
-         ['physical', effectiveAssessment.physical],
-         ['cognitive', effectiveAssessment.cognitive],
-         ['speech', effectiveAssessment.speech],
-         ['emotional', effectiveAssessment.emotional],
-         ['memory', effectiveAssessment.memory],
-      ].sort((a, b) => (a[1] as number) - (b[1] as number));
-       const physScore = effectiveAssessment.physical as number;
+      // The survivor's self-assessment may narrow the approved catalog, but it
+      // never becomes a dosage or intensity instruction.
+      const physScore = effectiveAssessment.physical as number;
       const userLevel: 'beginner' | 'moderate' | 'advanced' =
         physScore <= 3 ? 'beginner' : physScore <= 6 ? 'moderate' : 'advanced';
 
-      const levelDose = (ex: any) => {
-        const sets = ex[`${userLevel}Sets`] ?? ex.beginnerSets ?? 2;
-        const reps = ex[`${userLevel}Reps`] ?? ex.beginnerReps ?? 10;
-        const hold = ex[`${userLevel}HoldSec`] ?? ex.beginnerHoldSec ?? 0;
-        return { sets, reps, hold };
-      };
+      const allowedLevels =
+        userLevel === 'beginner'
+          ? new Set(['beginner'])
+          : userLevel === 'moderate'
+            ? new Set(['beginner', 'moderate'])
+            : new Set(['beginner', 'moderate', 'advanced']);
+      const safeCatalog = catalog.filter((exercise: any) =>
+        allowedLevels.has(exercise.level) &&
+        typeof exercise.safetyNotes === 'string' &&
+        exercise.safetyNotes.trim().length > 0,
+      );
+      const fallbackExerciseSlugs = pickSafeExerciseSlugs(safeCatalog, userLevel);
 
-      // Pre-built realistic prescription drawn from the real catalog.
-      const pickFromCatalog = (): any[] => {
-        const opener = catalog.find((e: any) => e.category === 'spasticity' && e.slug === 'gentle-rocking');
-        const lowerSeated = catalog.filter((e: any) => e.category === 'lower' && e.position === 'seated');
-        const lowerStanding = catalog.filter((e: any) => e.category === 'lower' && e.position === 'standing');
-        const upperSeated = catalog.filter((e: any) => e.category === 'upper' && e.position === 'seated');
-        const hand = catalog.filter((e: any) => e.category === 'hand_fine_motor');
-        const stretches = catalog.filter((e: any) => e.category === 'stretch');
+      const apiKey = process.env.GEMINI_API_KEY || process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
+      let plan: any = null;
 
-        const picks: any[] = [];
-        if (opener) picks.push(opener);
-        // 2 lower body — seated for low scorers, standing for higher
-        const lowerPool = userLevel === 'beginner' ? lowerSeated : [...lowerSeated, ...lowerStanding];
-        picks.push(...lowerPool.slice(0, 2));
-        // 2 upper body
-        picks.push(...upperSeated.slice(0, 2));
-        // 1 hand/fine motor (always — survivors under-train this)
-        if (hand.length) picks.push(hand[0]);
-        // 1 stretch closer
-        if (stretches.length) picks.push(stretches[0]);
-
-        return picks.filter(Boolean).map((ex: any) => {
-          const { sets, reps, hold } = levelDose(ex);
-          return {
-            exerciseId: ex.id,
-            slug: ex.slug,
-            name: ex.name,
-            domain: ex.domain || 'physical',
-            sets,
-            reps,
-            holdSec: hold,
-            notes: ex.safetyNotes || ex.progressionRule || '',
-          };
-        });
-      }
-
-       const apiKey = process.env.GEMINI_API_KEY || process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
-      let plan: any;
-
-      const catalogList = catalog
+      const catalogList = safeCatalog
         .map((e: any) => `- ${e.slug} (${e.category}/${e.position}/${e.level}): ${e.name}`)
         .join('\n');
 
-       if (apiKey) {
-         const prompt = `You are Sasquatch Coach — a hard-edged, deeply caring stroke recovery guide who speaks like a Southern raspy mountain man. Build a 7-day education, reflection, and clinician-approved routine planning draft for this survivor.
+      if (apiKey) {
+        const prompt = `You are a recovery education assistant. Select approved library items for a clinician-review draft. Do not prescribe, dose, schedule, or give nutrition or medication guidance.
 
 SASQUATCH SCALE (1=lowest, 10=highest):
  - Physical: ${effectiveAssessment.physical}/10
@@ -11792,34 +11771,17 @@ ${goals.map((g: any) => `- [${g.horizon}/${g.domain}] ${g.goal}`).join('\n') || 
 
 USER LEVEL (derived from physical score): ${userLevel}
 
-CRITICAL RULE: You MUST select exercises ONLY from this real platform catalog (use the slug field).
-Do NOT invent exercise names. Each prescribed exercise must reference a slug from this list:
+CRITICAL RULE: Select exercise slugs ONLY from this approved catalog. Do not invent or paraphrase items:
 
 ${catalogList}
 
-Output STRICT JSON only (no markdown fences). Schema:
+Output STRICT JSON only (no markdown fences), with exactly this schema:
 {
-  "summary": "1-2 sentence Sasquatch-voice opener",
-  "focusDomains": ["physical","cognitive",...],
-  "exercises": [
-    { "slug": "<one of the catalog slugs>", "sets": 3, "reps": 10, "holdSec": 0, "notes": "Sasquatch-voice form cue" }
-  ],
-  "brainGymMinutes": 15,
-  "mealTargets": {
-    "omega3Servings": 4,
-    "leafyGreensServings": 14,
-    "hydrationOz": 80,
-    "limit": ["added sugar","ultra-processed foods"]
-  },
-  "weeklySchedule": {
-    "Mon": ["...","..."], "Tue": [...], "Wed": [...], "Thu": [...],
-    "Fri": [...], "Sat": [...], "Sun": ["Active rest","Reflection"]
-  },
-  "tips": ["...","...","..."],
-  "safetyNote": "Not medical advice. Confirm with your doctor or therapist."
+  "exerciseSlugs": ["<one of the catalog slugs>"],
+  "focusDomains": ["physical","cognitive","speech","emotional","memory"]
 }
 
-For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 upper body, 1 hand/fine motor, 1 stretch closer. Match sets/reps/holdSec to the user level columns of each exercise.`;
+Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage, intensity, frequency, duration, meals, hydration, calories, supplements, medication guidance, progressions, schedules, or prescriptions.`;
 
         try {
           const r = await fetch(
@@ -11829,29 +11791,35 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 contents: [{ role: 'user', parts: [{ text: prompt }] }],
-                generationConfig: { temperature: 0.7, responseMimeType: 'application/json' },
+                generationConfig: { temperature: 0, responseMimeType: 'application/json' },
               }),
             }
           );
           if (r.ok) {
             const j: any = await r.json();
             const text = j?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-            try {
-              plan = JSON.parse(text);
-            } catch {
-              const m = text.match(/\{[\s\S]*\}/);
-              if (m) plan = JSON.parse(m[0]);
-            }
+            const m = text.match(/\{[\s\S]*\}/);
+            if (!m) throw new Error('Gemini returned no JSON object');
+            const draft = parseAiRecoveryPlanDraft(JSON.parse(m[0]));
+            plan = buildSafeRecoveryPlan({
+              catalog: safeCatalog,
+              exerciseSlugs: draft.exerciseSlugs,
+              focusDomains: draft.focusDomains,
+            });
           } else {
             console.error('Gemini plan call failed', r.status, await r.text());
           }
         } catch (err) {
-          console.error('Gemini plan error', err);
+          // An invalid model response is discarded, never partially merged
+          // into a plan. The deterministic catalog-only draft below remains
+          // available when the model is unavailable or unsafe.
+          console.warn('Gemini recovery plan draft rejected:', err);
         }
       }
 
       if (!plan) {
-        // Deterministic fallback so flow is never broken if AI is unavailable.
+        // Deterministic fallback so flow is never broken if AI is unavailable
+        // or its response fails validation.
         const domains = [
            ['physical', effectiveAssessment.physical],
            ['cognitive', effectiveAssessment.cognitive],
@@ -11859,41 +11827,12 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
            ['emotional', effectiveAssessment.emotional],
            ['memory', effectiveAssessment.memory],
         ].sort((a, b) => (a[1] as number) - (b[1] as number));
-        const weakest = domains.slice(0, 3).map((d) => d[0]);
-        plan = {
-          summary: "Built you a starter plan. We'll sharpen it together. Never zero — just one rep at a time.",
+        const weakest = domains.slice(0, 3).map((d) => String(d[0]));
+        plan = buildSafeRecoveryPlan({
+          catalog: safeCatalog,
+          exerciseSlugs: fallbackExerciseSlugs,
           focusDomains: weakest,
-          exercises: [
-            { name: 'Seated marches', domain: 'physical', sets: 3, reps: 12, notes: 'Slow controlled lifts.' },
-            { name: 'Sit-to-stand', domain: 'physical', sets: 3, reps: 8, notes: 'Use a sturdy chair.' },
-            { name: 'Word search drill', domain: 'cognitive', sets: 1, reps: 1, notes: '10 minutes.' },
-            { name: 'Reading aloud', domain: 'speech', sets: 1, reps: 1, notes: '5 minutes from any book.' },
-            { name: 'Box breathing', domain: 'emotional', sets: 4, reps: 4, notes: 'In 4 / hold 4 / out 4 / hold 4.' },
-            { name: 'Memory recall list', domain: 'memory', sets: 1, reps: 1, notes: 'Recite yesterday in order.' },
-          ],
-          brainGymMinutes: 15,
-          mealTargets: {
-            omega3Servings: 4,
-            leafyGreensServings: 14,
-            hydrationOz: 80,
-            limit: ['added sugar', 'ultra-processed foods'],
-          },
-          weeklySchedule: {
-            Mon: ['Physical reps', 'Brain Gym'],
-            Tue: ['Speech reading', 'Walk if able'],
-            Wed: ['Physical reps', 'Memory drill'],
-            Thu: ['Brain Gym', 'Box breathing'],
-            Fri: ['Physical reps', 'Speech reading'],
-            Sat: ['Long walk if able', 'Reflection'],
-            Sun: ['Active rest', 'Plan the week'],
-          },
-          tips: [
-            'Never zero. One rep counts.',
-            'Sleep is recovery — protect it.',
-            'Hydration first. Coffee second.',
-          ],
-          safetyNote: 'Not medical advice. Confirm with your doctor or therapist.',
-        };
+        });
       }
 
       // The plan and both funnel milestones are one logical operation. If a
@@ -11921,6 +11860,13 @@ For exercises, prescribe 5-7 covering: 1 spasticity opener, 2 lower body, 2 uppe
         }
         if (!effectivePlan) {
           throw new Error(`Recovery plan was not available for assessment ${assessment.id}`);
+        }
+        if (!isSafeRecoveryPlan(effectivePlan.plan)) {
+          [effectivePlan] = await tx
+            .update(survivorPlans)
+            .set({ plan })
+            .where(eq(survivorPlans.id, effectivePlan.id))
+            .returning();
         }
         await recordRecoveryFunnelEvent(userId, "plan_generated", {
           planId: effectivePlan.id,

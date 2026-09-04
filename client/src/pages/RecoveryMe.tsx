@@ -26,7 +26,6 @@ import {
   RefreshCw,
   Calendar,
   Dumbbell,
-  Apple,
   TrendingUp,
 } from "lucide-react";
 
@@ -42,17 +41,21 @@ const DOMAIN_META: Record<
 };
 
 interface Plan {
+  planVersion?: 2;
+  planType?: "education_and_clinician_review";
   summary?: string;
   focusDomains?: string[];
-  exercises?: { name: string; domain: string; sets: number; reps: number; notes?: string }[];
-  brainGymMinutes?: number;
-  mealTargets?: {
-    omega3Servings?: number;
-    leafyGreensServings?: number;
-    hydrationOz?: number;
-    limit?: string[];
-  };
-  weeklySchedule?: Record<string, string[]>;
+  exercises?: {
+    exerciseId: number;
+    slug: string;
+    name: string;
+    domain: string;
+    description: string;
+    safetyNotes: string;
+    clinicianReviewRequired: true;
+  }[];
+  education?: { brainGym: string; nutrition: string[] };
+  weeklyReflection?: Record<string, string>;
   tips?: string[];
   safetyNote?: string;
 }
@@ -86,7 +89,7 @@ export default function RecoveryMe() {
     mutationFn: () => apiRequest("POST", "/api/recovery/plan/generate", {}),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/recovery/me/state"] });
-      toast({ title: "Plan regenerated." });
+      toast({ title: "Education draft regenerated." });
     },
     onError: () =>
       toast({ title: "Couldn't regenerate plan", variant: "destructive" }),
@@ -101,7 +104,7 @@ export default function RecoveryMe() {
   }, [data]);
 
   const todayName = new Date().toLocaleDateString("en-US", { weekday: "short" });
-  const todayPlan = data?.plan?.weeklySchedule?.[todayName] || [];
+  const todayReflection = data?.plan?.weeklyReflection?.[todayName];
 
   if (authLoading || !isAuthenticated || isLoading) {
     return (
@@ -126,8 +129,8 @@ export default function RecoveryMe() {
           <h1 className="font-serif text-3xl">Take the Sasquatch Scale</h1>
           <p className="text-gray-400">
             Five domains, four minutes. We turn your scores into a real
-            personal recovery plan with exercises, brain gym minutes, and meal
-            targets.
+            personal education draft with approved library options, reflection
+            prompts, and questions to take to your care team.
           </p>
           <Button
             size="lg"
@@ -165,7 +168,7 @@ export default function RecoveryMe() {
             >
               Survivor OS
             </p>
-            <h1 className="font-serif text-3xl sm:text-4xl">Your recovery plan</h1>
+            <h1 className="font-serif text-3xl sm:text-4xl">Your recovery education draft</h1>
             {data.planGeneratedAt && (
               <p className="text-xs text-gray-500 mt-1">
                 Plan generated {new Date(data.planGeneratedAt).toLocaleDateString()} ·
@@ -266,35 +269,24 @@ export default function RecoveryMe() {
           <Card className="bg-[#111] border-[#222] p-6 rounded-md">
             <div className="flex items-center gap-2 mb-4">
               <Calendar className="h-5 w-5" style={{ color: "#E2741B" }} />
-              <h2 className="font-serif text-xl">Today's prescription</h2>
+              <h2 className="font-serif text-xl">Today's reflection</h2>
             </div>
-            {todayPlan.length > 0 ? (
-              <ul className="space-y-3">
-                {todayPlan.map((item, i) => (
-                  <li
-                    key={i}
-                    className="flex items-start gap-3 rounded-md border border-[#222] bg-[#0a0a0a] p-3"
-                    data-testid={`text-today-item-${i}`}
-                  >
-                    <div
-                      className="mt-1 h-2 w-2 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: "#E2741B" }}
-                    />
-                    <span className="text-sm text-gray-200">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-gray-500">
-                Rest day — keep hydrated, sleep early, hammer it tomorrow.
+            {todayReflection ? (
+              <p
+                className="rounded-md border border-[#222] bg-[#0a0a0a] p-3 text-sm text-gray-200"
+                data-testid="text-today-reflection"
+              >
+                {todayReflection}
               </p>
+            ) : (
+              <p className="text-sm text-gray-500">No reflection prompt is available today.</p>
             )}
-            {plan?.brainGymMinutes ? (
+            {plan?.education?.brainGym ? (
               <div className="mt-5 flex items-center justify-between rounded-md border border-[#222] bg-[#0a0a0a] p-3">
-                <span className="text-sm text-gray-300">Brain Gym minutes</span>
+                <span className="text-sm text-gray-300">Brain Gym education</span>
                 <Link href="/recovery/brain-gym">
                   <Button size="sm" className="text-black" style={{ backgroundColor: "#E2741B" }}>
-                    {plan.brainGymMinutes} min
+                    Explore
                   </Button>
                 </Link>
               </div>
@@ -360,7 +352,7 @@ export default function RecoveryMe() {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <Dumbbell className="h-5 w-5" style={{ color: "#E2741B" }} />
-              <h2 className="font-serif text-xl">Prescribed exercises</h2>
+              <h2 className="font-serif text-xl">Approved library options</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {plan.exercises.map((ex, i) => {
@@ -378,19 +370,15 @@ export default function RecoveryMe() {
                           {ex.domain}
                         </span>
                       </div>
-                      <span
-                        className="text-xs font-bold tabular-nums"
-                        style={{ color: "#E2741B" }}
-                      >
-                        {ex.sets}×{ex.reps}
+                      <span className="text-[10px] uppercase tracking-widest text-gray-500">
+                        Review first
                       </span>
                     </div>
                     <p className="text-sm font-semibold text-white">{ex.name}</p>
-                    {ex.notes && (
-                      <p className="text-xs text-gray-500 mt-1 leading-snug">
-                        {ex.notes}
-                      </p>
-                    )}
+                    <p className="text-xs text-gray-400 mt-2 leading-snug">{ex.description}</p>
+                    <p className="text-xs text-amber-300/80 mt-2 leading-snug">
+                      Safety note: {ex.safetyNotes}
+                    </p>
                   </Card>
                 );
               })}
@@ -398,42 +386,24 @@ export default function RecoveryMe() {
           </div>
         ) : null}
 
-        {/* Meal targets */}
-        {plan?.mealTargets && (
+        {/* Nutrition education */}
+        {plan?.education?.nutrition?.length ? (
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <Apple className="h-5 w-5" style={{ color: "#E2741B" }} />
-              <h2 className="font-serif text-xl">Weekly meal targets</h2>
+              <Target className="h-5 w-5" style={{ color: "#E2741B" }} />
+              <h2 className="font-serif text-xl">Nutrition education</h2>
             </div>
             <Card className="bg-[#111] border-[#222] p-5 rounded-md">
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {plan.mealTargets.omega3Servings != null && (
-                  <Stat
-                    label="Omega-3 servings"
-                    value={`${plan.mealTargets.omega3Servings}/wk`}
-                  />
-                )}
-                {plan.mealTargets.leafyGreensServings != null && (
-                  <Stat
-                    label="Leafy greens"
-                    value={`${plan.mealTargets.leafyGreensServings}/wk`}
-                  />
-                )}
-                {plan.mealTargets.hydrationOz != null && (
-                  <Stat
-                    label="Water"
-                    value={`${plan.mealTargets.hydrationOz} oz / day`}
-                  />
-                )}
-              </div>
-              {plan.mealTargets.limit?.length ? (
-                <p className="text-xs text-gray-500 mt-4">
-                  Limit: {plan.mealTargets.limit.join(", ")}
-                </p>
-              ) : null}
+              <ul className="space-y-2">
+                {plan.education.nutrition.map((item, i) => (
+                  <li key={i} className="text-sm text-gray-300 flex gap-2">
+                    <span style={{ color: "#E2741B" }}>›</span> {item}
+                  </li>
+                ))}
+              </ul>
             </Card>
           </div>
-        )}
+         ) : null}
 
         {/* Tips */}
         {plan?.tips?.length ? (
@@ -460,19 +430,6 @@ export default function RecoveryMe() {
             "Not medical advice. This plan is generated from your self-assessment and should be confirmed with your doctor or therapist. In a crisis, call 988 (Suicide & Crisis Lifeline) or 911."}
         </p>
       </div>
-    </div>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <p className="text-2xl font-serif tabular-nums" style={{ color: "#E2741B" }}>
-        {value}
-      </p>
-      <p className="text-[10px] uppercase tracking-widest text-gray-500 mt-1">
-        {label}
-      </p>
     </div>
   );
 }
