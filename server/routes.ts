@@ -12106,6 +12106,7 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
           target: survivorPlans.assessmentId,
           set: {
             plan,
+            generatedAt: new Date(),
              reviewStatus: 'pending',
              reviewedBy: null,
              reviewedAt: null,
@@ -12127,6 +12128,7 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
             .update(survivorPlans)
             .set({
               plan,
+              generatedAt: new Date(),
               reviewStatus: 'pending',
               reviewedBy: null,
               reviewedAt: null,
