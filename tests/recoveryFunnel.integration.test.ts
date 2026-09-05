@@ -299,6 +299,74 @@ test(
 
       const survivorCookie = await login(baseUrl, survivorEmail, password);
       const adminCookie = await login(baseUrl, adminEmail, password);
+
+      const emptyProfile = await jsonRequest(
+        baseUrl,
+        "/api/survivor/profile",
+        {},
+        survivorCookie,
+      );
+      assert.equal(emptyProfile.response.status, 200);
+      assert.equal(emptyProfile.body.profile, null);
+
+      const profilePatch = await jsonRequest(
+        baseUrl,
+        "/api/survivor/profile",
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            profileSource: "survivor_profile_settings",
+            preferredName: "Integration Survivor",
+            deficits: { motor: 3, fatigue: 2 },
+            recoveryGoals: ["Speak with more confidence"],
+            goalDetails: [{
+              horizon: "long",
+              domain: "speech",
+              goal: "Speak with more confidence",
+              status: "active",
+            }],
+            dailyTimeBudgetMinutes: 20,
+            energyPattern: "morning",
+          }),
+        },
+        survivorCookie,
+      );
+      assert.equal(profilePatch.response.status, 200, JSON.stringify(profilePatch.body));
+      assert.equal(profilePatch.body.profile.preferredName, "Integration Survivor");
+      assert.deepEqual(profilePatch.body.profile.goalDetails, [{
+        horizon: "long",
+        domain: "speech",
+        goal: "Speak with more confidence",
+        status: "active",
+      }]);
+
+      const profileRead = await jsonRequest(
+        baseUrl,
+        "/api/survivor/profile",
+        {},
+        survivorCookie,
+      );
+      assert.equal(profileRead.response.status, 200);
+      assert.equal(profileRead.body.profile.preferredName, "Integration Survivor");
+      assert.equal(profileRead.body.profile.profileProvenance.preferredName.source, "survivor_profile_settings");
+
+      const todayWithProfile = await jsonRequest(
+        baseUrl,
+        "/api/recovery/today/recommendation",
+        {},
+        survivorCookie,
+      );
+      assert.equal(todayWithProfile.response.status, 200, JSON.stringify(todayWithProfile.body));
+      assert.equal(todayWithProfile.body.personalization.applied, true);
+      assert.deepEqual(todayWithProfile.body.personalization.goals, ["Speak with more confidence"]);
+      assert.deepEqual(todayWithProfile.body.personalization.goalDetails, [{
+        horizon: "long",
+        domain: "speech",
+        goal: "Speak with more confidence",
+        status: "active",
+      }]);
+      assert.equal(todayWithProfile.body.personalization.startLevel, 1);
+
       const before = await readFunnel(baseUrl, adminCookie);
 
       const assessment = {
@@ -341,6 +409,32 @@ test(
 
       await postRecovery(baseUrl, "/api/recovery/assessment", assessment, survivorCookie);
       await postRecovery(baseUrl, "/api/recovery/assessment", assessment, survivorCookie);
+
+      const stateAfterAssessment = await jsonRequest(
+        baseUrl,
+        "/api/recovery/me/state",
+        {},
+        survivorCookie,
+      );
+      assert.equal(stateAfterAssessment.response.status, 200, JSON.stringify(stateAfterAssessment.body));
+      assert.deepEqual(
+        {
+          physical: stateAfterAssessment.body.latestAssessment.physical,
+          cognitive: stateAfterAssessment.body.latestAssessment.cognitive,
+          speech: stateAfterAssessment.body.latestAssessment.speech,
+          emotional: stateAfterAssessment.body.latestAssessment.emotional,
+          memory: stateAfterAssessment.body.latestAssessment.memory,
+          notes: stateAfterAssessment.body.latestAssessment.notes,
+        },
+        assessment,
+      );
+      assert.deepEqual(stateAfterAssessment.body.goals, [{
+        id: -1,
+        horizon: "long",
+        domain: "speech",
+        goal: "Speak with more confidence",
+        status: "active",
+      }]);
 
       // A later reassessment is valid once the 24-hour duplicate window has
       // passed. Move the initial snapshot outside that window, then submit a

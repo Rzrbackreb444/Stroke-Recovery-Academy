@@ -46,7 +46,7 @@ test("regenerated recovery plans advance generatedAt after goal provenance chang
   const routes = await readFile(new URL("../server/routes.ts", import.meta.url), "utf8");
   assert.match(
     routes,
-    /set:\s*\{\s*plan,\s*generatedAt: new Date\(\),\s*reviewStatus: 'pending'/,
+    /\.set\(\{\s*plan,\s*generatedAt: new Date\(\),\s*reviewStatus: 'pending'/,
   );
   assert.match(routes, /const goalsUpdatedAt = profile\.profileProvenance\?\.goalDetails\?\.updatedAt/);
 });

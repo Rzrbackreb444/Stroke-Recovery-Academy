@@ -11326,7 +11326,40 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         .orderBy(desc(survivorPlans.generatedAt))
         .limit(1);
 
-      const hasAssessment = !!latestAssessment;
+      const effectiveLatestAssessment = latestAssessment
+        ? {
+            ...latestAssessment,
+            physical: profile?.assessmentScores?.physical ?? latestAssessment.physical,
+            cognitive: profile?.assessmentScores?.cognitive ?? latestAssessment.cognitive,
+            speech: profile?.assessmentScores?.speech ?? latestAssessment.speech,
+            emotional: profile?.assessmentScores?.emotional ?? latestAssessment.emotional,
+            memory: profile?.assessmentScores?.memory ?? latestAssessment.memory,
+            notes: profile?.assessmentNotes ?? latestAssessment.notes,
+          }
+        : profile?.assessmentScores
+          ? {
+              physical: profile.assessmentScores.physical ?? null,
+              cognitive: profile.assessmentScores.cognitive ?? null,
+              speech: profile.assessmentScores.speech ?? null,
+              emotional: profile.assessmentScores.emotional ?? null,
+              memory: profile.assessmentScores.memory ?? null,
+              notes: profile.assessmentNotes ?? null,
+            }
+          : null;
+      const canonicalGoals = profile?.goalDetails?.length
+        ? profile.goalDetails.map((goal: any, index: number) => ({
+            id: goals[index]?.id ?? -(index + 1),
+            ...goal,
+          }))
+        : (profile?.recoveryGoals ?? []).map((goal: string, index: number) => ({
+            id: goals[index]?.id ?? -(index + 1),
+            horizon: "short",
+            domain: "other",
+            goal,
+            status: "active",
+          }));
+      const stateGoals = canonicalGoals.length > 0 ? canonicalGoals : goals;
+      const hasAssessment = !!effectiveLatestAssessment;
       // Never return a legacy or malformed plan to the client. Older rows may
       // contain the retired prescription shape; the generator will replace
       // those rows with a safe education draft on the next request.
@@ -11348,7 +11381,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
            .orderBy(desc(recoveryPlanReviews.createdAt), desc(recoveryPlanReviews.id))
          : [];
       const hasPlan = !!safePlan;
-      const hasGoals = goals.length > 0;
+      const hasGoals = stateGoals.length > 0;
       const hasOnboarded = hasAssessment && hasPlan;
       res.json({
         hasOnboarded,
@@ -11356,9 +11389,9 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
         hasGoals,
         hasPlan,
         onboardingStatus: !hasAssessment ? "not_started" : hasPlan ? "ready" : "assessment_saved",
-        latestAssessment: latestAssessment || null,
+        latestAssessment: effectiveLatestAssessment,
         history,
-        goals,
+        goals: stateGoals,
         profile: profile ? {
           ...profile,
           intakeComplete: !!profile.intakeCompletedAt,
@@ -12102,20 +12135,13 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
       // assessment unique index makes concurrent requests converge on one
       // plan; the losing insert waits for the winner and then reads it.
       const row = await dbInst.transaction(async (tx) => {
+        const shouldReplaceExistingPlan = Boolean(existingPlan?.plan);
         let [effectivePlan] = await tx.insert(survivorPlans).values({
           userId,
           assessmentId: assessment.id,
           plan,
-        }).onConflictDoUpdate({
+        }).onConflictDoNothing({
           target: survivorPlans.assessmentId,
-          set: {
-            plan,
-            generatedAt: new Date(),
-             reviewStatus: 'pending',
-             reviewedBy: null,
-             reviewedAt: null,
-             reviewNotes: null,
-          },
         }).returning();
         if (!effectivePlan) {
           [effectivePlan] = await tx
@@ -12126,6 +12152,20 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
         }
         if (!effectivePlan) {
           throw new Error(`Recovery plan was not available for assessment ${assessment.id}`);
+        }
+        if (shouldReplaceExistingPlan) {
+          [effectivePlan] = await tx
+            .update(survivorPlans)
+            .set({
+              plan,
+              generatedAt: new Date(),
+              reviewStatus: 'pending',
+              reviewedBy: null,
+              reviewedAt: null,
+              reviewNotes: null,
+            })
+            .where(eq(survivorPlans.id, effectivePlan.id))
+            .returning();
         }
         if (!isSafeRecoveryPlan(effectivePlan.plan)) {
           [effectivePlan] = await tx
@@ -12564,23 +12604,17 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
       const { strokeDate, strokeType, affectedSide, mobilityLevel, handFunction, speechAbility, goals, dailyTime } = req.body;
       
       // 1. Update or create user profile
-      const existingProfile = await storage.getUserProfile(userId);
-      if (existingProfile) {
-        await storage.updateUserProfile(userId, {
-          strokeDate: strokeDate ? new Date(strokeDate) : null,
-          strokeType,
-          affectedSide,
-          recoveryGoals: goals,
-        });
-      } else {
-        await storage.createUserProfile({
-          userId,
-          strokeDate: strokeDate ? new Date(strokeDate) : null,
-          strokeType,
-          affectedSide,
-          recoveryGoals: goals,
-        });
-      }
+      const recoveryGoals = Array.isArray(goals)
+        ? goals.filter((goal: unknown): goal is string => typeof goal === "string")
+          .map((goal) => goal.trim())
+          .filter(Boolean)
+        : undefined;
+      await updateCanonicalSurvivorProfile(userId, {
+        strokeDate: strokeDate ? new Date(strokeDate) : null,
+        strokeType: strokeType || null,
+        affectedSide: affectedSide || null,
+        recoveryGoals,
+      }, "recovery_onboarding");
       
       // 2. Determine program tier based on assessment
       let tier = 'explorer';
