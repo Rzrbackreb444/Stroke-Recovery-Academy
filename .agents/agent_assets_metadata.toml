@@ -614,3 +614,31 @@ mtime_ms = 1788624190242
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:59c04a4e-e80a-4c53-92e5-57fc1e9e7112/e6629cd1-497a-4663-a0a9-357016f4b78d/131dd675-7525-416d-9537-7c4da112aca5"
 storage_version_token = "1788624206088315"
 content_type = "text/markdown"
+
+[[outputs]]
+id = "N-h5mBxZQ8BQUAo6Jh_7-"
+uri = "file://research/stroke-recovery-demand-and-revenue-report.md"
+type = "text"
+title = "Stroke recovery demand and revenue report"
+description = "Evidence-backed research on survivor, caregiver, clinician, digital-health, search-intent, competitive, and monetization needs for Stroke Recovery Academy."
+logical_id = "58709ef1-4928-4392-87e2-cf52e72653f6"
+content_hash = "sha256:c5da37f1ac579c0c8d7f476f4abd26923057e7ff49b1906d68556e94a0ea3d7e"
+size = 22006
+mtime_ms = 1788624668173
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:59c04a4e-e80a-4c53-92e5-57fc1e9e7112/58709ef1-4928-4392-87e2-cf52e72653f6/853dec1f-3d52-4573-9464-ef5fec69950b"
+storage_version_token = "1788624706309840"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "Q1rx6GWKUwyqF5Y1o9eil"
+uri = "file://research/sources/registry.json"
+type = "unspecified"
+title = "Research source registry"
+description = "Structured registry of 28 sources with URLs, evidence tiers, source types, and local fetched evidence pointers."
+logical_id = "2d6d32c4-a987-480c-9b0c-3ac92e58bfc8"
+content_hash = "sha256:198ac38eb9d1acbbcaa8505730a348c750bb6a7c128b7a5e443269b5715f2592"
+size = 9193
+mtime_ms = 1788624691738
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:59c04a4e-e80a-4c53-92e5-57fc1e9e7112/2d6d32c4-a987-480c-9b0c-3ac92e58bfc8/472080d1-bd96-44f6-bd93-c5d7be215c8e"
+storage_version_token = "1788624706805075"
+content_type = "application/octet-stream"

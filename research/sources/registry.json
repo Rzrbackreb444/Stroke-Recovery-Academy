@@ -1,0 +1,231 @@
+{
+  "generated": "2026-09-05",
+  "sourceCount": 28,
+  "notes": "Tier A = primary, peer-reviewed, government, payer, or vendor source. Tier B = secondary/context source. Vendor pricing is positioning evidence, not efficacy evidence.",
+  "sources": [
+    {
+      "id": "survivor-long-term-needs",
+      "title": "Long-term unmet needs after stroke: systematic review",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/31110106/",
+      "tier": "A",
+      "type": "systematic review",
+      "local": "survivor-needs-01-long-term-systematic-review.md"
+    },
+    {
+      "id": "survivor-caregiver-unmet-needs",
+      "title": "The unmet needs of stroke survivors and stroke caregivers",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/32689648/",
+      "tier": "A",
+      "type": "systematic narrative review",
+      "local": "survivor-needs-05-unmet-needs-narrative-review.md"
+    },
+    {
+      "id": "nice-stroke-rehabilitation",
+      "title": "NICE stroke rehabilitation guideline summary",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK327921",
+      "tier": "A",
+      "type": "national clinical guideline",
+      "local": "gapfill-stakeholder-03-rehab-caregiver-guideline.md"
+    },
+    {
+      "id": "aha-asa-rehab-guideline",
+      "title": "Guidelines for adult stroke rehabilitation and recovery",
+      "url": "https://www.ahajournals.org/doi/pdf/10.1161/str.0000000000000098",
+      "tier": "A",
+      "type": "professional clinical guideline",
+      "local": "research/sources/gapfill-stakeholder-00-synthesis.md (URL captured in synthesis)"
+    },
+    {
+      "id": "aha-life-after-stroke",
+      "title": "Life After Stroke: Our Path Forward",
+      "url": "https://www.stroke.org/en/life-after-stroke/life-after-stroke-guide",
+      "tier": "B",
+      "type": "national patient guide",
+      "local": "search-intent-01-life-after-stroke-guide.md"
+    },
+    {
+      "id": "aha-caregiver-guide",
+      "title": "Caregiver Guide to Stroke",
+      "url": "https://www.stroke.org/en/-/media/Stroke-Files/Caregiver-Support/Caregivers-Guide-to-Stroke/CaregiverGuideToStroke_2020.pdf?sc_lang=en",
+      "tier": "B",
+      "type": "national caregiver guide",
+      "local": "search-intent-02-caregiver-guide.md"
+    },
+    {
+      "id": "stroke-app-accessibility",
+      "title": "Usability and accessibility in mHealth stroke apps",
+      "url": "https://www.sciencedirect.com/science/article/pii/S2352914825000048",
+      "tier": "A",
+      "type": "peer-reviewed empirical study",
+      "local": "gapfill-stakeholder-01-stroke-app-accessibility.md"
+    },
+    {
+      "id": "aphasia-planning-tool",
+      "title": "Electronic care and rehabilitation planning with stroke survivors with aphasia",
+      "url": "https://humanfactors.jmir.org/2023/1/e43861",
+      "tier": "A",
+      "type": "peer-reviewed usability study",
+      "local": "gapfill-stakeholder-02-aphasia-care-planning.md"
+    },
+    {
+      "id": "aphasia-guideline-review",
+      "title": "Updated systematic review of stroke clinical practice guidelines for aphasia management",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10614176/",
+      "tier": "A",
+      "type": "systematic review",
+      "local": "gapfill-stakeholder-00-synthesis.md"
+    },
+    {
+      "id": "mobile-stroke-review",
+      "title": "Mobile apps for stroke rehabilitation: systematic review",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9872745",
+      "tier": "A",
+      "type": "systematic review",
+      "local": "digital-evidence-01-mobile-review.md"
+    },
+    {
+      "id": "mobile-stroke-meta-analysis",
+      "title": "Mobile-app interventions for stroke: meta-analysis",
+      "url": "https://link.springer.com/article/10.1186/s12911-023-02391-1",
+      "tier": "A",
+      "type": "meta-analysis",
+      "local": "digital-evidence-02-mobile-meta-analysis.md"
+    },
+    {
+      "id": "telerehab-trial",
+      "title": "Home-based telerehabilitation randomized clinical trial",
+      "url": "https://jamanetwork.com/journals/jamaneurology/fullarticle/2736341",
+      "tier": "A",
+      "type": "randomized clinical trial",
+      "local": "digital-evidence-03-telerehab-trial.md"
+    },
+    {
+      "id": "virtual-stroke-best-practices",
+      "title": "Virtual stroke rehabilitation best practices",
+      "url": "https://www.strokebestpractices.ca/recommendations/virtual-stroke-rehabilitation",
+      "tier": "A",
+      "type": "clinical best-practice guidance",
+      "local": "clinician-workflow-01-virtual-stroke-best-practices.md"
+    },
+    {
+      "id": "dtx-rwe-framework",
+      "title": "Digital therapeutics real-world evidence framework",
+      "url": "https://www.jmir.org/2024/1/e49208/",
+      "tier": "A",
+      "type": "peer-reviewed framework",
+      "local": "clinician-workflow-03-dtx-real-world-evidence.md"
+    },
+    {
+      "id": "va-stroke-recovery",
+      "title": "VA Stroke Recovery app",
+      "url": "https://mobile.va.gov/app/stroke-recovery",
+      "tier": "A",
+      "type": "government product page",
+      "local": "gapfill-commercial-va-stroke-recovery.md"
+    },
+    {
+      "id": "constant-therapy-pricing",
+      "title": "Constant Therapy patient pricing",
+      "url": "https://constanttherapyhealth.com/constant-therapy/for-patients/pricing/",
+      "tier": "A",
+      "type": "vendor pricing",
+      "local": "gapfill-commercial-constant-therapy-pricing.md"
+    },
+    {
+      "id": "flint-pricing",
+      "title": "Flint Rehab cognitive and speech therapy app pricing",
+      "url": "https://www.flintrehab.com/product/speech-therapy/",
+      "tier": "A",
+      "type": "vendor pricing",
+      "local": "gapfill-commercial-flint-rehab-pricing.md"
+    },
+    {
+      "id": "tactus-pricing",
+      "title": "Tactus Therapy individual app pricing",
+      "url": "https://help.tactustherapy.com/hc/en-us/articles/360024698691-How-much-do-your-apps-cost",
+      "tier": "A",
+      "type": "vendor pricing",
+      "local": "gapfill-commercial-tactus-therapy-pricing.md"
+    },
+    {
+      "id": "health-app-wtp",
+      "title": "Willingness to pay for health apps",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11064745",
+      "tier": "A",
+      "type": "peer-reviewed survey",
+      "local": "market-revenue-02-health-app-wtp.md"
+    },
+    {
+      "id": "cdc-stroke",
+      "title": "CDC/NCHS Cerebrovascular Disease or Stroke FastStats",
+      "url": "https://www.cdc.gov/nchs/fastats/stroke.htm",
+      "tier": "A",
+      "type": "government statistics",
+      "local": "market-revenue-01-cdc-stroke.md"
+    },
+    {
+      "id": "rehab-telehealth-logistics",
+      "title": "Logistics of rehabilitation telehealth",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9709306/",
+      "tier": "A",
+      "type": "health-policy review",
+      "local": "market-revenue-03-rehab-telehealth.md"
+    },
+    {
+      "id": "payer-dtx-evidence",
+      "title": "US payer evidence considerations for digital therapeutics",
+      "url": "https://www.ajmc.com/view/survey-provides-insight-into-us-payers-evidence-considerations-for-digital-therapeutics-coverage",
+      "tier": "B",
+      "type": "payer survey report",
+      "local": "gapfill-commercial-ajmc-dtx-payer-evidence.md"
+    },
+    {
+      "id": "uhc-speech-policy",
+      "title": "UnitedHealthcare speech therapy reimbursement policy",
+      "url": "https://www.uhcprovider.com/content/dam/provider/docs/public/policies/comm-reimbursement/COMM-Physical-Med-Rehab-Speech-Therapy-Policy.pdf",
+      "tier": "A",
+      "type": "payer policy",
+      "local": "gapfill-commercial-uhc-speech-reimbursement.md"
+    },
+    {
+      "id": "community-needs",
+      "title": "Unmet care needs of community-dwelling stroke survivors",
+      "url": "https://bmjopen.bmj.com/content/11/4/e045560",
+      "tier": "B",
+      "type": "community-needs research",
+      "local": "survivor-needs-02-community-needs.md"
+    },
+    {
+      "id": "caregiver-scoping-review",
+      "title": "Long-term unmet needs of informal carers of stroke survivors",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5493392/",
+      "tier": "A",
+      "type": "caregiver review",
+      "local": "survivor-needs-04-caregiver-scoping-review.md"
+    },
+    {
+      "id": "digital-health-qualitative",
+      "title": "Patients’ perspectives on digital health for integrated stroke care",
+      "url": "https://www.jmir.org/2023/1/e42556/",
+      "tier": "B",
+      "type": "peer-reviewed qualitative interview study",
+      "local": "survivor-needs-03-digital-health-qualitative.md"
+    },
+    {
+      "id": "search-va-benchmark",
+      "title": "VA Stroke Recovery app search-intent benchmark",
+      "url": "https://mobile.va.gov/app/stroke-recovery",
+      "tier": "A",
+      "type": "government product benchmark",
+      "local": "search-intent-03-va-stroke-recovery-app.md"
+    },
+    {
+      "id": "clinician-usability-adoption",
+      "title": "Technology-based upper-limb rehabilitation usability and adoption",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10477927/",
+      "tier": "B",
+      "type": "peer-reviewed cohort/usability study",
+      "local": "clinician-workflow-02-usability-stroke-rehab.md"
+    }
+  ]
+}
