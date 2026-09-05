@@ -19,6 +19,16 @@ import { isAuthenticated } from "./replitAuth";
 import { getUserId } from "./lib/authUtils";
 import { getCanonicalSurvivorProfile } from "./survivorProfileService";
 import { GoogleGenAI } from "@google/genai";
+import { z } from "zod";
+import { requireAdmin } from "./middleware/requireAdmin";
+import {
+  buildRecoverySummary,
+  buildSummaryPilotReport,
+  canAccessRecoverySummary,
+  getActorSummaryMeasurement,
+  recordSummaryEvent,
+  summaryIdForWindow,
+} from "./recoverySummaryService";
 import {
   sampleQuotePool,
   getQuotesByCategory,
@@ -320,6 +330,77 @@ async function generateRecommendations(args: {
 }
 
 export function registerRecoveryJourneyRoutes(app: Express) {
+  const summaryFeedbackSchema = z.object({
+    phase: z.enum(["before", "after"]),
+    usefulness: z.number().int().min(1).max(5),
+    uncertainty: z.number().int().min(1).max(5),
+  }).strict();
+
+  app.get(
+    "/api/recovery/summary",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      try {
+        const userId = getUserId(req);
+        if (!userId) return res.status(401).json({ message: "Unauthorized" });
+        const windowDays = Number(req.query.windowDays ?? 14);
+        const summary = await buildRecoverySummary(userId, windowDays);
+        const measurement = await getActorSummaryMeasurement(userId, summary.summaryId);
+        await recordSummaryEvent({
+          survivorId: userId,
+          actorId: userId,
+          actorType: "survivor",
+          eventType: "summary_viewed",
+          summaryId: summary.summaryId,
+        });
+        res.json({ ...summary, measurement });
+      } catch (e: any) {
+        console.error("[recovery/summary] failed", e?.message || e);
+        res.status(500).json({ message: "Failed to load recovery summary" });
+      }
+    },
+  );
+
+  app.post(
+    "/api/recovery/summary/feedback",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      try {
+        const userId = getUserId(req);
+        if (!userId) return res.status(401).json({ message: "Unauthorized" });
+        const parsed = summaryFeedbackSchema.safeParse(req.body ?? {});
+        if (!parsed.success) return res.status(400).json({ message: "Invalid summary rating" });
+        const summaryId = summaryIdForWindow(14);
+        await recordSummaryEvent({
+          survivorId: userId,
+          actorId: userId,
+          actorType: "survivor",
+          eventType: "feedback_submitted",
+          summaryId,
+          ...parsed.data,
+        });
+        res.json({ ok: true, measurement: await getActorSummaryMeasurement(userId, summaryId) });
+      } catch (e: any) {
+        console.error("[recovery/summary/feedback] failed", e?.message || e);
+        res.status(500).json({ message: "Failed to save summary rating" });
+      }
+    },
+  );
+
+  app.get(
+    "/api/admin/recovery/summary-pilot-report",
+    isAuthenticated,
+    requireAdmin,
+    async (req: Request, res: Response) => {
+      try {
+        res.json(await buildSummaryPilotReport(Number(req.query.windowDays ?? 90)));
+      } catch (e: any) {
+        console.error("[admin/recovery/summary-pilot-report] failed", e?.message || e);
+        res.status(500).json({ message: "Failed to build pilot report" });
+      }
+    },
+  );
+
   // ── GET /api/recovery/journey ──────────────────────────────────────────
   app.get(
     "/api/recovery/journey",

@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ApiError, apiRequest, queryClient } from "@/lib/queryClient";
 import SEO from "@/components/SEO";
 import RecoveryHeader from "@/components/RecoveryHeader";
+import SummaryMeasureCard from "@/components/recovery/SummaryMeasureCard";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -505,6 +506,14 @@ export default function RecoveryJournal() {
           </div>
         </div>
       </header>
+
+      <section className="px-6 pb-8 max-w-2xl mx-auto">
+        <SummaryMeasureCard
+          audience="survivor"
+          summaryPath="/api/recovery/summary"
+          feedbackPath="/api/recovery/summary/feedback"
+        />
+      </section>
 
       {/* 2. TODAY ENTRY COMPOSER */}
       <section className="px-6 pb-20 max-w-2xl mx-auto">

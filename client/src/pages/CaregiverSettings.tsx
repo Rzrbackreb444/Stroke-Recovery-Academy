@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import RecoveryHeader from "@/components/RecoveryHeader";
+import SummaryMeasureCard from "@/components/recovery/SummaryMeasureCard";
 
 interface LinkRow {
   id: number;
@@ -192,7 +193,8 @@ export default function CaregiverSettings() {
             ) : (
               <ul className="divide-y divide-[#333]">
                 {links.data.asCaregiver.map(l => (
-                  <li key={l.id} className="py-3 flex items-center justify-between gap-4" data-testid={`care-row-${l.id}`}>
+                  <li key={l.id} className="py-3 space-y-3" data-testid={`care-row-${l.id}`}>
+                    <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3 min-w-0">
                       <Avatar className="w-10 h-10">
                         <AvatarImage src={l.survivor_avatar || undefined} />
@@ -235,6 +237,15 @@ export default function CaregiverSettings() {
                         </Button>
                       )}
                     </div>
+                    </div>
+                    {l.status === "active" && l.survivor_id && (
+                      <SummaryMeasureCard
+                        audience={l.relationship === "professional" ? "clinician" : "caregiver"}
+                        summaryPath={`/api/caregivers/${l.survivor_id}/recovery-summary`}
+                        feedbackPath={`/api/caregivers/${l.survivor_id}/recovery-summary/feedback`}
+                        title={l.relationship === "professional" ? "Clinician sample export" : "Survivor handoff summary"}
+                      />
+                    )}
                   </li>
                 ))}
               </ul>
