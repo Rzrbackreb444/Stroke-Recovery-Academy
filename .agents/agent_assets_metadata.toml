@@ -395,174 +395,203 @@ id = "EGooVUwVUQyTPSx95p4M4"
 uri = "file://exports/Stroked-Out-Sasquatch_DEDUPED_v1.md"
 type = "text"
 title = "Deduplicated Manuscript v1 (~18K words / 71 pages)"
+logical_id = "b05913e5-0951-4304-bb3d-c8de29a2d997"
 
 [[outputs]]
 id = "jC5dMkkv_Sh8YwrW7Ht3e"
 uri = "file://screenshots/forge-step1-after.jpg"
 type = "image"
 title = "Forge Your Beast — Step 1 of 5"
+logical_id = "5eedd3ef-e34c-48fb-86aa-d23d8b90477b"
 
 [[outputs]]
 id = "L36WMeaK-3yyQ68zQNp8X"
 uri = "file://attached_assets/strokelyfe-org-build-brief.md"
 type = "text"
 title = "Stroke Lyfe — Comprehensive Build Brief"
+logical_id = "5816aa91-715f-44b8-9c4a-aa2d78ce86af"
 
 [[outputs]]
 id = "6n_puOCTqtHm8-Hd1gXbz"
 uri = "file://attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION-v3.md"
 type = "text"
 title = "THE ULTIMATE STROKE RECOVERY REVOLUTION (v3) — 78.8k words"
+logical_id = "fdfee879-d79e-462f-8c01-bf40790887b1"
 
 [[outputs]]
 id = "41YBDyyjzp9fBGrrXIfcw"
 uri = "file://attached_assets/book_v2/images/fig-01-bat-therapy.png"
 type = "image"
 title = "Fig 1 — Bat Therapy Setup (Ch 12)"
+logical_id = "fa9ec701-fef0-4df6-8f80-54213ef4582b"
 
 [[outputs]]
 id = "FULPWHwnjZqB50IF-UdJX"
 uri = "file://attached_assets/book_v2/images/fig-02-mirror-therapy.png"
 type = "image"
 title = "Fig 2 — Mirror Therapy Positioning (Ch 14)"
+logical_id = "4d967efd-6d64-40b9-887d-fa101fbf46ff"
 
 [[outputs]]
 id = "tM5POa1PyfUzqKclQaeMl"
 uri = "file://attached_assets/book_v2/images/fig-03-wall-lean.png"
 type = "image"
 title = "Fig 3 — Wall Lean Ankle Dorsiflexion (Ch 8/13)"
+logical_id = "723f26e3-5990-405d-84a9-6458d9ef4f05"
 
 [[outputs]]
 id = "wLrZjlQPKMB7j9umXQs71"
 uri = "file://attached_assets/book_v2/images/fig-04-open-hand.png"
 type = "image"
 title = "Fig 4 — Open-Hand Rubber-Band Protocol (Ch 19)"
+logical_id = "43252d48-3403-42c5-8f03-f2810a00c2b5"
 
 [[outputs]]
 id = "tpaj4npXgXmtXIeMQjNSh"
 uri = "file://attached_assets/book_v2/images/fig-05-sit-to-stand.png"
 type = "image"
 title = "Fig 5 — Sit-to-Stand Progression (Ch 13)"
+logical_id = "f2d67d65-eeb8-4f9d-b67f-a2606802644d"
 
 [[outputs]]
 id = "x85UbD19juDzmmEFGUmVG"
 uri = "file://attached_assets/book_v2/images/fig-06-walking-gait.png"
 type = "image"
 title = "Fig 6 — Walking Gait Posture (Ch 8)"
+logical_id = "4a533ab3-d296-44fe-bb4a-99650cc56f8e"
 
 [[outputs]]
 id = "PsMQIRHFH0eYGJP81vTHM"
 uri = "file://attached_assets/book_v2/images/fig-07-fast-face.png"
 type = "image"
 title = "Fig 7 — FAST Face Droop Comparison (Appendix A)"
+logical_id = "98200d1b-56e8-47af-b1f9-4639a985b9c3"
 
 [[outputs]]
 id = "ihKKcknxRxnWoUfyzF7Z6"
 uri = "file://attached_assets/book_v2/images/fig-08-mental-rehearsal.png"
 type = "image"
 title = "Fig 8 — THINK Mental Rehearsal (Ch 11)"
+logical_id = "84319f11-9499-470f-99f2-7edc434d3418"
 
 [[outputs]]
 id = "jgcPaar8xvFgt5IMbzlK6"
 uri = "file://attached_assets/book_v2/images/fig-09-cimt.png"
 type = "image"
 title = "Fig 9 — Constraint-Induced Movement Therapy (Ch 16)"
+logical_id = "189f3d58-0a9a-4713-9201-f24713e44892"
 
 [[outputs]]
 id = "5h-T2nfoXCoSEDRjSzlN7"
 uri = "file://attached_assets/book_v2/images/fig-10-single-leg-balance.png"
 type = "image"
 title = "Fig 10 — Single-Leg Balance with Wall Support (Ch 13)"
+logical_id = "444959df-63d9-4db1-890f-79e71d72ed84"
 
 [[outputs]]
 id = "-G5QACiP5dxuge-LV8c-E"
 uri = "file://attached_assets/book_v2/images/fig-11-theraband-row.png"
 type = "image"
 title = "Fig 11 — Theraband Resistance Row (Appendix V)"
+logical_id = "98c5f0cc-4cbe-44ea-95ed-b814a374aa90"
 
 [[outputs]]
 id = "2IInKROtuNYfPN9i4juR0"
 uri = "file://attached_assets/book_v2/images/fig-12-recovery-position.png"
 type = "image"
 title = "Fig 12 — Recovery Position (Appendix A)"
+logical_id = "5e78c2cd-b0eb-4884-a71f-6d4d7b0f3188"
 
 [[outputs]]
 id = "10zAJB4G8fUil-IpKgKOe"
 uri = "file://attached_assets/book_v2/images/qr-scan-me.png"
 type = "image"
 title = "Fresh QR — encodes strokerecoveryacademy.com/book directly"
+logical_id = "827f35ea-807a-4279-ac28-a14a41b9a656"
 
 [[outputs]]
 id = "QMl0yixM6M_wqa-H2nwa_"
 uri = "file://attached_assets/book_v2/THE-ULTIMATE-STROKE-RECOVERY-REVOLUTION.pdf"
 type = "pdf"
 title = "The Ultimate Stroke Recovery Revolution (306 pages, 4.6 MB)"
+logical_id = "99993ac8-46f1-4931-a38a-a4a667d58750"
 
 [[outputs]]
 id = "-g9mNPO2JZTgOWg-vNtgj"
 uri = "file://attached_assets/book_v2/images/sasquatch-canonical.png"
 type = "image"
 title = "Canonical Sasquatch — woodcut-poster, axe, left-side asymmetry"
+logical_id = "dd728182-b600-4a46-af4b-22e07d08b8f1"
 
 [[outputs]]
 id = "GuS0y2AOVQwziOP-a5aA0"
 uri = "file://attached_assets/book_v2/images/sasquatch-cover.png"
 type = "image"
 title = "1. Cover — axe across chest, scaffolding frame"
+logical_id = "e226ab96-eeaa-400a-a8ba-dc921f368ccb"
 
 [[outputs]]
 id = "imreHZl2kcd5yeeTcVBgJ"
 uri = "file://attached_assets/book_v2/images/sasquatch-forge.png"
 type = "image"
 title = "2. The Forge — hammer, anvil, persona being made"
+logical_id = "9318a788-3df2-47d7-93bd-8b0b29ce0592"
 
 [[outputs]]
 id = "duDNKG9p1wD4paEILV29t"
 uri = "file://attached_assets/book_v2/images/sasquatch-intersection.png"
 type = "image"
 title = "3. Intersection — guardian behind lost figure (Ch.21 Emotional Warfare)"
+logical_id = "dbf70e0e-1733-4aaf-bef1-3839ff191db8"
 
 [[outputs]]
 id = "HDiRtPVhsXDQ9Zct8UGbT"
 uri = "file://attached_assets/book_v2/images/sasquatch-year-seven.png"
 type = "image"
 title = "4. Year Seven — son on shoulders, axe at rest"
+logical_id = "dfbb64ad-714a-4043-b2a6-4040bfc4cf11"
 
 [[outputs]]
 id = "Lm_Iq8IHrZQUmiRA5D1Wi"
 uri = "file://attached_assets/book_v2/images/sasquatch-creed.png"
 type = "image"
 title = "5. The Creed — oath stance, axe planted, full halo"
+logical_id = "f41db347-5ed2-4a28-8083-e665a5810dcd"
 
 [[outputs]]
 id = "Nmh39iRg8_8O5Hmwf1T5h"
 uri = "file://attached_assets/book_v2/images/sasquatch-doctrine-six.png"
 type = "image"
 title = "6. Doctrine Six-Panel — one icon per principle"
+logical_id = "5e06a794-b57e-46fb-bc2a-94bfcc8d33b7"
 
 [[outputs]]
 id = "AWUd_SJ6bkPvYWYygUnLV"
 uri = "file://attached_assets/book_v2/images/sasquatch-seal.png"
 type = "image"
 title = "7. Builder's Seal — silhouette watermark"
+logical_id = "a9f57042-671c-4862-81db-ce5d5e8f4e0c"
 
 [[outputs]]
 id = "GarCwHT0D1TUni05uE1wb"
 uri = "file://artifacts/mockup-sandbox/public/images/warm-hero-stock.jpg"
 type = "image"
 title = "Warm portrait of a mature person looking determined but hopeful in soft light"
+logical_id = "b430eb99-3411-419e-9d6c-1556a379e97e"
 
 [[outputs]]
 id = "D04pJjPhSZ74Dgmg1htZB"
 uri = "file://artifacts/mockup-sandbox/public/images/warm-support-stock.jpg"
 type = "image"
 title = "Two hands holding each other warmly, support and community"
+logical_id = "6250afb1-9524-4b14-8049-2542d0f97974"
 
 [[outputs]]
 id = "un-DYpWo2uPa0dk16QJsk"
 uri = "file://artifacts/mockup-sandbox/public/images/warm-exercise-stock.jpg"
 type = "image"
 title = "Person doing simple exercises at home in a cozy sunlit room"
+logical_id = "0b94e38e-5384-4084-ba04-011f86711d02"
 
 [[outputs]]
 id = "gCiXIgfSMbFPq2xzQI9LL"
@@ -570,3 +599,18 @@ uri = "file://attached_assets/image_1787328241009_single-dryer-panel.png"
 type = "image"
 title = "WashBizHub lineup — single dryer panel restored"
 description = "Corrected screenshot with the missing lower panel added to the Single Dryer card. All other machines, labels, prices, and layout are preserved."
+logical_id = "7b147703-c661-4768-9d5d-0e7a339a7336"
+
+[[outputs]]
+id = "OWuOchoHAzigOU1ycu-bi"
+uri = "file://research/notes.md"
+type = "text"
+title = "Stroke Recovery Platform Research Notes"
+description = "Research plan and running findings log for survivor, caregiver, clinician, product, and revenue analysis."
+logical_id = "e6629cd1-497a-4663-a0a9-357016f4b78d"
+content_hash = "sha256:8178d38aefad9f057275022ff7888f4c8169b6eda55b6f1705ffa029b01e2af4"
+size = 1845
+mtime_ms = 1788624190242
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:59c04a4e-e80a-4c53-92e5-57fc1e9e7112/e6629cd1-497a-4663-a0a9-357016f4b78d/131dd675-7525-416d-9537-7c4da112aca5"
+storage_version_token = "1788624206088315"
+content_type = "text/markdown"

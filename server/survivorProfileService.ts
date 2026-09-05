@@ -21,6 +21,13 @@ export type ProfileProvenance = Record<string, {
 
 export type CanonicalProfilePatch = Partial<typeof userProfiles.$inferInsert>;
 
+export type CanonicalGoalDetail = {
+  horizon: "short" | "long";
+  domain: "physical" | "cognitive" | "speech" | "emotional" | "memory" | "other";
+  goal: string;
+  status?: string;
+};
+
 const TRACKED_FIELDS = [
   "preferredName",
   "pronouns",
@@ -85,6 +92,73 @@ function legacyProvenance(
     }
   }
   return result;
+}
+
+/**
+ * Keep the legacy string list and structured goal records aligned.
+ *
+ * Profile settings submits both fields. During a text edit the structured
+ * record can still contain the old text for one request, so the string list
+ * is the canonical text while the structured record supplies its metadata.
+ * Existing records are the final fallback, which also preserves status when a
+ * partial client payload omits it.
+ */
+export function synchronizeGoalDetails(
+  recoveryGoals: unknown,
+  incomingDetails: unknown,
+  existingDetails: unknown,
+): { recoveryGoals: string[]; goalDetails: CanonicalGoalDetail[] } | null {
+  const goals = Array.isArray(recoveryGoals)
+    ? recoveryGoals.filter((goal): goal is string => typeof goal === "string")
+    : null;
+  const details = Array.isArray(incomingDetails)
+    ? incomingDetails.filter((detail): detail is Record<string, any> => !!detail && typeof detail === "object")
+    : [];
+  const existing = Array.isArray(existingDetails)
+    ? existingDetails.filter((detail): detail is Record<string, any> => !!detail && typeof detail === "object")
+    : [];
+
+  if (goals) {
+    return {
+      recoveryGoals: goals,
+      goalDetails: goals.map((goal, index) => {
+        const detailByText = details.find((detail) => detail.goal === goal)
+          ?? existing.find((detail) => detail.goal === goal);
+        const detail = detailByText ?? details[index] ?? existing[index];
+        return {
+          ...(detail ?? {}),
+          goal,
+          status: typeof detail?.status === "string"
+            ? detail.status
+            : typeof existing[index]?.status === "string"
+              ? existing[index].status
+              : "active",
+        } as CanonicalGoalDetail;
+      }),
+    };
+  }
+
+  if (Array.isArray(incomingDetails)) {
+    const structuredGoals = details.map((detail, index) => {
+      const prior = existing.find((candidate) => candidate.goal === detail.goal) ?? existing[index];
+      return {
+        ...prior,
+        ...detail,
+        goal: detail.goal,
+        status: typeof detail.status === "string"
+          ? detail.status
+          : typeof prior?.status === "string"
+            ? prior.status
+            : "active",
+      } as CanonicalGoalDetail;
+    });
+    return {
+      recoveryGoals: structuredGoals.map((detail) => detail.goal),
+      goalDetails: structuredGoals,
+    };
+  }
+
+  return null;
 }
 
 /**
@@ -222,17 +296,14 @@ export async function updateCanonicalSurvivorProfile(
     .from(userProfiles)
     .where(eq(userProfiles.userId, userId))
     .limit(1);
-  if (Array.isArray(cleaned.goalDetails) && !Array.isArray(cleaned.recoveryGoals)) {
-    cleaned.recoveryGoals = cleaned.goalDetails.map((detail: any) => detail.goal);
-  }
-  if (Array.isArray(cleaned.recoveryGoals) && !cleaned.goalDetails) {
-    const existingDetails = (existing?.goalDetails ?? []) as Array<any>;
-    cleaned.goalDetails = cleaned.recoveryGoals.map((goal: string, index: number) => {
-      const prior = existingDetails.find((detail) => detail.goal === goal) ?? existingDetails[index];
-      return prior
-        ? { ...prior, goal }
-        : { horizon: "short", domain: "other", goal, status: "active" };
-    });
+  const synchronizedGoals = synchronizeGoalDetails(
+    cleaned.recoveryGoals,
+    cleaned.goalDetails,
+    existing?.goalDetails,
+  );
+  if (synchronizedGoals) {
+    cleaned.recoveryGoals = synchronizedGoals.recoveryGoals;
+    cleaned.goalDetails = synchronizedGoals.goalDetails;
   }
 
   const now = new Date().toISOString();
