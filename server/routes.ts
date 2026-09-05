@@ -10369,7 +10369,9 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
 
       const isConfigured = await isElevenLabsServiceConfigured();
       if (!isConfigured) {
-        return res.status(503).json({ message: 'ElevenLabs TTS not configured' });
+        return res.status(503).json({
+          message: 'Voice audio is unavailable right now. Your text response is still available.',
+        });
       }
 
       const elevenlabs = getElevenLabsService();
@@ -10387,7 +10389,9 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       res.send(audioBuffer);
     } catch (error) {
       console.error('Coach speak error:', error);
-      res.status(500).json({ message: 'Failed to synthesize speech' });
+      res.status(500).json({
+        message: 'Voice audio is unavailable right now. Your text response is still available.',
+      });
     }
   });
 

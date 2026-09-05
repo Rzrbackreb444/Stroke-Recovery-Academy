@@ -92,6 +92,25 @@ test("coach UI keeps failed and in-flight turns visibly distinct", () => {
   assert.match(chatWidget, /Not saved — try again/);
 });
 
+test("Coach keeps text usable when voice fails and retries audio without duplicating the turn", () => {
+  assert.match(routes, /Voice audio is unavailable right now\. Your text response is still available\./);
+  assert.doesNotMatch(routes, /res\.status\(503\)\.json\(\{ message: 'ElevenLabs TTS not configured' \}\)/);
+  assert.match(coachPage, /Voice audio is unavailable right now\. Your text response is still here\./);
+  assert.match(coachPage, /button-retry-audio/);
+  assert.match(coachPage, /requestCoachAudio\(msg\.id, msg\.content\)/);
+  assert.match(coachPage, /setAudioStatus\(messageId, "unavailable"\)/);
+  assert.match(coachPage, /const messageId = nextMessageId\(\)/);
+  const audioRequest = coachPage.match(
+    /const requestCoachAudio = async[\s\S]*?\n  };\n\n  const chatMutation/,
+  )?.[0];
+  assert.ok(audioRequest, "Coach audio retry helper should remain a separate path from chat submission");
+  assert.doesNotMatch(audioRequest, /chatMutation\.mutate/);
+  assert.doesNotMatch(
+    coachPage,
+    /onClick=\{\(\) => void requestCoachAudio\(msg\.id, msg\.content\)[\s\S]{0,500}chatMutation\.mutate/,
+  );
+});
+
 const integrationEnabled = process.env.RECOVERY_DURABILITY_DB === "1";
 const recoveryUserPrefix = `recovery-durability-${process.pid}-`;
 

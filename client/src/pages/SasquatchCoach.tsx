@@ -14,9 +14,11 @@ import { safeAccentForDark } from "@/lib/personaContrast";
 import { RecommendationCards } from "@/components/RecommendationCard";
 
 interface Message {
+  id: string;
   role: "user" | "coach";
   content: string;
   audioBase64?: string;
+  audioStatus?: "pending" | "available" | "unavailable";
   crisis?: boolean;
   crisisResources?: CrisisResource[];
   requireAuth?: boolean;
@@ -71,8 +73,10 @@ export default function SasquatchCoach() {
   const safeAccent = safeAccentForDark(persona?.accentColor);
   const buildWelcome = (name: string) =>
     `Hey ${name}. I'm Sasquatch — your recovery accountability companion. I've been through a stroke too, and I'm here to help you reflect, plan, and find a manageable next step. Heads up — I'm not a clinician and I don't diagnose or treat. New symptoms or anything medical belongs with your healthcare team; I can help you prepare questions for them. What's on your mind today?`;
+  const messageIdRef = useRef(0);
+  const nextMessageId = () => `coach-message-${++messageIdRef.current}`;
   const [messages, setMessages] = useState<Message[]>([
-    { role: "coach", content: buildWelcome("warrior") },
+    { id: "coach-welcome", role: "coach", content: buildWelcome("warrior") },
   ]);
 
   // When persona resolves after first paint, swap the welcome line in-place
@@ -191,6 +195,56 @@ export default function SasquatchCoach() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const setAudioStatus = (messageId: string, audioStatus: Message["audioStatus"]) => {
+    setMessages((prev) =>
+      prev.map((message) => (message.id === messageId ? { ...message, audioStatus } : message)),
+    );
+  };
+
+  const playAudio = (base64: string) => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    const audio = new Audio(`data:audio/mpeg;base64,${base64}`);
+    audioRef.current = audio;
+    audio.play().catch(() => {});
+  };
+
+  // Voice is a convenience layered on top of the durable text reply. A retry
+  // only requests audio for the existing message; it must never call chat again
+  // or create a duplicate Coach turn.
+  const requestCoachAudio = async (messageId: string, text: string) => {
+    setAudioStatus(messageId, "pending");
+    try {
+      const response = await fetch("/api/coach/speak", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ text }),
+      });
+      if (!response.ok) throw new Error("Audio unavailable");
+      const buffer = await response.arrayBuffer();
+      if (!buffer.byteLength) throw new Error("Audio unavailable");
+
+      const blob = new Blob([buffer], { type: "audio/mpeg" });
+      const url = URL.createObjectURL(blob);
+      blobUrlsRef.current.push(url);
+      if (audioRef.current) audioRef.current.pause();
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.play().catch(() => {});
+      const cleanup = () => {
+        try { URL.revokeObjectURL(url); } catch {}
+        blobUrlsRef.current = blobUrlsRef.current.filter((u) => u !== url);
+      };
+      audio.onended = cleanup;
+      audio.onerror = cleanup;
+      setAudioStatus(messageId, "available");
+    } catch {
+      setAudioStatus(messageId, "unavailable");
+    }
+  };
+
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
       const history = messages.map((m) => ({
@@ -237,10 +291,18 @@ export default function SasquatchCoach() {
       };
     },
     onSuccess: (data) => {
+      const messageId = nextMessageId();
+      const canRequestAudio = !data.crisis && !data.requireAuth && !!audioEnabled && !!user;
       const coachMsg: Message = {
+        id: messageId,
         role: "coach",
         content: data.response,
         audioBase64: data.audioBase64,
+        audioStatus: data.audioBase64
+          ? "available"
+          : canRequestAudio
+          ? "pending"
+          : undefined,
         crisis: data.crisis === true,
         crisisResources: data.crisis ? data.resources : undefined,
         requireAuth: data.requireAuth === true,
@@ -263,47 +325,15 @@ export default function SasquatchCoach() {
       // Voice is signed-in only (server enforces via isAuthenticated on
       // /api/coach/speak); no point firing for anon users.
       if (audioEnabled && user) {
-        fetch("/api/coach/speak", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ text: data.response }),
-        })
-          .then(async (r) => (r.ok ? r.arrayBuffer() : null))
-          .then((buf) => {
-            if (!buf) return;
-            const blob = new Blob([buf], { type: "audio/mpeg" });
-            const url = URL.createObjectURL(blob);
-            blobUrlsRef.current.push(url);
-            if (audioRef.current) audioRef.current.pause();
-            const audio = new Audio(url);
-            audioRef.current = audio;
-            audio.play().catch(() => {});
-            const cleanup = () => {
-              try { URL.revokeObjectURL(url); } catch {}
-              blobUrlsRef.current = blobUrlsRef.current.filter((u) => u !== url);
-            };
-            audio.onended = cleanup;
-            audio.onerror = cleanup;
-          })
-          .catch(() => {});
+        void requestCoachAudio(messageId, data.response);
       }
     },
   });
 
-  const playAudio = (base64: string) => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
-    const audio = new Audio(`data:audio/mpeg;base64,${base64}`);
-    audioRef.current = audio;
-    audio.play().catch(() => {});
-  };
-
   const handleSend = () => {
     const text = input.trim();
     if (!text || chatMutation.isPending) return;
-    setMessages((prev) => [...prev, { role: "user", content: text }]);
+    setMessages((prev) => [...prev, { id: nextMessageId(), role: "user", content: text }]);
     setInput("");
     chatMutation.mutate(text);
   };
@@ -316,7 +346,7 @@ export default function SasquatchCoach() {
   };
 
   const handleStarter = (prompt: string) => {
-    setMessages((prev) => [...prev, { role: "user", content: prompt }]);
+    setMessages((prev) => [...prev, { id: nextMessageId(), role: "user", content: prompt }]);
     chatMutation.mutate(prompt);
   };
 
@@ -353,7 +383,7 @@ export default function SasquatchCoach() {
       setIsListening(false);
       const text = finalTranscript.trim();
       if (text) {
-        setMessages((prev) => [...prev, { role: "user", content: text }]);
+        setMessages((prev) => [...prev, { id: nextMessageId(), role: "user", content: text }]);
         setInput("");
         chatMutation.mutate(text);
       }
@@ -659,7 +689,7 @@ export default function SasquatchCoach() {
         <div className="flex-1 space-y-4 mb-6 min-h-0">
           {messages.map((msg, i) => (
             <div
-              key={i}
+              key={msg.id}
               className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               data-testid={`message-${msg.role}-${i}`}
             >
@@ -740,6 +770,23 @@ export default function SasquatchCoach() {
                       <Volume2 className="h-3 w-3" /> Replay
                     </button>
                   )}
+                   {msg.role === "coach" && msg.audioStatus === "unavailable" && (
+                     <div
+                       className="mt-3 flex flex-wrap items-center gap-2 border-t border-[#2a2a2a] pt-2 text-xs text-gray-400"
+                       role="status"
+                       data-testid={`coach-audio-unavailable-${i}`}
+                     >
+                       <span>Voice audio is unavailable right now. Your text response is still here.</span>
+                       <button
+                         type="button"
+                         className="font-medium text-[#E2741B] hover:text-[#f08a35] underline-offset-2 hover:underline"
+                         onClick={() => void requestCoachAudio(msg.id, msg.content)}
+                         data-testid={`button-retry-audio-${i}`}
+                       >
+                         Retry voice
+                       </button>
+                     </div>
+                   )}
                 </div>
               )}
               {msg.role === "user" && (
