@@ -28,6 +28,17 @@ export type CanonicalGoalDetail = {
   status?: string;
 };
 
+const GOAL_DOMAINS = new Set(["physical", "cognitive", "speech", "emotional", "memory", "other"]);
+
+function normalizeGoalDetail(detail: Record<string, any> | undefined, goal: string): CanonicalGoalDetail {
+  return {
+    horizon: detail?.horizon === "long" ? "long" : "short",
+    domain: GOAL_DOMAINS.has(detail?.domain ?? "") ? detail?.domain : "other",
+    goal,
+    status: typeof detail?.status === "string" ? detail.status : "active",
+  };
+}
+
 const TRACKED_FIELDS = [
   "preferredName",
   "pronouns",
@@ -125,15 +136,7 @@ export function synchronizeGoalDetails(
         const detailByText = details.find((detail) => detail.goal === goal)
           ?? existing.find((detail) => detail.goal === goal);
         const detail = detailByText ?? details[index] ?? existing[index];
-        return {
-          ...(detail ?? {}),
-          goal,
-          status: typeof detail?.status === "string"
-            ? detail.status
-            : typeof existing[index]?.status === "string"
-              ? existing[index].status
-              : "active",
-        } as CanonicalGoalDetail;
+        return normalizeGoalDetail({ ...existing[index], ...detail }, goal);
       }),
     };
   }
@@ -141,16 +144,7 @@ export function synchronizeGoalDetails(
   if (Array.isArray(incomingDetails)) {
     const structuredGoals = details.map((detail, index) => {
       const prior = existing.find((candidate) => candidate.goal === detail.goal) ?? existing[index];
-      return {
-        ...prior,
-        ...detail,
-        goal: detail.goal,
-        status: typeof detail.status === "string"
-          ? detail.status
-          : typeof prior?.status === "string"
-            ? prior.status
-            : "active",
-      } as CanonicalGoalDetail;
+      return normalizeGoalDetail({ ...prior, ...detail }, detail.goal);
     });
     return {
       recoveryGoals: structuredGoals.map((detail) => detail.goal),

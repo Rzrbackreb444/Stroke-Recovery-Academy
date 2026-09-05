@@ -1,10 +1,8 @@
 import { Router, type Response } from "express";
 import { z } from "zod";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { isAuthenticated } from "./replitAuth";
-import { storage } from "./storage";
-import { db } from "./db";
-import { userProfiles } from "@shared/schema";
+import { users, powerPointGifts, userPersonas } from "@shared/schema";
 import { publicRateLimit } from "./middleware/publicRateLimit";
 import {
   getCanonicalSurvivorProfile,
@@ -183,14 +181,14 @@ router.post("/profile/reset-intake", isAuthenticated, perUserWriteLimit, async (
     const userId = authedUserId(req);
     if (!userId) return res.status(401).json({ error: "Not authenticated" });
 
-    const existing = await storage.getUserProfile(userId);
+    const existing = await getCanonicalSurvivorProfile(userId);
     if (!existing) return res.json({ profile: null });
 
-    const [row] = await db
-      .update(userProfiles)
-      .set({ intakeCompletedAt: null, currentIntakeStep: 0, updatedAt: sql`now()` })
-      .where(eq(userProfiles.userId, userId))
-      .returning();
+    const row = await updateCanonicalSurvivorProfile(
+      userId,
+      { intakeCompletedAt: null, currentIntakeStep: 0 },
+      "survivor_profile_settings",
+    );
 
     res.json({ profile: { ...row, intakeComplete: false } });
   } catch (err: any) {

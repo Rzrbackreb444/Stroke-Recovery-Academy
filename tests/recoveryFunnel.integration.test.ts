@@ -299,6 +299,236 @@ test(
 
       const survivorCookie = await login(baseUrl, survivorEmail, password);
       const adminCookie = await login(baseUrl, adminEmail, password);
+
+      const emptyProfile = await jsonRequest(
+        baseUrl,
+        "/api/survivor/profile",
+        {},
+        survivorCookie,
+      );
+      assert.equal(emptyProfile.response.status, 200);
+      assert.equal(emptyProfile.body.profile, null);
+
+      const profilePatch = await jsonRequest(
+        baseUrl,
+        "/api/survivor/profile",
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            profileSource: "survivor_profile_settings",
+            preferredName: "Integration Survivor",
+            deficits: { motor: 3, fatigue: 2 },
+            recoveryGoals: ["Speak with more confidence"],
+            goalDetails: [{
+              horizon: "long",
+              domain: "speech",
+              goal: "Speak with more confidence",
+              status: "active",
+            }],
+            currentChallenges: ["Finding words under pressure"],
+            customGoal: "Give a short toast at my daughter's wedding",
+            assessmentScores: {
+              physical: 4,
+              cognitive: 5,
+              speech: 6,
+              emotional: 7,
+              memory: 3,
+            },
+            assessmentNotes: "Speech is improving with repetition",
+            equipment: ["ankle-foot orthosis"],
+            mobilityAids: ["cane"],
+            dailyTimeBudgetMinutes: 20,
+            energyPattern: "morning",
+          }),
+        },
+        survivorCookie,
+      );
+      assert.equal(profilePatch.response.status, 200, JSON.stringify(profilePatch.body));
+      assert.equal(profilePatch.body.profile.preferredName, "Integration Survivor");
+      assert.deepEqual(profilePatch.body.profile.goalDetails, [{
+        horizon: "long",
+        domain: "speech",
+        goal: "Speak with more confidence",
+        status: "active",
+      }]);
+
+      const profileRead = await jsonRequest(
+        baseUrl,
+        "/api/survivor/profile",
+        {},
+        survivorCookie,
+      );
+      assert.equal(profileRead.response.status, 200);
+      assert.equal(profileRead.body.profile.preferredName, "Integration Survivor");
+      assert.equal(profileRead.body.profile.profileProvenance.preferredName.source, "survivor_profile_settings");
+
+      const canonicalBeforeIntakeReset = {
+        preferredName: profileRead.body.profile.preferredName,
+        deficits: profileRead.body.profile.deficits,
+        recoveryGoals: profileRead.body.profile.recoveryGoals,
+        goalDetails: profileRead.body.profile.goalDetails,
+        currentChallenges: profileRead.body.profile.currentChallenges,
+        customGoal: profileRead.body.profile.customGoal,
+        assessmentScores: profileRead.body.profile.assessmentScores,
+        assessmentNotes: profileRead.body.profile.assessmentNotes,
+        equipment: profileRead.body.profile.equipment,
+        mobilityAids: profileRead.body.profile.mobilityAids,
+        dailyTimeBudgetMinutes: profileRead.body.profile.dailyTimeBudgetMinutes,
+        energyPattern: profileRead.body.profile.energyPattern,
+        profileProvenance: profileRead.body.profile.profileProvenance,
+      };
+
+      const completedIntake = await jsonRequest(
+        baseUrl,
+        "/api/survivor/profile/complete",
+        { method: "POST", body: JSON.stringify({}) },
+        survivorCookie,
+      );
+      assert.equal(completedIntake.response.status, 200, JSON.stringify(completedIntake.body));
+      assert.equal(completedIntake.body.profile.intakeComplete, true);
+      assert.equal(
+        completedIntake.body.profile.profileProvenance.intakeCompletedAt.source,
+        "survivor_intake",
+      );
+      const canonicalProfileBeforeIntakeReset = {
+        ...canonicalBeforeIntakeReset,
+        profileProvenance: completedIntake.body.profile.profileProvenance,
+      };
+
+      const resetIntakes = await Promise.all([
+        jsonRequest(
+          baseUrl,
+          "/api/survivor/profile/reset-intake",
+          { method: "POST", body: JSON.stringify({}) },
+          survivorCookie,
+        ),
+        jsonRequest(
+          baseUrl,
+          "/api/survivor/profile/reset-intake",
+          { method: "POST", body: JSON.stringify({}) },
+          survivorCookie,
+        ),
+        jsonRequest(
+          baseUrl,
+          "/api/survivor/profile/reset-intake",
+          { method: "POST", body: JSON.stringify({}) },
+          survivorCookie,
+        ),
+      ]);
+      for (const resetIntake of resetIntakes) {
+        assert.equal(resetIntake.response.status, 200, JSON.stringify(resetIntake.body));
+        assert.equal(resetIntake.body.profile.intakeComplete, false);
+        assert.equal(resetIntake.body.profile.currentIntakeStep, 0);
+        assert.deepEqual(
+          {
+            preferredName: resetIntake.body.profile.preferredName,
+            deficits: resetIntake.body.profile.deficits,
+            recoveryGoals: resetIntake.body.profile.recoveryGoals,
+            goalDetails: resetIntake.body.profile.goalDetails,
+            currentChallenges: resetIntake.body.profile.currentChallenges,
+            customGoal: resetIntake.body.profile.customGoal,
+            assessmentScores: resetIntake.body.profile.assessmentScores,
+            assessmentNotes: resetIntake.body.profile.assessmentNotes,
+            equipment: resetIntake.body.profile.equipment,
+            mobilityAids: resetIntake.body.profile.mobilityAids,
+            dailyTimeBudgetMinutes: resetIntake.body.profile.dailyTimeBudgetMinutes,
+            energyPattern: resetIntake.body.profile.energyPattern,
+            profileProvenance: resetIntake.body.profile.profileProvenance,
+          },
+          canonicalProfileBeforeIntakeReset,
+        );
+      }
+      assert.deepEqual(
+        {
+          preferredName: resetIntakes[1].body.profile.preferredName,
+          deficits: resetIntakes[1].body.profile.deficits,
+          recoveryGoals: resetIntakes[1].body.profile.recoveryGoals,
+          goalDetails: resetIntakes[1].body.profile.goalDetails,
+          currentChallenges: resetIntakes[1].body.profile.currentChallenges,
+          customGoal: resetIntakes[1].body.profile.customGoal,
+          assessmentScores: resetIntakes[1].body.profile.assessmentScores,
+          assessmentNotes: resetIntakes[1].body.profile.assessmentNotes,
+          equipment: resetIntakes[1].body.profile.equipment,
+          mobilityAids: resetIntakes[1].body.profile.mobilityAids,
+          dailyTimeBudgetMinutes: resetIntakes[1].body.profile.dailyTimeBudgetMinutes,
+          energyPattern: resetIntakes[1].body.profile.energyPattern,
+          profileProvenance: resetIntakes[1].body.profile.profileProvenance,
+        },
+        {
+          preferredName: resetIntakes[0].body.profile.preferredName,
+          deficits: resetIntakes[0].body.profile.deficits,
+          recoveryGoals: resetIntakes[0].body.profile.recoveryGoals,
+          goalDetails: resetIntakes[0].body.profile.goalDetails,
+          currentChallenges: resetIntakes[0].body.profile.currentChallenges,
+          customGoal: resetIntakes[0].body.profile.customGoal,
+          assessmentScores: resetIntakes[0].body.profile.assessmentScores,
+          assessmentNotes: resetIntakes[0].body.profile.assessmentNotes,
+          equipment: resetIntakes[0].body.profile.equipment,
+          mobilityAids: resetIntakes[0].body.profile.mobilityAids,
+          dailyTimeBudgetMinutes: resetIntakes[0].body.profile.dailyTimeBudgetMinutes,
+          energyPattern: resetIntakes[0].body.profile.energyPattern,
+          profileProvenance: resetIntakes[0].body.profile.profileProvenance,
+        },
+        "concurrent reset calls should return one consistent canonical profile",
+      );
+
+      const recompletedIntake = await jsonRequest(
+        baseUrl,
+        "/api/survivor/profile/complete",
+        { method: "POST", body: JSON.stringify({}) },
+        survivorCookie,
+      );
+      assert.equal(recompletedIntake.response.status, 200, JSON.stringify(recompletedIntake.body));
+      assert.equal(recompletedIntake.body.profile.intakeComplete, true);
+      assert.equal(
+        recompletedIntake.body.profile.profileProvenance.intakeCompletedAt.source,
+        "survivor_intake",
+      );
+      assert.deepEqual(
+        {
+          preferredName: recompletedIntake.body.profile.preferredName,
+          deficits: recompletedIntake.body.profile.deficits,
+          recoveryGoals: recompletedIntake.body.profile.recoveryGoals,
+          goalDetails: recompletedIntake.body.profile.goalDetails,
+          currentChallenges: recompletedIntake.body.profile.currentChallenges,
+          customGoal: recompletedIntake.body.profile.customGoal,
+          assessmentScores: recompletedIntake.body.profile.assessmentScores,
+          assessmentNotes: recompletedIntake.body.profile.assessmentNotes,
+          equipment: recompletedIntake.body.profile.equipment,
+          mobilityAids: recompletedIntake.body.profile.mobilityAids,
+          dailyTimeBudgetMinutes: recompletedIntake.body.profile.dailyTimeBudgetMinutes,
+          energyPattern: recompletedIntake.body.profile.energyPattern,
+          profileProvenance: {
+            ...canonicalProfileBeforeIntakeReset.profileProvenance,
+            intakeCompletedAt: recompletedIntake.body.profile.profileProvenance.intakeCompletedAt,
+          },
+        },
+        {
+          ...canonicalProfileBeforeIntakeReset,
+          profileProvenance: {
+            ...canonicalProfileBeforeIntakeReset.profileProvenance,
+            intakeCompletedAt: recompletedIntake.body.profile.profileProvenance.intakeCompletedAt,
+          },
+        },
+      );
+
+      const todayWithProfile = await jsonRequest(
+        baseUrl,
+        "/api/recovery/today/recommendation",
+        {},
+        survivorCookie,
+      );
+      assert.equal(todayWithProfile.response.status, 200, JSON.stringify(todayWithProfile.body));
+      assert.equal(todayWithProfile.body.personalization.applied, true);
+      assert.deepEqual(todayWithProfile.body.personalization.goals, ["Speak with more confidence"]);
+      assert.deepEqual(todayWithProfile.body.personalization.goalDetails, [{
+        horizon: "long",
+        domain: "speech",
+        goal: "Speak with more confidence",
+        status: "active",
+      }]);
+      assert.equal(todayWithProfile.body.personalization.startLevel, 1);
+
       const before = await readFunnel(baseUrl, adminCookie);
 
       const assessment = {
@@ -341,6 +571,32 @@ test(
 
       await postRecovery(baseUrl, "/api/recovery/assessment", assessment, survivorCookie);
       await postRecovery(baseUrl, "/api/recovery/assessment", assessment, survivorCookie);
+
+      const stateAfterAssessment = await jsonRequest(
+        baseUrl,
+        "/api/recovery/me/state",
+        {},
+        survivorCookie,
+      );
+      assert.equal(stateAfterAssessment.response.status, 200, JSON.stringify(stateAfterAssessment.body));
+      assert.deepEqual(
+        {
+          physical: stateAfterAssessment.body.latestAssessment.physical,
+          cognitive: stateAfterAssessment.body.latestAssessment.cognitive,
+          speech: stateAfterAssessment.body.latestAssessment.speech,
+          emotional: stateAfterAssessment.body.latestAssessment.emotional,
+          memory: stateAfterAssessment.body.latestAssessment.memory,
+          notes: stateAfterAssessment.body.latestAssessment.notes,
+        },
+        assessment,
+      );
+      assert.deepEqual(stateAfterAssessment.body.goals, [{
+        id: -1,
+        horizon: "long",
+        domain: "speech",
+        goal: "Speak with more confidence",
+        status: "active",
+      }]);
 
       // A later reassessment is valid once the 24-hour duplicate window has
       // passed. Move the initial snapshot outside that window, then submit a

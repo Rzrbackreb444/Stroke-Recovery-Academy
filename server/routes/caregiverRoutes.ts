@@ -10,6 +10,13 @@ import { sql, eq, and, or, desc } from 'drizzle-orm';
 import { z } from 'zod';
 import crypto from 'crypto';
 import { getUserId } from '../lib/authUtils';
+import {
+  buildRecoverySummary,
+  canAccessRecoverySummary,
+  getActorSummaryMeasurement,
+  recordSummaryEvent,
+  summaryIdForWindow,
+} from '../recoverySummaryService';
 
 const INVITE_TTL_DAYS = 14;
 
@@ -71,6 +78,85 @@ export function registerCaregiverRoutes(app: Express, isAuthenticated: any) {
     } catch (err: any) {
       console.error('[caregivers] list', err);
       res.status(500).json({ error: 'Failed to load links' });
+    }
+  });
+
+  // A care handoff contains only structured activity counts and dates. It
+  // deliberately never returns journal text, check-in answers, or diagnoses.
+  app.get('/api/caregivers/:survivorId/recovery-summary', isAuthenticated, async (req: any, res) => {
+    const actorId = getUserId(req);
+    const survivorId = String(req.params.survivorId);
+    if (!actorId) return res.status(401).json({ error: 'Unauthorized' });
+    try {
+      const audience = actorId === survivorId
+        ? 'survivor'
+        : await canAccessRecoverySummary(actorId, survivorId, 'clinician')
+          ? 'clinician'
+          : 'caregiver';
+      if (!await canAccessRecoverySummary(actorId, survivorId, audience)) {
+        return res.status(403).json({ error: 'This summary is not shared with you' });
+      }
+      const summary = await buildRecoverySummary(survivorId, Number(req.query.windowDays ?? 14));
+      const measurement = await getActorSummaryMeasurement(actorId, summary.summaryId);
+      await recordSummaryEvent({
+        survivorId,
+        actorId,
+        actorType: audience,
+        eventType: 'summary_exported',
+        summaryId: summary.summaryId,
+      });
+      res.json({ ...summary, measurement, viewerRole: audience });
+    } catch (err: any) {
+      console.error('[caregivers] recovery summary', err);
+      res.status(500).json({ error: 'Could not load recovery summary' });
+    }
+  });
+
+  app.post('/api/caregivers/:survivorId/recovery-summary/feedback', isAuthenticated, async (req: any, res) => {
+    const actorId = getUserId(req);
+    const survivorId = String(req.params.survivorId);
+    if (!actorId) return res.status(401).json({ error: 'Unauthorized' });
+    const parsed = z.object({
+      audience: z.enum(['caregiver', 'clinician']),
+      phase: z.enum(['before', 'after']),
+      summaryId: z.string().regex(/^recovery-handoff-v1-\d+d$/).max(64),
+      usefulness: z.number().int().min(1).max(5).optional(),
+      uncertainty: z.number().int().min(1).max(5).optional(),
+      clarity: z.number().int().min(1).max(5).optional(),
+      actionability: z.number().int().min(1).max(5).optional(),
+      reviewTimeSeconds: z.number().int().min(1).max(3600).optional(),
+    }).strict().safeParse(req.body ?? {});
+    if (!parsed.success) return res.status(400).json({ error: 'Invalid summary rating' });
+    const data = parsed.data;
+    if (data.audience === 'clinician' &&
+      (data.clarity == null || data.actionability == null || data.reviewTimeSeconds == null)) {
+      return res.status(400).json({ error: 'Clinician ratings need clarity, actionability, and review time' });
+    }
+    if (data.audience === 'caregiver' &&
+      (data.usefulness == null || data.uncertainty == null)) {
+      return res.status(400).json({ error: 'Caregiver ratings need usefulness and uncertainty' });
+    }
+    try {
+      if (!await canAccessRecoverySummary(actorId, survivorId, data.audience)) {
+        return res.status(403).json({ error: 'This summary is not shared with you' });
+      }
+      await recordSummaryEvent({
+        survivorId,
+        actorId,
+        actorType: data.audience,
+        eventType: 'feedback_submitted',
+        summaryId: data.summaryId,
+        phase: data.phase,
+        usefulness: data.usefulness,
+        uncertainty: data.uncertainty,
+        clarity: data.clarity,
+        actionability: data.actionability,
+        reviewTimeSeconds: data.reviewTimeSeconds,
+      });
+      res.json({ ok: true, measurement: await getActorSummaryMeasurement(actorId, data.summaryId) });
+    } catch (err: any) {
+      console.error('[caregivers] recovery summary feedback', err);
+      res.status(500).json({ error: 'Could not save summary rating' });
     }
   });
 

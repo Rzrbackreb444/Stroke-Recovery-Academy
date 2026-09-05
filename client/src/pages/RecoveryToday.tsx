@@ -16,6 +16,7 @@ import {
 } from "@/lib/recoveryRoutine";
 import { MedicalDisclaimerCard } from "@/components/recovery/MedicalDisclaimerCard";
 import { WalkingCooldown } from "@/components/recovery/WalkingCooldown";
+import SummaryMeasureCard from "@/components/recovery/SummaryMeasureCard";
 
 type Reaction = "good" | "hard" | "too_hard";
 type Recommendation = TodayRecommendation;
@@ -510,6 +511,14 @@ export default function RecoveryToday() {
             <ArrowRight className="h-4 w-4 ml-1.5" />
           </Button>
         </Card>
+
+        <div className="mt-4">
+          <SummaryMeasureCard
+            audience="survivor"
+            summaryPath="/api/recovery/summary"
+            feedbackPath="/api/recovery/summary/feedback"
+          />
+        </div>
 
         <div className="grid grid-cols-3 gap-3 mt-6">
           <Card className="bg-[#111] border-[#222] p-4 text-center">
