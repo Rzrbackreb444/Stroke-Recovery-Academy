@@ -10081,7 +10081,7 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
 
           userContext = {
             // Prefer persona name so the coach addresses the survivor as their forged self.
-            name: personaRow?.name || userData?.firstName || userData?.email || undefined,
+            name: personaRow?.name || survivorProfile?.preferredName || userData?.firstName || userData?.email || undefined,
             exerciseCount: exerciseScores.length,
             streak: nzStreak,
             lastExercises: exerciseScores.slice(0, 3).map((s: any) => s.exerciseType || 'exercise'),
