@@ -14012,6 +14012,28 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
     }
   });
 
+  app.patch('/api/recovery/journal/:id/coach-approval', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = getUserId(req)!;
+      const journalId = Number.parseInt(req.params.id, 10);
+      if (!Number.isInteger(journalId) || journalId < 1) {
+        return res.status(400).json({ message: "Invalid journal entry" });
+      }
+      if (typeof req.body?.approved !== "boolean") {
+        return res.status(400).json({ message: "approved must be a boolean" });
+      }
+      const { setCoachJournalApproval } = await import('./sasquatchHistoryService');
+      const approved = await setCoachJournalApproval(userId, journalId, req.body.approved);
+      if (approved === null) {
+        return res.status(404).json({ message: "Journal entry not found" });
+      }
+      res.json({ journalId, approved });
+    } catch (error) {
+      console.error("Error updating Coach journal approval:", error);
+      res.status(500).json({ message: "Failed to update Coach journal approval" });
+    }
+  });
+
   app.post('/api/recovery/journal', isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req)!;

@@ -28,6 +28,10 @@ const coachPage = await readFile(
   new URL("../client/src/pages/SasquatchCoach.tsx", import.meta.url),
   "utf8",
 );
+const journalPage = await readFile(
+  new URL("../client/src/pages/RecoveryJournal.tsx", import.meta.url),
+  "utf8",
+);
 
 test("coach turns await durable history before returning success", () => {
   assert.match(routes, /const \{ persistChatTurn \} = await import\('\.\/sasquatchHistoryService'\);\s+await persistChatTurn\(persistUserId, message, finalResponse\)/);
@@ -39,6 +43,10 @@ test("Coach memory is explicit, owner-scoped, and keeps facts separate from obse
   assert.match(history, /CREATE TABLE IF NOT EXISTS coach_memory_preferences[\s\S]*include_journal BOOLEAN NOT NULL DEFAULT FALSE/);
   assert.match(history, /CREATE TABLE IF NOT EXISTS coach_memory_items[\s\S]*user_id VARCHAR NOT NULL/);
   assert.match(history, /CREATE TABLE IF NOT EXISTS coach_memory_exclusions/);
+  assert.match(history, /CREATE TABLE IF NOT EXISTS coach_journal_approvals[\s\S]*approved BOOLEAN NOT NULL DEFAULT FALSE/);
+  assert.match(history, /INNER JOIN coach_journal_approvals[\s\S]*approval\.approved = TRUE/);
+  assert.match(history, /DELETE FROM coach_memory_items AS memory[\s\S]*coach_journal_approvals/);
+  assert.match(history, /export async function setCoachJournalApproval/);
   assert.match(history, /WHERE user_id = \$\{userId\} AND source_type = \$\{sourceType\}/);
   assert.match(history, /export async function getWeeklyCoachSummary/);
   assert.match(coachPage, /Coach observations · patterns, not facts/);
@@ -47,7 +55,12 @@ test("Coach memory is explicit, owner-scoped, and keeps facts separate from obse
   assert.ok(routes.includes("app.patch('/api/coach/memory/preferences', isAuthenticated"));
   assert.ok(routes.includes("app.patch('/api/coach/memory/items/:id', isAuthenticated"));
   assert.ok(routes.includes("app.delete('/api/coach/memory/items/:id', isAuthenticated"));
+  assert.ok(routes.includes("app.patch('/api/recovery/journal/:id/coach-approval', isAuthenticated"));
+  assert.match(routes, /approved must be a boolean/);
+  assert.match(storage, /coach_journal_approvals[\s\S]*coach_approved/);
   assert.match(routes, /approvedMemory: approvedMemory\.map/);
+  assert.match(journalPage, /approve entries one at a time/);
+  assert.match(journalPage, /coach-approval/);
   assert.match(chatWidget, /\/api\/coach\/history/);
 });
 

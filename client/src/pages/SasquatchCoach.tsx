@@ -466,7 +466,7 @@ export default function SasquatchCoach() {
                   Give Coach continuity — on your terms
                 </h2>
                 <p className="mt-1 max-w-2xl text-xs leading-relaxed text-gray-400">
-                  Coach only uses sources you turn on here. Journal and check-in details can be personal health information, so they stay off until you explicitly approve them.
+                  Coach only uses sources you turn on here. Journal and check-in details can be personal health information, so they stay off until you explicitly approve them. Journal consent is still entry-by-entry — approve or revoke individual entries from Reflections without changing whether they are private or shared.
                 </p>
               </div>
               <Button
@@ -491,7 +491,7 @@ export default function SasquatchCoach() {
                   {([
                     ["includeCheckins", "Daily check-ins", "Mood, energy, pain, effort, and words you entered"],
                     ["includeToday", "Today feedback", "Your own reactions to suggested recovery reps"],
-                    ["includeJournal", "Private journal", "Journal words from the selected range — explicit consent required"],
+                    ["includeJournal", "Private journal", "Turn this on first, then approve individual entries from Reflections — never blanket access"],
                     ["includeGoals", "Recovery goals", "Goals you saved, including their current status"],
                     ["includePlans", "Saved plans", "The latest plan summary and focus areas"],
                   ] as const).map(([key, label, description]) => (

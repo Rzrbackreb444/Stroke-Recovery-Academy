@@ -3150,9 +3150,14 @@ export class DatabaseStorage implements IStorage {
   async getJournalEntries(userId: string): Promise<any[]> {
     try {
       const result = await db.execute(sql`
-        SELECT * FROM recovery_journals
-        WHERE user_id = ${userId}
-        ORDER BY created_at DESC
+        SELECT recovery_journals.*,
+               COALESCE(coach_journal_approvals.approved, FALSE) AS coach_approved
+        FROM recovery_journals
+        LEFT JOIN coach_journal_approvals
+          ON coach_journal_approvals.user_id = recovery_journals.user_id
+         AND coach_journal_approvals.journal_id = recovery_journals.id
+        WHERE recovery_journals.user_id = ${userId}
+        ORDER BY recovery_journals.created_at DESC
         LIMIT 100
       `);
       return result.rows || [];
