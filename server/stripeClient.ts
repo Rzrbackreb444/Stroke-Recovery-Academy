@@ -1,4 +1,7 @@
 import Stripe from 'stripe';
+import { db } from './db';
+import { users } from '@shared/schema';
+import { eq, sql } from 'drizzle-orm';
 
 let connectionSettings: any;
 
@@ -58,6 +61,8 @@ type StripeCustomerApi = {
   };
 };
 
+export type StripeCustomerDatabase = Pick<typeof db, 'transaction'>;
+
 export type StripeCustomerStore = {
   withUserLock<T>(
     userId: string,
@@ -100,9 +105,46 @@ export async function ensureStripeCustomer(
 }
 
 /**
+ * Create the default PostgreSQL-backed customer store.
+ *
+ * The transaction-scoped advisory lock and the customer read/write share the
+ * same connection, so overlapping requests converge even across app
+ * processes. The store abstraction keeps the repair helper deterministic in
+ * unit tests.
+ */
+export function createStripeCustomerStore(
+  database: StripeCustomerDatabase = db,
+): StripeCustomerStore {
+  return {
+    withUserLock: (userId, operation) =>
+      database.transaction(async (tx) => {
+        await tx.execute(sql`SELECT pg_advisory_xact_lock(
+          hashtextextended(${`stripe-customer:${userId}`}, 0)
+        )`);
+
+        return operation({
+          getCustomerId: async () => {
+            const [user] = await tx
+              .select({ stripeCustomerId: users.stripeCustomerId })
+              .from(users)
+              .where(eq(users.id, userId))
+              .limit(1);
+            return user?.stripeCustomerId;
+          },
+          setCustomerId: async (customerId) => {
+            await tx
+              .update(users)
+              .set({ stripeCustomerId: customerId })
+              .where(eq(users.id, userId));
+          },
+        });
+      }),
+  };
+}
+
+/**
  * Ensure a user's Stripe customer and local pointer are created as one
- * serialized operation. The store owns the database lock and transaction so
- * this helper can be tested without connecting to Postgres.
+ * serialized operation.
  */
 export async function ensureStripeCustomerForUser(
   stripe: StripeCustomerApi,

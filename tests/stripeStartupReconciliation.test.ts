@@ -163,6 +163,76 @@ test('concurrent checkout and billing-portal customer replacement attempts conve
   assert.deepEqual(portalCustomer, { id: 'cus_winner', created: false });
 });
 
+test('serializes overlapping subscription and one-time checkout repairs', async () => {
+  let storedCustomerId: string | null = 'cus_quarantined';
+  let createdCount = 0;
+  let lockTail = Promise.resolve();
+
+  const store = {
+    withUserLock: async (
+      _userId: string,
+      operation: (store: {
+        getCustomerId: () => Promise<string | null>;
+        setCustomerId: (customerId: string) => Promise<void>;
+      }) => Promise<{ id: string; created: boolean }>,
+    ) => {
+      const previous = lockTail;
+      let release!: () => void;
+      lockTail = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      await previous;
+
+      try {
+        return await operation({
+          getCustomerId: async () => storedCustomerId,
+          setCustomerId: async (customerId) => {
+            storedCustomerId = customerId;
+          },
+        });
+      } finally {
+        release();
+      }
+    },
+  };
+
+  const stripe = {
+    customers: {
+      retrieve: async (id: string) => {
+        if (id === 'cus_quarantined') throw missingStripeResourceError();
+        return { id, deleted: false };
+      },
+      create: async () => {
+        createdCount += 1;
+        await new Promise((resolve) => setTimeout(resolve, 5));
+        return { id: 'cus_replacement' };
+      },
+    },
+  };
+
+  const [subscriptionRepair, oneTimeRepair] = await Promise.all([
+    ensureStripeCustomerForUser(
+      stripe,
+      store,
+      'user-overlap',
+      { email: 'survivor@example.com', metadata: { flow: 'subscription' } },
+      'cus_quarantined',
+    ),
+    ensureStripeCustomerForUser(
+      stripe,
+      store,
+      'user-overlap',
+      { email: 'survivor@example.com', metadata: { flow: 'one_time' } },
+      'cus_quarantined',
+    ),
+  ]);
+
+  assert.equal(createdCount, 1);
+  assert.equal(storedCustomerId, 'cus_replacement');
+  assert.deepEqual(subscriptionRepair, { id: 'cus_replacement', created: true });
+  assert.deepEqual(oneTimeRepair, { id: 'cus_replacement', created: false });
+});
+
 test('repairs a quarantined customer before subscription and recovery purchase checkout', async () => {
   const { sync, deletedCustomers } = buildSync();
   const createdCustomers: Array<{ email?: string; metadata?: Record<string, string> }> = [];

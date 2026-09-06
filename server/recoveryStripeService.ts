@@ -2,7 +2,10 @@ import { db } from './db';
 import { users, recoveryCreatorTips, recoveryPremiumPurchases } from '@shared/schema';
 import { eq, sql } from 'drizzle-orm';
 import { getRecoveryStripeClient, isRecoveryStripeConfigured } from './recoveryStripeClient';
-import { ensureStripeCustomer } from './stripeClient';
+import {
+  createStripeCustomerStore,
+  ensureStripeCustomerForUser,
+} from './stripeClient';
 
 const PLATFORM_FEE_PERCENT = 15;
 const CREATOR_SHARE_PERCENT = 85;
@@ -21,15 +24,21 @@ export class RecoveryStripeService {
   }
 
   async getOrCreateCustomer(
-    customerId: string | null | undefined,
+    _customerId: string | null | undefined,
     email: string,
     userId: string,
   ) {
     const stripe = getRecoveryStripeClient();
-    return ensureStripeCustomer(stripe, customerId, {
-      email: email || undefined,
-      metadata: { userId, platform: 'stroke_recovery_academy' },
-    });
+    return ensureStripeCustomerForUser(
+      stripe,
+      createStripeCustomerStore(),
+      userId,
+      {
+        email: email || undefined,
+        metadata: { userId, platform: 'stroke_recovery_academy' },
+      },
+      _customerId,
+    );
   }
 
   async createTipCheckout(

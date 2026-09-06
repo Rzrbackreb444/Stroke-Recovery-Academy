@@ -13131,9 +13131,6 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
         userId,
       );
       const stripeCustomerId = customer.id;
-      if (customer.created) {
-        await db.update(users).set({ stripeCustomerId }).where(eq(users.id, userId));
-      }
 
       const session = await recoveryStripeService.createTipCheckout(
         stripeCustomerId,
@@ -13170,11 +13167,6 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
         user.email || '',
         userId,
       );
-      if (customer.created) {
-        await db.update(users)
-          .set({ stripeCustomerId: customer.id })
-          .where(eq(users.id, userId));
-      }
       const baseUrl = process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : '';
       
       const session = await recoveryStripeService.createSubscriptionCheckout(
@@ -13206,11 +13198,6 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
         user.email || '',
         userId,
       );
-      if (customer.created) {
-        await db.update(users)
-          .set({ stripeCustomerId: customer.id })
-          .where(eq(users.id, userId));
-      }
       
       const session = await recoveryStripeService.createCoachingCheckout(
         customer.id,
@@ -13409,11 +13396,6 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
           user.email || '',
           userId,
         );
-        if (customer.created) {
-          await db.update(users)
-            .set({ stripeCustomerId: customer.id })
-            .where(eq(users.id, userId));
-        }
         sessionParams.customer = customer.id;
       }
       
@@ -14281,9 +14263,6 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
         user.id,
       );
       const customerId = customer.id;
-      if (customer.created) {
-        await stripeService.updateUserStripeInfo(user.id, { stripeCustomerId: customerId });
-      }
       const customerEmail = user.email || '';
 
       const orderNumber = `REF-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
@@ -21928,9 +21907,6 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         user.id,
       );
       const customerId = customer.id;
-      if (customer.created) {
-        await stripeService.updateUserStripeInfo(user.id, { stripeCustomerId: customerId });
-      }
 
       const creditPrice = amount * 100;
 
