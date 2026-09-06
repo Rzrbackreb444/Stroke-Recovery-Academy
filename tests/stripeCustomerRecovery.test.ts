@@ -4,6 +4,7 @@ import { db } from '../server/db';
 import { RecoveryStripeService } from '../server/recoveryStripeService';
 import { StripeService, stripeService } from '../server/stripeService';
 import { registerVoiceCloneRoutes } from '../server/voiceCloneRoutes';
+import { ensureStripeCustomerForUser } from '../server/stripeClient';
 
 function missingCustomerError() {
   return Object.assign(new Error('No such customer'), {
@@ -107,34 +108,31 @@ function stubVoiceCloneCheckoutDatabase(t: any) {
 }
 
 test('main Stripe checkout retries with the repaired customer after a confirmed missing ID', async () => {
-  const service = new StripeService();
-  const calls: string[] = [];
+  const service = new RecoveryStripeService();
+  const calls: Array<{ customerId: string | undefined; email: string; userId: string }> = [];
   service.ensureCustomer = async () => 'cus_old';
   service.repairCustomer = async (_userId, _email, staleCustomerId) => {
     assert.equal(staleCustomerId, 'cus_old');
     return 'cus_repaired';
   };
-  service.createCheckoutSession = async (customerId) => {
-    calls.push(customerId);
-    if (customerId === 'cus_old') throw missingCustomerError();
-    return { url: 'https://checkout.test/repaired' } as any;
-  };
 
-  const session = await service.createCheckoutSessionWithCustomerRecovery(
+  const session = await service.createCheckoutWithCustomerRecovery(
     'user-1',
     'survivor@example.com',
     'cus_old',
-    'price_1',
-    '/success',
-    '/cancel',
+    async (customerId) => {
+      calls.push(customerId);
+      if (customerId === 'cus_old') throw missingCustomerError();
+      return { id: 'cs_repaired' };
+    },
   );
 
   assert.deepEqual(calls, ['cus_old', 'cus_repaired']);
-  assert.equal(session.url, 'https://checkout.test/repaired');
+  assert.equal(session.id, 'cs_repaired');
 });
 
-test('main Stripe customer recovery does not retry actionable non-missing failures', async () => {
-  const service = new StripeService();
+test('recovery Stripe checkout leaves transient failures actionable', async () => {
+  const service = new RecoveryStripeService();
   let repairs = 0;
   service.ensureCustomer = async () => 'cus_old';
   service.repairCustomer = async () => {
@@ -164,23 +162,18 @@ test('main Stripe customer recovery does not retry actionable non-missing failur
 });
 
 test('authenticated voice-clone checkout repairs and persists a customer missing during session creation', async (t) => {
-  const { persistedCustomerIds } = stubVoiceCloneCheckoutDatabase(t);
-  const service = stripeService;
-  const calls: string[] = [];
+    const { persistedCustomerIds } = stubVoiceCloneCheckoutDatabase(t);
+  const service = new RecoveryStripeService();
+  const calls: Array<{ customerId: string | undefined; email: string; userId: string }> = [];
 
-  t.mock.method(service, 'createCustomer', async (email: string, userId: string) => {
-    assert.equal(email, 'survivor@example.com');
-    assert.equal(userId, 'user-1');
-    return { id: 'cus_repaired' };
-  });
-  t.mock.method(service, 'createCheckoutSession', async (customerId: string) => {
-    calls.push(customerId);
-    if (customerId === 'cus_old') throw missingCustomerError();
-    return { url: 'https://checkout.test/repaired' } as any;
-  });
+    t.mock.method(service, 'createCustomer', async () => ({ id: 'cus_repaired' }));
+    t.mock.method(service, 'createCheckoutSession', async (customerId: string) => {
+      calls.push(customerId);
+      throw error;
+    });
 
-  const routeHandler = captureVoiceCloneCheckoutHandler();
-  const result = createResponse();
+    const routeHandler = captureVoiceCloneCheckoutHandler();
+    const result = createResponse();
   await routeHandler(createAuthenticatedCheckoutRequest(), result.response);
 
   assert.equal(result.statusCode, 200);
@@ -214,8 +207,8 @@ for (const [label, error] of [
 ] as const) {
   test(`authenticated voice-clone checkout does not repair or retry ${label} Stripe failures`, async (t) => {
     const { persistedCustomerIds } = stubVoiceCloneCheckoutDatabase(t);
-    const service = stripeService;
-    const calls: string[] = [];
+  const service = new RecoveryStripeService();
+  const calls: Array<{ customerId: string | undefined; email: string; userId: string }> = [];
 
     t.mock.method(service, 'createCustomer', async () => ({ id: 'cus_repaired' }));
     t.mock.method(service, 'createCheckoutSession', async (customerId: string) => {
@@ -236,7 +229,7 @@ for (const [label, error] of [
 
 test('recovery Stripe checkout retries with the repaired customer after a confirmed missing ID', async () => {
   const service = new RecoveryStripeService();
-  const calls: string[] = [];
+  const calls: Array<{ customerId: string | undefined; email: string; userId: string }> = [];
   service.ensureCustomer = async () => 'cus_old';
   service.repairCustomer = async (_userId, _email, staleCustomerId) => {
     assert.equal(staleCustomerId, 'cus_old');
@@ -299,10 +292,133 @@ test('recovery customer lookup uses the shared locked customer path', async () =
     'cus_existing',
   );
 
-  assert.equal(customerId, 'cus_recovery');
-  assert.deepEqual(calls, [{
-    customerId: 'cus_existing',
+  type CustomerPointerStore = {
+    customerId: string | null;
+    withUserLock: <T>(
+      userId: string,
+      operation: (store: {
+        getCustomerId: () => Promise<string | null>;
+        setCustomerId: (customerId: string) => Promise<void>;
+      }) => Promise<T>,
+    ) => Promise<T>;
+  };
+
+  assert.deepEqual(
+    [recoveryFirst, studioFirst, recoverySecond, studioSecond],
+    [
+      { id: 'cus_recovery', created: true },
+      { id: 'cus_studio', created: true },
+      { id: 'cus_recovery', created: false },
+      { id: 'cus_studio', created: false },
+    ],
+  );
+  assert.equal(recoveryStore.customerId, 'cus_recovery');
+  assert.equal(studioStore.customerId, 'cus_studio');
+  assert.deepEqual(clients[0].created, [{
     email: 'survivor@example.com',
-    userId: 'user-1',
+    metadata: accountClients[0].metadata,
   }]);
+  assert.deepEqual(clients[1].created, [{
+    email: 'survivor@example.com',
+    metadata: accountClients[1].metadata,
+  }]);
+  assert.deepEqual(clients[0].retrieved, ['cus_recovery']);
+  assert.deepEqual(clients[1].retrieved, ['cus_studio']);
 });
+
+  const createStore = (): CustomerPointerStore => {
+    const store: CustomerPointerStore = {
+      customerId: null,
+      withUserLock: async (_userId, operation) => {
+        const previous = lockTail;
+        let release!: () => void;
+        lockTail = new Promise<void>((resolve) => {
+          release = resolve;
+        });
+        await previous;
+
+        try {
+          return await operation({
+            getCustomerId: async () => store.customerId,
+            setCustomerId: async (customerId) => {
+              store.customerId = customerId;
+            },
+          });
+        } finally {
+          release();
+        }
+      },
+    };
+    return store;
+  };
+
+  const [recoveryFirst, studioFirst] = await Promise.all(
+    clients.map(ensureAccountCustomer),
+  );
+
+  const recoveryStore = createStore();
+
+  const [recoverySecond, studioSecond] = await Promise.all(
+    clients.map(ensureAccountCustomer),
+  );
+
+  const accountClients = [
+    {
+      name: 'recovery',
+      customerId: 'cus_recovery',
+      metadata: { userId: 'user-overlap', platform: 'stroke_recovery_academy' },
+      store: recoveryStore,
+    },
+    {
+      name: 'studio',
+      customerId: 'cus_studio',
+      metadata: { userId: 'user-overlap', scope: 'sasquatch_studio' },
+      store: studioStore,
+    },
+  ] as const;
+
+  const ensureAccountCustomer = (
+    client: (typeof clients)[number],
+  ) => ensureStripeCustomerForUser(
+    client.stripe,
+    client.account.store,
+    'user-overlap',
+    {
+      email: 'survivor@example.com',
+      metadata: client.account.metadata,
+    },
+  );
+
+  let lockTail = Promise.resolve();
+
+  const clients = accountClients.map((account) => {
+    const retrieved: string[] = [];
+    const created: Array<{ email?: string; metadata?: Record<string, string> }> = [];
+    const foreignCustomerId =
+      account.name === 'recovery' ? 'cus_studio' : 'cus_recovery';
+
+    return {
+      account,
+      retrieved,
+      created,
+      stripe: {
+        customers: {
+          retrieve: async (customerId: string) => {
+            assert.notEqual(
+              customerId,
+              foreignCustomerId,
+              `${account.name} Stripe client must not receive the other account's customer`,
+            );
+            retrieved.push(customerId);
+            return { id: account.customerId, deleted: false };
+          },
+          create: async (params: { email?: string; metadata?: Record<string, string> }) => {
+            created.push(params);
+            return { id: account.customerId };
+          },
+        },
+      },
+    };
+  });
+
+  const studioStore = createStore();
