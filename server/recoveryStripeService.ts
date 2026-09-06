@@ -1,11 +1,12 @@
 import { db } from './db';
 import { users, recoveryCreatorTips, recoveryPremiumPurchases } from '@shared/schema';
-import { eq, sql } from 'drizzle-orm';
 import { getRecoveryStripeClient, isRecoveryStripeConfigured } from './recoveryStripeClient';
 import {
   createStripeCustomerStore,
   ensureStripeCustomerForUser,
 } from './stripeClient';
+import { and, eq, isNull, sql } from 'drizzle-orm';
+import { isStripeResourceMissingError } from './stripeClient';
 
 const PLATFORM_FEE_PERCENT = 15;
 const CREATOR_SHARE_PERCENT = 85;
@@ -377,6 +378,53 @@ export class RecoveryStripeService {
       customer: customerId,
       return_url: returnUrl,
     });
+  }
+
+  async repairCustomer(userId: string, email: string, staleCustomerId?: string): Promise<string> {
+    const customer = await this.createCustomer(email, userId);
+    const expectedCustomer = staleCustomerId
+      ? eq(users.stripeCustomerId, staleCustomerId)
+      : isNull(users.stripeCustomerId);
+
+    const [updated] = await db.update(users)
+      .set({
+        stripeCustomerId: customer.id,
+        stripeSubscriptionId: null,
+        subscriptionStatus: null,
+      })
+      .where(and(eq(users.id, userId), expectedCustomer))
+      .returning({ stripeCustomerId: users.stripeCustomerId });
+    if (updated?.stripeCustomerId) return updated.stripeCustomerId;
+
+    const [current] = await db.select({ stripeCustomerId: users.stripeCustomerId })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+    return current?.stripeCustomerId || customer.id;
+  }
+
+  async ensureCustomer(userId: string, email: string, customerId?: string): Promise<string> {
+    return customerId || this.repairCustomer(userId, email);
+  }
+
+  /**
+   * Recovery checkout routes all use the same Stripe customer column. Retry
+   * exactly once only when Stripe confirms that the stored ID is gone.
+   */
+  async createCheckoutWithCustomerRecovery<T>(
+    userId: string,
+    email: string,
+    customerId: string | undefined,
+    createSession: (customerId: string) => Promise<T>,
+  ): Promise<T> {
+    let effectiveCustomerId = await this.ensureCustomer(userId, email, customerId);
+    try {
+      return await createSession(effectiveCustomerId);
+    } catch (error) {
+      if (!isStripeResourceMissingError(error)) throw error;
+      effectiveCustomerId = await this.repairCustomer(userId, email, effectiveCustomerId);
+      return await createSession(effectiveCustomerId);
+    }
   }
 }
 

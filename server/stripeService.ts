@@ -1,11 +1,12 @@
 import { db } from './db';
 import { users, creatorEarnings, creatorPayouts } from '@shared/schema';
-import { eq, sql, and, inArray } from 'drizzle-orm';
 import {
   ensureStripeCustomerForUser,
   getUncachableStripeClient,
+  isStripeResourceMissingError,
   type StripeCustomerStore,
 } from './stripeClient';
+import { eq, sql, and, inArray, isNull } from 'drizzle-orm';
 
 const PLATFORM_FEE_PERCENT = 15; // 15% platform fee
 const CREATOR_SHARE_PERCENT = 85; // 85% to creators
@@ -504,6 +505,90 @@ export class StripeService {
       .where(inArray(creatorEarnings.id, earningIds));
 
     return payout;
+  }
+
+  /**
+   * Create a replacement customer after Stripe confirms that the stored
+   * customer no longer exists. The compare-and-set prevents two concurrent
+   * requests from overwriting each other's repaired ID.
+   */
+  async repairCustomer(userId: string, email: string, staleCustomerId?: string): Promise<string> {
+    const customer = await this.createCustomer(email, userId);
+    const expectedCustomer = staleCustomerId
+      ? eq(users.stripeCustomerId, staleCustomerId)
+      : isNull(users.stripeCustomerId);
+
+    const [updated] = await db.update(users)
+      .set({
+        stripeCustomerId: customer.id,
+        stripeSubscriptionId: null,
+        subscriptionStatus: null,
+      })
+      .where(and(eq(users.id, userId), expectedCustomer))
+      .returning({ stripeCustomerId: users.stripeCustomerId });
+    if (updated?.stripeCustomerId) return updated.stripeCustomerId;
+
+    // Another request may have repaired the row while Stripe was creating
+    // this customer. Reuse its winner instead of creating a second checkout
+    // customer; the extra Stripe record is never linked to the account.
+    const [current] = await db.select({ stripeCustomerId: users.stripeCustomerId })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+    return current?.stripeCustomerId || customer.id;
+  }
+
+  async ensureCustomer(userId: string, email: string, customerId?: string): Promise<string> {
+    return customerId || this.repairCustomer(userId, email);
+  }
+
+  async withCustomerRecovery<T>(
+    userId: string,
+    email: string,
+    customerId: string | undefined,
+    operation: (customerId: string) => Promise<T>,
+  ): Promise<T> {
+    let effectiveCustomerId = await this.ensureCustomer(userId, email, customerId);
+    try {
+      return await operation(effectiveCustomerId);
+    } catch (error) {
+      if (!isStripeResourceMissingError(error)) throw error;
+      effectiveCustomerId = await this.repairCustomer(userId, email, effectiveCustomerId);
+      return await operation(effectiveCustomerId);
+    }
+  }
+
+  async createCheckoutSessionWithCustomerRecovery(
+    userId: string,
+    email: string,
+    customerId: string | undefined,
+    priceId: string,
+    successUrl: string,
+    cancelUrl: string,
+    mode: 'subscription' | 'payment' = 'payment',
+    options: { trialDays?: number; allowPromotionCodes?: boolean; promotionCode?: string } = {},
+  ) {
+    return this.withCustomerRecovery(userId, email, customerId, (effectiveCustomerId) =>
+      this.createCheckoutSession(
+        effectiveCustomerId,
+        priceId,
+        successUrl,
+        cancelUrl,
+        mode,
+        options,
+      )
+    );
+  }
+
+  async createCustomerPortalSessionWithCustomerRecovery(
+    userId: string,
+    email: string,
+    customerId: string | undefined,
+    returnUrl: string,
+  ) {
+    return this.withCustomerRecovery(userId, email, customerId, (effectiveCustomerId) =>
+      this.createCustomerPortalSession(effectiveCustomerId, returnUrl)
+    );
   }
 }
 

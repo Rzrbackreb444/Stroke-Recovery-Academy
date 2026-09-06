@@ -2730,15 +2730,10 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
         return res.status(400).json({ message: "Price ID is required" });
       }
 
-      const customer = await stripeService.getOrCreateCustomer(
-        user.stripeCustomerId,
-        user.email || '',
+      const session = await stripeService.createCheckoutSessionWithCustomerRecovery(
         user.id,
-      );
-      const customerId = customer.id;
-
-      const session = await stripeService.createCheckoutSession(
-        customerId,
+        user.email || '',
+        user.stripeCustomerId || undefined,
         priceId,
         `${req.protocol}://${req.get('host')}/checkout/success`,
         `${req.protocol}://${req.get('host')}/checkout/cancel`,
@@ -2775,15 +2770,14 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
+      if (!user.stripeCustomerId) {
+        return res.status(400).json({ message: "No Stripe customer found" });
+      }
 
-      const customer = await stripeService.getOrCreateCustomer(
-        user.stripeCustomerId,
-        user.email || '',
+      const session = await stripeService.createCustomerPortalSessionWithCustomerRecovery(
         user.id,
-      );
-
-      const session = await stripeService.createCustomerPortalSession(
-        customer.id,
+        user.email || '',
+        user.stripeCustomerId,
         `${req.protocol}://${req.get('host')}/dashboard`
       );
 
@@ -13125,21 +13119,19 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
         return res.status(404).json({ message: 'User not found' });
       }
 
-      const customer = await recoveryStripeService.getOrCreateCustomer(
-        user.stripeCustomerId,
-        user.email || '',
+      const session = await recoveryStripeService.createCheckoutWithCustomerRecovery(
         userId,
-      );
-      const stripeCustomerId = customer.id;
-
-      const session = await recoveryStripeService.createTipCheckout(
-        stripeCustomerId,
-        String(creatorId),
-        amount,
-        storyId,
-        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/dashboard?tip=success`,
-        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/dashboard`,
-        userId
+        user?.email || '',
+        user?.stripeCustomerId || undefined,
+        (customerId) => recoveryStripeService.createTipCheckout(
+          customerId,
+          String(creatorId),
+          amount,
+          storyId,
+          `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/dashboard?tip=success`,
+          `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/dashboard`,
+          userId
+        )
       );
       
       res.json({ url: session.url });
@@ -13162,19 +13154,19 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
-      const customer = await recoveryStripeService.getOrCreateCustomer(
-        user.stripeCustomerId,
-        user.email || '',
-        userId,
-      );
       const baseUrl = process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : '';
       
-      const session = await recoveryStripeService.createSubscriptionCheckout(
-        customer.id,
-        tier,
-        `${baseUrl}/recovery/dashboard?subscription=success`,
-        `${baseUrl}/recovery/pricing`,
-        withTrial !== false
+      const session = await recoveryStripeService.createCheckoutWithCustomerRecovery(
+        userId,
+        user?.email || '',
+        user?.stripeCustomerId || undefined,
+        (customerId) => recoveryStripeService.createSubscriptionCheckout(
+          customerId,
+          tier,
+          `${baseUrl}/recovery/dashboard?subscription=success`,
+          `${baseUrl}/recovery/pricing`,
+          withTrial !== false
+        )
       );
       
       res.json({ url: session.url });
@@ -13193,17 +13185,16 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
-      const customer = await recoveryStripeService.getOrCreateCustomer(
-        user.stripeCustomerId,
-        user.email || '',
+      const session = await recoveryStripeService.createCheckoutWithCustomerRecovery(
         userId,
-      );
-      
-      const session = await recoveryStripeService.createCoachingCheckout(
-        customer.id,
-        coachingType,
-        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/coaching?booking=success`,
-        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/coaching`
+        user?.email || '',
+        user?.stripeCustomerId || undefined,
+        (customerId) => recoveryStripeService.createCoachingCheckout(
+          customerId,
+          coachingType,
+          `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/coaching?booking=success`,
+          `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/coaching`
+        )
       );
       
       res.json({ url: session.url });
@@ -13317,6 +13308,7 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
   // Coaching package checkout
   app.post('/api/recovery/payments/coaching-package', isAuthenticated, async (req: any, res) => {
     try {
+      const { recoveryStripeService } = await import('./recoveryStripeService');
       const { getRecoveryStripeClient, isRecoveryStripeConfigured } = await import('./recoveryStripeClient');
       const { packageId } = req.body;
       
@@ -13389,17 +13381,15 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
         },
       };
       
-      if (user) {
-        const { recoveryStripeService } = await import('./recoveryStripeService');
-        const customer = await recoveryStripeService.getOrCreateCustomer(
-          user.stripeCustomerId,
-          user.email || '',
-          userId,
-        );
-        sessionParams.customer = customer.id;
-      }
-      
-      const session = await stripe.checkout.sessions.create(sessionParams);
+      const session = await recoveryStripeService.createCheckoutWithCustomerRecovery(
+        userId,
+        user?.email || '',
+        user?.stripeCustomerId || undefined,
+        (customerId) => {
+          sessionParams.customer = customerId;
+          return stripe.checkout.sessions.create(sessionParams);
+        }
+      );
       res.json({ url: session.url });
     } catch (error: any) {
       console.error('Coaching package error:', error);
@@ -14257,12 +14247,6 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
         { requireUploadIntent: true },
       );
 
-      const customer = await stripeService.getOrCreateCustomer(
-        user.stripeCustomerId,
-        user.email || '',
-        user.id,
-      );
-      const customerId = customer.id;
       const customerEmail = user.email || '';
 
       const orderNumber = `REF-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
@@ -14290,12 +14274,17 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       });
 
       const { createCheckoutSession } = await import('./marketplaceService');
-      const session = await createCheckoutSession(
-        edition.id,
-        customerId,
+      const session = await stripeService.withCustomerRecovery(
+        user.id,
         customerEmail,
-        `${req.protocol}://${req.get('host')}/recovery/journal?purchase=success`,
-        `${req.protocol}://${req.get('host')}/recovery/journal?purchase=cancel`,
+        user.stripeCustomerId || undefined,
+        (customerId) => createCheckoutSession(
+          edition.id,
+          customerId,
+          customerEmail,
+          `${req.protocol}://${req.get('host')}/recovery/journal?purchase=success`,
+          `${req.protocol}://${req.get('host')}/recovery/journal?purchase=cancel`,
+        )
       );
 
       await db.update(bookOrders)
@@ -21826,7 +21815,6 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         return res.status(404).json({ message: "User not found" });
       }
 
-      const customerId = user.stripeCustomerId || null;
       const customerEmail = user.email || '';
 
       // Resolve edition + listing so we can create a pending order
@@ -21866,12 +21854,17 @@ Provide a JSON response with track suggestions for each chapter/section.`;
       });
 
       const { createCheckoutSession } = await import('./marketplaceService');
-      const session = await createCheckoutSession(
-        editionId,
-        customerId,
+      const session = await stripeService.withCustomerRecovery(
+        user.id,
         customerEmail,
-        `${req.protocol}://${req.get('host')}/marketplace/purchase-success?edition=${editionId}`,
-        `${req.protocol}://${req.get('host')}/book/buy`
+        user.stripeCustomerId || undefined,
+        (customerId) => createCheckoutSession(
+          editionId,
+          customerId,
+          customerEmail,
+          `${req.protocol}://${req.get('host')}/marketplace/purchase-success?edition=${editionId}`,
+          `${req.protocol}://${req.get('host')}/book/buy`
+        )
       );
 
       // Tie the session to the pending order so the webhook can match it
@@ -21901,17 +21894,12 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         return res.status(404).json({ message: "User not found" });
       }
 
-      const customer = await stripeService.getOrCreateCustomer(
-        user.stripeCustomerId,
-        user.email || '',
-        user.id,
-      );
-      const customerId = customer.id;
-
       const creditPrice = amount * 100;
 
-      const session = await stripeService.createCheckoutSession(
-        customerId,
+      const session = await stripeService.createCheckoutSessionWithCustomerRecovery(
+        user.id,
+        user.email || '',
+        user.stripeCustomerId || undefined,
         creditPrice.toString(),
         `${req.protocol}://${req.get('host')}/credits/success?amount=${amount}`,
         `${req.protocol}://${req.get('host')}/pricing`,
