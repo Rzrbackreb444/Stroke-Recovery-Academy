@@ -44,3 +44,4 @@
 - [Neon route-test teardown](neon-route-test-teardown.md) — route integration tests may need to unref idle Neon sockets after pool shutdown
 - [Search Console comparison windows](search-console-comparison-windows.md) — post-recrawl claims require observed dates entirely after the baseline and recrawl boundary
 - [Recovery plan safety boundary](recovery-plan-safety-boundary.md) — AI may select approved catalog slugs only; server owns safety notes, dosage, nutrition, and clinician-review framing
+- [Stripe MCP vs app connector](stripe-mcp-vs-app-connector.md) — Active Stripe MCP does not provision runtime checkout credentials; app code needs its connector or configured secret fallback.
