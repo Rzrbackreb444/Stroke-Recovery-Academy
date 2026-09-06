@@ -10,6 +10,7 @@
     "test:blog-ssr": "tsx --test tests/blog-routes.test.ts",
     "test:recovery-journal-browser": "tsx --test tests/recovery-journal-photo-browser.test.ts",
     "test:recovery-durability": "RECOVERY_DURABILITY_DB=1 tsx --test tests/recoveryDurability.test.ts",
+    "test:stripe-customer-db": "STRIPE_CUSTOMER_DB=1 tsx --test tests/stripeStartupReconciliation.test.ts",
     "test:survivor-profile": "RECOVERY_DURABILITY_DB=1 SURVIVOR_PROFILE_DB=1 tsx --test tests/survivor-profile.integration.test.ts",
     "test:recovery-plan-migration": "RECOVERY_PLAN_MIGRATION_DB=1 tsx --test tests/recoveryPlanMigration.test.ts",
     "test:migrations": "MIGRATIONS_DB=1 tsx --test tests/migrationRunner.test.ts",
