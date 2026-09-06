@@ -45,3 +45,4 @@
 - [Search Console comparison windows](search-console-comparison-windows.md) — post-recrawl claims require observed dates entirely after the baseline and recrawl boundary
 - [Recovery plan safety boundary](recovery-plan-safety-boundary.md) — AI may select approved catalog slugs only; server owns safety notes, dosage, nutrition, and clinician-review framing
 - [Stripe MCP vs app connector](stripe-mcp-vs-app-connector.md) — Active Stripe MCP does not provision runtime checkout credentials; app code needs its connector or configured secret fallback.
+- [Canonical profile migration registry](canonical-profile-migration-registry.md) — raw SQL migrations must also be registered in the production journal

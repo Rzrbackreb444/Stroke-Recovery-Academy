@@ -1,15 +1,43 @@
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import assert from "node:assert/strict";
 import { join } from "node:path";
 import test from "node:test";
 import { randomUUID } from "node:crypto";
 import { tmpdir } from "node:os";
 import { createDisposablePostgres } from "./disposablePostgres";
-import { applyMigrationFiles } from "./migrationRunner";
+import { applyMigrationFiles, readMigrationFiles } from "./migrationRunner";
 
 const integrationEnabled = process.env.MIGRATIONS_DB === "1";
 const migrationsDirectory = new URL("../migrations/", import.meta.url);
 const restoreBaseline = "0000_perfect_jackal.sql";
+
+test("the canonical survivor-profile migration is registered for release", async () => {
+  const migrationFiles = await readMigrationFiles(migrationsDirectory);
+  const canonical = migrationFiles.find(
+    (entry) => entry.filename === "0014_canonical_survivor_profile.sql",
+  );
+  assert.ok(canonical, "0014_canonical_survivor_profile.sql is missing");
+  for (const column of [
+    "goal_details",
+    "assessment_scores",
+    "assessment_notes",
+    "profile_provenance",
+  ]) {
+    assert.match(
+      canonical.statements[0]?.sql ?? "",
+      new RegExp(`ADD COLUMN IF NOT EXISTS "${column}"`),
+      `0014 must add user_profiles.${column}`,
+    );
+  }
+
+  const journal = JSON.parse(
+    await readFile(new URL("../migrations/meta/_journal.json", import.meta.url), "utf8"),
+  ) as { entries?: Array<{ tag?: string }> };
+  assert.ok(
+    journal.entries?.some((entry) => entry.tag === "0014_canonical_survivor_profile"),
+    "0014_canonical_survivor_profile must be in the production migration journal",
+  );
+});
 
 test(
   "all production migrations apply in order on a clean disposable PostgreSQL database",

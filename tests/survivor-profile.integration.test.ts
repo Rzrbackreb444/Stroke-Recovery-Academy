@@ -103,6 +103,19 @@ test(
           import("../shared/schema"),
         ]);
       await applyMigrationFiles(database.pool, migrationsDirectory);
+      const canonicalColumns = await database.pool.query<{ column_name: string }>(`
+        SELECT column_name
+          FROM information_schema.columns
+         WHERE table_schema = 'public'
+           AND table_name = 'user_profiles'
+           AND column_name IN ('goal_details', 'assessment_scores', 'assessment_notes', 'profile_provenance')
+         ORDER BY column_name
+      `);
+      assert.deepEqual(
+        canonicalColumns.rows.map((row) => row.column_name),
+        ["assessment_notes", "assessment_scores", "goal_details", "profile_provenance"],
+        "release verification failed: 0014_canonical_survivor_profile.sql must be applied before the authenticated profile smoke check",
+      );
 
       await db.insert(users).values({
         id: survivorId,

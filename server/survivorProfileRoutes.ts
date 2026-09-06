@@ -11,6 +11,51 @@ import {
 } from "./survivorProfileService";
 
 const router = Router();
+const CANONICAL_PROFILE_MIGRATION = "0014_canonical_survivor_profile.sql";
+
+function isMissingCanonicalProfileMigration(error: unknown): boolean {
+  const candidate = error as {
+    code?: string;
+    message?: string;
+    cause?: { code?: string; message?: string };
+  } | null;
+  const code = candidate?.code ?? candidate?.cause?.code;
+  const message = candidate?.message ?? candidate?.cause?.message ?? "";
+  return code === "42703"
+    && /user_profiles/i.test(message)
+    && /goal_details|assessment_scores|assessment_notes|profile_provenance/i.test(message);
+}
+
+function sendProfileRouteError(
+  res: Response,
+  error: unknown,
+  operation: "load" | "save" | "complete" | "reset",
+): void {
+  if (isMissingCanonicalProfileMigration(error)) {
+    console.error(
+      `[survivor/profile ${operation}] ${CANONICAL_PROFILE_MIGRATION} is missing from the database`,
+      error,
+    );
+    res.status(503).json({
+      error: "canonical_survivor_profile_migration_required",
+      migration: CANONICAL_PROFILE_MIGRATION,
+      message: `Release verification failed: apply ${CANONICAL_PROFILE_MIGRATION} before serving survivor recovery routes.`,
+    });
+    return;
+  }
+
+  console.error(`[survivor/profile ${operation}]`, error);
+  const fallbackMessage = operation === "load"
+    ? "Failed to load profile"
+    : operation === "save"
+      ? "Failed to save profile"
+      : operation === "complete"
+        ? "Failed to complete intake"
+        : "Failed to reset intake";
+  res.status(500).json({
+    error: fallbackMessage,
+  });
+}
 
 const deficitsSchema = z.object({
   motor: z.number().int().min(0).max(4).optional(),
@@ -107,8 +152,7 @@ router.get("/profile", isAuthenticated, async (req: any, res: Response) => {
       },
     });
   } catch (err: any) {
-    console.error("[survivor/profile GET]", err);
-    res.status(500).json({ error: "Failed to load profile" });
+    sendProfileRouteError(res, err, "load");
   }
 });
 
@@ -150,8 +194,7 @@ router.patch("/profile", isAuthenticated, perUserWriteLimit, async (req: any, re
     if (err instanceof z.ZodError) {
       return res.status(400).json({ error: "Invalid input", details: err.errors });
     }
-    console.error("[survivor/profile PATCH]", err);
-    res.status(500).json({ error: "Failed to save profile" });
+    sendProfileRouteError(res, err, "save");
   }
 });
 
@@ -170,8 +213,7 @@ router.post("/profile/complete", isAuthenticated, perUserWriteLimit, async (req:
 
     res.json({ profile: { ...row, intakeComplete: true } });
   } catch (err: any) {
-    console.error("[survivor/profile/complete]", err);
-    res.status(500).json({ error: "Failed to complete intake" });
+    sendProfileRouteError(res, err, "complete");
   }
 });
 
@@ -192,8 +234,7 @@ router.post("/profile/reset-intake", isAuthenticated, perUserWriteLimit, async (
 
     res.json({ profile: { ...row, intakeComplete: false } });
   } catch (err: any) {
-    console.error("[survivor/profile/reset-intake]", err);
-    res.status(500).json({ error: "Failed to reset intake" });
+    sendProfileRouteError(res, err, "reset");
   }
 });
 
