@@ -56,7 +56,11 @@ import survivorProfileRoutes from "./survivorProfileRoutes";
 import accountRoutes from "./routes/accountRoutes";
 import { detectCrisis, buildCrisisResponse } from "./services/crisisDetection";
 import { stripeService } from "./stripeService";
-import { getStripeSync, getStripePublishableKey } from "./stripeClient";
+import {
+  getStripeSync,
+  getStripePublishableKey,
+  reconcileStripeStartupState,
+} from "./stripeClient";
 import { runMigrations } from "stripe-replit-sync";
 import { generateCoachResponse, getRandomQuote, generateStructuredContent, type ContentType, type GenerationRequest } from "./geminiService";
 import { searchAmazonProducts, getAmazonProduct, isConfigured as isAmazonConfigured } from "./amazonService";
@@ -264,8 +268,17 @@ async function initStripe() {
 
     const stripeSync = await getStripeSync();
 
-    console.log('Setting up managed webhook...');
     const webhookBaseUrl = `https://${process.env.REPLIT_DOMAINS?.split(',')[0]}`;
+    const reconciled = await reconcileStripeStartupState(stripeSync);
+    if (reconciled.removedWebhookRecords > 0 || reconciled.markedDeletedCustomers > 0) {
+      console.log(
+        `[startup] Reconciled stale Stripe state: ` +
+        `${reconciled.removedWebhookRecords} webhook record(s) removed, ` +
+        `${reconciled.markedDeletedCustomers} customer record(s) marked deleted`,
+      );
+    }
+
+    console.log('Setting up managed webhook...');
     const { webhook, uuid } = await stripeSync.findOrCreateManagedWebhook(
       `${webhookBaseUrl}/api/stripe/webhook`,
       {
@@ -276,7 +289,7 @@ async function initStripe() {
     console.log(`Webhook configured: ${webhook.url} (UUID: ${uuid})`);
 
     console.log('Syncing Stripe data...');
-    stripeSync.syncBackfill()
+    stripeSync.syncBackfill({ backfillRelatedEntities: false })
       .then(() => console.log('Stripe data synced'))
       .catch((err: any) => console.error('Error syncing Stripe data:', err));
   } catch (error) {

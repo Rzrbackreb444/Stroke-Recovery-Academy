@@ -2,6 +2,126 @@ import Stripe from 'stripe';
 
 let connectionSettings: any;
 
+type StripeStartupSync = {
+  stripe: {
+    webhookEndpoints: {
+      retrieve(id: string): Promise<unknown>;
+    };
+    customers: {
+      retrieve(id: string): Promise<{ id: string; object?: string; deleted?: boolean }>;
+    };
+  };
+  listManagedWebhooks(): Promise<Array<{ id: string }>>;
+  getAccountId(): Promise<string>;
+  upsertCustomers(
+    customers: Array<{ id: string; object: string; deleted: boolean }>,
+    accountId: string,
+  ): Promise<unknown>;
+  postgresClient: {
+    delete(table: string, id: string): Promise<boolean>;
+    query(text: string, params?: unknown[]): Promise<{ rows: Array<{ id: string }> }>;
+  };
+};
+
+/**
+ * Stripe uses resource_missing for deleted objects. The status-code check
+ * covers older stripe-node errors that omit the more specific error code.
+ * Do not classify authentication, permission, or network errors as stale data.
+ */
+export function isStripeResourceMissingError(error: unknown): boolean {
+  const stripeError = error as {
+    code?: string;
+    statusCode?: number;
+    status?: number;
+  } | null;
+
+  return (
+    stripeError?.code === 'resource_missing' ||
+    stripeError?.statusCode === 404 ||
+    stripeError?.status === 404
+  );
+}
+
+function stripeErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+/**
+ * Clean up local records that the Stripe sync package otherwise keeps
+ * retrying on every startup.
+ *
+ * This deliberately runs before syncBackfill:
+ * - findOrCreateManagedWebhook logs a warning for every deleted endpoint it
+ *   finds in the local table before creating a replacement.
+ * - syncPaymentMethods reads local non-deleted customers, so a deleted Stripe
+ *   customer can abort the rest of the backfill.
+ *
+ * Only confirmed 404/resource_missing responses are repaired. Any other
+ * Stripe error is thrown so a bad key, permission failure, or outage remains
+ * visible in startup health signals.
+ */
+export async function reconcileStripeStartupState(
+  stripeSync: StripeStartupSync,
+): Promise<{ removedWebhookRecords: number; markedDeletedCustomers: number }> {
+  let removedWebhookRecords = 0;
+  for (const managedWebhook of await stripeSync.listManagedWebhooks()) {
+    try {
+      await stripeSync.stripe.webhookEndpoints.retrieve(managedWebhook.id);
+    } catch (error) {
+      if (!isStripeResourceMissingError(error)) {
+        throw new Error(
+          `Stripe webhook reconciliation failed for ${managedWebhook.id}: ${stripeErrorMessage(error)}`,
+          { cause: error },
+        );
+      }
+
+      await stripeSync.postgresClient.delete('_managed_webhooks', managedWebhook.id);
+      removedWebhookRecords++;
+    }
+  }
+
+  const customerResult = await stripeSync.postgresClient.query(`
+    SELECT id
+    FROM "stripe"."customers"
+    WHERE COALESCE(deleted, false) = false
+  `);
+  if (customerResult.rows.length === 0) {
+    return { removedWebhookRecords, markedDeletedCustomers: 0 };
+  }
+
+  const accountId = await stripeSync.getAccountId();
+  let markedDeletedCustomers = 0;
+  for (const customer of customerResult.rows) {
+    try {
+      const stripeCustomer = await stripeSync.stripe.customers.retrieve(customer.id);
+      if (!stripeCustomer.deleted) continue;
+
+      await stripeSync.upsertCustomers(
+        [{ id: customer.id, object: 'customer', deleted: true }],
+        accountId,
+      );
+      markedDeletedCustomers++;
+    } catch (error) {
+      if (!isStripeResourceMissingError(error)) {
+        throw new Error(
+          `Stripe customer reconciliation failed for ${customer.id}: ${stripeErrorMessage(error)}`,
+          { cause: error },
+        );
+      }
+
+      // Keep the row for historical references, but exclude it from the
+      // payment-method scan performed by stripe-replit-sync.
+      await stripeSync.upsertCustomers(
+        [{ id: customer.id, object: 'customer', deleted: true }],
+        accountId,
+      );
+      markedDeletedCustomers++;
+    }
+  }
+
+  return { removedWebhookRecords, markedDeletedCustomers };
+}
+
 function getConfiguredSecretCredentials() {
   const publishableKey =
     process.env.STRIPE_PUBLISHABLE_KEY ||
