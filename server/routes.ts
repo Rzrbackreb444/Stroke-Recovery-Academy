@@ -2736,9 +2736,6 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
         user.id,
       );
       const customerId = customer.id;
-      if (customer.created) {
-        await stripeService.updateUserStripeInfo(user.id, { stripeCustomerId: customerId });
-      }
 
       const session = await stripeService.createCheckoutSession(
         customerId,
@@ -2784,11 +2781,6 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
         user.email || '',
         user.id,
       );
-      if (customer.created) {
-        await stripeService.updateUserStripeInfo(user.id, {
-          stripeCustomerId: customer.id,
-        });
-      }
 
       const session = await stripeService.createCustomerPortalSession(
         customer.id,

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   ensureStripeCustomer,
+  ensureStripeCustomerForUser,
   reconcileStripeStartupState,
 } from '../server/stripeClient';
 
@@ -90,6 +91,76 @@ test('keeps real Stripe failures actionable', async () => {
     reconcileStripeStartupState(sync),
     /Stripe webhook reconciliation failed for we_deleted: Invalid API key/,
   );
+});
+
+test('concurrent checkout and billing-portal customer replacement attempts converge', async () => {
+  let storedCustomerId: string | null = null;
+  let createdCount = 0;
+  let lockTail = Promise.resolve();
+
+  const store = {
+    withUserLock: async (
+      _userId: string,
+      operation: (store: {
+        getCustomerId: () => Promise<string | null>;
+        setCustomerId: (customerId: string) => Promise<void>;
+      }) => Promise<{ id: string; created: boolean }>,
+    ) => {
+      const previous = lockTail;
+      let release!: () => void;
+      lockTail = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      await previous;
+
+      try {
+        return await operation({
+          getCustomerId: async () => storedCustomerId,
+          setCustomerId: async (customerId) => {
+            storedCustomerId = customerId;
+          },
+        });
+      } finally {
+        release();
+      }
+    },
+  };
+
+  const stripe = {
+    customers: {
+      retrieve: async (id: string) => {
+        if (id === 'cus_stale') throw missingStripeResourceError();
+        return { id, deleted: false };
+      },
+      create: async () => {
+        createdCount += 1;
+        await new Promise((resolve) => setTimeout(resolve, 5));
+        return { id: 'cus_winner' };
+      },
+    },
+  };
+
+  const [checkoutCustomer, portalCustomer] = await Promise.all([
+    ensureStripeCustomerForUser(
+      stripe,
+      store,
+      'user-overlap',
+      { email: 'survivor@example.com', metadata: { userId: 'user-overlap' } },
+      'cus_stale',
+    ),
+    ensureStripeCustomerForUser(
+      stripe,
+      store,
+      'user-overlap',
+      { email: 'survivor@example.com', metadata: { userId: 'user-overlap' } },
+      'cus_stale',
+    ),
+  ]);
+
+  assert.equal(createdCount, 1);
+  assert.equal(storedCustomerId, 'cus_winner');
+  assert.deepEqual(checkoutCustomer, { id: 'cus_winner', created: true });
+  assert.deepEqual(portalCustomer, { id: 'cus_winner', created: false });
 });
 
 test('repairs a quarantined customer before subscription and recovery purchase checkout', async () => {

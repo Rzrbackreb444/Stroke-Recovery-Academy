@@ -58,6 +58,16 @@ type StripeCustomerApi = {
   };
 };
 
+export type StripeCustomerStore = {
+  withUserLock<T>(
+    userId: string,
+    operation: (store: {
+      getCustomerId: () => Promise<string | null | undefined>;
+      setCustomerId: (customerId: string) => Promise<void>;
+    }) => Promise<T>,
+  ): Promise<T>;
+};
+
 /**
  * Return a usable Stripe customer ID for checkout.
  *
@@ -87,6 +97,34 @@ export async function ensureStripeCustomer(
 
   const customer = await stripe.customers.create(createParams);
   return { id: customer.id, created: true };
+}
+
+/**
+ * Ensure a user's Stripe customer and local pointer are created as one
+ * serialized operation. The store owns the database lock and transaction so
+ * this helper can be tested without connecting to Postgres.
+ */
+export async function ensureStripeCustomerForUser(
+  stripe: StripeCustomerApi,
+  store: StripeCustomerStore,
+  userId: string,
+  createParams: { email?: string; metadata?: Record<string, string> },
+  fallbackCustomerId?: string | null,
+): Promise<{ id: string; created: boolean }> {
+  return store.withUserLock(userId, async ({ getCustomerId, setCustomerId }) => {
+    const storedCustomerId = await getCustomerId();
+    const customer = await ensureStripeCustomer(
+      stripe,
+      storedCustomerId ?? fallbackCustomerId,
+      createParams,
+    );
+
+    if (customer.created) {
+      await setCustomerId(customer.id);
+    }
+
+    return customer;
+  });
 }
 
 /**

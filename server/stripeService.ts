@@ -1,7 +1,11 @@
 import { db } from './db';
 import { users, creatorEarnings, creatorPayouts } from '@shared/schema';
 import { eq, sql, and, inArray } from 'drizzle-orm';
-import { ensureStripeCustomer, getUncachableStripeClient } from './stripeClient';
+import {
+  ensureStripeCustomerForUser,
+  getUncachableStripeClient,
+  type StripeCustomerStore,
+} from './stripeClient';
 
 const PLATFORM_FEE_PERCENT = 15; // 15% platform fee
 const CREATOR_SHARE_PERCENT = 85; // 85% to creators
@@ -21,10 +25,40 @@ export class StripeService {
     userId: string,
   ) {
     const stripe = await getUncachableStripeClient();
-    return ensureStripeCustomer(stripe, customerId, {
+    const store: StripeCustomerStore = {
+      withUserLock: (lockedUserId, operation) =>
+        db.transaction(async (tx) => {
+          // Transaction-scoped advisory locks use the same database
+          // connection as the read and write below. This serializes checkout,
+          // portal, and any other billing request for one user across server
+          // processes without holding a session lock after the transaction.
+          await tx.execute(sql`SELECT pg_advisory_xact_lock(
+            hashtextextended(${`stripe-customer:${lockedUserId}`}, 0)
+          )`);
+
+          return operation({
+            getCustomerId: async () => {
+              const [user] = await tx
+                .select({ stripeCustomerId: users.stripeCustomerId })
+                .from(users)
+                .where(eq(users.id, lockedUserId))
+                .limit(1);
+              return user?.stripeCustomerId;
+            },
+            setCustomerId: async (stripeCustomerId) => {
+              await tx
+                .update(users)
+                .set({ stripeCustomerId })
+                .where(eq(users.id, lockedUserId));
+            },
+          });
+        }),
+    };
+
+    return ensureStripeCustomerForUser(stripe, store, userId, {
       email: email || undefined,
       metadata: { userId },
-    });
+    }, customerId);
   }
 
   async createCheckoutSession(
