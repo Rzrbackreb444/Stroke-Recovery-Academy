@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
+import { spawn } from 'node:child_process';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import {
   createStripeCustomerStore,
@@ -10,6 +12,75 @@ import {
 } from '../server/stripeClient';
 import { StripeService } from '../server/stripeService';
 import { createDisposablePostgres } from './disposablePostgres';
+
+type StripeCustomerWorkerResult = {
+  id: string;
+  created: boolean;
+};
+
+function runStripeCustomerWorker(
+  databaseUrl: string,
+  userId: string,
+): Promise<StripeCustomerWorkerResult> {
+  const workerPath = fileURLToPath(new URL('./stripeCustomerWorker.ts', import.meta.url));
+  return new Promise((resolve, reject) => {
+    const worker = spawn(process.execPath, ['--import', 'tsx/esm', workerPath], {
+      cwd: process.cwd(),
+      env: {
+        ...process.env,
+        DATABASE_URL: databaseUrl,
+        RECOVERY_DURABILITY_DB: '1',
+        STRIPE_CUSTOMER_WORKER_USER_ID: userId,
+      },
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    let stdout = '';
+    let stderr = '';
+    worker.stdout.on('data', (chunk) => { stdout += String(chunk); });
+    worker.stderr.on('data', (chunk) => { stderr += String(chunk); });
+    worker.once('error', (error) => {
+      reject(new Error(
+        `Stripe customer worker could not start for ${userId}: ${error.message}`,
+        { cause: error },
+      ));
+    });
+    worker.once('exit', (code, signal) => {
+      const output = [stdout.trim(), stderr.trim()].filter(Boolean).join('\n');
+      if (code !== 0) {
+        reject(new Error(
+          `Stripe customer worker for ${userId} exited with ${
+            signal ? `signal ${signal}` : `code ${code}`
+          }.\n${output || 'The worker produced no diagnostic output.'}`,
+        ));
+        return;
+      }
+
+      const resultLine = stdout
+        .split('\n')
+        .map((line) => line.trim())
+        .find((line) => line.startsWith('STRIPE_CUSTOMER_WORKER_RESULT '));
+      if (!resultLine) {
+        reject(new Error(
+          `Stripe customer worker for ${userId} exited successfully without a result.\n${
+            output || 'The worker produced no output.'
+          }`,
+        ));
+        return;
+      }
+
+      try {
+        resolve(JSON.parse(
+          resultLine.slice('STRIPE_CUSTOMER_WORKER_RESULT '.length),
+        ) as StripeCustomerWorkerResult);
+      } catch (error) {
+        reject(new Error(
+          `Stripe customer worker for ${userId} returned invalid output: ${resultLine}`,
+          { cause: error },
+        ));
+      }
+    });
+  });
+}
 
 function missingStripeResourceError() {
   return Object.assign(new Error('No such resource'), {
@@ -354,6 +425,55 @@ if (process.env.STRIPE_CUSTOMER_DB === '1') {
         persistedAfterRollback.rows,
         [{ stripe_customer_id: 'cus_after_rollback' }],
       );
+    } finally {
+      await disposableDatabase.stop();
+    }
+  });
+
+  test('serializes customer repairs across independent application processes', { timeout: 120_000 }, async () => {
+    const disposableDatabase = await createDisposablePostgres();
+    const userId = `stripe-customer-db-${process.pid}-cross-process`;
+
+    try {
+      await disposableDatabase.pool.query(`
+        CREATE TABLE users (
+          id varchar PRIMARY KEY,
+          stripe_customer_id text
+        )
+      `);
+      await disposableDatabase.pool.query(
+        'INSERT INTO users (id, stripe_customer_id) VALUES ($1, NULL)',
+        [userId],
+      );
+
+      const workerResults = await Promise.all([
+        runStripeCustomerWorker(disposableDatabase.url, userId),
+        runStripeCustomerWorker(disposableDatabase.url, userId),
+      ]);
+
+      assert.equal(
+        workerResults.filter(({ created }) => created).length,
+        1,
+        'exactly one process must create the Stripe customer',
+      );
+      assert.notEqual(
+        workerResults[0].created,
+        workerResults[1].created,
+        'exactly one process must observe the persisted customer',
+      );
+      assert.equal(
+        workerResults[0].id,
+        workerResults[1].id,
+        'both processes must converge on the same Stripe customer',
+      );
+
+      const persistedWinner = await disposableDatabase.pool.query(
+        'SELECT stripe_customer_id FROM users WHERE id = $1',
+        [userId],
+      );
+      assert.deepEqual(persistedWinner.rows, [{
+        stripe_customer_id: workerResults[0].id,
+      }]);
     } finally {
       await disposableDatabase.stop();
     }
