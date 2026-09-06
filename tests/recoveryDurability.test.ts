@@ -13,6 +13,11 @@ import test from "node:test";
 import { Pool } from "pg";
 import express from "express";
 import { type Server } from "node:http";
+import {
+  cleanupDisposableAccounts,
+  loginWithSession,
+  requestJson as jsonRequest,
+} from "./authenticatedTestHelpers";
 import { createDisposablePostgres } from "./disposablePostgres";
 
 const routes = await readFile(new URL("../server/routes.ts", import.meta.url), "utf8");
@@ -330,48 +335,6 @@ async function countRows(pool: Pool, table: string, userId: string): Promise<num
   return Number(result.rows[0].count);
 }
 
-function getCookie(response: Response): string {
-  const setCookie =
-    typeof (response.headers as Headers & { getSetCookie?: () => string[] }).getSetCookie === "function"
-      ? (response.headers as Headers & { getSetCookie: () => string[] }).getSetCookie()[0]
-      : response.headers.get("set-cookie");
-  assert.ok(setCookie, "login response did not set a session cookie");
-  return setCookie.split(";", 1)[0];
-}
-
-async function jsonRequest(
-  baseUrl: string,
-  path: string,
-  init: RequestInit = {},
-  cookie?: string,
-): Promise<{ response: Response; body: any }> {
-  const headers = new Headers(init.headers);
-  headers.set("Content-Type", "application/json");
-  headers.set("X-Forwarded-Proto", "https");
-  headers.set("Connection", "close");
-  if (cookie) headers.set("Cookie", cookie);
-  const response = await fetch(`${baseUrl}${path}`, { ...init, headers });
-  const text = await response.text();
-  let body: any = null;
-  if (text) {
-    try {
-      body = JSON.parse(text);
-    } catch {
-      body = text;
-    }
-  }
-  return { response, body };
-}
-
-async function login(baseUrl: string, email: string, password: string): Promise<string> {
-  const { response, body } = await jsonRequest(baseUrl, "/api/auth/login", {
-    method: "POST",
-    body: JSON.stringify({ email, password }),
-  });
-  assert.equal(response.status, 200, `login failed: ${JSON.stringify(body)}`);
-  return getCookie(response);
-}
-
 async function cleanRecoveryData(pool: Pool): Promise<void> {
   for (const [table, trigger, fn] of [
     ["credit_ledger", "fail_reward_trigger", "fail_reward_write"],
@@ -410,6 +373,10 @@ if (integrationEnabled) {
     const originalSetInterval = globalThis.setInterval;
     const originalSetTimeout = globalThis.setTimeout;
     let appServer: Server | undefined;
+    let baseUrl = "";
+    let ownerCookie = "";
+    let otherCookie = "";
+    let usersInserted = false;
 
     try {
       await createRecoverySchema(testDatabase.pool);
@@ -436,6 +403,7 @@ if (integrationEnabled) {
           hashPassword(password),
         ],
       );
+      usersInserted = true;
 
       const issuer = "https://recovery-durability-test.invalid";
       process.env.ISSUER_URL = issuer;
@@ -489,9 +457,9 @@ if (integrationEnabled) {
         server.once("error", reject);
         server.listen(0, "127.0.0.1", () => resolve(server.address() as import("node:net").AddressInfo));
       });
-      const baseUrl = `http://127.0.0.1:${address.port}`;
-      const ownerCookie = await login(baseUrl, `${userId}@example.test`, password);
-      const otherCookie = await login(baseUrl, `${otherUserId}@example.test`, password);
+      baseUrl = `http://127.0.0.1:${address.port}`;
+      ownerCookie = await loginWithSession(baseUrl, `${userId}@example.test`, password);
+      otherCookie = await loginWithSession(baseUrl, `${otherUserId}@example.test`, password);
 
       await t.test("Author Brain routes enforce ownership and stable validation boundaries", async () => {
         // Create both records through separate authenticated sessions. This
@@ -921,6 +889,12 @@ if (integrationEnabled) {
         assert.equal(habit.rows[0].total_completions, 0);
       });
     } finally {
+      const cleanupFailures = usersInserted
+        ? await cleanupDisposableAccounts(baseUrl, [
+            { label: "owner", email: `${recoveryUserPrefix}owner@example.test`, cookie: ownerCookie },
+            { label: "other", email: `${recoveryUserPrefix}other@example.test`, cookie: otherCookie },
+          ])
+        : [];
       if (appServer) {
         (appServer as Server & { closeAllConnections?: () => void }).closeAllConnections?.();
         await new Promise<void>((resolve) => appServer!.close(() => resolve()));
@@ -931,6 +905,9 @@ if (integrationEnabled) {
       await importedDb?.pool?.end?.().catch(() => undefined);
       await cleanRecoveryData(testDatabase.pool).catch(() => undefined);
       await testDatabase.stop();
+      if (cleanupFailures.length > 0) {
+        throw new Error(`disposable account cleanup failed for ${cleanupFailures.join(" and ")}`);
+      }
       if (originalDatabaseUrl === undefined) delete process.env.DATABASE_URL;
       else process.env.DATABASE_URL = originalDatabaseUrl;
       if (originalDriverFlag === undefined) delete process.env.RECOVERY_DURABILITY_DB;

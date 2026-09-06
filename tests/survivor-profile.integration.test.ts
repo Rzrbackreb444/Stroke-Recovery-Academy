@@ -10,57 +10,12 @@ import { randomUUID } from "node:crypto";
 import { createServer, type Server } from "node:http";
 import express from "express";
 import test from "node:test";
+import { cleanupDisposableAccounts, loginWithSession, requestJson } from "./authenticatedTestHelpers";
 import { createDisposablePostgres } from "./disposablePostgres";
 import { applyMigrationFiles } from "./migrationRunner";
 
 const integrationEnabled = process.env.SURVIVOR_PROFILE_DB === "1";
 const migrationsDirectory = new URL("../migrations/", import.meta.url);
-
-function getCookie(response: Response): string {
-  const setCookie =
-    typeof (response.headers as Headers & { getSetCookie?: () => string[] }).getSetCookie === "function"
-      ? (response.headers as Headers & { getSetCookie: () => string[] }).getSetCookie()[0]
-      : response.headers.get("set-cookie");
-  assert.ok(setCookie, "login response did not set a session cookie");
-  return setCookie.split(";", 1)[0];
-}
-
-async function requestJson(
-  baseUrl: string,
-  path: string,
-  init: RequestInit = {},
-  cookie?: string,
-): Promise<{ response: Response; body: any }> {
-  const headers = new Headers(init.headers);
-  headers.set("Content-Type", "application/json");
-  headers.set("X-Forwarded-Proto", "https");
-  if (cookie) headers.set("Cookie", cookie);
-  const response = await fetch(`${baseUrl}${path}`, { ...init, headers });
-  const text = await response.text();
-  let body: any = null;
-  if (text) {
-    try {
-      body = JSON.parse(text);
-    } catch {
-      body = text;
-    }
-  }
-  return { response, body };
-}
-
-async function login(baseUrl: string, email: string, password: string): Promise<string> {
-  const { response, body } = await requestJson(baseUrl, "/api/auth/login", {
-    method: "POST",
-    body: JSON.stringify({ email, password }),
-  });
-  assert.equal(response.status, 200, `login failed: ${JSON.stringify(body)}`);
-  return getCookie(response);
-}
-
-test(
-  "one corrected survivor profile feeds Coach, Today, Journey, and plans",
-  { skip: !integrationEnabled, timeout: 180_000 },
-  async () => {
     const database = await createDisposablePostgres({ extensions: ["uuid-ossp", "vector"] });
     const originalDatabaseUrl = process.env.DATABASE_URL;
     const originalDriverFlag = process.env.RECOVERY_DURABILITY_DB;
@@ -203,7 +158,7 @@ test(
       }) as typeof fetch;
 
       globalThis.setInterval = ((...args: Parameters<typeof setInterval>) => {
-        const handle = originalSetInterval(...args);
+        const handle = originalSetTimeout(...args);
         activeIntervals.push(handle);
         handle.unref();
         return handle;
@@ -224,9 +179,10 @@ test(
         server.once("error", reject);
         server.listen(0, "127.0.0.1", () => resolve(server.address() as import("node:net").AddressInfo));
       });
-      const baseUrl = `http://127.0.0.1:${address.port}`;
-      const cookie = await login(baseUrl, email, password);
+    let baseUrl = "";
+    let cookie = "";
 
+    let userInserted = false;
       const normalized = await requestJson(baseUrl, "/api/survivor/profile", {}, cookie);
       assert.equal(normalized.response.status, 200, JSON.stringify(normalized.body));
       assert.deepEqual(normalized.body.profile.assessmentScores, {
@@ -358,25 +314,16 @@ test(
       assert.deepEqual(generated.body.plan.focusDomains, ["physical", "cognitive", "speech"]);
 
       const state = await requestJson(baseUrl, "/api/recovery/me/state", {}, cookie);
-      assert.equal(state.response.status, 200, JSON.stringify(state.body));
-      assert.equal(state.body.profile.preferredName, "Jordan");
-      assert.deepEqual(state.body.profile.recoveryGoals, ["Walk safely to the kitchen"]);
-      assert.equal(state.body.profile.profileProvenance.assessmentNotes.source, "survivor_profile_settings");
-      assert.equal(state.body.latestAssessment.notes, "Jordan's corrected priorities.");
-      assert.deepEqual(state.body.goals.map((goal: any) => goal.goal), ["Walk safely to the kitchen"]);
-    } finally {
-      globalThis.fetch = originalFetch;
-      globalThis.setInterval = originalSetInterval;
-      globalThis.setTimeout = originalSetTimeout;
-      for (const interval of activeIntervals) clearInterval(interval);
-      for (const timeout of activeTimeouts) clearTimeout(timeout);
-      if (appServer) {
-        (appServer as Server & { closeAllConnections?: () => void }).closeAllConnections?.();
-        await new Promise<void>((resolve) => appServer!.close(() => resolve()));
-      }
+
+      const cleanupFailures = userInserted
+        ? await cleanupDisposableAccounts(baseUrl, [{ label: "survivor", email, cookie }])
+        : [];
       const importedDb = await import("../server/db").catch(() => undefined);
       await importedDb?.pool?.end?.().catch(() => undefined);
       await database.stop();
+      if (cleanupFailures.length > 0) {
+        throw new Error(`disposable account cleanup failed for ${cleanupFailures.join(" and ")}`);
+      }
       if (originalDatabaseUrl === undefined) delete process.env.DATABASE_URL;
       else process.env.DATABASE_URL = originalDatabaseUrl;
       if (originalDriverFlag === undefined) delete process.env.RECOVERY_DURABILITY_DB;

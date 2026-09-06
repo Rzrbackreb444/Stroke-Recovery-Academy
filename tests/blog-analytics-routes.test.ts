@@ -9,50 +9,9 @@ import { type Server } from "node:http";
 import { randomUUID } from "node:crypto";
 import express from "express";
 import test from "node:test";
+import { cleanupDisposableAccounts, loginWithSession, requestJson } from "./authenticatedTestHelpers";
 
 const canRun = Boolean(process.env.DATABASE_URL);
-
-function getCookie(response: Response): string {
-  const setCookie =
-    typeof (response.headers as Headers & { getSetCookie?: () => string[] }).getSetCookie === "function"
-      ? (response.headers as Headers & { getSetCookie: () => string[] }).getSetCookie()[0]
-      : response.headers.get("set-cookie");
-  assert.ok(setCookie, "login response did not set a session cookie");
-  return setCookie.split(";", 1)[0];
-}
-
-async function jsonRequest(
-  baseUrl: string,
-  path: string,
-  init: RequestInit = {},
-  cookie?: string,
-): Promise<{ response: Response; body: any }> {
-  const headers = new Headers(init.headers);
-  headers.set("Content-Type", "application/json");
-  // Production cookies are Secure because Replit terminates TLS at the proxy.
-  headers.set("X-Forwarded-Proto", "https");
-  if (cookie) headers.set("Cookie", cookie);
-  const response = await fetch(`${baseUrl}${path}`, { ...init, headers });
-  const text = await response.text();
-  let body: any = null;
-  if (text) {
-    try {
-      body = JSON.parse(text);
-    } catch {
-      body = text;
-    }
-  }
-  return { response, body };
-}
-
-async function login(baseUrl: string, email: string, password: string): Promise<string> {
-  const { response, body } = await jsonRequest(baseUrl, "/api/auth/login", {
-    method: "POST",
-    body: JSON.stringify({ email, password }),
-  });
-  assert.equal(response.status, 200, `login failed: ${JSON.stringify(body)}`);
-  return getCookie(response);
-}
 
 test(
   "anonymous blog-view events and admin guide aggregation stay complete and identity-free",
@@ -76,6 +35,8 @@ test(
     const slugs = [viewsOnlySlug, clickOnlySlug, mixedSlug, oldSlug];
 
     let appServer: Server | undefined;
+    let baseUrl = "";
+    let adminCookie = "";
     const activeIntervals: ReturnType<typeof setInterval>[] = [];
     const activeTimeouts: ReturnType<typeof setTimeout>[] = [];
     const originalSetInterval = globalThis.setInterval;
@@ -143,12 +104,12 @@ test(
       });
       const address = appServer.address();
       assert.ok(address && typeof address !== "string");
-      const baseUrl = `http://127.0.0.1:${address.port}`;
-      const adminCookie = await login(baseUrl, adminEmail, password);
+      baseUrl = `http://127.0.0.1:${address.port}`;
+      adminCookie = await loginWithSession(baseUrl, adminEmail, password);
 
       // Exercise the public route with identity-shaped fields included in the
       // payload. The route must accept only the editorial article slug.
-      const viewEvent = await jsonRequest(baseUrl, "/api/analytics/blog-view", {
+      const viewEvent = await requestJson(baseUrl, "/api/analytics/blog-view", {
         method: "POST",
         body: JSON.stringify({
           articleSlug: viewsOnlySlug,
@@ -179,7 +140,7 @@ test(
           (${oldSlug}, 'old', 'Expired recommendation', NOW() - INTERVAL '40 days')
       `);
 
-      const report = await jsonRequest(
+      const report = await requestJson(
         baseUrl,
         "/api/admin/blog/outbound-clicks?days=7",
         {},
@@ -260,6 +221,9 @@ test(
       }
       assert.doesNotMatch(JSON.stringify(report.body), /visitor-must-not-persist|user-must-not-persist|192\.0\.2\.10/);
     } finally {
+      const cleanupFailures = await cleanupDisposableAccounts(baseUrl, [
+        { label: "admin", email: adminEmail, cookie: adminCookie },
+      ]);
       if (appServer) {
         await new Promise<void>((resolve) => appServer!.close(() => resolve()));
       }
@@ -279,6 +243,9 @@ test(
       await db.execute(sql`DELETE FROM blog_outbound_clicks WHERE article_slug IN (${sql.join(slugs.map((slug) => sql`${slug}`), sql`, `)})`);
       await db.delete(users).where(sql`${users.id} = ${adminId}`);
       await pool.end();
+      if (cleanupFailures.length > 0) {
+        throw new Error(`disposable account cleanup failed for ${cleanupFailures.join(" and ")}`);
+      }
       // The Neon pool can leave already-idle TLS sockets referenced after
       // end() resolves. They are not owned by this test, so do not keep the
       // test runner alive waiting for them.
