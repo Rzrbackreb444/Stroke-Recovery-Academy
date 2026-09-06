@@ -96,6 +96,7 @@ test('repairs a quarantined customer before subscription and recovery purchase c
   const { sync, deletedCustomers } = buildSync();
   const createdCustomers: Array<{ email?: string; metadata?: Record<string, string> }> = [];
   const checkoutModes: string[] = [];
+  const portalCustomers: string[] = [];
 
   await reconcileStripeStartupState(sync);
   assert.deepEqual(deletedCustomers, ['cus_deleted', 'cus_missing']);
@@ -116,6 +117,14 @@ test('repairs a quarantined customer before subscription and recovery purchase c
         create: async (params: { customer: string; mode: string }) => {
           checkoutModes.push(`${params.mode}:${params.customer}`);
           return { id: `cs_${params.mode}` };
+        },
+      },
+    },
+    billingPortal: {
+      sessions: {
+        create: async (params: { customer: string; return_url: string }) => {
+          portalCustomers.push(`${params.customer}:${params.return_url}`);
+          return { id: 'bps_repaired' };
         },
       },
     },
@@ -145,6 +154,16 @@ test('repairs a quarantined customer before subscription and recovery purchase c
   assert.deepEqual(checkoutModes, [
     'subscription:cus_repaired',
     'payment:cus_repaired',
+  ]);
+
+  // Billing portal access must use the repaired customer too; otherwise a
+  // customer quarantined during startup reconciliation remains unusable there.
+  await stripe.billingPortal.sessions.create({
+    customer: repaired.id,
+    return_url: 'https://example.com/dashboard',
+  });
+  assert.deepEqual(portalCustomers, [
+    'cus_repaired:https://example.com/dashboard',
   ]);
 });
 

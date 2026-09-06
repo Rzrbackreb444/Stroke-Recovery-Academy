@@ -2775,12 +2775,23 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
     try {
       const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
-      if (!user?.stripeCustomerId) {
-        return res.status(400).json({ message: "No Stripe customer found" });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const customer = await stripeService.getOrCreateCustomer(
+        user.stripeCustomerId,
+        user.email || '',
+        user.id,
+      );
+      if (customer.created) {
+        await stripeService.updateUserStripeInfo(user.id, {
+          stripeCustomerId: customer.id,
+        });
       }
 
       const session = await stripeService.createCustomerPortalSession(
-        user.stripeCustomerId,
+        customer.id,
         `${req.protocol}://${req.get('host')}/dashboard`
       );
 
