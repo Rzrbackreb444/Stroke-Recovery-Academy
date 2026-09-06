@@ -5,6 +5,9 @@ import { RecoveryStripeService } from '../server/recoveryStripeService';
 import { StripeService, stripeService } from '../server/stripeService';
 import { registerVoiceCloneRoutes } from '../server/voiceCloneRoutes';
 import { ensureStripeCustomerForUser } from '../server/stripeClient';
+import {
+import { getRecoveryStripeClient } from '../server/recoveryStripeClient';
+import { recoveryStripeService } from '../server/recoveryStripeService';
 
 function missingCustomerError() {
   return Object.assign(new Error('No such customer'), {
@@ -13,6 +16,12 @@ function missingCustomerError() {
   });
 }
 
+type PowerPointsCheckoutStubs = {
+  attempts: Array<{ customer: string; metadata?: Record<string, string> }>;
+  insertedGifts: unknown[];
+  repairs: number;
+  restore: () => void;
+};
 function captureVoiceCloneCheckoutHandler() {
   let checkoutHandlers: Array<(...args: any[]) => unknown> | undefined;
   const app = {
@@ -116,16 +125,9 @@ test('main Stripe checkout retries with the repaired customer after a confirmed 
     return 'cus_repaired';
   };
 
-  const session = await service.createCheckoutWithCustomerRecovery(
-    'user-1',
-    'survivor@example.com',
-    'cus_old',
-    async (customerId) => {
-      calls.push(customerId);
-      if (customerId === 'cus_old') throw missingCustomerError();
-      return { id: 'cs_repaired' };
-    },
-  );
+    const session = await createPowerPointsCheckoutWithCustomerRecovery(
+      powerPointsCheckoutOptions,
+    );
 
   assert.deepEqual(calls, ['cus_old', 'cus_repaired']);
   assert.equal(session.id, 'cs_repaired');
@@ -236,16 +238,9 @@ test('recovery Stripe checkout retries with the repaired customer after a confir
     return 'cus_repaired';
   };
 
-  const session = await service.createCheckoutWithCustomerRecovery(
-    'user-1',
-    'survivor@example.com',
-    'cus_old',
-    async (customerId) => {
-      calls.push(customerId);
-      if (customerId === 'cus_old') throw missingCustomerError();
-      return { id: 'cs_repaired' };
-    },
-  );
+    const session = await createPowerPointsCheckoutWithCustomerRecovery(
+      powerPointsCheckoutOptions,
+    );
 
   assert.deepEqual(calls, ['cus_old', 'cus_repaired']);
   assert.equal(session.id, 'cs_repaired');
@@ -291,6 +286,12 @@ test('recovery customer lookup uses the shared locked customer path', async () =
     'survivor@example.com',
     'cus_existing',
   );
+
+  const stubs = stubPowerPointsCheckout(() => transientError);
+
+  const stubs = stubPowerPointsCheckout(() => transientError);
+
+  const stubs = stubPowerPointsCheckout(() => transientError);
 
   type CustomerPointerStore = {
     customerId: string | null;
@@ -422,3 +423,81 @@ test('recovery customer lookup uses the shared locked customer path', async () =
   });
 
   const studioStore = createStore();
+
+function stubPowerPointsCheckout(
+  errorForCustomer: (customerId: string) => Error | undefined,
+): PowerPointsCheckoutStubs {
+  const dbModule = db as any;
+  const originalSelect = dbModule.select;
+  const originalInsert = dbModule.insert;
+  const stripe = getRecoveryStripeClient() as any;
+  const originalCreateSession = stripe.checkout.sessions.create;
+  const originalEnsureCustomer = recoveryStripeService.ensureCustomer;
+  const originalRepairCustomer = recoveryStripeService.repairCustomer;
+  const attempts: PowerPointsCheckoutStubs['attempts'] = [];
+  const insertedGifts: unknown[] = [];
+  let repairs = 0;
+
+  dbModule.select = () => ({
+    from() {
+      return this;
+    },
+    where() {
+      return this;
+    },
+    limit: async () => [{ id: 'receiver-1', firstName: 'Alex' }],
+  });
+  dbModule.insert = () => {
+    const query = {
+      values(values: unknown) {
+        insertedGifts.push(values);
+        return query;
+      },
+      returning: async () => [{ id: 42 }],
+    };
+    return query;
+  };
+  recoveryStripeService.ensureCustomer = async () => {
+    return 'cus_old';
+  };
+  recoveryStripeService.repairCustomer = async () => {
+    repairs++;
+    return 'cus_repaired';
+  };
+  stripe.checkout.sessions.create = async (params: {
+    customer: string;
+    metadata?: Record<string, string>;
+  }) => {
+    attempts.push(params);
+    const error = errorForCustomer(params.customer);
+    if (error) throw error;
+    return { url: 'https://checkout.test/repaired' };
+  };
+
+  return {
+    attempts,
+    insertedGifts,
+    get repairs() {
+      return repairs;
+    },
+    restore() {
+      dbModule.select = originalSelect;
+      dbModule.insert = originalInsert;
+      stripe.checkout.sessions.create = originalCreateSession;
+      recoveryStripeService.ensureCustomer = originalEnsureCustomer;
+      recoveryStripeService.repairCustomer = originalRepairCustomer;
+    },
+  };
+}
+
+const powerPointsCheckoutOptions = {
+  senderId: 'sender-1',
+  receiverId: 'receiver-1',
+  packageKey: 'spark' as const,
+  message: 'You have got this.',
+  isAnonymous: false,
+  customerId: 'cus_old',
+  senderEmail: 'sender@example.com',
+  successUrl: '/success',
+  cancelUrl: '/cancel',
+};
