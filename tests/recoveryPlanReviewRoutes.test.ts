@@ -72,7 +72,8 @@ test("regenerating a changed draft resets review metadata without deleting audit
   const route = generateRoute();
   const reset = /reviewStatus: 'pending',\s+reviewedBy: null,\s+reviewedAt: null,\s+reviewNotes: null/;
   assert.match(route, reset);
-  assert.match(route, /onConflictDoUpdate\([\s\S]*set: \{[\s\S]*reviewStatus: 'pending'/);
+  assert.match(route, /onConflictDoNothing\([\s\S]*target: survivorPlans\.assessmentId/);
+  assert.match(route, /\.update\(survivorPlans\)[\s\S]*\.set\(\{[\s\S]*reviewStatus: 'pending'/);
   assert.doesNotMatch(route, /delete\(recoveryPlanReviews\)/);
   assert.match(migration, /CREATE TABLE IF NOT EXISTS "recovery_plan_reviews"/);
   assert.match(migration, /FOREIGN KEY \("plan_id"\) REFERENCES "survivor_plans"\("id"\) ON DELETE cascade/);
