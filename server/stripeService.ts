@@ -7,7 +7,7 @@ import {
   isStripeResourceMissingError,
   type StripeCustomerDatabase,
 } from './stripeClient';
-import { eq, sql, and, inArray, isNull } from 'drizzle-orm';
+import { eq, sql, and, inArray } from 'drizzle-orm';
 
 const PLATFORM_FEE_PERCENT = 15; // 15% platform fee
 const CREATOR_SHARE_PERCENT = 85; // 85% to creators
@@ -487,33 +487,23 @@ export class StripeService {
 
   /**
    * Create a replacement customer after Stripe confirms that the stored
-   * customer no longer exists. The compare-and-set prevents two concurrent
-   * requests from overwriting each other's repaired ID.
+   * customer no longer exists. The shared customer store holds the
+   * transaction-scoped lock and uses a deterministic Stripe idempotency key,
+   * so a database rollback after Stripe succeeds is safe to retry.
    */
   async repairCustomer(userId: string, email: string, staleCustomerId?: string): Promise<string> {
-    const customer = await this.createCustomer(email, userId);
-    const expectedCustomer = staleCustomerId
-      ? eq(users.stripeCustomerId, staleCustomerId)
-      : isNull(users.stripeCustomerId);
+    const customer = await this.getOrCreateCustomer(staleCustomerId, email, userId);
 
-    const [updated] = await db.update(users)
+    // Keep the existing repair behavior of clearing subscription state, but
+    // only for the customer that this serialized operation selected.
+    await db.update(users)
       .set({
-        stripeCustomerId: customer.id,
         stripeSubscriptionId: null,
         subscriptionStatus: null,
       })
-      .where(and(eq(users.id, userId), expectedCustomer))
-      .returning({ stripeCustomerId: users.stripeCustomerId });
-    if (updated?.stripeCustomerId) return updated.stripeCustomerId;
+      .where(and(eq(users.id, userId), eq(users.stripeCustomerId, customer.id)));
 
-    // Another request may have repaired the row while Stripe was creating
-    // this customer. Reuse its winner instead of creating a second checkout
-    // customer; the extra Stripe record is never linked to the account.
-    const [current] = await db.select({ stripeCustomerId: users.stripeCustomerId })
-      .from(users)
-      .where(eq(users.id, userId))
-      .limit(1);
-    return current?.stripeCustomerId || customer.id;
+    return customer.id;
   }
 
   async ensureCustomer(userId: string, email: string, customerId?: string): Promise<string> {

@@ -480,6 +480,124 @@ if (process.env.STRIPE_CUSTOMER_DB === '1') {
   });
 }
 
+test('reuses the same Stripe customer when local persistence fails before a retry', async () => {
+  let storedCustomerId: string | null = 'cus_quarantined';
+  let persistenceAttempts = 0;
+  let stripeCreates = 0;
+  const idempotentCustomers = new Map<string, string>();
+
+  const store = {
+    withUserLock: async (
+      _userId: string,
+      operation: (store: {
+        getCustomerId: () => Promise<string | null>;
+        setCustomerId: (customerId: string) => Promise<void>;
+      }) => Promise<{ id: string; created: boolean }>,
+    ) => operation({
+      getCustomerId: async () => storedCustomerId,
+      setCustomerId: async (customerId) => {
+        persistenceAttempts++;
+        if (persistenceAttempts === 1) {
+          throw new Error('database temporarily unavailable');
+        }
+        storedCustomerId = customerId;
+      },
+    }),
+  };
+
+  const stripe = {
+    customers: {
+      retrieve: async (id: string) => {
+        if (id === 'cus_quarantined') throw missingStripeResourceError();
+        return { id, deleted: false };
+      },
+      create: async (
+        _params: { email?: string; metadata?: Record<string, string> },
+        options?: { idempotencyKey?: string },
+      ) => {
+        stripeCreates++;
+        const key = options?.idempotencyKey;
+        if (key && idempotentCustomers.has(key)) {
+          return { id: idempotentCustomers.get(key) };
+        }
+        const customerId = `cus_replacement_${stripeCreates}`;
+        if (key) idempotentCustomers.set(key, customerId);
+        return { id: customerId };
+      },
+    },
+  };
+
+  await assert.rejects(
+    ensureStripeCustomerForUser(
+      stripe,
+      store,
+      'user-persistence-retry',
+      { email: 'survivor@example.com', metadata: { userId: 'user-persistence-retry' } },
+      'cus_quarantined',
+    ),
+    /database temporarily unavailable/,
+  );
+
+  const retried = await ensureStripeCustomerForUser(
+    stripe,
+    store,
+    'user-persistence-retry',
+    { email: 'survivor@example.com', metadata: { userId: 'user-persistence-retry' } },
+    'cus_quarantined',
+  );
+
+  assert.equal(stripeCreates, 2, 'the retry still makes a request, but Stripe replays it idempotently');
+  assert.deepEqual(retried, { id: 'cus_replacement_1', created: true });
+  assert.equal(storedCustomerId, 'cus_replacement_1');
+});
+
+test('adopts an orphaned customer found by metadata reconciliation', async () => {
+  let storedCustomerId: string | null = null;
+  let created = 0;
+  let searchQuery = '';
+
+  const store = {
+    withUserLock: async (
+      _userId: string,
+      operation: (store: {
+        getCustomerId: () => Promise<string | null>;
+        setCustomerId: (customerId: string) => Promise<void>;
+      }) => Promise<{ id: string; created: boolean }>,
+    ) => operation({
+      getCustomerId: async () => storedCustomerId,
+      setCustomerId: async (customerId) => {
+        storedCustomerId = customerId;
+      },
+    }),
+  };
+
+  const stripe = {
+    customers: {
+      search: async (params: { query: string; limit?: number }) => {
+        searchQuery = params.query;
+        assert.equal(params.limit, 1);
+        return { data: [{ id: 'cus_orphaned' }] };
+      },
+      create: async () => {
+        created++;
+        return { id: 'cus_should_not_be_created' };
+      },
+    },
+  };
+
+  const recovered = await ensureStripeCustomerForUser(
+    stripe,
+    store,
+    'user-delayed-retry',
+    { email: 'survivor@example.com', metadata: { userId: 'user-delayed-retry' } },
+  );
+
+  assert.deepEqual(recovered, { id: 'cus_orphaned', created: true });
+  assert.equal(storedCustomerId, 'cus_orphaned');
+  assert.equal(created, 0);
+  assert.equal(searchQuery, "metadata['userId']:'user-delayed-retry'");
+});
+
 if (process.env.STRIPE_CUSTOMER_DB === '1') {
   test('main billing customer repairs share the real customer lock and release it after failure', { timeout: 120_000 }, async () => {
     const disposableDatabase = await createDisposablePostgres();

@@ -57,7 +57,11 @@ type StripeCustomerApi = {
     create(params: {
       email?: string;
       metadata?: Record<string, string>;
-    }): Promise<any>;
+    }, options?: { idempotencyKey?: string }): Promise<any>;
+    search?(params: {
+      query: string;
+      limit?: number;
+    }): Promise<{ data?: Array<{ id: string; deleted?: boolean | void }> }>;
   };
 };
 
@@ -105,6 +109,7 @@ export async function ensureStripeCustomer(
   stripe: StripeCustomerApi,
   customerId: string | null | undefined,
   createParams: { email?: string; metadata?: Record<string, string> },
+  idempotencyKey?: string,
 ): Promise<{ id: string; created: boolean }> {
   if (customerId) {
     try {
@@ -119,7 +124,27 @@ export async function ensureStripeCustomer(
     }
   }
 
-  const customer = await stripe.customers.create(createParams);
+  // Stripe idempotency keys protect the immediate retry window. Search the
+  // durable customer metadata as well so a delayed retry can adopt a
+  // customer that was created before a local transaction rolled back even
+  // after Stripe has expired the idempotency key.
+  const userId = createParams.metadata?.userId;
+  if (userId && stripe.customers.search) {
+    const escapedUserId = userId.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    const existingCustomers = await stripe.customers.search({
+      query: `metadata['userId']:'${escapedUserId}'`,
+      limit: 1,
+    });
+    const existingCustomer = existingCustomers.data?.find((customer) => customer.deleted !== true);
+    if (existingCustomer) {
+      return { id: existingCustomer.id, created: true };
+    }
+  }
+
+  const customer = await stripe.customers.create(
+    createParams,
+    idempotencyKey ? { idempotencyKey } : undefined,
+  );
   return { id: customer.id, created: true };
 }
 
@@ -174,6 +199,7 @@ export async function ensureStripeCustomerForUser(
       stripe,
       storedCustomerId ?? fallbackCustomerId,
       createParams,
+      `stripe-customer:${userId}`,
     );
 
     if (customer.created) {
