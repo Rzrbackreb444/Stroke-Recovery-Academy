@@ -8,6 +8,7 @@ import {
   reconcileStripeStartupState,
   type StripeCustomerDatabase,
 } from '../server/stripeClient';
+import { StripeService } from '../server/stripeService';
 import { createDisposablePostgres } from './disposablePostgres';
 
 function missingStripeResourceError() {
@@ -353,6 +354,117 @@ if (process.env.STRIPE_CUSTOMER_DB === '1') {
         persistedAfterRollback.rows,
         [{ stripe_customer_id: 'cus_after_rollback' }],
       );
+    } finally {
+      await disposableDatabase.stop();
+    }
+  });
+}
+
+if (process.env.STRIPE_CUSTOMER_DB === '1') {
+  test('main billing customer repairs share the real customer lock and release it after failure', { timeout: 120_000 }, async () => {
+    const disposableDatabase = await createDisposablePostgres();
+    const database = drizzle(disposableDatabase.pool) as unknown as StripeCustomerDatabase;
+    const overlapUserId = `stripe-service-db-${process.pid}-overlap`;
+    const retryUserId = `stripe-service-db-${process.pid}-retry`;
+
+    try {
+      await disposableDatabase.pool.query(`
+        CREATE TABLE users (
+          id varchar PRIMARY KEY,
+          stripe_customer_id text
+        )
+      `);
+      await disposableDatabase.pool.query(
+        'INSERT INTO users (id, stripe_customer_id) VALUES ($1, NULL), ($2, NULL)',
+        [overlapUserId, retryUserId],
+      );
+
+      let createCalls = 0;
+      let signalCreateStarted!: () => void;
+      let releaseCreate!: () => void;
+      const createStarted = new Promise<void>((resolve) => {
+        signalCreateStarted = resolve;
+      });
+      const createMayFinish = new Promise<void>((resolve) => {
+        releaseCreate = resolve;
+      });
+      const stripe = {
+        customers: {
+          retrieve: async (id: string) => {
+            if (id === 'cus_stale') throw missingStripeResourceError();
+            return { id, deleted: false };
+          },
+          create: async () => {
+            createCalls++;
+            signalCreateStarted();
+            await createMayFinish;
+            return { id: 'cus_main_billing_winner' };
+          },
+        },
+      };
+      const service = new StripeService(database, async () => stripe as any);
+
+      const concurrentRepairs = [
+        service.getOrCreateCustomer('cus_stale', 'survivor@example.com', overlapUserId),
+        service.getOrCreateCustomer('cus_stale', 'survivor@example.com', overlapUserId),
+      ];
+      await createStarted;
+      releaseCreate();
+
+      const [firstRepair, secondRepair] = await Promise.all(concurrentRepairs);
+      assert.equal(createCalls, 1);
+      assert.deepEqual(
+        [firstRepair, secondRepair].map(({ id, created }) => ({ id, created })),
+        [
+          { id: 'cus_main_billing_winner', created: true },
+          { id: 'cus_main_billing_winner', created: false },
+        ],
+      );
+
+      const persistedWinner = await disposableDatabase.pool.query(
+        'SELECT stripe_customer_id FROM users WHERE id = $1',
+        [overlapUserId],
+      );
+      assert.deepEqual(persistedWinner.rows, [{
+        stripe_customer_id: 'cus_main_billing_winner',
+      }]);
+
+      const failedTransaction = new Error('simulate failed Stripe create');
+      let retryCreateCalls = 0;
+      const retryStripe = {
+        customers: {
+          retrieve: async (id: string) => ({ id, deleted: false }),
+          create: async () => {
+            retryCreateCalls++;
+            if (retryCreateCalls === 1) throw failedTransaction;
+            return { id: 'cus_after_main_billing_failure' };
+          },
+        },
+      };
+      const retryService = new StripeService(database, async () => retryStripe as any);
+
+      await assert.rejects(
+        retryService.getOrCreateCustomer(null, 'survivor@example.com', retryUserId),
+        failedTransaction,
+      );
+      const afterFailure = await retryService.getOrCreateCustomer(
+        null,
+        'survivor@example.com',
+        retryUserId,
+      );
+
+      assert.deepEqual(afterFailure, {
+        id: 'cus_after_main_billing_failure',
+        created: true,
+      });
+      assert.equal(retryCreateCalls, 2);
+      const persistedAfterRetry = await disposableDatabase.pool.query(
+        'SELECT stripe_customer_id FROM users WHERE id = $1',
+        [retryUserId],
+      );
+      assert.deepEqual(persistedAfterRetry.rows, [{
+        stripe_customer_id: 'cus_after_main_billing_failure',
+      }]);
     } finally {
       await disposableDatabase.stop();
     }

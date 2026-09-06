@@ -1,10 +1,11 @@
 import { db } from './db';
 import { users, creatorEarnings, creatorPayouts } from '@shared/schema';
 import {
+  createStripeCustomerStore,
   ensureStripeCustomerForUser,
   getUncachableStripeClient,
   isStripeResourceMissingError,
-  type StripeCustomerStore,
+  type StripeCustomerDatabase,
 } from './stripeClient';
 import { eq, sql, and, inArray, isNull } from 'drizzle-orm';
 
@@ -12,6 +13,11 @@ const PLATFORM_FEE_PERCENT = 15; // 15% platform fee
 const CREATOR_SHARE_PERCENT = 85; // 85% to creators
 
 export class StripeService {
+  constructor(
+    private readonly customerDatabase: StripeCustomerDatabase = db,
+    private readonly stripeClientFactory: typeof getUncachableStripeClient = getUncachableStripeClient,
+  ) {}
+
   async createCustomer(email: string, userId: string) {
     const stripe = await getUncachableStripeClient();
     return await stripe.customers.create({
@@ -25,36 +31,8 @@ export class StripeService {
     email: string,
     userId: string,
   ) {
-    const stripe = await getUncachableStripeClient();
-    const store: StripeCustomerStore = {
-      withUserLock: (lockedUserId, operation) =>
-        db.transaction(async (tx) => {
-          // Transaction-scoped advisory locks use the same database
-          // connection as the read and write below. This serializes checkout,
-          // portal, and any other billing request for one user across server
-          // processes without holding a session lock after the transaction.
-          await tx.execute(sql`SELECT pg_advisory_xact_lock(
-            hashtextextended(${`stripe-customer:${lockedUserId}`}, 0)
-          )`);
-
-          return operation({
-            getCustomerId: async () => {
-              const [user] = await tx
-                .select({ stripeCustomerId: users.stripeCustomerId })
-                .from(users)
-                .where(eq(users.id, lockedUserId))
-                .limit(1);
-              return user?.stripeCustomerId;
-            },
-            setCustomerId: async (stripeCustomerId) => {
-              await tx
-                .update(users)
-                .set({ stripeCustomerId })
-                .where(eq(users.id, lockedUserId));
-            },
-          });
-        }),
-    };
+    const stripe = await this.stripeClientFactory();
+    const store = createStripeCustomerStore(this.customerDatabase);
 
     return ensureStripeCustomerForUser(stripe, store, userId, {
       email: email || undefined,
