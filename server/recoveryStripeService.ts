@@ -5,7 +5,7 @@ import {
   createStripeCustomerStore,
   ensureStripeCustomerForUser,
 } from './stripeClient';
-import { and, eq, isNull, sql } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { isStripeResourceMissingError } from './stripeClient';
 
 const PLATFORM_FEE_PERCENT = 15;
@@ -381,30 +381,21 @@ export class RecoveryStripeService {
   }
 
   async repairCustomer(userId: string, email: string, staleCustomerId?: string): Promise<string> {
-    const customer = await this.createCustomer(email, userId);
-    const expectedCustomer = staleCustomerId
-      ? eq(users.stripeCustomerId, staleCustomerId)
-      : isNull(users.stripeCustomerId);
-
-    const [updated] = await db.update(users)
-      .set({
-        stripeCustomerId: customer.id,
-        stripeSubscriptionId: null,
-        subscriptionStatus: null,
-      })
-      .where(and(eq(users.id, userId), expectedCustomer))
-      .returning({ stripeCustomerId: users.stripeCustomerId });
-    if (updated?.stripeCustomerId) return updated.stripeCustomerId;
-
-    const [current] = await db.select({ stripeCustomerId: users.stripeCustomerId })
-      .from(users)
-      .where(eq(users.id, userId))
-      .limit(1);
-    return current?.stripeCustomerId || customer.id;
+    const customer = await this.getOrCreateCustomer(staleCustomerId, email, userId);
+    if (customer.created) {
+      await db.update(users)
+        .set({
+          stripeSubscriptionId: null,
+          subscriptionStatus: null,
+        })
+        .where(eq(users.id, userId));
+    }
+    return customer.id;
   }
 
   async ensureCustomer(userId: string, email: string, customerId?: string): Promise<string> {
-    return customerId || this.repairCustomer(userId, email);
+    const customer = await this.getOrCreateCustomer(customerId, email, userId);
+    return customer.id;
   }
 
   /**

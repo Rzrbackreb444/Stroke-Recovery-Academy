@@ -78,12 +78,6 @@ export function registerPowerPointsRoutes(app: Express, isAuthenticated: any) {
       // Ensure sender has a Stripe customer record
       const [sender] = await db.select().from(users).where(eq(users.id, senderId)).limit(1);
       if (!sender) return res.status(401).json({ error: 'Sender not found' });
-      let customerId = sender.stripeCustomerId;
-      if (!customerId) {
-        const customer = await recoveryStripeService.createCustomer(sender.email || '', sender.id);
-        customerId = customer.id;
-        await db.update(users).set({ stripeCustomerId: customerId }).where(eq(users.id, sender.id));
-      }
 
       const origin = req.headers.origin || `https://${req.headers.host}`;
       const successUrl = `${origin}/power-points/sent?status=success`;
@@ -91,16 +85,23 @@ export function registerPowerPointsRoutes(app: Express, isAuthenticated: any) {
 
       const cleanMessage = message ? sanitizeMessage(message) : undefined;
 
-      const { url, giftId } = await createPowerPointsCheckout({
-        senderId,
-        receiverId,
-        packageKey: packageKey as PowerPointPackageKey,
-        message: cleanMessage,
-        isAnonymous: !!isAnonymous,
-        customerId: customerId!,
-        successUrl,
-        cancelUrl,
-      });
+      const { url, giftId } =
+        await recoveryStripeService.createCheckoutWithCustomerRecovery(
+          sender.id,
+          sender.email || '',
+          sender.stripeCustomerId || undefined,
+          (customerId) =>
+            createPowerPointsCheckout({
+              senderId,
+              receiverId,
+              packageKey: packageKey as PowerPointPackageKey,
+              message: cleanMessage,
+              isAnonymous: !!isAnonymous,
+              customerId,
+              successUrl,
+              cancelUrl,
+            }),
+        );
 
       res.json({ url, giftId });
     } catch (e: any) {

@@ -117,3 +117,25 @@ test('recovery Stripe checkout leaves transient failures actionable', async () =
   );
   assert.equal(repairs, 0);
 });
+
+test('recovery customer lookup uses the shared locked customer path', async () => {
+  const service = new RecoveryStripeService();
+  const calls: Array<{ customerId: string | undefined; email: string; userId: string }> = [];
+  service.getOrCreateCustomer = async (customerId, email, userId) => {
+    calls.push({ customerId: customerId ?? undefined, email, userId });
+    return { id: 'cus_recovery', created: false } as any;
+  };
+
+  const customerId = await service.ensureCustomer(
+    'user-1',
+    'survivor@example.com',
+    'cus_existing',
+  );
+
+  assert.equal(customerId, 'cus_recovery');
+  assert.deepEqual(calls, [{
+    customerId: 'cus_existing',
+    email: 'survivor@example.com',
+    userId: 'user-1',
+  }]);
+});

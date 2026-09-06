@@ -74,6 +74,25 @@ export type StripeCustomerStore = {
 };
 
 /**
+ * Run a customer operation under the same transaction-scoped per-user lock
+ * used by the default users-table store. Callers with a different customer
+ * pointer table can reuse the lock while keeping their persistence isolated.
+ */
+export function withStripeCustomerUserLock<T>(
+  database: StripeCustomerDatabase,
+  userId: string,
+  operation: (tx: any) => Promise<T>,
+): Promise<T> {
+  return database.transaction(async (tx) => {
+    await tx.execute(sql`SELECT pg_advisory_xact_lock(
+      hashtextextended(${`stripe-customer:${userId}`}, 0)
+    )`);
+
+    return operation(tx);
+  });
+}
+
+/**
  * Return a usable Stripe customer ID for checkout.
  *
  * Startup reconciliation intentionally keeps a missing customer in the sync
@@ -117,11 +136,7 @@ export function createStripeCustomerStore(
 ): StripeCustomerStore {
   return {
     withUserLock: (userId, operation) =>
-      database.transaction(async (tx) => {
-        await tx.execute(sql`SELECT pg_advisory_xact_lock(
-          hashtextextended(${`stripe-customer:${userId}`}, 0)
-        )`);
-
+      withStripeCustomerUserLock(database, userId, async (tx) => {
         return operation({
           getCustomerId: async () => {
             const [user] = await tx
