@@ -91,6 +91,7 @@ import {
 } from "./spotifyService";
 import { seedRecoveryData } from "./seedRecoveryData";
 import { seedCreatorToolCategories, seedWorkflowCategories } from "./seedCreatorTools";
+import { ensureStuckProductSeeded } from "./stuckProductSeed";
 import {
   buildSafeRecoveryPlan,
   isSafeRecoveryPlan,
@@ -1643,6 +1644,15 @@ Last updated: ${new Date().toISOString().split('T')[0]}
 
   // Initialize Stripe
   await initStripe();
+
+  // Keep the paid STUCK catalog entry present in every environment. This is
+  // idempotent and guarded by a transaction lock for autoscale startup races.
+  try {
+    const stuckSeed = await ensureStuckProductSeeded();
+    console.log(`[startup] STUCK product ready (listing ${stuckSeed.listingId})`);
+  } catch (err: any) {
+    console.warn("[startup] STUCK product seed skipped:", err?.message ?? err);
+  }
 
   // Seed creator tool categories (non-fatal — app continues even if DB unavailable)
   try {
