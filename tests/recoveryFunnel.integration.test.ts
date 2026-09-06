@@ -19,10 +19,12 @@ type FunnelTotals = Record<
 >;
 
 function getCookie(response: Response): string {
-  const setCookie =
-    typeof (response.headers as Headers & { getSetCookie?: () => string[] }).getSetCookie === "function"
-      ? (response.headers as Headers & { getSetCookie: () => string[] }).getSetCookie()[0]
-      : response.headers.get("set-cookie");
+  const getSetCookie = (response.headers as Headers & { getSetCookie?: () => string[] }).getSetCookie;
+  const setCookies =
+    typeof getSetCookie === "function"
+      ? getSetCookie.call(response.headers)
+      : [response.headers.get("set-cookie") || ""];
+  const setCookie = setCookies.find((cookie) => cookie.startsWith("connect.sid=")) || setCookies[0];
   assert.ok(setCookie, "login response did not set a session cookie");
   return setCookie.split(";", 1)[0];
 }
@@ -61,6 +63,24 @@ async function login(baseUrl: string, email: string, password: string): Promise<
   return getCookie(response);
 }
 
+async function cleanupDisposableAccount(
+  baseUrl: string,
+  email: string,
+  cookie: string,
+): Promise<void> {
+  const { response, body } = await jsonRequest(
+    baseUrl,
+    "/api/account/delete",
+    {
+      method: "POST",
+      body: JSON.stringify({ confirmEmail: email }),
+    },
+    cookie,
+  );
+  if (response.status !== 200 || body?.ok !== true) {
+    throw new Error(`disposable account cleanup failed (HTTP ${response.status})`);
+  }
+}
 async function readFunnel(baseUrl: string, adminCookie: string): Promise<FunnelTotals> {
   const { response, body } = await jsonRequest(baseUrl, "/api/admin/recovery-funnel?days=30", {}, adminCookie);
   assert.equal(response.status, 200, `admin funnel report failed: ${JSON.stringify(body)}`);
@@ -193,6 +213,10 @@ test(
     const adminEmail = `${adminId}@example.test`;
     const password = "recovery-funnel-test-password";
     let appServer: Server | undefined;
+    let baseUrl = "";
+    let survivorCookie = "";
+    let adminCookie = "";
+    let usersInserted = false;
     let assessmentFunnelFailureInstalled = false;
     let planFunnelFailureInstalled = false;
 
@@ -213,6 +237,7 @@ test(
           role: "admin",
         },
       ]);
+      usersInserted = true;
       const planMigration = await readFile(
         new URL("../migrations/0011_recovery_plan_assessment_unique.sql", import.meta.url),
         "utf8",
@@ -295,10 +320,10 @@ test(
       await new Promise<void>((resolve) => appServer!.listen(0, "127.0.0.1", resolve));
       const appAddress = appServer.address();
       assert.ok(appAddress && typeof appAddress !== "string");
-      const baseUrl = `http://127.0.0.1:${appAddress.port}`;
+      baseUrl = `http://127.0.0.1:${appAddress.port}`;
 
-      const survivorCookie = await login(baseUrl, survivorEmail, password);
-      const adminCookie = await login(baseUrl, adminEmail, password);
+      survivorCookie = await login(baseUrl, survivorEmail, password);
+      adminCookie = await login(baseUrl, adminEmail, password);
 
       const emptyProfile = await jsonRequest(
         baseUrl,
@@ -1063,6 +1088,23 @@ test(
         "later non-skipped feedback did not create exactly one first-rep milestone",
       );
     } finally {
+      const cleanupFailures: string[] = [];
+      const cleanupAccount = async (label: string, email: string, cookie: string) => {
+        if (!baseUrl || !cookie) {
+          cleanupFailures.push(`${label} account (authenticated session unavailable)`);
+          return;
+        }
+        try {
+          await cleanupDisposableAccount(baseUrl, email, cookie);
+        } catch {
+          cleanupFailures.push(`${label} account`);
+        }
+      };
+      if (usersInserted) {
+        await cleanupAccount("survivor", survivorEmail, survivorCookie);
+        await cleanupAccount("admin", adminEmail, adminCookie);
+      }
+
       if (appServer) await new Promise<void>((resolve) => appServer!.close(() => resolve()));
       for (const interval of activeIntervals) clearInterval(interval);
       for (const timeout of activeTimeouts) clearTimeout(timeout);
@@ -1084,6 +1126,9 @@ test(
       await db.execute(sql`DELETE FROM sasquatch_assessments WHERE user_id IN (${survivorId}, ${adminId})`);
       await db.delete(users).where(sql`${users.id} IN (${survivorId}, ${adminId})`);
       await pool.end();
+      if (cleanupFailures.length > 0) {
+        throw new Error(`disposable account cleanup failed for ${cleanupFailures.join(" and ")}`);
+      }
     }
   },
 );
