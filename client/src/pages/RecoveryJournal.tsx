@@ -173,6 +173,31 @@ export default function RecoveryJournal() {
     },
   });
 
+  const coachApprovalMutation = useMutation({
+    mutationFn: async ({ id, approved }: { id: number; approved: boolean }) => {
+      const res = await apiRequest("PATCH", `/api/recovery/journal/${id}/coach-approval`, { approved });
+      return res.json() as Promise<{ journalId: number; approved: boolean }>;
+    },
+    onSuccess: ({ journalId, approved }) => {
+      queryClient.setQueryData<any[]>(["/api/recovery/journal"], (old) =>
+        Array.isArray(old)
+          ? old.map((entry) => entry.id === journalId ? { ...entry, coach_approved: approved } : entry)
+          : old,
+      );
+      queryClient.invalidateQueries({ queryKey: ["/api/coach/memory"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/coach/memory/summary"] });
+      toast({
+        title: approved ? "Entry approved for Coach." : "Entry revoked from Coach.",
+        description: approved
+          ? "Only this entry can now be used in Coach memory."
+          : "This entry will not be used in future Coach prompts or weekly summaries.",
+      });
+    },
+    onError: () => {
+      toast({ title: "Could not update Coach approval", description: "Your journal entry was not changed.", variant: "destructive" });
+    },
+  });
+
   const toggleTag = (t: string) => {
     if (selectedTags.includes(t)) setSelectedTags(selectedTags.filter((x) => x !== t));
     else setSelectedTags([...selectedTags, t]);
@@ -503,6 +528,12 @@ export default function RecoveryJournal() {
             <p className="text-sm text-[#8A867D] italic border-l-2 border-[#E2741B] pl-4 py-1">
               "We don't gloss over the hard days here. The dirt is where the roots grow." — Nick
             </p>
+            <div className="flex items-start gap-3 bg-[#15120F] border border-[#2A2621] p-4 rounded-xl">
+              <Shield className="w-5 h-5 text-[#E2741B] mt-0.5 shrink-0" />
+              <p className="text-sm text-[#8A867D] leading-relaxed">
+                Your journal stays private by default. Coach access is separate: even after you turn on journal memory, you approve entries one at a time below. Approving or revoking an entry never changes whether it is private or shared.
+              </p>
+            </div>
           </div>
         </div>
       </header>
@@ -1002,6 +1033,29 @@ export default function RecoveryJournal() {
                       ))}
                     </div>
                   )}
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#2A2621] pt-3">
+                    <p className="text-xs text-[#8A867D]">
+                      {entry.coach_approved
+                        ? "Approved for Coach memory"
+                        : "Not approved for Coach memory"}
+                    </p>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      disabled={coachApprovalMutation.isPending}
+                      onClick={() => coachApprovalMutation.mutate({
+                        id: Number(entry.id),
+                        approved: !entry.coach_approved,
+                      })}
+                      className={entry.coach_approved
+                        ? "border-[#E2741B]/50 text-[#E2741B] hover:bg-[#E2741B]/10"
+                        : "border-[#2A2621] text-[#8A867D] hover:border-[#E2741B]/50 hover:text-[#E2741B]"}
+                      data-testid={`button-coach-approval-${entry.id}`}
+                    >
+                      {entry.coach_approved ? "Revoke Coach access" : "Approve for Coach"}
+                    </Button>
+                  </div>
                 </Card>
               ))}
               {entries.length > 5 && (

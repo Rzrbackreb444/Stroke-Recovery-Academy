@@ -112,6 +112,22 @@ export async function initSasquatchSchema(): Promise<void> {
         PRIMARY KEY (user_id, source_type, source_id)
       )
     `);
+    // Journal consent is finer-grained than the source-level memory
+    // preference. Keep it separate from recovery_journals so approving an
+    // entry can never change its private/shared state.
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS coach_journal_approvals (
+        user_id VARCHAR NOT NULL,
+        journal_id INTEGER NOT NULL,
+        approved BOOLEAN NOT NULL DEFAULT FALSE,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        PRIMARY KEY (user_id, journal_id)
+      )
+    `);
+    await db.execute(sql`
+      CREATE INDEX IF NOT EXISTS idx_coach_journal_approvals_user
+      ON coach_journal_approvals (user_id, approved, journal_id)
+    `);
   })().catch((error) => {
     // A failed startup must not poison the cached promise forever. The next
     // coach request should be able to retry schema setup.
@@ -356,11 +372,29 @@ async function refreshCoachMemory(
   }
 
   if (preferences.includeJournal) {
+    // Remove stale copies first: revoking an entry must stop it from reaching
+    // both future Coach prompts and summaries, even if it was already loaded.
+    await db.execute(sql`
+      DELETE FROM coach_memory_items AS memory
+      WHERE memory.user_id = ${userId}
+        AND memory.source_type = 'journal'
+        AND NOT EXISTS (
+          SELECT 1
+          FROM coach_journal_approvals AS approval
+          WHERE approval.user_id = ${userId}
+            AND approval.journal_id::text = memory.source_id
+            AND approval.approved = TRUE
+        )
+    `);
     const result = await db.execute(sql`
-      SELECT id, created_at, title, content
-      FROM recovery_journals
-      WHERE user_id = ${userId} AND created_at >= ${since}
-      ORDER BY created_at DESC
+      SELECT journal.id, journal.created_at, journal.title, journal.content
+      FROM recovery_journals AS journal
+      INNER JOIN coach_journal_approvals AS approval
+        ON approval.user_id = journal.user_id
+       AND approval.journal_id = journal.id
+       AND approval.approved = TRUE
+      WHERE journal.user_id = ${userId} AND journal.created_at >= ${since}
+      ORDER BY journal.created_at DESC
       LIMIT 250
     `);
     for (const row of result.rows as any[]) {
@@ -470,6 +504,26 @@ export async function updateCoachMemoryPreferences(
       updated_at = NOW()
   `);
   return next;
+}
+
+export async function setCoachJournalApproval(
+  userId: string,
+  journalId: number,
+  approved: boolean,
+): Promise<boolean | null> {
+  await initSasquatchSchema();
+  const result = await db.execute(sql`
+    INSERT INTO coach_journal_approvals (user_id, journal_id, approved)
+    SELECT ${userId}, journal.id, ${approved}
+    FROM recovery_journals AS journal
+    WHERE journal.id = ${journalId} AND journal.user_id = ${userId}
+    ON CONFLICT (user_id, journal_id) DO UPDATE SET
+      approved = EXCLUDED.approved,
+      updated_at = NOW()
+    RETURNING approved
+  `);
+  if (!result.rows?.[0]) return null;
+  return result.rows[0].approved === true;
 }
 
 export async function updateCoachMemoryItem(
