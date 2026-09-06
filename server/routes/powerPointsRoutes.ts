@@ -6,7 +6,8 @@ import { and, eq, sql } from 'drizzle-orm';
 import { getUserId } from '../lib/authUtils';
 import {
   POWER_POINT_PACKAGES,
-  createPowerPointsCheckout,
+  cancelPowerPointsGift,
+  createPowerPointsCheckoutWithCustomerRecovery,
   getPackages,
   getReceivedGifts,
   getSentGifts,
@@ -15,7 +16,6 @@ import {
   markRead,
   type PowerPointPackageKey,
 } from '../powerPointsService';
-import { recoveryStripeService } from '../recoveryStripeService';
 
 // Tiny profanity filter — list intentionally short; production should plug in a real moderation API.
 const SLUR_PATTERNS = [
@@ -75,15 +75,11 @@ export function registerPowerPointsRoutes(app: Express, isAuthenticated: any) {
       )).limit(1);
       if (blocked) return res.status(403).json({ error: 'Cannot send Power Points to this user' });
 
-      // Ensure sender has a Stripe customer record
+      // Ensure sender has a Stripe customer record. If Stripe confirms that
+      // an old stored customer was deleted, the checkout service repairs it
+      // and retries the session without creating a second gift record.
       const [sender] = await db.select().from(users).where(eq(users.id, senderId)).limit(1);
       if (!sender) return res.status(401).json({ error: 'Sender not found' });
-      let customerId = sender.stripeCustomerId;
-      if (!customerId) {
-        const customer = await recoveryStripeService.createCustomer(sender.email || '', sender.id);
-        customerId = customer.id;
-        await db.update(users).set({ stripeCustomerId: customerId }).where(eq(users.id, sender.id));
-      }
 
       const origin = req.headers.origin || `https://${req.headers.host}`;
       const successUrl = `${origin}/power-points/sent?status=success`;
@@ -91,13 +87,14 @@ export function registerPowerPointsRoutes(app: Express, isAuthenticated: any) {
 
       const cleanMessage = message ? sanitizeMessage(message) : undefined;
 
-      const { url, giftId } = await createPowerPointsCheckout({
+      const { url, giftId } = await createPowerPointsCheckoutWithCustomerRecovery({
         senderId,
         receiverId,
         packageKey: packageKey as PowerPointPackageKey,
         message: cleanMessage,
         isAnonymous: !!isAnonymous,
-        customerId: customerId!,
+        customerId: sender.stripeCustomerId || '',
+        senderEmail: sender.email || '',
         successUrl,
         cancelUrl,
       });
@@ -107,6 +104,20 @@ export function registerPowerPointsRoutes(app: Express, isAuthenticated: any) {
       console.error('[powerPoints] checkout error', e);
       res.status(500).json({ error: e?.message || 'Checkout failed' });
     }
+  });
+
+  // Stripe sends buyers here when they leave Checkout. Closing the row here
+  // gives the sender immediate, accurate history; the expired-session webhook
+  // handles buyers who close the tab or never return.
+  app.get('/power-points/send/:receiverId', isAuthenticated, async (req: any, res) => {
+    const giftId = Number(req.query.giftId);
+    if (Number.isSafeInteger(giftId) && giftId > 0) {
+      await cancelPowerPointsGift(giftId, {
+        senderId: getUserId(req)!,
+        receiverId: req.params.receiverId,
+      });
+    }
+    res.redirect('/power-points?status=cancelled');
   });
 
   // Authenticated: my received gifts (inbox)

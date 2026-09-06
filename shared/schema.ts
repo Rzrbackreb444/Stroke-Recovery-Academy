@@ -366,7 +366,7 @@ export const powerPointGifts = pgTable("power_point_gifts", {
   message: text("message"), // motivational note
   isAnonymous: boolean("is_anonymous").notNull().default(false),
   stripePaymentId: text("stripe_payment_id"),
-  status: text("status").notNull().default("pending"), // pending | delivered | refunded
+  status: text("status").notNull().default("pending"), // pending | delivered | canceled | refunded
   deliveredAt: timestamp("delivered_at"),
   readAt: timestamp("read_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),

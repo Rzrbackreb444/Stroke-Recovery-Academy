@@ -1,6 +1,297 @@
 import Stripe from 'stripe';
+import { db } from './db';
+import { users } from '@shared/schema';
+import { eq, sql } from 'drizzle-orm';
 
 let connectionSettings: any;
+
+type StripeStartupSync = {
+  stripe: {
+    webhookEndpoints: {
+      retrieve(id: string): Promise<unknown>;
+    };
+    customers: {
+      retrieve(id: string): Promise<{ id: string; object?: string; deleted?: boolean }>;
+    };
+  };
+  listManagedWebhooks(): Promise<Array<{ id: string }>>;
+  getAccountId(): Promise<string>;
+  upsertCustomers(
+    customers: Array<{ id: string; object: string; deleted: boolean }>,
+    accountId: string,
+  ): Promise<unknown>;
+  postgresClient: {
+    delete(table: string, id: string): Promise<boolean>;
+    query(text: string, params?: unknown[]): Promise<{ rows: Array<{ id: string }> }>;
+  };
+};
+
+/**
+ * Stripe uses resource_missing for deleted objects. The status-code check
+ * covers older stripe-node errors that omit the more specific error code.
+ * Do not classify authentication, permission, or network errors as stale data.
+ */
+export function isStripeResourceMissingError(error: unknown): boolean {
+  const stripeError = error as {
+    code?: string;
+    statusCode?: number;
+    status?: number;
+  } | null;
+
+  return (
+    stripeError?.code === 'resource_missing' ||
+    stripeError?.statusCode === 404 ||
+    stripeError?.status === 404
+  );
+}
+
+function stripeErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+type StripeCustomerApi = {
+  customers: {
+    // Stripe's SDK response includes request metadata and uses `void` for
+    // `deleted` on live customers, so keep this adapter boundary structural.
+    retrieve(id: string): Promise<any>;
+    create(params: {
+      email?: string;
+      metadata?: Record<string, string>;
+    }, options?: { idempotencyKey?: string }): Promise<any>;
+    search?(params: {
+      query: string;
+      limit?: number;
+    }): Promise<{ data?: Array<{ id: string; deleted?: boolean | void }> }>;
+  };
+};
+
+export type StripeCustomerDatabase = Pick<typeof db, 'transaction'>;
+
+export type StripeCustomerStore = {
+  withUserLock<T>(
+    userId: string,
+    operation: (store: {
+      getCustomerId: () => Promise<string | null | undefined>;
+      setCustomerId: (customerId: string) => Promise<void>;
+    }) => Promise<T>,
+  ): Promise<T>;
+};
+
+/**
+ * Run a customer operation under the same transaction-scoped per-user lock
+ * used by the default users-table store. Callers with a different customer
+ * pointer table can reuse the lock while keeping their persistence isolated.
+ */
+export function withStripeCustomerUserLock<T>(
+  database: StripeCustomerDatabase,
+  userId: string,
+  operation: (tx: any) => Promise<T>,
+): Promise<T> {
+  return database.transaction(async (tx) => {
+    await tx.execute(sql`SELECT pg_advisory_xact_lock(
+      hashtextextended(${`stripe-customer:${userId}`}, 0)
+    )`);
+
+    return operation(tx);
+  });
+}
+
+/**
+ * Return a usable Stripe customer ID for checkout.
+ *
+ * Startup reconciliation intentionally keeps a missing customer in the sync
+ * schema for historical references, so application user rows may still point
+ * at that ID. Only a confirmed missing/deleted customer is replaced here.
+ * Authentication, permission, network, and other Stripe failures remain
+ * errors instead of being mistaken for stale data.
+ */
+export async function ensureStripeCustomer(
+  stripe: StripeCustomerApi,
+  customerId: string | null | undefined,
+  createParams: { email?: string; metadata?: Record<string, string> },
+  idempotencyKey?: string,
+): Promise<{ id: string; created: boolean }> {
+  if (customerId) {
+    try {
+      const customer = await stripe.customers.retrieve(customerId);
+      if (!customer.deleted) {
+        return { id: customer.id, created: false };
+      }
+    } catch (error) {
+      if (!isStripeResourceMissingError(error)) {
+        throw error;
+      }
+    }
+  }
+
+  // Stripe idempotency keys protect the immediate retry window. Search the
+  // durable customer metadata as well so a delayed retry can adopt a
+  // customer that was created before a local transaction rolled back even
+  // after Stripe has expired the idempotency key.
+  const userId = createParams.metadata?.userId;
+  if (userId && stripe.customers.search) {
+    const escapedUserId = userId.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    const existingCustomers = await stripe.customers.search({
+      query: `metadata['userId']:'${escapedUserId}'`,
+      limit: 1,
+    });
+    const existingCustomer = existingCustomers.data?.find((customer) => customer.deleted !== true);
+    if (existingCustomer) {
+      return { id: existingCustomer.id, created: true };
+    }
+  }
+
+  const customer = await stripe.customers.create(
+    createParams,
+    idempotencyKey ? { idempotencyKey } : undefined,
+  );
+  return { id: customer.id, created: true };
+}
+
+/**
+ * Create the default PostgreSQL-backed customer store.
+ *
+ * The transaction-scoped advisory lock and the customer read/write share the
+ * same connection, so overlapping requests converge even across app
+ * processes. The store abstraction keeps the repair helper deterministic in
+ * unit tests.
+ */
+export function createStripeCustomerStore(
+  database: StripeCustomerDatabase = db,
+  options: { clearSubscriptionStateOnCreate?: boolean } = {},
+): StripeCustomerStore {
+  return {
+    withUserLock: (userId, operation) =>
+      withStripeCustomerUserLock(database, userId, async (tx) => {
+        return operation({
+          getCustomerId: async () => {
+            const [user] = await tx
+              .select({ stripeCustomerId: users.stripeCustomerId })
+              .from(users)
+              .where(eq(users.id, userId))
+              .limit(1);
+            return user?.stripeCustomerId;
+          },
+          setCustomerId: async (customerId) => {
+            await tx
+              .update(users)
+              .set(options.clearSubscriptionStateOnCreate
+                ? {
+                    stripeCustomerId: customerId,
+                    stripeSubscriptionId: null,
+                    subscriptionStatus: null,
+                  }
+                : { stripeCustomerId: customerId })
+              .where(eq(users.id, userId));
+          },
+        });
+      }),
+  };
+}
+
+/**
+ * Ensure a user's Stripe customer and local pointer are created as one
+ * serialized operation.
+ */
+export async function ensureStripeCustomerForUser(
+  stripe: StripeCustomerApi,
+  store: StripeCustomerStore,
+  userId: string,
+  createParams: { email?: string; metadata?: Record<string, string> },
+  fallbackCustomerId?: string | null,
+): Promise<{ id: string; created: boolean }> {
+  return store.withUserLock(userId, async ({ getCustomerId, setCustomerId }) => {
+    const storedCustomerId = await getCustomerId();
+    const customer = await ensureStripeCustomer(
+      stripe,
+      storedCustomerId ?? fallbackCustomerId,
+      createParams,
+      `stripe-customer:${userId}`,
+    );
+
+    if (customer.created) {
+      await setCustomerId(customer.id);
+    }
+
+    return customer;
+  });
+}
+
+/**
+ * Clean up local records that the Stripe sync package otherwise keeps
+ * retrying on every startup.
+ *
+ * This deliberately runs before syncBackfill:
+ * - findOrCreateManagedWebhook logs a warning for every deleted endpoint it
+ *   finds in the local table before creating a replacement.
+ * - syncPaymentMethods reads local non-deleted customers, so a deleted Stripe
+ *   customer can abort the rest of the backfill.
+ *
+ * Only confirmed 404/resource_missing responses are repaired. Any other
+ * Stripe error is thrown so a bad key, permission failure, or outage remains
+ * visible in startup health signals.
+ */
+export async function reconcileStripeStartupState(
+  stripeSync: StripeStartupSync,
+): Promise<{ removedWebhookRecords: number; markedDeletedCustomers: number }> {
+  let removedWebhookRecords = 0;
+  for (const managedWebhook of await stripeSync.listManagedWebhooks()) {
+    try {
+      await stripeSync.stripe.webhookEndpoints.retrieve(managedWebhook.id);
+    } catch (error) {
+      if (!isStripeResourceMissingError(error)) {
+        throw new Error(
+          `Stripe webhook reconciliation failed for ${managedWebhook.id}: ${stripeErrorMessage(error)}`,
+          { cause: error },
+        );
+      }
+
+      await stripeSync.postgresClient.delete('_managed_webhooks', managedWebhook.id);
+      removedWebhookRecords++;
+    }
+  }
+
+  const customerResult = await stripeSync.postgresClient.query(`
+    SELECT id
+    FROM "stripe"."customers"
+    WHERE COALESCE(deleted, false) = false
+  `);
+  if (customerResult.rows.length === 0) {
+    return { removedWebhookRecords, markedDeletedCustomers: 0 };
+  }
+
+  const accountId = await stripeSync.getAccountId();
+  let markedDeletedCustomers = 0;
+  for (const customer of customerResult.rows) {
+    try {
+      const stripeCustomer = await stripeSync.stripe.customers.retrieve(customer.id);
+      if (!stripeCustomer.deleted) continue;
+
+      await stripeSync.upsertCustomers(
+        [{ id: customer.id, object: 'customer', deleted: true }],
+        accountId,
+      );
+      markedDeletedCustomers++;
+    } catch (error) {
+      if (!isStripeResourceMissingError(error)) {
+        throw new Error(
+          `Stripe customer reconciliation failed for ${customer.id}: ${stripeErrorMessage(error)}`,
+          { cause: error },
+        );
+      }
+
+      // Keep the row for historical references, but exclude it from the
+      // payment-method scan performed by stripe-replit-sync.
+      await stripeSync.upsertCustomers(
+        [{ id: customer.id, object: 'customer', deleted: true }],
+        accountId,
+      );
+      markedDeletedCustomers++;
+    }
+  }
+
+  return { removedWebhookRecords, markedDeletedCustomers };
+}
 
 function getConfiguredSecretCredentials() {
   const publishableKey =

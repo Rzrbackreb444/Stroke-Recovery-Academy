@@ -264,13 +264,27 @@ router.post("/delete", isAuthenticated, async (req: any, res: Response) => {
   // chain), then destroy the session and clear the cookie. Without the
   // explicit logout, a passport.session() middleware on a subsequent request
   // could re-attach a stale user object from the deserializer.
-  const finalize = () => {
+  const finalize = (logoutError?: any) => {
     if (req.session && typeof req.session.destroy === "function") {
-      req.session.destroy(() => {
+      req.session.destroy((sessionError: any) => {
+        if (logoutError || sessionError) {
+          console.error("[account/delete] session cleanup failed");
+          res.clearCookie("connect.sid");
+          return res.status(500).json({
+            error: "Account data was scrubbed but session cleanup failed. Please contact support.",
+          });
+        }
         res.clearCookie("connect.sid");
         return res.status(200).json({ ok: true, message: "Account deleted." });
       });
     } else {
+      if (logoutError) {
+        console.error("[account/delete] logout cleanup failed");
+        res.clearCookie("connect.sid");
+        return res.status(500).json({
+          error: "Account data was scrubbed but session cleanup failed. Please contact support.",
+        });
+      }
       return res.status(200).json({ ok: true, message: "Account deleted." });
     }
   };
@@ -278,8 +292,7 @@ router.post("/delete", isAuthenticated, async (req: any, res: Response) => {
   if (typeof req.logout === "function") {
     // Passport ≥0.6 requires a callback.
     req.logout((err: any) => {
-      if (err) console.warn("[account/delete] req.logout warning:", err?.message || err);
-      finalize();
+      finalize(err);
     });
   } else {
     finalize();

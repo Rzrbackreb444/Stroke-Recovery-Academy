@@ -1,18 +1,45 @@
 import { db } from './db';
 import { users, creatorEarnings, creatorPayouts } from '@shared/schema';
+import {
+  createStripeCustomerStore,
+  ensureStripeCustomerForUser,
+  getUncachableStripeClient,
+  isStripeResourceMissingError,
+  type StripeCustomerDatabase,
+} from './stripeClient';
 import { eq, sql, and, inArray } from 'drizzle-orm';
-import { getUncachableStripeClient } from './stripeClient';
 
 const PLATFORM_FEE_PERCENT = 15; // 15% platform fee
 const CREATOR_SHARE_PERCENT = 85; // 85% to creators
 
 export class StripeService {
+  constructor(
+    private readonly customerDatabase: StripeCustomerDatabase = db,
+    private readonly stripeClientFactory: typeof getUncachableStripeClient = getUncachableStripeClient,
+  ) {}
+
   async createCustomer(email: string, userId: string) {
     const stripe = await getUncachableStripeClient();
     return await stripe.customers.create({
       email,
       metadata: { userId },
     });
+  }
+
+  async getOrCreateCustomer(
+    customerId: string | null | undefined,
+    email: string,
+    userId: string,
+  ) {
+    const stripe = await this.stripeClientFactory();
+    const store = createStripeCustomerStore(this.customerDatabase, {
+      clearSubscriptionStateOnCreate: true,
+    });
+
+    return ensureStripeCustomerForUser(stripe, store, userId, {
+      email: email || undefined,
+      metadata: { userId },
+    }, customerId);
   }
 
   async createCheckoutSession(
@@ -160,9 +187,9 @@ export class StripeService {
     return user;
   }
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // PRODUCT & PRICE CREATION - Stroke Recovery Academy Subscription Tiers
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   async createKreAIteProducts() {
     const stripe = await getUncachableStripeClient();
@@ -255,9 +282,9 @@ export class StripeService {
     return result.rows;
   }
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // STRIPE CONNECT - Creator Onboarding & Payouts
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   async createConnectAccount(userId: string, email: string, returnUrl: string) {
     const stripe = await getUncachableStripeClient();
@@ -458,6 +485,70 @@ export class StripeService {
       .where(inArray(creatorEarnings.id, earningIds));
 
     return payout;
+  }
+
+  /**
+   * Create a replacement customer after Stripe confirms that the stored
+   * customer no longer exists. The shared customer store holds the
+   * transaction-scoped lock and uses a deterministic Stripe idempotency key,
+   * so a database rollback after Stripe succeeds is safe to retry.
+   */
+  async repairCustomer(userId: string, email: string, staleCustomerId?: string): Promise<string> {
+    const customer = await this.getOrCreateCustomer(staleCustomerId, email, userId);
+    return customer.id;
+  }
+
+  async ensureCustomer(userId: string, email: string, customerId?: string): Promise<string> {
+    return customerId || this.repairCustomer(userId, email);
+  }
+
+  async withCustomerRecovery<T>(
+    userId: string,
+    email: string,
+    customerId: string | undefined,
+    operation: (customerId: string) => Promise<T>,
+  ): Promise<T> {
+    let effectiveCustomerId = await this.ensureCustomer(userId, email, customerId);
+    try {
+      return await operation(effectiveCustomerId);
+    } catch (error) {
+      if (!isStripeResourceMissingError(error)) throw error;
+      effectiveCustomerId = await this.repairCustomer(userId, email, effectiveCustomerId);
+      return await operation(effectiveCustomerId);
+    }
+  }
+
+  async createCheckoutSessionWithCustomerRecovery(
+    userId: string,
+    email: string,
+    customerId: string | undefined,
+    priceId: string,
+    successUrl: string,
+    cancelUrl: string,
+    mode: 'subscription' | 'payment' = 'payment',
+    options: { trialDays?: number; allowPromotionCodes?: boolean; promotionCode?: string } = {},
+  ) {
+    return this.withCustomerRecovery(userId, email, customerId, (effectiveCustomerId) =>
+      this.createCheckoutSession(
+        effectiveCustomerId,
+        priceId,
+        successUrl,
+        cancelUrl,
+        mode,
+        options,
+      )
+    );
+  }
+
+  async createCustomerPortalSessionWithCustomerRecovery(
+    userId: string,
+    email: string,
+    customerId: string | undefined,
+    returnUrl: string,
+  ) {
+    return this.withCustomerRecovery(userId, email, customerId, (effectiveCustomerId) =>
+      this.createCustomerPortalSession(effectiveCustomerId, returnUrl)
+    );
   }
 }
 

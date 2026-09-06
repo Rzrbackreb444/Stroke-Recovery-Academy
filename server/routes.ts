@@ -56,7 +56,11 @@ import survivorProfileRoutes from "./survivorProfileRoutes";
 import accountRoutes from "./routes/accountRoutes";
 import { detectCrisis, buildCrisisResponse } from "./services/crisisDetection";
 import { stripeService } from "./stripeService";
-import { getStripeSync, getStripePublishableKey } from "./stripeClient";
+import {
+  getStripeSync,
+  getStripePublishableKey,
+  reconcileStripeStartupState,
+} from "./stripeClient";
 import { runMigrations } from "stripe-replit-sync";
 import { generateCoachResponse, getRandomQuote, generateStructuredContent, type ContentType, type GenerationRequest } from "./geminiService";
 import { searchAmazonProducts, getAmazonProduct, isConfigured as isAmazonConfigured } from "./amazonService";
@@ -264,8 +268,17 @@ async function initStripe() {
 
     const stripeSync = await getStripeSync();
 
-    console.log('Setting up managed webhook...');
     const webhookBaseUrl = `https://${process.env.REPLIT_DOMAINS?.split(',')[0]}`;
+    const reconciled = await reconcileStripeStartupState(stripeSync);
+    if (reconciled.removedWebhookRecords > 0 || reconciled.markedDeletedCustomers > 0) {
+      console.log(
+        `[startup] Reconciled stale Stripe state: ` +
+        `${reconciled.removedWebhookRecords} webhook record(s) removed, ` +
+        `${reconciled.markedDeletedCustomers} customer record(s) marked deleted`,
+      );
+    }
+
+    console.log('Setting up managed webhook...');
     const { webhook, uuid } = await stripeSync.findOrCreateManagedWebhook(
       `${webhookBaseUrl}/api/stripe/webhook`,
       {
@@ -276,7 +289,7 @@ async function initStripe() {
     console.log(`Webhook configured: ${webhook.url} (UUID: ${uuid})`);
 
     console.log('Syncing Stripe data...');
-    stripeSync.syncBackfill()
+    stripeSync.syncBackfill({ backfillRelatedEntities: false })
       .then(() => console.log('Stripe data synced'))
       .catch((err: any) => console.error('Error syncing Stripe data:', err));
   } catch (error) {
@@ -2717,15 +2730,10 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
         return res.status(400).json({ message: "Price ID is required" });
       }
 
-      let customerId = user.stripeCustomerId;
-      if (!customerId) {
-        const customer = await stripeService.createCustomer(user.email || '', user.id);
-        await stripeService.updateUserStripeInfo(user.id, { stripeCustomerId: customer.id });
-        customerId = customer.id;
-      }
-
-      const session = await stripeService.createCheckoutSession(
-        customerId,
+      const session = await stripeService.createCheckoutSessionWithCustomerRecovery(
+        user.id,
+        user.email || '',
+        user.stripeCustomerId || undefined,
         priceId,
         `${req.protocol}://${req.get('host')}/checkout/success`,
         `${req.protocol}://${req.get('host')}/checkout/cancel`,
@@ -2759,11 +2767,16 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
     try {
       const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
-      if (!user?.stripeCustomerId) {
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      if (!user.stripeCustomerId) {
         return res.status(400).json({ message: "No Stripe customer found" });
       }
 
-      const session = await stripeService.createCustomerPortalSession(
+      const session = await stripeService.createCustomerPortalSessionWithCustomerRecovery(
+        user.id,
+        user.email || '',
         user.stripeCustomerId,
         `${req.protocol}://${req.get('host')}/dashboard`
       );
@@ -13102,22 +13115,23 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
       const { creatorId, amount, storyId } = req.body;
       const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
-
-      let stripeCustomerId = user?.stripeCustomerId || '';
-      if (!stripeCustomerId) {
-        const customer = await recoveryStripeService.createCustomer(user?.email || '', userId);
-        stripeCustomerId = customer.id;
-        await db.update(users).set({ stripeCustomerId }).where(eq(users.id, userId));
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
       }
 
-      const session = await recoveryStripeService.createTipCheckout(
-        stripeCustomerId,
-        String(creatorId),
-        amount,
-        storyId,
-        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/dashboard?tip=success`,
-        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/dashboard`,
-        userId
+      const session = await recoveryStripeService.createCheckoutWithCustomerRecovery(
+        userId,
+        user?.email || '',
+        user?.stripeCustomerId || undefined,
+        (customerId) => recoveryStripeService.createTipCheckout(
+          customerId,
+          String(creatorId),
+          amount,
+          storyId,
+          `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/dashboard?tip=success`,
+          `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/dashboard`,
+          userId
+        )
       );
       
       res.json({ url: session.url });
@@ -13137,14 +13151,22 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
       }
       const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
       const baseUrl = process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : '';
       
-      const session = await recoveryStripeService.createSubscriptionCheckout(
-        user?.stripeCustomerId || '',
-        tier,
-        `${baseUrl}/recovery/dashboard?subscription=success`,
-        `${baseUrl}/recovery/pricing`,
-        withTrial !== false
+      const session = await recoveryStripeService.createCheckoutWithCustomerRecovery(
+        userId,
+        user?.email || '',
+        user?.stripeCustomerId || undefined,
+        (customerId) => recoveryStripeService.createSubscriptionCheckout(
+          customerId,
+          tier,
+          `${baseUrl}/recovery/dashboard?subscription=success`,
+          `${baseUrl}/recovery/pricing`,
+          withTrial !== false
+        )
       );
       
       res.json({ url: session.url });
@@ -13160,12 +13182,19 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
       const { coachingType } = req.body;
       const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
-      
-      const session = await recoveryStripeService.createCoachingCheckout(
-        user?.stripeCustomerId || '',
-        coachingType,
-        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/coaching?booking=success`,
-        `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/coaching`
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      const session = await recoveryStripeService.createCheckoutWithCustomerRecovery(
+        userId,
+        user?.email || '',
+        user?.stripeCustomerId || undefined,
+        (customerId) => recoveryStripeService.createCoachingCheckout(
+          customerId,
+          coachingType,
+          `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/coaching?booking=success`,
+          `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/coaching`
+        )
       );
       
       res.json({ url: session.url });
@@ -13279,6 +13308,7 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
   // Coaching package checkout
   app.post('/api/recovery/payments/coaching-package', isAuthenticated, async (req: any, res) => {
     try {
+      const { recoveryStripeService } = await import('./recoveryStripeService');
       const { getRecoveryStripeClient, isRecoveryStripeConfigured } = await import('./recoveryStripeClient');
       const { packageId } = req.body;
       
@@ -13351,11 +13381,15 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
         },
       };
       
-      if (user?.stripeCustomerId) {
-        sessionParams.customer = user.stripeCustomerId;
-      }
-      
-      const session = await stripe.checkout.sessions.create(sessionParams);
+      const session = await recoveryStripeService.createCheckoutWithCustomerRecovery(
+        userId,
+        user?.email || '',
+        user?.stripeCustomerId || undefined,
+        (customerId) => {
+          sessionParams.customer = customerId;
+          return stripe.checkout.sessions.create(sessionParams);
+        }
+      );
       res.json({ url: session.url });
     } catch (error: any) {
       console.error('Coaching package error:', error);
@@ -14213,12 +14247,6 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
         { requireUploadIntent: true },
       );
 
-      let customerId = user.stripeCustomerId;
-      if (!customerId) {
-        const customer = await stripeService.createCustomer(user.email || '', user.id);
-        await stripeService.updateUserStripeInfo(user.id, { stripeCustomerId: customer.id });
-        customerId = customer.id;
-      }
       const customerEmail = user.email || '';
 
       const orderNumber = `REF-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
@@ -14246,12 +14274,17 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       });
 
       const { createCheckoutSession } = await import('./marketplaceService');
-      const session = await createCheckoutSession(
-        edition.id,
-        customerId,
+      const session = await stripeService.withCustomerRecovery(
+        user.id,
         customerEmail,
-        `${req.protocol}://${req.get('host')}/recovery/journal?purchase=success`,
-        `${req.protocol}://${req.get('host')}/recovery/journal?purchase=cancel`,
+        user.stripeCustomerId || undefined,
+        (customerId) => createCheckoutSession(
+          edition.id,
+          customerId,
+          customerEmail,
+          `${req.protocol}://${req.get('host')}/recovery/journal?purchase=success`,
+          `${req.protocol}://${req.get('host')}/recovery/journal?purchase=cancel`,
+        )
       );
 
       await db.update(bookOrders)
@@ -21782,7 +21815,6 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         return res.status(404).json({ message: "User not found" });
       }
 
-      const customerId = user.stripeCustomerId || null;
       const customerEmail = user.email || '';
 
       // Resolve edition + listing so we can create a pending order
@@ -21822,12 +21854,17 @@ Provide a JSON response with track suggestions for each chapter/section.`;
       });
 
       const { createCheckoutSession } = await import('./marketplaceService');
-      const session = await createCheckoutSession(
-        editionId,
-        customerId,
+      const session = await stripeService.withCustomerRecovery(
+        user.id,
         customerEmail,
-        `${req.protocol}://${req.get('host')}/marketplace/purchase-success?edition=${editionId}`,
-        `${req.protocol}://${req.get('host')}/book/buy`
+        user.stripeCustomerId || undefined,
+        (customerId) => createCheckoutSession(
+          editionId,
+          customerId,
+          customerEmail,
+          `${req.protocol}://${req.get('host')}/marketplace/purchase-success?edition=${editionId}`,
+          `${req.protocol}://${req.get('host')}/book/buy`
+        )
       );
 
       // Tie the session to the pending order so the webhook can match it
@@ -21857,17 +21894,12 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         return res.status(404).json({ message: "User not found" });
       }
 
-      let customerId = user.stripeCustomerId;
-      if (!customerId) {
-        const customer = await stripeService.createCustomer(user.email || '', user.id);
-        await stripeService.updateUserStripeInfo(user.id, { stripeCustomerId: customer.id });
-        customerId = customer.id;
-      }
-
       const creditPrice = amount * 100;
 
-      const session = await stripeService.createCheckoutSession(
-        customerId,
+      const session = await stripeService.createCheckoutSessionWithCustomerRecovery(
+        user.id,
+        user.email || '',
+        user.stripeCustomerId || undefined,
         creditPrice.toString(),
         `${req.protocol}://${req.get('host')}/credits/success?amount=${amount}`,
         `${req.protocol}://${req.get('host')}/pricing`,

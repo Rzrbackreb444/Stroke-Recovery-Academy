@@ -1,7 +1,12 @@
 import { db } from './db';
 import { users, recoveryCreatorTips, recoveryPremiumPurchases } from '@shared/schema';
-import { eq, sql } from 'drizzle-orm';
 import { getRecoveryStripeClient, isRecoveryStripeConfigured } from './recoveryStripeClient';
+import {
+  createStripeCustomerStore,
+  ensureStripeCustomerForUser,
+} from './stripeClient';
+import { eq, sql } from 'drizzle-orm';
+import { isStripeResourceMissingError } from './stripeClient';
 
 const PLATFORM_FEE_PERCENT = 15;
 const CREATOR_SHARE_PERCENT = 85;
@@ -17,6 +22,24 @@ export class RecoveryStripeService {
       email,
       metadata: { userId, platform: 'stroke_recovery_academy' },
     });
+  }
+
+  async getOrCreateCustomer(
+    _customerId: string | null | undefined,
+    email: string,
+    userId: string,
+  ) {
+    const stripe = getRecoveryStripeClient();
+    return ensureStripeCustomerForUser(
+      stripe,
+      createStripeCustomerStore(),
+      userId,
+      {
+        email: email || undefined,
+        metadata: { userId, platform: 'stroke_recovery_academy' },
+      },
+      _customerId,
+    );
   }
 
   async createTipCheckout(
@@ -355,6 +378,53 @@ export class RecoveryStripeService {
       customer: customerId,
       return_url: returnUrl,
     });
+  }
+
+  async repairCustomer(userId: string, email: string, staleCustomerId?: string): Promise<string> {
+    const customer = await this.getOrCreateCustomer(staleCustomerId, email, userId);
+    if (customer.created) {
+      await db.update(users)
+        .set({
+          stripeSubscriptionId: null,
+          subscriptionStatus: null,
+        })
+        .where(eq(users.id, userId));
+    }
+    return customer.id;
+  }
+
+  async ensureCustomer(userId: string, email: string, customerId?: string): Promise<string> {
+    const customer = await this.getOrCreateCustomer(customerId, email, userId);
+    return customer.id;
+  }
+
+  /**
+   * Recovery checkout routes all use the same Stripe customer column. Retry
+   * exactly once only when Stripe confirms that the stored ID is gone.
+   */
+  async withCustomerRecovery<T>(
+    userId: string,
+    email: string,
+    customerId: string | undefined,
+    operation: (customerId: string) => Promise<T>,
+  ): Promise<T> {
+    let effectiveCustomerId = await this.ensureCustomer(userId, email, customerId);
+    try {
+      return await operation(effectiveCustomerId);
+    } catch (error) {
+      if (!isStripeResourceMissingError(error)) throw error;
+      effectiveCustomerId = await this.repairCustomer(userId, email, effectiveCustomerId);
+      return await operation(effectiveCustomerId);
+    }
+  }
+
+  async createCheckoutWithCustomerRecovery<T>(
+    userId: string,
+    email: string,
+    customerId: string | undefined,
+    createSession: (customerId: string) => Promise<T>,
+  ): Promise<T> {
+    return this.withCustomerRecovery(userId, email, customerId, createSession);
   }
 }
 

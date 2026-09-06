@@ -29,6 +29,17 @@ function postgresConnectionOptions(url: string) {
   };
 }
 
+function postgresDatabaseIdentity(url: string): string {
+  const parsed = new URL(url);
+  const protocol = parsed.protocol.toLowerCase() === "postgres:"
+    ? "postgresql:"
+    : parsed.protocol.toLowerCase();
+  const port = parsed.port ? Number(parsed.port) : 5432;
+  const database = decodeURIComponent(parsed.pathname.slice(1));
+
+  return `${protocol}//${parsed.hostname.toLowerCase()}:${port}/${database}`;
+}
+
 function runProcess(command: string, args: string[]): Promise<void> {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, { stdio: ["ignore", "ignore", "pipe"] });
@@ -170,7 +181,10 @@ export async function createDisposablePostgres(
 ): Promise<DisposablePostgres> {
   const configuredUrl = process.env.RECOVERY_TEST_DATABASE_URL;
   if (configuredUrl) {
-    if (configuredUrl === process.env.DATABASE_URL) {
+    if (
+      process.env.DATABASE_URL &&
+      postgresDatabaseIdentity(configuredUrl) === postgresDatabaseIdentity(process.env.DATABASE_URL)
+    ) {
       throw new Error("RECOVERY_TEST_DATABASE_URL must not be the development DATABASE_URL");
     }
     const pool = new Pool(postgresConnectionOptions(configuredUrl));

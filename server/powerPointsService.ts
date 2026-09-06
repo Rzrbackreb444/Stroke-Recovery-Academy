@@ -3,6 +3,7 @@ import { powerPointGifts, users } from '@shared/schema';
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { addCreditsInTransaction } from './creditService';
 import { getRecoveryStripeClient } from './recoveryStripeClient';
+import { recoveryStripeService } from './recoveryStripeService';
 
 export type PowerPointPackageKey = 'cheer' | 'spark' | 'boost' | 'surge' | 'beast';
 
@@ -26,7 +27,7 @@ export function getPackages(): PowerPointPackage[] {
   return Object.values(POWER_POINT_PACKAGES);
 }
 
-export async function createPowerPointsCheckout(opts: {
+export interface PowerPointsCheckoutOptions {
   senderId: string;
   receiverId: string;
   packageKey: PowerPointPackageKey;
@@ -35,7 +36,25 @@ export async function createPowerPointsCheckout(opts: {
   customerId: string;
   successUrl: string;
   cancelUrl: string;
-}) {
+}
+
+type PreparedPowerPointsGift = {
+  giftId: number;
+  recipientName: string;
+};
+
+function addGiftIdToCancelUrl(cancelUrl: string, giftId: number): string {
+  try {
+    const url = new URL(cancelUrl);
+    url.searchParams.set('giftId', String(giftId));
+    return url.toString();
+  } catch {
+    const separator = cancelUrl.includes('?') ? '&' : '?';
+    return `${cancelUrl}${separator}giftId=${encodeURIComponent(String(giftId))}`;
+  }
+}
+
+async function preparePowerPointsGift(opts: PowerPointsCheckoutOptions): Promise<PreparedPowerPointsGift> {
   const pkg = POWER_POINT_PACKAGES[opts.packageKey];
   if (!pkg) throw new Error(`Unknown power-point package: ${opts.packageKey}`);
 
@@ -54,8 +73,17 @@ export async function createPowerPointsCheckout(opts: {
     isAnonymous: !!opts.isAnonymous,
   }).returning();
 
+  return {
+    giftId: pending.id,
+    recipientName: receiver.firstName || 'a survivor',
+  };
+}
+
+async function createPowerPointsCheckoutSession(
+  opts: PowerPointsCheckoutOptions,
+  preparedGift: PreparedPowerPointsGift,
+) {
   const stripe = getRecoveryStripeClient();
-  const recipientName = receiver.firstName || 'a survivor';
   const session = await stripe.checkout.sessions.create({
     customer: opts.customerId,
     payment_method_types: ['card'],
@@ -63,28 +91,64 @@ export async function createPowerPointsCheckout(opts: {
       price_data: {
         currency: 'usd',
         product_data: {
-          name: `Power Points — ${pkg.label} for ${recipientName}`,
-          description: `${pkg.points.toLocaleString()} Power Points delivered with your message.`,
+          name: `Power Points — ${POWER_POINT_PACKAGES[opts.packageKey].label} for ${preparedGift.recipientName}`,
+          description: `${POWER_POINT_PACKAGES[opts.packageKey].points.toLocaleString()} Power Points delivered with your message.`,
         },
-        unit_amount: pkg.amountCents,
+        unit_amount: POWER_POINT_PACKAGES[opts.packageKey].amountCents,
       },
       quantity: 1,
     }],
     mode: 'payment',
     success_url: opts.successUrl,
-    cancel_url: opts.cancelUrl,
+    // Include the gift id so the cancel redirect can close the pending row
+    // immediately. Stripe's expired-session webhook remains the backstop when
+    // the buyer never returns to the app.
+    cancel_url: addGiftIdToCancelUrl(opts.cancelUrl, preparedGift.giftId),
     metadata: {
       type: 'power_points',
-      giftId: String(pending.id),
+      giftId: String(preparedGift.giftId),
       senderId: opts.senderId,
       receiverId: opts.receiverId,
-      packageKey: pkg.key,
-      points: String(pkg.points),
+      packageKey: opts.packageKey,
+      points: String(POWER_POINT_PACKAGES[opts.packageKey].points),
       platform: 'stroke_recovery_academy',
     },
   });
 
-  return { url: session.url, giftId: pending.id };
+  return { url: session.url, giftId: preparedGift.giftId };
+}
+
+export async function createPowerPointsCheckout(opts: PowerPointsCheckoutOptions) {
+  const preparedGift = await preparePowerPointsGift(opts);
+  return createPowerPointsCheckoutSession(opts, preparedGift);
+}
+
+/**
+ * Create one pending gift and retry only the Stripe session when Stripe confirms
+ * that the sender's stored customer no longer exists. Keeping gift creation
+ * outside the retry prevents duplicate pending gifts and keeps session
+ * metadata pointed at the same gift after repair.
+ */
+export async function createPowerPointsCheckoutWithCustomerRecovery(
+  opts: PowerPointsCheckoutOptions & { senderEmail: string },
+) {
+  const customerId = await recoveryStripeService.ensureCustomer(
+    opts.senderId,
+    opts.senderEmail,
+    opts.customerId,
+  );
+  const preparedGift = await preparePowerPointsGift(opts);
+
+  return recoveryStripeService.withCustomerRecovery(
+    opts.senderId,
+    opts.senderEmail,
+    customerId,
+    (effectiveCustomerId) =>
+      createPowerPointsCheckoutSession(
+        { ...opts, customerId: effectiveCustomerId },
+        preparedGift,
+      ),
+  );
 }
 
 export async function deliverPowerPoints(session: any) {
@@ -136,6 +200,40 @@ export async function deliverPowerPoints(session: any) {
   });
 }
 
+/**
+ * Move an unpaid gift out of pending when Checkout is abandoned or its
+ * deferred payment fails. The pending predicate makes this safe against
+ * duplicate failure events and against a late failure arriving after a
+ * successful delivery.
+ */
+export async function cancelPowerPointsGift(
+  sessionOrGiftId: any,
+  owner?: { senderId?: string; receiverId?: string },
+): Promise<boolean> {
+  const giftId = typeof sessionOrGiftId === 'number'
+    ? sessionOrGiftId
+    : parseInt(sessionOrGiftId?.metadata?.giftId, 10);
+  if (!Number.isFinite(giftId)) {
+    console.error('[powerPoints] missing giftId in cancellation metadata');
+    return false;
+  }
+
+  const conditions = [
+    eq(powerPointGifts.id, giftId),
+    eq(powerPointGifts.status, 'pending'),
+  ];
+  if (owner?.senderId) conditions.push(eq(powerPointGifts.senderId, owner.senderId));
+  if (owner?.receiverId) conditions.push(eq(powerPointGifts.receiverId, owner.receiverId));
+
+  const [canceled] = await db
+    .update(powerPointGifts)
+    .set({ status: 'canceled' })
+    .where(and(...conditions))
+    .returning({ id: powerPointGifts.id });
+
+  return !!canceled;
+}
+
 export async function getReceivedGifts(receiverId: string, limit = 50) {
   return db
     .select({
@@ -166,7 +264,7 @@ export async function getReceivedGifts(receiverId: string, limit = 50) {
 }
 
 export async function getSentGifts(senderId: string, limit = 50) {
-  return db
+  const gifts = await db
     .select({
       id: powerPointGifts.id,
       receiverId: powerPointGifts.receiverId,
@@ -185,6 +283,22 @@ export async function getSentGifts(senderId: string, limit = 50) {
     .where(eq(powerPointGifts.senderId, senderId))
     .orderBy(desc(powerPointGifts.createdAt))
     .limit(limit);
+
+  return gifts.map((gift) => ({
+    ...gift,
+    paymentStatus: gift.status === 'delivered'
+      ? 'completed'
+      : gift.status === 'refunded'
+        ? 'refunded'
+        : 'unpaid',
+    paymentStatusLabel: gift.status === 'delivered'
+      ? 'Completed'
+      : gift.status === 'refunded'
+        ? 'Refunded'
+        : gift.status === 'canceled'
+          ? 'Not paid'
+          : 'Awaiting payment',
+  }));
 }
 
 export async function markRead(receiverId: string, giftId: number) {

@@ -43,15 +43,6 @@ function base64ToBuffer(b64: string): Buffer {
   return Buffer.from(stripped, "base64");
 }
 
-async function getOrCreateStripeCustomer(userId: string): Promise<string | null> {
-  const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-  if (!user) return null;
-  if (user.stripeCustomerId) return user.stripeCustomerId;
-  const customer = await stripeService.createCustomer(user.email || "", user.id);
-  await stripeService.updateUserStripeInfo(user.id, { stripeCustomerId: customer.id });
-  return customer.id;
-}
-
 export function registerVoiceCloneRoutes(app: Express) {
   // NOTE: the larger 15mb express.json body parser for /api/voice-clones is
   // mounted in server/app.ts BEFORE the global 5mb parser so the global cap
@@ -108,21 +99,29 @@ export function registerVoiceCloneRoutes(app: Express) {
         return res.status(503).json({ message: "Voice clone billing not configured yet" });
       }
 
+      const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+      if (!user) return res.status(404).json({ message: "User not found" });
+
       // For a per-clone purchase, require active subscription first — keeps
-      // the $5 charge meaningful (only paying subscribers can mint). Money
-      // path → bypass cache for an authoritative Stripe read.
+      // the $5 charge meaningful (only paying subscribers can mint). Resolve
+      // the customer through the serialized Stripe helper first so a deleted
+      // customer cannot make this gate fail before checkout recovery runs.
+      let customerId = user.stripeCustomerId || undefined;
       if (parsed.data.mode === "clone") {
-        const [u] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-        const ok = await hasActiveVoiceCloneSubscription(u?.stripeCustomerId || null, {
+        customerId = (
+          await stripeService.getOrCreateCustomer(
+            customerId,
+            user.email || "",
+            user.id,
+          )
+        ).id;
+        const ok = await hasActiveVoiceCloneSubscription(customerId, {
           skipCache: true,
         });
         if (!ok) {
           return res.status(402).json({ message: "Subscription required before purchasing a clone slot" });
         }
       }
-
-      const customerId = await getOrCreateStripeCustomer(userId);
-      if (!customerId) return res.status(404).json({ message: "User not found" });
 
       const priceId = parsed.data.mode === "subscription" ? subscriptionPriceId : perClonePriceId;
       const stripeMode = parsed.data.mode === "subscription" ? "subscription" : "payment";
@@ -131,7 +130,12 @@ export function registerVoiceCloneRoutes(app: Express) {
           ? "/voice-library?subscribed=1"
           : "/voice-library?clone_session_id={CHECKOUT_SESSION_ID}";
 
-      const session = await stripeService.createCheckoutSession(
+      // Retry exactly once only when Stripe confirms that this customer is
+      // missing. The recovery helper persists the replacement with a
+      // compare-and-set, so concurrent requests cannot overwrite a winner.
+      const session = await stripeService.createCheckoutSessionWithCustomerRecovery(
+        user.id,
+        user.email || "",
         customerId,
         priceId,
         `${req.protocol}://${req.get("host")}${successPath}`,

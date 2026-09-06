@@ -22,7 +22,12 @@ import {
   type BillingPeriod,
 } from "@shared/studioTiers";
 import { and, desc, eq, sql } from "drizzle-orm";
-import { getUncachableStripeClient } from "../stripeClient";
+import {
+  ensureStripeCustomerForUser,
+  getUncachableStripeClient,
+  withStripeCustomerUserLock,
+  type StripeCustomerStore,
+} from "../stripeClient";
 import {
   cloneVoiceWithElevenLabs,
   synthesizeWithElevenLabs,
@@ -186,17 +191,50 @@ async function getOrCreateCustomer(
   userId: string,
   email: string
 ): Promise<string> {
-  const [existing] = await db
-    .select()
-    .from(sasquatchStudioSubscriptions)
-    .where(eq(sasquatchStudioSubscriptions.userId, userId))
-    .limit(1);
-  if (existing?.stripeCustomerId) return existing.stripeCustomerId;
   const stripe = await getUncachableStripeClient();
-  const customer = await stripe.customers.create({
-    email,
-    metadata: { userId, scope: "sasquatch_studio" },
-  });
+  const store: StripeCustomerStore = {
+    withUserLock: (lockedUserId, operation) =>
+      withStripeCustomerUserLock(db, lockedUserId, async (tx) =>
+        operation({
+          getCustomerId: async () => {
+            const [subscription] = await tx
+              .select({ stripeCustomerId: sasquatchStudioSubscriptions.stripeCustomerId })
+              .from(sasquatchStudioSubscriptions)
+              .where(eq(sasquatchStudioSubscriptions.userId, lockedUserId))
+              .limit(1);
+            return subscription?.stripeCustomerId;
+          },
+          setCustomerId: async (stripeCustomerId) => {
+            await tx
+              .insert(sasquatchStudioSubscriptions)
+              .values({
+                userId: lockedUserId,
+                email,
+                status: "inactive",
+                stripeCustomerId,
+              })
+              .onConflictDoUpdate({
+                target: sasquatchStudioSubscriptions.userId,
+                set: {
+                  email,
+                  stripeCustomerId,
+                  updatedAt: new Date(),
+                },
+              });
+          },
+        }),
+      ),
+  };
+
+  const customer = await ensureStripeCustomerForUser(
+    stripe,
+    store,
+    userId,
+    {
+      email: email || undefined,
+      metadata: { userId, scope: "sasquatch_studio" },
+    },
+  );
   return customer.id;
 }
 
