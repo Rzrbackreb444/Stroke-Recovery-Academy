@@ -33,6 +33,7 @@ import { randomUUID } from "node:crypto";
 import { pool as dbPool } from "../server/db";
 import { WebhookHandlers, type WebhookDependencies } from "../server/webhookHandlers";
 import { recoveryStripeService } from "../server/recoveryStripeService";
+import { getSentGifts } from "../server/powerPointsService";
 
 // ── tiny test harness (matches the style of recoveryAnchorSchema.test.ts) ──
 let passed = 0;
@@ -105,6 +106,32 @@ function makePowerPointsPayload(eventId: string, giftId: number, paymentIntent: 
           status: "complete",
           payment_status: "paid",
           payment_intent: paymentIntent,
+          metadata: {
+            type: "power_points",
+            giftId: String(giftId),
+          },
+        },
+      },
+    }),
+  );
+}
+
+function makeAbandonedPowerPointsPayload(
+  eventId: string,
+  eventType: "checkout.session.expired" | "checkout.session.async_payment_failed",
+  giftId: number,
+) {
+  return Buffer.from(
+    JSON.stringify({
+      id: eventId,
+      type: eventType,
+      object: "event",
+      data: {
+        object: {
+          id: `cs_test_${eventId}`,
+          object: "checkout.session",
+          status: eventType === "checkout.session.expired" ? "expired" : "open",
+          payment_status: "unpaid",
           metadata: {
             type: "power_points",
             giftId: String(giftId),
@@ -429,6 +456,79 @@ async function run() {
     assert(row?.status === "processed", "concurrent event ends processed");
   } finally {
     await cleanupGiftFixture(concurrentFixture);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  console.log("\n• Abandoned Power Points checkout is terminal and never credits later");
+  const expiredEventId = `evt_test_${runId}_power_points_expired`;
+  const failedEventId = `evt_test_${runId}_power_points_async_failed`;
+  const latePaidEventId = `evt_test_${runId}_power_points_late_paid`;
+  created.push(expiredEventId, failedEventId, latePaidEventId);
+  const abandonedFixture = await createGiftFixture();
+  const failedFixture = await createGiftFixture();
+  try {
+    const dependencies: WebhookDependencies = { sync: noOpSync };
+    const expiredPayload = makeAbandonedPowerPointsPayload(
+      expiredEventId,
+      "checkout.session.expired",
+      abandonedFixture.giftId,
+    );
+    assert(
+      (await tryProcess(expiredPayload, "test-signature", dependencies)) === null,
+      "expired checkout is acknowledged",
+    );
+    const expiredCounts = await fixtureCounts(
+      abandonedFixture.receiverId,
+      abandonedFixture.giftId,
+    );
+    assert(expiredCounts.gift?.status === "canceled", "expired gift leaves pending");
+    assert(expiredCounts.wallet?.bonus_credits === 0, "expired gift does not credit the receiver");
+    assert(expiredCounts.ledger.length === 0, "expired gift creates no credit ledger entry");
+
+    // A replay is idempotent, and a differently delivered paid event cannot
+    // resurrect the canceled row because delivery also claims only pending.
+    assert(
+      (await tryProcess(expiredPayload, "test-signature", dependencies)) === null,
+      "replayed expiration is ignored",
+    );
+    const latePaidPayload = makePowerPointsPayload(
+      latePaidEventId,
+      abandonedFixture.giftId,
+      abandonedFixture.paymentIntent,
+    );
+    assert(
+      (await tryProcess(latePaidPayload, "test-signature", dependencies)) === null,
+      "late paid event is acknowledged without delivery",
+    );
+    const latePaidCounts = await fixtureCounts(
+      abandonedFixture.receiverId,
+      abandonedFixture.giftId,
+    );
+    assert(latePaidCounts.gift?.status === "canceled", "late payment cannot reopen a canceled gift");
+    assert(latePaidCounts.wallet?.bonus_credits === 0, "late payment cannot credit a canceled gift");
+
+    const sent = await getSentGifts(abandonedFixture.senderId);
+    assert(
+      sent[0]?.paymentStatus === "unpaid" && sent[0]?.paymentStatusLabel === "Not paid",
+      "sent history labels a canceled gift as unpaid",
+    );
+
+    const failedPayload = makeAbandonedPowerPointsPayload(
+      failedEventId,
+      "checkout.session.async_payment_failed",
+      failedFixture.giftId,
+    );
+    assert(
+      (await tryProcess(failedPayload, "test-signature", dependencies)) === null,
+      "failed delayed payment is acknowledged",
+    );
+    assert(
+      (await fixtureCounts(failedFixture.receiverId, failedFixture.giftId)).gift?.status === "canceled",
+      "failed delayed payment leaves pending",
+    );
+  } finally {
+    await cleanupGiftFixture(abandonedFixture);
+    await cleanupGiftFixture(failedFixture);
   }
 
   // ─────────────────────────────────────────────────────────────────────────

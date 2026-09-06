@@ -7,6 +7,7 @@ export interface WebhookDependencies {
     processWebhook(payload: Buffer, signature: string, uuid: string): Promise<void>;
   };
   processSuccessfulPayment?: (session: any) => Promise<void>;
+  processCanceledPayment?: (session: any) => Promise<void>;
 }
 
 export class WebhookHandlers {
@@ -171,7 +172,8 @@ export class WebhookHandlers {
       //       payment-level idempotency keeps the retry safe.
       if (
         parsedEvent &&
-        eventType === 'checkout.session.completed' &&
+        (eventType === 'checkout.session.completed' ||
+          eventType === 'checkout.session.async_payment_succeeded') &&
         (parsedEvent as any).data?.object?.payment_status === 'paid' &&
         ['power_points', 'tip', 'premium_purchase'].includes(
           (parsedEvent as any).data?.object?.metadata?.type,
@@ -183,6 +185,26 @@ export class WebhookHandlers {
         } else {
           const { recoveryStripeService } = await import('./recoveryStripeService');
           await recoveryStripeService.processSuccessfulPayment(session);
+        }
+      }
+
+      // A buyer can leave Checkout without completing it, and delayed payment
+      // methods can fail after the session was created. Close only the
+      // matching pending Power Points gift; deliverPowerPoints uses the same
+      // pending predicate, so a late failure can never undo or double-credit a
+      // completed gift.
+      if (
+        parsedEvent &&
+        (eventType === 'checkout.session.expired' ||
+          eventType === 'checkout.session.async_payment_failed') &&
+        (parsedEvent as any).data?.object?.metadata?.type === 'power_points'
+      ) {
+        const session: any = (parsedEvent as any).data.object;
+        if (dependencies.processCanceledPayment) {
+          await dependencies.processCanceledPayment(session);
+        } else {
+          const { cancelPowerPointsGift } = await import('./powerPointsService');
+          await cancelPowerPointsGift(session);
         }
       }
 

@@ -6,6 +6,7 @@ import { and, eq, sql } from 'drizzle-orm';
 import { getUserId } from '../lib/authUtils';
 import {
   POWER_POINT_PACKAGES,
+  cancelPowerPointsGift,
   createPowerPointsCheckoutWithCustomerRecovery,
   getPackages,
   getReceivedGifts,
@@ -103,6 +104,20 @@ export function registerPowerPointsRoutes(app: Express, isAuthenticated: any) {
       console.error('[powerPoints] checkout error', e);
       res.status(500).json({ error: e?.message || 'Checkout failed' });
     }
+  });
+
+  // Stripe sends buyers here when they leave Checkout. Closing the row here
+  // gives the sender immediate, accurate history; the expired-session webhook
+  // handles buyers who close the tab or never return.
+  app.get('/power-points/send/:receiverId', isAuthenticated, async (req: any, res) => {
+    const giftId = Number(req.query.giftId);
+    if (Number.isSafeInteger(giftId) && giftId > 0) {
+      await cancelPowerPointsGift(giftId, {
+        senderId: getUserId(req)!,
+        receiverId: req.params.receiverId,
+      });
+    }
+    res.redirect('/power-points?status=cancelled');
   });
 
   // Authenticated: my received gifts (inbox)
