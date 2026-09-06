@@ -3,6 +3,7 @@ import { powerPointGifts, users } from '@shared/schema';
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { addCreditsInTransaction } from './creditService';
 import { getRecoveryStripeClient } from './recoveryStripeClient';
+import { recoveryStripeService } from './recoveryStripeService';
 
 export type PowerPointPackageKey = 'cheer' | 'spark' | 'boost' | 'surge' | 'beast';
 
@@ -26,7 +27,7 @@ export function getPackages(): PowerPointPackage[] {
   return Object.values(POWER_POINT_PACKAGES);
 }
 
-export async function createPowerPointsCheckout(opts: {
+export interface PowerPointsCheckoutOptions {
   senderId: string;
   receiverId: string;
   packageKey: PowerPointPackageKey;
@@ -35,7 +36,14 @@ export async function createPowerPointsCheckout(opts: {
   customerId: string;
   successUrl: string;
   cancelUrl: string;
-}) {
+}
+
+type PreparedPowerPointsGift = {
+  giftId: number;
+  recipientName: string;
+};
+
+async function preparePowerPointsGift(opts: PowerPointsCheckoutOptions): Promise<PreparedPowerPointsGift> {
   const pkg = POWER_POINT_PACKAGES[opts.packageKey];
   if (!pkg) throw new Error(`Unknown power-point package: ${opts.packageKey}`);
 
@@ -54,8 +62,17 @@ export async function createPowerPointsCheckout(opts: {
     isAnonymous: !!opts.isAnonymous,
   }).returning();
 
+  return {
+    giftId: pending.id,
+    recipientName: receiver.firstName || 'a survivor',
+  };
+}
+
+async function createPowerPointsCheckoutSession(
+  opts: PowerPointsCheckoutOptions,
+  preparedGift: PreparedPowerPointsGift,
+) {
   const stripe = getRecoveryStripeClient();
-  const recipientName = receiver.firstName || 'a survivor';
   const session = await stripe.checkout.sessions.create({
     customer: opts.customerId,
     payment_method_types: ['card'],
@@ -63,10 +80,10 @@ export async function createPowerPointsCheckout(opts: {
       price_data: {
         currency: 'usd',
         product_data: {
-          name: `Power Points — ${pkg.label} for ${recipientName}`,
-          description: `${pkg.points.toLocaleString()} Power Points delivered with your message.`,
+          name: `Power Points — ${POWER_POINT_PACKAGES[opts.packageKey].label} for ${preparedGift.recipientName}`,
+          description: `${POWER_POINT_PACKAGES[opts.packageKey].points.toLocaleString()} Power Points delivered with your message.`,
         },
-        unit_amount: pkg.amountCents,
+        unit_amount: POWER_POINT_PACKAGES[opts.packageKey].amountCents,
       },
       quantity: 1,
     }],
@@ -75,16 +92,49 @@ export async function createPowerPointsCheckout(opts: {
     cancel_url: opts.cancelUrl,
     metadata: {
       type: 'power_points',
-      giftId: String(pending.id),
+      giftId: String(preparedGift.giftId),
       senderId: opts.senderId,
       receiverId: opts.receiverId,
-      packageKey: pkg.key,
-      points: String(pkg.points),
+      packageKey: opts.packageKey,
+      points: String(POWER_POINT_PACKAGES[opts.packageKey].points),
       platform: 'stroke_recovery_academy',
     },
   });
 
-  return { url: session.url, giftId: pending.id };
+  return { url: session.url, giftId: preparedGift.giftId };
+}
+
+export async function createPowerPointsCheckout(opts: PowerPointsCheckoutOptions) {
+  const preparedGift = await preparePowerPointsGift(opts);
+  return createPowerPointsCheckoutSession(opts, preparedGift);
+}
+
+/**
+ * Create one pending gift and retry only the Stripe session when Stripe confirms
+ * that the sender's stored customer no longer exists. Keeping gift creation
+ * outside the retry prevents duplicate pending gifts and keeps session
+ * metadata pointed at the same gift after repair.
+ */
+export async function createPowerPointsCheckoutWithCustomerRecovery(
+  opts: PowerPointsCheckoutOptions & { senderEmail: string },
+) {
+  const customerId = await recoveryStripeService.ensureCustomer(
+    opts.senderId,
+    opts.senderEmail,
+    opts.customerId,
+  );
+  const preparedGift = await preparePowerPointsGift(opts);
+
+  return recoveryStripeService.withCustomerRecovery(
+    opts.senderId,
+    opts.senderEmail,
+    customerId,
+    (effectiveCustomerId) =>
+      createPowerPointsCheckoutSession(
+        { ...opts, customerId: effectiveCustomerId },
+        preparedGift,
+      ),
+  );
 }
 
 export async function deliverPowerPoints(session: any) {

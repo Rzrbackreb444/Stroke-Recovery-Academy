@@ -6,7 +6,7 @@ import { and, eq, sql } from 'drizzle-orm';
 import { getUserId } from '../lib/authUtils';
 import {
   POWER_POINT_PACKAGES,
-  createPowerPointsCheckout,
+  createPowerPointsCheckoutWithCustomerRecovery,
   getPackages,
   getReceivedGifts,
   getSentGifts,
@@ -15,7 +15,6 @@ import {
   markRead,
   type PowerPointPackageKey,
 } from '../powerPointsService';
-import { recoveryStripeService } from '../recoveryStripeService';
 
 // Tiny profanity filter — list intentionally short; production should plug in a real moderation API.
 const SLUR_PATTERNS = [
@@ -75,7 +74,9 @@ export function registerPowerPointsRoutes(app: Express, isAuthenticated: any) {
       )).limit(1);
       if (blocked) return res.status(403).json({ error: 'Cannot send Power Points to this user' });
 
-      // Ensure sender has a Stripe customer record
+      // Ensure sender has a Stripe customer record. If Stripe confirms that
+      // an old stored customer was deleted, the checkout service repairs it
+      // and retries the session without creating a second gift record.
       const [sender] = await db.select().from(users).where(eq(users.id, senderId)).limit(1);
       if (!sender) return res.status(401).json({ error: 'Sender not found' });
 
@@ -85,23 +86,17 @@ export function registerPowerPointsRoutes(app: Express, isAuthenticated: any) {
 
       const cleanMessage = message ? sanitizeMessage(message) : undefined;
 
-      const { url, giftId } =
-        await recoveryStripeService.createCheckoutWithCustomerRecovery(
-          sender.id,
-          sender.email || '',
-          sender.stripeCustomerId || undefined,
-          (customerId) =>
-            createPowerPointsCheckout({
-              senderId,
-              receiverId,
-              packageKey: packageKey as PowerPointPackageKey,
-              message: cleanMessage,
-              isAnonymous: !!isAnonymous,
-              customerId,
-              successUrl,
-              cancelUrl,
-            }),
-        );
+      const { url, giftId } = await createPowerPointsCheckoutWithCustomerRecovery({
+        senderId,
+        receiverId,
+        packageKey: packageKey as PowerPointPackageKey,
+        message: cleanMessage,
+        isAnonymous: !!isAnonymous,
+        customerId: sender.stripeCustomerId || '',
+        senderEmail: sender.email || '',
+        successUrl,
+        cancelUrl,
+      });
 
       res.json({ url, giftId });
     } catch (e: any) {

@@ -402,20 +402,29 @@ export class RecoveryStripeService {
    * Recovery checkout routes all use the same Stripe customer column. Retry
    * exactly once only when Stripe confirms that the stored ID is gone.
    */
+  async withCustomerRecovery<T>(
+    userId: string,
+    email: string,
+    customerId: string | undefined,
+    operation: (customerId: string) => Promise<T>,
+  ): Promise<T> {
+    let effectiveCustomerId = await this.ensureCustomer(userId, email, customerId);
+    try {
+      return await operation(effectiveCustomerId);
+    } catch (error) {
+      if (!isStripeResourceMissingError(error)) throw error;
+      effectiveCustomerId = await this.repairCustomer(userId, email, effectiveCustomerId);
+      return await operation(effectiveCustomerId);
+    }
+  }
+
   async createCheckoutWithCustomerRecovery<T>(
     userId: string,
     email: string,
     customerId: string | undefined,
     createSession: (customerId: string) => Promise<T>,
   ): Promise<T> {
-    let effectiveCustomerId = await this.ensureCustomer(userId, email, customerId);
-    try {
-      return await createSession(effectiveCustomerId);
-    } catch (error) {
-      if (!isStripeResourceMissingError(error)) throw error;
-      effectiveCustomerId = await this.repairCustomer(userId, email, effectiveCustomerId);
-      return await createSession(effectiveCustomerId);
-    }
+    return this.withCustomerRecovery(userId, email, customerId, createSession);
   }
 }
 
