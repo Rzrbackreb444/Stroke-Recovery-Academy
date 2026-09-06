@@ -158,6 +158,7 @@ export async function ensureStripeCustomer(
  */
 export function createStripeCustomerStore(
   database: StripeCustomerDatabase = db,
+  options: { clearSubscriptionStateOnCreate?: boolean } = {},
 ): StripeCustomerStore {
   return {
     withUserLock: (userId, operation) =>
@@ -174,7 +175,13 @@ export function createStripeCustomerStore(
           setCustomerId: async (customerId) => {
             await tx
               .update(users)
-              .set({ stripeCustomerId: customerId })
+              .set(options.clearSubscriptionStateOnCreate
+                ? {
+                    stripeCustomerId: customerId,
+                    stripeSubscriptionId: null,
+                    subscriptionStatus: null,
+                  }
+                : { stripeCustomerId: customerId })
               .where(eq(users.id, userId));
           },
         });

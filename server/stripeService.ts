@@ -32,7 +32,9 @@ export class StripeService {
     userId: string,
   ) {
     const stripe = await this.stripeClientFactory();
-    const store = createStripeCustomerStore(this.customerDatabase);
+    const store = createStripeCustomerStore(this.customerDatabase, {
+      clearSubscriptionStateOnCreate: true,
+    });
 
     return ensureStripeCustomerForUser(stripe, store, userId, {
       email: email || undefined,
@@ -185,9 +187,9 @@ export class StripeService {
     return user;
   }
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // PRODUCT & PRICE CREATION - Stroke Recovery Academy Subscription Tiers
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   async createKreAIteProducts() {
     const stripe = await getUncachableStripeClient();
@@ -280,9 +282,9 @@ export class StripeService {
     return result.rows;
   }
 
-  // ============================================================================
+  // ----------------------------------------------------------------------------
   // STRIPE CONNECT - Creator Onboarding & Payouts
-  // ============================================================================
+  // ----------------------------------------------------------------------------
 
   async createConnectAccount(userId: string, email: string, returnUrl: string) {
     const stripe = await getUncachableStripeClient();
@@ -493,16 +495,6 @@ export class StripeService {
    */
   async repairCustomer(userId: string, email: string, staleCustomerId?: string): Promise<string> {
     const customer = await this.getOrCreateCustomer(staleCustomerId, email, userId);
-
-    // Keep the existing repair behavior of clearing subscription state, but
-    // only for the customer that this serialized operation selected.
-    await db.update(users)
-      .set({
-        stripeSubscriptionId: null,
-        subscriptionStatus: null,
-      })
-      .where(and(eq(users.id, userId), eq(users.stripeCustomerId, customer.id)));
-
     return customer.id;
   }
 

@@ -604,17 +604,28 @@ if (process.env.STRIPE_CUSTOMER_DB === '1') {
     const database = drizzle(disposableDatabase.pool) as unknown as StripeCustomerDatabase;
     const overlapUserId = `stripe-service-db-${process.pid}-overlap`;
     const retryUserId = `stripe-service-db-${process.pid}-retry`;
+    const staleSubscriptionUserId = `stripe-service-db-${process.pid}-stale-subscription`;
 
     try {
       await disposableDatabase.pool.query(`
         CREATE TABLE users (
           id varchar PRIMARY KEY,
-          stripe_customer_id text
+          stripe_customer_id text,
+          stripe_subscription_id text,
+          subscription_status text
         )
       `);
       await disposableDatabase.pool.query(
-        'INSERT INTO users (id, stripe_customer_id) VALUES ($1, NULL), ($2, NULL)',
-        [overlapUserId, retryUserId],
+        `INSERT INTO users (
+          id,
+          stripe_customer_id,
+          stripe_subscription_id,
+          subscription_status
+        ) VALUES
+          ($1, NULL, NULL, NULL),
+          ($2, NULL, NULL, NULL),
+          ($3, 'cus_missing', 'sub_stale', 'active')`,
+        [overlapUserId, retryUserId, staleSubscriptionUserId],
       );
 
       let createCalls = 0;
@@ -702,6 +713,47 @@ if (process.env.STRIPE_CUSTOMER_DB === '1') {
       );
       assert.deepEqual(persistedAfterRetry.rows, [{
         stripe_customer_id: 'cus_after_main_billing_failure',
+      }]);
+
+      const repairCalls: string[] = [];
+      const repairStripe = {
+        customers: {
+          retrieve: async (id: string) => {
+            if (id === 'cus_missing') throw missingStripeResourceError();
+            return { id, deleted: false };
+          },
+          create: async () => ({ id: 'cus_repaired' }),
+        },
+      };
+      const repairService = new StripeService(database, async () => repairStripe as any);
+      repairService.createCheckoutSession = async (customerId) => {
+        repairCalls.push(customerId);
+        if (repairCalls.length === 1) throw missingStripeResourceError();
+        return { id: 'cs_repaired' } as any;
+      };
+
+      const repairedSession = await repairService.createCheckoutSessionWithCustomerRecovery(
+        staleSubscriptionUserId,
+        'survivor@example.com',
+        'cus_missing',
+        'price_1',
+        '/success',
+        '/cancel',
+        'subscription',
+      );
+
+      assert.deepEqual(repairedSession, { id: 'cs_repaired' });
+      assert.deepEqual(repairCalls, ['cus_missing', 'cus_repaired']);
+      const repairedUser = await disposableDatabase.pool.query(
+        `SELECT stripe_customer_id, stripe_subscription_id, subscription_status
+         FROM users
+         WHERE id = $1`,
+        [staleSubscriptionUserId],
+      );
+      assert.deepEqual(repairedUser.rows, [{
+        stripe_customer_id: 'cus_repaired',
+        stripe_subscription_id: null,
+        subscription_status: null,
       }]);
     } finally {
       await disposableDatabase.stop();
