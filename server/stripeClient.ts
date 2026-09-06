@@ -46,6 +46,49 @@ function stripeErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
+type StripeCustomerApi = {
+  customers: {
+    // Stripe's SDK response includes request metadata and uses `void` for
+    // `deleted` on live customers, so keep this adapter boundary structural.
+    retrieve(id: string): Promise<any>;
+    create(params: {
+      email?: string;
+      metadata?: Record<string, string>;
+    }): Promise<any>;
+  };
+};
+
+/**
+ * Return a usable Stripe customer ID for checkout.
+ *
+ * Startup reconciliation intentionally keeps a missing customer in the sync
+ * schema for historical references, so application user rows may still point
+ * at that ID. Only a confirmed missing/deleted customer is replaced here.
+ * Authentication, permission, network, and other Stripe failures remain
+ * errors instead of being mistaken for stale data.
+ */
+export async function ensureStripeCustomer(
+  stripe: StripeCustomerApi,
+  customerId: string | null | undefined,
+  createParams: { email?: string; metadata?: Record<string, string> },
+): Promise<{ id: string; created: boolean }> {
+  if (customerId) {
+    try {
+      const customer = await stripe.customers.retrieve(customerId);
+      if (!customer.deleted) {
+        return { id: customer.id, created: false };
+      }
+    } catch (error) {
+      if (!isStripeResourceMissingError(error)) {
+        throw error;
+      }
+    }
+  }
+
+  const customer = await stripe.customers.create(createParams);
+  return { id: customer.id, created: true };
+}
+
 /**
  * Clean up local records that the Stripe sync package otherwise keeps
  * retrying on every startup.

@@ -1,5 +1,5 @@
 import { db } from './db';
-import { getUncachableStripeClient } from './stripeClient';
+import { ensureStripeCustomer, getUncachableStripeClient } from './stripeClient';
 import { getLocaleConfig, detectLocation } from './geolocationService';
 import { addCredits, initializeWallet } from './creditService';
 import { fulfillOrder, calculateRevenueSplit } from './fulfillmentService';
@@ -87,14 +87,13 @@ export async function createCheckoutSession(
     const platformFee = Math.round(edition.price * PLATFORM_FEE_PERCENT / 100);
     const creatorShare = edition.price - platformFee;
     
-    let customerId = user.stripeCustomerId;
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        email: user.email || undefined,
-        metadata: { userId: user.id },
-      });
-      customerId = customer.id;
-      
+    const customer = await ensureStripeCustomer(
+      stripe,
+      user.stripeCustomerId,
+      { email: user.email || undefined, metadata: { userId: user.id } },
+    );
+    const customerId = customer.id;
+    if (customer.created) {
       await db.update(users)
         .set({ stripeCustomerId: customerId })
         .where(eq(users.id, userId));
@@ -331,14 +330,13 @@ export async function createCreditPurchaseSession(
     const countryCode = locale.split('-')[1]?.toUpperCase() || locale.toUpperCase() || 'US';
     const localeConfig = getLocaleConfig(countryCode);
     
-    let customerId = user.stripeCustomerId;
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        email: user.email || undefined,
-        metadata: { userId: user.id },
-      });
-      customerId = customer.id;
-      
+    const customer = await ensureStripeCustomer(
+      stripe,
+      user.stripeCustomerId,
+      { email: user.email || undefined, metadata: { userId: user.id } },
+    );
+    const customerId = customer.id;
+    if (customer.created) {
       await db.update(users)
         .set({ stripeCustomerId: customerId })
         .where(eq(users.id, userId));

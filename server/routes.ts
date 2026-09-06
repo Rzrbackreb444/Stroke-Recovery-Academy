@@ -2730,11 +2730,14 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
         return res.status(400).json({ message: "Price ID is required" });
       }
 
-      let customerId = user.stripeCustomerId;
-      if (!customerId) {
-        const customer = await stripeService.createCustomer(user.email || '', user.id);
-        await stripeService.updateUserStripeInfo(user.id, { stripeCustomerId: customer.id });
-        customerId = customer.id;
+      const customer = await stripeService.getOrCreateCustomer(
+        user.stripeCustomerId,
+        user.email || '',
+        user.id,
+      );
+      const customerId = customer.id;
+      if (customer.created) {
+        await stripeService.updateUserStripeInfo(user.id, { stripeCustomerId: customerId });
       }
 
       const session = await stripeService.createCheckoutSession(
@@ -13115,11 +13118,17 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
       const { creatorId, amount, storyId } = req.body;
       const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
 
-      let stripeCustomerId = user?.stripeCustomerId || '';
-      if (!stripeCustomerId) {
-        const customer = await recoveryStripeService.createCustomer(user?.email || '', userId);
-        stripeCustomerId = customer.id;
+      const customer = await recoveryStripeService.getOrCreateCustomer(
+        user.stripeCustomerId,
+        user.email || '',
+        userId,
+      );
+      const stripeCustomerId = customer.id;
+      if (customer.created) {
         await db.update(users).set({ stripeCustomerId }).where(eq(users.id, userId));
       }
 
@@ -13150,10 +13159,23 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
       }
       const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      const customer = await recoveryStripeService.getOrCreateCustomer(
+        user.stripeCustomerId,
+        user.email || '',
+        userId,
+      );
+      if (customer.created) {
+        await db.update(users)
+          .set({ stripeCustomerId: customer.id })
+          .where(eq(users.id, userId));
+      }
       const baseUrl = process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : '';
       
       const session = await recoveryStripeService.createSubscriptionCheckout(
-        user?.stripeCustomerId || '',
+        customer.id,
         tier,
         `${baseUrl}/recovery/dashboard?subscription=success`,
         `${baseUrl}/recovery/pricing`,
@@ -13173,9 +13195,22 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
       const { coachingType } = req.body;
       const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      const customer = await recoveryStripeService.getOrCreateCustomer(
+        user.stripeCustomerId,
+        user.email || '',
+        userId,
+      );
+      if (customer.created) {
+        await db.update(users)
+          .set({ stripeCustomerId: customer.id })
+          .where(eq(users.id, userId));
+      }
       
       const session = await recoveryStripeService.createCoachingCheckout(
-        user?.stripeCustomerId || '',
+        customer.id,
         coachingType,
         `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/coaching?booking=success`,
         `${process.env.REPLIT_DEV_DOMAIN ? 'https://' + process.env.REPLIT_DEV_DOMAIN : ''}/recovery/coaching`
@@ -13364,8 +13399,19 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
         },
       };
       
-      if (user?.stripeCustomerId) {
-        sessionParams.customer = user.stripeCustomerId;
+      if (user) {
+        const { recoveryStripeService } = await import('./recoveryStripeService');
+        const customer = await recoveryStripeService.getOrCreateCustomer(
+          user.stripeCustomerId,
+          user.email || '',
+          userId,
+        );
+        if (customer.created) {
+          await db.update(users)
+            .set({ stripeCustomerId: customer.id })
+            .where(eq(users.id, userId));
+        }
+        sessionParams.customer = customer.id;
       }
       
       const session = await stripe.checkout.sessions.create(sessionParams);
@@ -14226,11 +14272,14 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
         { requireUploadIntent: true },
       );
 
-      let customerId = user.stripeCustomerId;
-      if (!customerId) {
-        const customer = await stripeService.createCustomer(user.email || '', user.id);
-        await stripeService.updateUserStripeInfo(user.id, { stripeCustomerId: customer.id });
-        customerId = customer.id;
+      const customer = await stripeService.getOrCreateCustomer(
+        user.stripeCustomerId,
+        user.email || '',
+        user.id,
+      );
+      const customerId = customer.id;
+      if (customer.created) {
+        await stripeService.updateUserStripeInfo(user.id, { stripeCustomerId: customerId });
       }
       const customerEmail = user.email || '';
 
@@ -21870,11 +21919,14 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         return res.status(404).json({ message: "User not found" });
       }
 
-      let customerId = user.stripeCustomerId;
-      if (!customerId) {
-        const customer = await stripeService.createCustomer(user.email || '', user.id);
-        await stripeService.updateUserStripeInfo(user.id, { stripeCustomerId: customer.id });
-        customerId = customer.id;
+      const customer = await stripeService.getOrCreateCustomer(
+        user.stripeCustomerId,
+        user.email || '',
+        user.id,
+      );
+      const customerId = customer.id;
+      if (customer.created) {
+        await stripeService.updateUserStripeInfo(user.id, { stripeCustomerId: customerId });
       }
 
       const creditPrice = amount * 100;

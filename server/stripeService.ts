@@ -1,7 +1,7 @@
 import { db } from './db';
 import { users, creatorEarnings, creatorPayouts } from '@shared/schema';
 import { eq, sql, and, inArray } from 'drizzle-orm';
-import { getUncachableStripeClient } from './stripeClient';
+import { ensureStripeCustomer, getUncachableStripeClient } from './stripeClient';
 
 const PLATFORM_FEE_PERCENT = 15; // 15% platform fee
 const CREATOR_SHARE_PERCENT = 85; // 85% to creators
@@ -11,6 +11,18 @@ export class StripeService {
     const stripe = await getUncachableStripeClient();
     return await stripe.customers.create({
       email,
+      metadata: { userId },
+    });
+  }
+
+  async getOrCreateCustomer(
+    customerId: string | null | undefined,
+    email: string,
+    userId: string,
+  ) {
+    const stripe = await getUncachableStripeClient();
+    return ensureStripeCustomer(stripe, customerId, {
+      email: email || undefined,
       metadata: { userId },
     });
   }
