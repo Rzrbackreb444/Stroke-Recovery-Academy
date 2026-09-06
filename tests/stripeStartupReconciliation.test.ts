@@ -1,10 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { drizzle } from 'drizzle-orm/node-postgres';
 import {
+  createStripeCustomerStore,
   ensureStripeCustomer,
   ensureStripeCustomerForUser,
   reconcileStripeStartupState,
+  type StripeCustomerDatabase,
 } from '../server/stripeClient';
+import { createDisposablePostgres } from './disposablePostgres';
 
 function missingStripeResourceError() {
   return Object.assign(new Error('No such resource'), {
@@ -232,6 +236,128 @@ test('serializes overlapping subscription and one-time checkout repairs', async 
   assert.deepEqual(subscriptionRepair, { id: 'cus_replacement', created: true });
   assert.deepEqual(oneTimeRepair, { id: 'cus_replacement', created: false });
 });
+
+if (process.env.STRIPE_CUSTOMER_DB === '1') {
+  test('serializes customer repairs on a real connection and releases rolled-back locks', { timeout: 120_000 }, async () => {
+    const disposableDatabase = await createDisposablePostgres();
+    const database = drizzle(disposableDatabase.pool) as unknown as StripeCustomerDatabase;
+    const store = createStripeCustomerStore(database);
+    const overlapUserId = `stripe-customer-db-${process.pid}-overlap`;
+    const rollbackUserId = `stripe-customer-db-${process.pid}-rollback`;
+
+    try {
+      await disposableDatabase.pool.query(`
+        CREATE TABLE users (
+          id varchar PRIMARY KEY,
+          stripe_customer_id text
+        )
+      `);
+      await disposableDatabase.pool.query(
+        'INSERT INTO users (id, stripe_customer_id) VALUES ($1, NULL), ($2, NULL)',
+        [overlapUserId, rollbackUserId],
+      );
+
+      let createCalls = 0;
+      let signalCreateStarted!: () => void;
+      let releaseCreate!: () => void;
+      const createStarted = new Promise<void>((resolve) => {
+        signalCreateStarted = resolve;
+      });
+      const createMayFinish = new Promise<void>((resolve) => {
+        releaseCreate = resolve;
+      });
+      const stripe = {
+        customers: {
+          retrieve: async (id: string) => {
+            if (id === 'cus_stale') throw missingStripeResourceError();
+            return { id, deleted: false };
+          },
+          create: async () => {
+            createCalls++;
+            signalCreateStarted();
+            await createMayFinish;
+            return { id: 'cus_db_winner' };
+          },
+        },
+      };
+
+      const concurrentRepairs = [
+        ensureStripeCustomerForUser(
+          stripe,
+          store,
+          overlapUserId,
+          { email: 'survivor@example.com', metadata: { flow: 'subscription' } },
+          'cus_stale',
+        ),
+        ensureStripeCustomerForUser(
+          stripe,
+          store,
+          overlapUserId,
+          { email: 'survivor@example.com', metadata: { flow: 'one_time' } },
+          'cus_stale',
+        ),
+      ];
+      await createStarted;
+      releaseCreate();
+
+      const [firstRepair, secondRepair] = await Promise.all(concurrentRepairs);
+      assert.equal(createCalls, 1);
+      assert.deepEqual(
+        [firstRepair, secondRepair].map(({ id, created }) => ({ id, created })),
+        [
+          { id: 'cus_db_winner', created: true },
+          { id: 'cus_db_winner', created: false },
+        ],
+      );
+
+      const persistedWinner = await disposableDatabase.pool.query(
+        'SELECT stripe_customer_id FROM users WHERE id = $1',
+        [overlapUserId],
+      );
+      assert.deepEqual(persistedWinner.rows, [{ stripe_customer_id: 'cus_db_winner' }]);
+
+      const rollbackError = new Error('simulate failed persistence');
+      await assert.rejects(
+        store.withUserLock(rollbackUserId, async ({ setCustomerId }) => {
+          await setCustomerId('cus_should_rollback');
+          throw rollbackError;
+        }),
+        rollbackError,
+      );
+
+      const rolledBack = await disposableDatabase.pool.query(
+        'SELECT stripe_customer_id FROM users WHERE id = $1',
+        [rollbackUserId],
+      );
+      assert.deepEqual(rolledBack.rows, [{ stripe_customer_id: null }]);
+
+      const recoveryStripe = {
+        customers: {
+          retrieve: async (id: string) => ({ id, deleted: false }),
+          create: async () => ({ id: 'cus_after_rollback' }),
+        },
+      };
+      const afterRollback = await ensureStripeCustomerForUser(
+        recoveryStripe,
+        store,
+        rollbackUserId,
+        { email: 'survivor@example.com', metadata: { flow: 'retry' } },
+      );
+      assert.deepEqual(afterRollback, { id: 'cus_after_rollback', created: true });
+
+      const persistedAfterRollback = await disposableDatabase.pool.query(
+        'SELECT stripe_customer_id FROM users WHERE id = $1',
+        [rollbackUserId],
+      );
+      assert.deepEqual(
+        persistedAfterRollback.rows,
+        [{ stripe_customer_id: 'cus_after_rollback' }],
+      );
+    } finally {
+      await disposableDatabase.stop();
+    }
+  });
+}
 
 test('repairs a quarantined customer before subscription and recovery purchase checkout', async () => {
   const { sync, deletedCustomers } = buildSync();
