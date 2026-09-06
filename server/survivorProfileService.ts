@@ -217,7 +217,7 @@ export async function getCanonicalSurvivorProfile(
   const base = profile ?? (normalized.userId ? normalized : null);
   if (!base) return null;
 
-  const normalizedAt = new Date().toISOString();
+  const normalizedAt = new Date();
   const baseProvenance = legacyProvenance(base as typeof userProfiles.$inferSelect);
   if (latestAssessment && normalized.assessmentScores) {
     baseProvenance.assessmentScores = {
@@ -257,7 +257,7 @@ export async function getCanonicalSurvivorProfile(
         set: {
           ...normalized,
           profileProvenance: baseProvenance,
-          updatedAt: new Date(normalizedAt),
+          updatedAt: normalizedAt,
         } as any,
       })
       .returning();
@@ -300,11 +300,11 @@ export async function updateCanonicalSurvivorProfile(
     cleaned.goalDetails = synchronizedGoals.goalDetails;
   }
 
-  const now = new Date().toISOString();
+  const now = new Date();
   const profileProvenance = provenanceForFields(
     cleaned,
     source,
-    now,
+    now.toISOString(),
     existing?.profileProvenance ?? {},
   );
 
@@ -320,7 +320,7 @@ export async function updateCanonicalSurvivorProfile(
       set: {
         ...cleaned,
         profileProvenance,
-        updatedAt: new Date(now),
+        updatedAt: now,
       } as any,
     })
     .returning();

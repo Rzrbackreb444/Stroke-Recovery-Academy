@@ -50,3 +50,14 @@ valid route coverage to fail before exercising its behavior.
 **How to apply:** When a recovery route starts selecting or updating newly added
 plan fields, update the fixture's idempotent migration setup before diagnosing the
 route as broken.
+
+Canonical profile timestamp columns must receive JavaScript `Date` values in
+node-postgres test mode; ISO strings are appropriate for JSON provenance fields,
+but can fail timestamp parameter encoding in the disposable driver.
+
+**Why:** The production Neon path tolerated the string-shaped write, while the
+disposable PostgreSQL integration driver rejected it before the route could
+complete.
+
+**How to apply:** Use `Date` for database timestamp writes and serialize only
+when storing JSON metadata or returning API payloads.
