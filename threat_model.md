@@ -1,4 +1,4 @@
-# Threat Model — KreAIte / Stroke Recovery Academy
+# Threat Model — Stroke Recovery Academy
 
 _Last reviewed: 2026-05-03_
 

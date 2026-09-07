@@ -25,8 +25,10 @@ import {
 } from "lucide-react";
 import { useLocation } from "wouter";
 
-const ONBOARDING_COMPLETE_KEY = "kreAIte_onboarding_complete";
-const ONBOARDING_DATA_KEY = "kreAIte_onboarding_data";
+const ONBOARDING_COMPLETE_KEY = "sra_onboarding_complete";
+const ONBOARDING_DATA_KEY = "sra_onboarding_data";
+const LEGACY_ONBOARDING_COMPLETE_KEY = "kreAIte_onboarding_complete";
+const LEGACY_ONBOARDING_DATA_KEY = "kreAIte_onboarding_data";
 
 interface OnboardingData {
   contentType: string | null;
@@ -539,6 +541,8 @@ export function useOnboardingComplete() {
   const reset = () => {
     localStorage.removeItem(ONBOARDING_COMPLETE_KEY);
     localStorage.removeItem(ONBOARDING_DATA_KEY);
+    localStorage.removeItem(LEGACY_ONBOARDING_COMPLETE_KEY);
+    localStorage.removeItem(LEGACY_ONBOARDING_DATA_KEY);
     setIsComplete(false);
   };
 

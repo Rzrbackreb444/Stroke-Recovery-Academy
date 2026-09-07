@@ -2680,7 +2680,7 @@ export class DatabaseStorage implements IStorage {
           ${config.openaiApiKey || null}, ${config.anthropicApiKey || null},
           ${config.geminiApiKey || null}, ${config.grokApiKey || null},
           ${config.perplexityApiKey || null}, ${config.stabilityApiKey || null},
-          ${config.removeBgApiKey || null}, ${config.hideKreaiteBranding || false},
+          ${config.removeBgApiKey || null}, ${config.hideSraBranding ?? config.hideKreaiteBranding ?? false},
           ${config.customFooterText || null}, ${config.customTermsUrl || null},
           ${config.customPrivacyUrl || null}, ${config.creatorRevenueShare || 85},
           ${config.platformRevenueShare || 15}
@@ -2711,7 +2711,7 @@ export class DatabaseStorage implements IStorage {
           perplexity_api_key = ${config.perplexityApiKey || null},
           stability_api_key = ${config.stabilityApiKey || null},
           remove_bg_api_key = ${config.removeBgApiKey || null},
-          hide_kreaite_branding = ${config.hideKreaiteBranding || false},
+          hide_kreaite_branding = ${config.hideSraBranding ?? config.hideKreaiteBranding ?? false},
           custom_footer_text = ${config.customFooterText || null},
           custom_terms_url = ${config.customTermsUrl || null},
           custom_privacy_url = ${config.customPrivacyUrl || null},

@@ -107,7 +107,7 @@ import {
   List,
 } from "lucide-react";
 
-import KreAIteEditor from "./KreAIteEditor";
+import SraEditor from "./KreAIteEditor";
 import ChildrensBookMode from "@/components/ChildrensBookMode";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -150,7 +150,7 @@ interface MarketInsight {
   yourPosition: 'above' | 'below' | 'competitive';
 }
 
-export default function KreAIteStudio() {
+export default function SraStudio() {
   const { toast } = useToast();
   const {
     bookOutline,
@@ -389,7 +389,7 @@ export default function KreAIteStudio() {
         </div>
         <div className="flex-1 flex items-center justify-center">
           <div className="w-full max-w-3xl px-8">
-            <KreAIteEditor
+            <SraEditor
               content={currentChapter?.content || manuscriptHtml || ''}
               onContentChange={setManuscriptHtml}
               chapterTitle={currentChapter?.title || 'Untitled Chapter'}
@@ -1114,7 +1114,7 @@ export default function KreAIteStudio() {
             CENTER PANEL - The Writing Canvas
         ═══════════════════════════════════════════════════════════════════════════ */}
         <ResizablePanel defaultSize={leftPanelOpen && rightPanelOpen ? 48 : 68}>
-          <KreAIteEditor
+            <SraEditor
             content={currentChapter?.content || manuscriptHtml || ''}
             onContentChange={setManuscriptHtml}
             chapterTitle={currentChapter?.title || 'Untitled Chapter'}

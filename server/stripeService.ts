@@ -196,23 +196,23 @@ export class StripeService {
   // PRODUCT & PRICE CREATION - Stroke Recovery Academy Subscription Tiers
   // ----------------------------------------------------------------------------
 
-  async createKreAIteProducts() {
+  async createSraProducts() {
     const catalog = await ensureCanonicalStripeCatalog();
     return [
       {
-        name: 'KreAIte Creator',
+        name: 'Stroke Recovery Academy Creator',
         monthlyAmount: 2900,
         annualAmount: 24900,
         ...catalog.creator,
       },
       {
-        name: 'KreAIte Pro',
+        name: 'Stroke Recovery Academy Pro',
         monthlyAmount: 7900,
         annualAmount: 69900,
         ...catalog.pro,
       },
       {
-        name: 'KreAIte Enterprise',
+        name: 'Stroke Recovery Academy Enterprise',
         monthlyAmount: 29900,
         annualAmount: 249900,
         ...catalog.enterprise,
@@ -224,7 +224,7 @@ export class StripeService {
     return ensureCanonicalStripeCatalog();
   }
 
-  async getKreAIteProducts() {
+  async getSraProducts() {
     const catalog = await ensureCanonicalStripeCatalog();
     const stripe = await getUncachableStripeClient();
     const priceIds = [

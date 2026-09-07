@@ -9,7 +9,7 @@ import {
 import { eq, and, desc, sql } from "drizzle-orm";
 import { generateCoachResponse } from "./geminiService";
 
-const BASE_DOMAIN = process.env.REPLIT_DEV_DOMAIN || "kreaitr.xyz";
+const BASE_DOMAIN = process.env.REPLIT_DEV_DOMAIN || "strokerecoveryacademy.com";
 
 export interface CreateBookWebsiteData {
   listingId?: number;
