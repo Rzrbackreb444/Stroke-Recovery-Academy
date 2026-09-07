@@ -7,4 +7,4 @@ An active Stripe MCP row in Replit Integrations does not make Stripe credentials
 
 **Why:** The MCP is an agent tool connection, while the application connector injects credentials into the running server. Treating an active MCP row as an app connection leaves checkout routes failing even though the Integrations screen says Stripe is active.
 
-**How to apply:** When Stripe MCP is active but the app reports its connector is missing, verify the app endpoint and connector status separately. Prefer the application connector; if it is declined, use only existing configured secret names through server-side code and never expose their values.
+**How to apply:** When Stripe MCP is active but the app reports its connector is missing, verify the app endpoint and connector status separately. Prefer the application connector; if it is declined, use only existing configured secret names through server-side code and never expose their values. Treat synced `stripe.*` rows as potentially stale during account transitions; resolve fixed catalog IDs from the live Stripe API using stable metadata keys.

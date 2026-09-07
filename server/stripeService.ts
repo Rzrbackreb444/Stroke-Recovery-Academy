@@ -1,5 +1,6 @@
 import { db } from './db';
 import { users, creatorEarnings, creatorPayouts } from '@shared/schema';
+import type Stripe from 'stripe';
 import {
   createStripeCustomerStore,
   ensureStripeCustomerForUser,
@@ -8,6 +9,10 @@ import {
   type StripeCustomerDatabase,
 } from './stripeClient';
 import { eq, sql, and, inArray } from 'drizzle-orm';
+import {
+  ensureCanonicalStripeCatalog,
+  type CanonicalStripeCatalog,
+} from './stripeCatalog';
 
 const PLATFORM_FEE_PERCENT = 15; // 15% platform fee
 const CREATOR_SHARE_PERCENT = 85; // 85% to creators
@@ -192,94 +197,70 @@ export class StripeService {
   // ----------------------------------------------------------------------------
 
   async createKreAIteProducts() {
-    const stripe = await getUncachableStripeClient();
-    
-    const tiers = [
+    const catalog = await ensureCanonicalStripeCatalog();
+    return [
       {
-        name: 'Stroke Recovery Academy Creator',
-        description: 'For serious content creators - 50 AI generations/day, full Book & Music Studio access, Google Docs integration',
-        monthlyPrice: 2900, // $29
-        annualPrice: 24900, // $249/year (save ~28%)
-        metadata: { platform: 'kreaite', tier: 'creator', credits: '2500' }
+        name: 'KreAIte Creator',
+        monthlyAmount: 2900,
+        annualAmount: 24900,
+        ...catalog.creator,
       },
       {
-        name: 'Stroke Recovery Academy Pro',
-        description: 'Unlimited creation power - All studios, unlimited AI generations, priority support, commercial license',
-        monthlyPrice: 7900, // $79
-        annualPrice: 69900, // $699/year (save ~26%)
-        metadata: { platform: 'kreaite', tier: 'pro', credits: '10000' }
+        name: 'KreAIte Pro',
+        monthlyAmount: 7900,
+        annualAmount: 69900,
+        ...catalog.pro,
       },
       {
-        name: 'Stroke Recovery Academy Enterprise',
-        description: 'For teams and agencies - 10 seats, white-label option, API access, dedicated account manager',
-        monthlyPrice: 29900, // $299
-        annualPrice: 249900, // $2499/year (save ~30%)
-        metadata: { platform: 'kreaite', tier: 'enterprise', credits: '50000' }
-      }
+        name: 'KreAIte Enterprise',
+        monthlyAmount: 29900,
+        annualAmount: 249900,
+        ...catalog.enterprise,
+      },
     ];
+  }
 
-    const createdProducts = [];
-
-    for (const tier of tiers) {
-      // Create product
-      const product = await stripe.products.create({
-        name: tier.name,
-        description: tier.description,
-        metadata: tier.metadata,
-      });
-
-      // Create monthly price
-      const monthlyPrice = await stripe.prices.create({
-        product: product.id,
-        unit_amount: tier.monthlyPrice,
-        currency: 'usd',
-        recurring: { interval: 'month' },
-        metadata: { ...tier.metadata, billing: 'monthly' },
-      });
-
-      // Create annual price
-      const annualPrice = await stripe.prices.create({
-        product: product.id,
-        unit_amount: tier.annualPrice,
-        currency: 'usd',
-        recurring: { interval: 'year' },
-        metadata: { ...tier.metadata, billing: 'annual' },
-      });
-
-      createdProducts.push({
-        product: product.id,
-        name: tier.name,
-        monthlyPriceId: monthlyPrice.id,
-        annualPriceId: annualPrice.id,
-        monthlyAmount: tier.monthlyPrice,
-        annualAmount: tier.annualPrice,
-      });
-    }
-
-    return createdProducts;
+  async getCanonicalCatalog(): Promise<CanonicalStripeCatalog> {
+    return ensureCanonicalStripeCatalog();
   }
 
   async getKreAIteProducts() {
-    const result = await db.execute(
-      sql`
-        SELECT 
-          p.id as product_id,
-          p.name as product_name,
-          p.description as product_description,
-          p.metadata as product_metadata,
-          pr.id as price_id,
-          pr.unit_amount,
-          pr.currency,
-          pr.recurring,
-          pr.metadata as price_metadata
-        FROM stripe.products p
-        LEFT JOIN stripe.prices pr ON pr.product = p.id AND pr.active = true
-        WHERE p.active = true 
-          AND p.metadata->>'platform' = 'kreaite'
-        ORDER BY pr.unit_amount
-      `
-    );
-    return result.rows;
+    const catalog = await ensureCanonicalStripeCatalog();
+    const stripe = await getUncachableStripeClient();
+    const priceIds = [
+      catalog.creator.monthlyPriceId,
+      catalog.creator.annualPriceId,
+      catalog.pro.monthlyPriceId,
+      catalog.pro.annualPriceId,
+      catalog.enterprise.monthlyPriceId,
+      catalog.enterprise.annualPriceId,
+    ];
+    const rows = [];
+    const products = new Map<string, Stripe.Product>();
+
+    for (const priceId of priceIds) {
+      const price = await stripe.prices.retrieve(priceId);
+      const productId =
+        typeof price.product === "string" ? price.product : price.product.id;
+      let product = products.get(productId);
+      if (!product) {
+        product = await stripe.products.retrieve(productId);
+        products.set(productId, product);
+      }
+      rows.push({
+        product_id: product.id,
+        product_name: product.name,
+        product_description: product.description,
+        product_metadata: product.metadata,
+        price_id: price.id,
+        unit_amount: price.unit_amount,
+        currency: price.currency,
+        recurring: price.recurring,
+        price_metadata: price.metadata,
+      });
+    }
+
+    return rows;
   }
 
   // ----------------------------------------------------------------------------

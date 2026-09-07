@@ -13,6 +13,7 @@ import { db } from "../db";
 import { sql, eq } from "drizzle-orm";
 import { users } from "@shared/schema";
 import { getUncachableStripeClient } from "../stripeClient";
+import { ensureCanonicalStripeCatalog } from "../stripeCatalog";
 
 export const SASQUATCH_PREMIUM_PRICE_AMOUNT = 1900;        // $19/mo
 export const SASQUATCH_PREMIUM_ANNUAL_AMOUNT = 19000;      // $190/yr (~17% off)
@@ -21,33 +22,6 @@ export const SASQUATCH_PREMIUM_FEATURE = "sasquatch_premium";
 type CachedPrices = { monthlyPriceId: string; annualPriceId: string };
 let cachedPrices: CachedPrices | null = null;
 
-async function loadExistingPrices(): Promise<{
-  productId: string | null;
-  monthlyPriceId: string | null;
-  annualPriceId: string | null;
-}> {
-  const rows = await db.execute(sql`
-    SELECT pr.id as price_id, pr.product as product_id,
-           pr.recurring->>'interval' as interval,
-           pr.metadata->>'interval' as meta_interval
-      FROM stripe.prices pr
-      JOIN stripe.products p ON p.id = pr.product
-     WHERE p.active = true
-       AND pr.active = true
-       AND p.metadata->>'feature' = ${SASQUATCH_PREMIUM_FEATURE}
-  `);
-  let productId: string | null = null;
-  let monthlyPriceId: string | null = null;
-  let annualPriceId: string | null = null;
-  for (const r of rows.rows as any[]) {
-    productId = String(r.product_id);
-    const interval = r.interval || r.meta_interval;
-    if (interval === "month") monthlyPriceId = String(r.price_id);
-    else if (interval === "year") annualPriceId = String(r.price_id);
-  }
-  return { productId, monthlyPriceId, annualPriceId };
-}
-
 export async function ensureSasquatchPremiumProduct(): Promise<string> {
   const { monthlyPriceId } = await ensureSasquatchPremiumPrices();
   return monthlyPriceId;
@@ -55,76 +29,20 @@ export async function ensureSasquatchPremiumProduct(): Promise<string> {
 
 export async function ensureSasquatchPremiumPrices(): Promise<CachedPrices> {
   if (cachedPrices) return cachedPrices;
-
-  const existing = await loadExistingPrices();
-  let productId = existing.productId;
-  let monthlyPriceId = existing.monthlyPriceId;
-  let annualPriceId = existing.annualPriceId;
-
-  if (productId && monthlyPriceId && annualPriceId) {
-    cachedPrices = { monthlyPriceId, annualPriceId };
-    return cachedPrices;
-  }
-
-  const stripe = await getUncachableStripeClient();
-
-  if (!productId) {
-    const product = await stripe.products.create({
-      name: "Sasquatch Premium — Unlimited Survivor Tools",
-      description:
-        "Unlimited AI Sasquatch Coach. Unlimited Recovery Anchor renders. Voice Cloning included. Premium Campfire circles (Coach Circle, Live with Nick).",
-      metadata: { feature: SASQUATCH_PREMIUM_FEATURE, platform: "stroke-recovery-academy" },
-    });
-    productId = product.id;
-  }
-
-  if (!monthlyPriceId) {
-    const price = await stripe.prices.create({
-      product: productId,
-      unit_amount: SASQUATCH_PREMIUM_PRICE_AMOUNT,
-      currency: "usd",
-      recurring: { interval: "month" },
-      metadata: { feature: SASQUATCH_PREMIUM_FEATURE, interval: "month" },
-    });
-    monthlyPriceId = price.id;
-  }
-
-  if (!annualPriceId) {
-    const price = await stripe.prices.create({
-      product: productId,
-      unit_amount: SASQUATCH_PREMIUM_ANNUAL_AMOUNT,
-      currency: "usd",
-      recurring: { interval: "year" },
-      metadata: { feature: SASQUATCH_PREMIUM_FEATURE, interval: "year" },
-    });
-    annualPriceId = price.id;
-  }
-
-  cachedPrices = { monthlyPriceId, annualPriceId };
+  const catalog = await ensureCanonicalStripeCatalog();
+  cachedPrices = catalog.sasquatchPremium;
   return cachedPrices;
 }
 
 export async function getSasquatchPremiumPriceIds(): Promise<CachedPrices | null> {
   if (cachedPrices) return cachedPrices;
-  const existing = await loadExistingPrices();
-  if (existing.monthlyPriceId && existing.annualPriceId) {
-    cachedPrices = {
-      monthlyPriceId: existing.monthlyPriceId,
-      annualPriceId: existing.annualPriceId,
-    };
-    return cachedPrices;
-  }
-  // Partial / legacy state — return monthly if that's all that exists so
-  // entitlement checks still work, but signal incompleteness with null.
-  return null;
+  return ensureSasquatchPremiumPrices();
 }
 
 // Back-compat shim for any caller that just wants the monthly price.
 export async function getSasquatchPremiumPriceId(): Promise<string | null> {
   const prices = await getSasquatchPremiumPriceIds();
-  if (prices) return prices.monthlyPriceId;
-  const existing = await loadExistingPrices();
-  return existing.monthlyPriceId;
+  return prices?.monthlyPriceId ?? null;
 }
 
 // Short-lived in-memory cache. Money paths bypass via { skipCache: true }.
