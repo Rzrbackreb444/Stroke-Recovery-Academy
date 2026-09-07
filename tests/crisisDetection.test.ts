@@ -6,7 +6,12 @@
  * is non-zero on any failure so CI / shell invocation catches regressions.
  */
 
-import { detectCrisis, buildCrisisResponse } from "../server/services/crisisDetection";
+import {
+  detectCrisis,
+  detectSafetyRisk,
+  buildCrisisResponse,
+  buildSafetyResponse,
+} from "../server/services/crisisDetection";
 
 type Case = {
   label: string;
@@ -41,6 +46,19 @@ const cases: Case[] = [
   { label: "general sad", input: "I feel really sad about losing function", shouldDetect: false },
   { label: "depression mention", input: "I think I have post-stroke depression and need to see a doctor", shouldDetect: false },
   { label: "sister hurt me", input: "my sister hurts when she sees me struggle", shouldDetect: false },
+  // INDIRECT / MULTILINGUAL — must still intercept
+  { label: "cannot keep myself safe", input: "I can't keep myself safe tonight", shouldDetect: true, category: "suicide" },
+  { label: "burden implication", input: "Everyone would be better without me", shouldDetect: true, category: "suicide" },
+  { label: "Spanish suicide disclosure", input: "No quiero vivir y quiero morir", shouldDetect: true, category: "suicide" },
+  { label: "French self-harm disclosure", input: "Je veux me faire du mal", shouldDetect: true, category: "self_harm" },
+  { label: "Japanese suicide disclosure", input: "死にたい", shouldDetect: true, category: "suicide" },
+  { label: "Korean abuse disclosure", input: "집에서 안전하지 않아", shouldDetect: true, category: "abuse" },
+  { label: "Chinese violence disclosure", input: "我想杀人", shouldDetect: true, category: "violence" },
+  { label: "medical stroke warning", input: "I have sudden weakness on one side and trouble speaking", shouldDetect: false },
+  // FALSE POSITIVES — ordinary recovery discussion must stay available
+  { label: "recovery plan", input: "I have a plan for my next recovery session", shouldDetect: false },
+  { label: "medication access", input: "I have access to pills for my medication schedule", shouldDetect: false },
+  { label: "burden metaphor", input: "This paperwork is a burden, but I am safe", shouldDetect: false },
 ];
 
 let passed = 0;
@@ -120,6 +138,63 @@ if (hasLocalHelp) {
   failed++;
   failures.push("  ✗ suicide response missing location-appropriate help finder");
   console.log("  ✗ suicide response missing location-appropriate help finder");
+}
+
+console.log("\nSafety-risk escalation checks:");
+const safetyCases: Array<{
+  label: string;
+  input: string;
+  category: "suicide" | "self_harm" | "violence" | "abuse" | "medical_emergency" | "medical_concern";
+}> = [
+  {
+    label: "sudden weakness escalates to emergency guidance",
+    input: "I suddenly have weakness in my face and slurred speech",
+    category: "medical_emergency",
+  },
+  {
+    label: "exercise pain pauses and routes to care team",
+    input: "I have pain during exercise and it is getting worse",
+    category: "medical_concern",
+  },
+  {
+    label: "Spanish chest pain escalates to emergency guidance",
+    input: "Tengo dolor de pecho y no puedo respirar",
+    category: "medical_emergency",
+  },
+];
+
+for (const c of safetyCases) {
+  const result = detectSafetyRisk(c.input);
+  if (result.detected && result.category === c.category) {
+    passed++;
+    console.log(`  ✓ ${c.label}`);
+  } else {
+    failed++;
+    failures.push(`  ✗ ${c.label} — expected ${c.category}, got ${result.category ?? "none"}`);
+    console.log(`  ✗ ${c.label} — expected ${c.category}, got ${result.category ?? "none"}`);
+  }
+}
+
+for (const category of ["medical_emergency", "medical_concern"] as const) {
+  const result = buildSafetyResponse(category);
+  const hasLocalEmergencyGuidance = result.resources.some(
+    (resource) =>
+      resource.label.toLowerCase().includes("local emergency") &&
+      /local emergency number/i.test(resource.detail),
+  );
+  const tellsSurvivorToPause = /stop|pause|rest/i.test(result.response);
+  const refusesPushingThrough =
+    category === "medical_emergency"
+      ? !/push through|keep going|one rep/i.test(result.response)
+      : /do not push through/i.test(result.response);
+  if (hasLocalEmergencyGuidance && tellsSurvivorToPause && refusesPushingThrough) {
+    passed++;
+    console.log(`  ✓ ${category} response pauses and escalates locally`);
+  } else {
+    failed++;
+    failures.push(`  ✗ ${category} response did not include pause, no-push, and local emergency guidance`);
+    console.log(`  ✗ ${category} response missing safety boundary`);
+  }
 }
 
 console.log(

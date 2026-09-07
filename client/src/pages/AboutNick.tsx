@@ -33,8 +33,8 @@ export default function AboutNick() {
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <RecoverySEO
-        title="About Nick Kremers — Stroke Survivor, Author & Founder of Stroke Recovery Academy"
-        description="Nick Kremers suffered a devastating hemorrhagic stroke on December 3, 2018, and reports moving from 0% to 90%+ functional recovery. He is the author of The Stroked Out Sasquatch and founder of Stroke Recovery Academy. His experience is not a promise of another survivor's outcome."
+        title="About Nick Kremers — Stroke Survivor, Recovery Educator & Founder of Stroke Recovery Academy"
+        description="Nick Kremers suffered a devastating hemorrhagic stroke on December 3, 2018, and reports moving from 0% to 90%+ functional recovery. He learned from therapists, books, and research, then applied, repeated, documented, and adapted that knowledge in his own recovery. He teaches from lived experience, not as a clinician or universal promise."
         canonical="/recovery/about-nick"
         pageType="article"
         author="Nick Kremers"
@@ -54,8 +54,8 @@ export default function AboutNick() {
         ]}
         faq={[
           { question: "Who is Nick Kremers?", answer: "Nick Kremers is a stroke survivor who suffered a massive hemorrhagic stroke on December 3, 2018, and reports moving from 0% to 90%+ functional recovery. He is the founder of Stroke Recovery Academy and author of 'The Stroked Out Sasquatch' and 'The Ultimate Stroke Recovery Revolution.' His approach is based on lived experience, not a universal promise." },
-          { question: "How did Nick Kremers recover from his stroke?", answer: "Nick describes using three personal frameworks: S.A.S.C.H., S.O.S., and C.O.M.P.A.S.S., alongside therapy, experimentation, and rest. He reports moving from 0% to 90%+ functional ability; this is his lived experience, not a universal outcome or clinical prescription." },
-          { question: "What is the Sasquatch Method for stroke recovery?", answer: "The Sasquatch Method is Nick Kremers' 66-day survivor-led recovery framework built on three personal acronym systems. Daily formula: S.A.S.C.H. — Seize, Absorb, Swing, Combine, Hammer. Quick daily reset: S.O.S. — Survive, Organize, Strive. Advanced navigation: C.O.M.P.A.S.S. — Control, Own, Mutate, Patience, Anger, Small Wins, Stack. The three phases are Survival (Days 1-22), Breakthrough (Days 23-44), and Optimization (Days 45-66); it is education, not a clinical prescription or outcome guarantee." },
+          { question: "How did Nick Kremers recover from his stroke?", answer: "Nick learned from therapists, books, and research, then absorbed that knowledge through experimentation, repetition, documentation, rest, and adaptation. He built three personal frameworks — S.A.S.C.H., S.O.S., and C.O.M.P.A.S.S. — around small goals and accountability. He reports moving from 0% to 90%+ functional ability; this is lived knowledge from his recovery, not a universal outcome or clinical prescription." },
+          { question: "What is the Sasquatch Method for stroke recovery?", answer: "The Sasquatch Method is Nick Kremers' 66-day lived-recovery system. It combines lessons he absorbed from therapists, books, and research with the process he applied to his own body: set a small goal, test an approach, repeat it, document what happened, learn from failure, and adapt. Its three personal frameworks are S.A.S.C.H., S.O.S., and C.O.M.P.A.S.S.; it is education, not a clinical prescription or outcome guarantee." },
           { question: "What books has Nick Kremers written about stroke recovery?", answer: "Nick Kremers has written two stroke recovery books: (1) 'The Stroked Out Sasquatch' — his raw, 38-chapter autobiography from catastrophic stroke to 90%+ recovery, covering the ICU, the therapists, TikTok, and building the movement; (2) 'The Ultimate Stroke Recovery Revolution: From 0% to 90%+ and Still Rising' — 33 chapters and 9 appendices covering the S.A.S.C.H. Formula (Seize, Absorb, Swing, Combine, Hammer), the S.O.S. daily reset, the C.O.M.P.A.S.S. navigation system, neuroplasticity, mirror therapy, baseball bat therapy, drop foot protocols, and the complete Sasquatch Doctrine." }
         ]}
       />
@@ -69,9 +69,10 @@ export default function AboutNick() {
           <h1 className="text-4xl font-bold mb-2">Nick Kremers</h1>
           <p className="text-xl text-[#E2741B] mb-4">Stroke Survivor. Sasquatch. Legend in Progress.</p>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            Creator of the Sasquatch Doctrine - a comprehensive recovery methodology 
-            born from personal experience and dedicated to helping stroke survivors 
-            reclaim their lives, one rep at a time.
+            Creator of the Sasquatch Doctrine — a lived-recovery methodology built by
+            absorbing therapist lessons, studying books and research, and applying that
+            knowledge through years of experimentation, repetition, documentation, and
+            adaptation. He teaches the process one achievable rep at a time.
           </p>
         </div>
 
@@ -102,12 +103,14 @@ export default function AboutNick() {
               The doctors told him he'd probably never walk normally again.
             </p>
             <p>
-               He chose to keep exploring what helped. What followed was seven years of
-               honest work, experimentation, and rest — developing
+               He chose to keep exploring what helped. He learned from therapists, studied
+               books and research, then applied, repeated, documented, and adapted what he
+               was learning. What followed was seven years of honest work, experimentation,
+               failure, rest, and continued refinement — developing
               what would become the{" "}
               <span className="text-[#E2741B] font-semibold">Sasquatch Doctrine</span>:
-              a survivor-led framework built not in a lab, but in a body that was supposed
-              to stop.
+              a lived-recovery framework built not only from theory, but in a body that was
+              supposed to stop.
             </p>
             <p>
               The name came from a simple truth. Survivors are told they can't do things.

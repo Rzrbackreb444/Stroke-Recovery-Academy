@@ -15,6 +15,7 @@ const RECOVERY_RETURN_PATHS = [
   "/recovery/journal",
   "/recovery/me",
   "/recovery/dashboard",
+  "/recovery/routine",
   "/recovery/activity",
   "/recovery/welcome",
 ];
@@ -195,7 +196,7 @@ export async function setupAuth(app: Express) {
     if (typeof value !== "string" || !value.startsWith("/") || value.startsWith("//") || value.includes("\\")) {
       return "/recovery/today";
     }
-    const allowed = ["/recovery/today", "/recovery/onboarding", "/recovery/community", "/recovery/journal", "/recovery/me"];
+    const allowed = ["/recovery/today", "/recovery/onboarding", "/recovery/community", "/recovery/journal", "/recovery/me", "/recovery/routine"];
     return allowed.some((path) => value === path || value.startsWith(`${path}?`)) ? value : "/recovery/today";
   };
 

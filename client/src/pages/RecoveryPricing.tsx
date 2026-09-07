@@ -90,7 +90,7 @@ const WHAT_YOU_GET = [
   {
     icon: Activity,
     title: "Protocol Library (20+)",
-     desc: "Survivor-informed recovery tools for upper extremity, gait, cognitive, and speech practice — built for real lives, not a one-size-fits-all prescription.",
+     desc: "Lived-recovery tools for upper extremity, gait, cognitive, and speech practice — built from therapist lessons, research, experimentation, and years of personal application.",
   },
   {
     icon: Users,
@@ -146,7 +146,7 @@ const WHO_ITS_FOR = [
       "Daily Routine System adapts to any clinical discharge level",
       "Exercise library with progression markers for home programs",
       "Community accountability fills the gap between OT/PT appointments",
-      "Survivor-informed, neuroplasticity-aware framework",
+      "Therapist- and research-informed lived-recovery framework",
     ],
   },
 ];
@@ -372,7 +372,7 @@ export default function RecoveryPricing() {
               { icon: Shield, label: "7-day free trial" },
               { icon: Clock, label: "Cancel anytime" },
               { icon: Heart, label: "Scholarships available" },
-              { icon: Star, label: "Built by a survivor" },
+              { icon: Star, label: "Built from lived expertise" },
             ].map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-2">
                 <Icon className="w-4 h-4 text-[#E2741B]" />
@@ -643,7 +643,8 @@ export default function RecoveryPricing() {
             What Warrior <span className="text-[#E2741B]">Actually Gets You</span>
           </h2>
           <p className="text-center text-gray-400 mb-12 max-w-xl mx-auto">
-            Not information. A system. Built by someone who lived the darkness and found the way out.
+             Not theory alone. A system built by someone who learned from professionals,
+             absorbed the research, applied it in his own body, and documented what happened.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {WHAT_YOU_GET.map(({ icon: Icon, title, desc }, i) => (

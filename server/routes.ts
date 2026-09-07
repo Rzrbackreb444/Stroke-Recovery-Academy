@@ -54,7 +54,7 @@ import luluRoutes from "./luluRoutes";
 import puzzleRoutes from "./puzzleRoutes";
 import survivorProfileRoutes from "./survivorProfileRoutes";
 import accountRoutes from "./routes/accountRoutes";
-import { detectCrisis, buildCrisisResponse } from "./services/crisisDetection";
+import { detectCrisis, detectSafetyRisk, buildCrisisResponse, buildSafetyResponse } from "./services/crisisDetection";
 import { stripeService } from "./stripeService";
 import {
   getStripeSync,
@@ -1598,7 +1598,24 @@ Last updated: ${new Date().toISOString().split('T')[0]}
          LEFT JOIN users u ON u.id = ap.author_id
          LEFT JOIN user_settings us ON us.user_id = ap.author_id
          LEFT JOIN user_personas up ON up.user_id = ap.author_id
-         WHERE (ap.visibility = 'public' OR (ap.visibility = 'members' AND $3::text IS NOT NULL))
+         WHERE (
+             ap.visibility = 'public'
+             OR (ap.visibility = 'members' AND $3::text IS NOT NULL)
+             OR (ap.visibility = 'private' AND ap.author_id = $3)
+             OR (
+               ap.visibility = 'pod'
+               AND $3::text IS NOT NULL
+               AND (
+                 ap.author_id = $3
+                 OR EXISTS (
+                   SELECT 1
+                   FROM pod_members pm
+                   WHERE pm.pod_id = ap.pod_id
+                     AND pm.user_id = $3
+                 )
+               )
+             )
+           )
            AND NOT EXISTS (
              SELECT 1 FROM user_blocks ub
              WHERE ub.blocker_id = $3 AND ub.blocked_id = ap.author_id
@@ -1621,7 +1638,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
       await ensureCommunitySafetyTables();
       const viewerId = getUserId(req as any) || (req as any).session?.userId || null;
       const postAccess = await dbPool.query(
-        "SELECT visibility, author_id FROM activity_posts WHERE id = $1 LIMIT 1",
+        "SELECT visibility, author_id, pod_id FROM activity_posts WHERE id = $1 LIMIT 1",
         [req.params.id],
       );
       const postRow = postAccess.rows[0];
@@ -1631,6 +1648,13 @@ Last updated: ${new Date().toISOString().split('T')[0]}
       }
       if (postRow.visibility === "private" && postRow.author_id !== viewerId) {
         return res.status(404).json({ message: "Post not found" });
+      }
+      if (postRow.visibility === "pod" && postRow.author_id !== viewerId) {
+        const membership = await dbPool.query(
+          "SELECT 1 FROM pod_members WHERE pod_id = $1 AND user_id = $2 LIMIT 1",
+          [postRow.pod_id, viewerId],
+        );
+        if (!membership.rowCount) return res.status(404).json({ message: "Post not found" });
       }
       const comments = await dbPool.query(
         `SELECT ac.*, u.first_name, u.last_name, u.profile_image_url,
@@ -9900,7 +9924,7 @@ One-liner: "S.A.S.C.H. it every day: Seize → Absorb → Swing → Combine → 
 THE S.O.S. DAILY RESET — for hard days, overwhelm, or "I don't know where to start":
 S – SURVIVE: You're still here. Breathe. Anchor your why. That's the win.
 O – ORGANIZE: Stack small wins. Pick one thing. Build structure from that one thing.
-S – STRIVE: Push. Experiment. Never zero. One rep saves your streak.
+S – STRIVE: Choose a safe, clinician-approved next step only when your body is not giving you a reason to pause. Intentional rest counts; never push through symptoms.
 Use this when someone's overwhelmed, lost, or just needs to get through today.
 
 THE C.O.M.P.A.S.S. — the advanced 7-pillar navigation system for builders:
@@ -9936,10 +9960,10 @@ RESPONSE STYLE:
 
       SAFETY & AUTONOMY BOUNDARY:
       - You are an education, reflection, and accountability companion — not a clinician, therapist, diagnostician, triage service, or emergency monitor.
-      - Never diagnose, predict outcomes, or tell someone that a symptom is safe. New, worsening, or concerning symptoms belong with their healthcare team or emergency services.
+      - Never diagnose, predict outcomes, or tell someone that a symptom is safe. New, worsening, painful, dizzy, weak, breathing, or otherwise concerning symptoms override the routine: tell the survivor to pause and contact their healthcare team; sudden or severe symptoms require local emergency services.
       - Never tell someone to start, stop, skip, double, or change medication, supplements, therapy, or treatment.
       - Never prescribe exercise dosage, intensity, progression, or nutrition targets. Do not invent exercises. For movement questions, offer to open the survivor's guided Today session or approved Academy library and let them choose.
-      - Treat a missed rep, intentional rest, or a declined suggestion as valid information — never shame, guilt, or pressure the survivor.
+      - Treat a missed rep, intentional rest, or a declined suggestion as valid information — never shame, guilt, pressure, or tell the survivor to push through symptoms.
       - Do not claim that effort guarantees healing, rewiring, myelination, or a particular recovery outcome. Hope must not become a promise.
       - Before creating a reminder, changing a plan, sharing information, or taking an action outside this conversation, ask for clear confirmation.
 
@@ -9972,23 +9996,22 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       // first-text by the full TTS latency (~2-3s) for the survivor.
       const wantAudioInline = skipAudio !== true;
 
-      // CRISIS GATE — runs BEFORE the LLM. If the user expresses suicidal
-      // ideation, self-harm, violence, or abuse, we short-circuit to a
-      // structured crisis response and skip Gemini + ElevenLabs entirely.
-      // Crisis path also bypasses the anonymous + daily caps on purpose —
-      // we never block a crisis message.
-      const crisis = detectCrisis(message);
-      if (crisis.detected && crisis.category) {
+      // SAFETY GATE — runs BEFORE the LLM. Crisis intent and acute or
+      // concerning symptom disclosures get a deterministic response so the
+      // model cannot encourage a survivor to push through symptoms.
+      // Safety responses also bypass anonymous/daily caps on purpose.
+      const safety = detectSafetyRisk(message);
+      if (safety.detected && safety.category) {
         const userId = req.user?.claims?.sub ?? null;
         console.warn(JSON.stringify({
           level: 'warn',
           ts: new Date().toISOString(),
-          msg: 'coach_crisis_intercept',
+          msg: 'coach_safety_intercept',
           userId,
-          category: crisis.category,
-          matched: crisis.matchedPhrase,
+          category: safety.category,
+          matched: safety.matchedPhrase,
         }));
-        const crisisPayload = buildCrisisResponse(crisis.category);
+        const crisisPayload = buildSafetyResponse(safety.category);
         const crisisUserId = getUserId(req);
         if (crisisUserId) {
           const { persistChatTurn } = await import('./sasquatchHistoryService');
@@ -14408,13 +14431,19 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       const blocks = viewerId
         ? await activityPool.query("SELECT blocked_id FROM user_blocks WHERE blocker_id = $1", [viewerId])
         : { rows: [] as Array<{ blocked_id: string }> };
+      const podMemberships = viewerId
+        ? await activityPool.query("SELECT pod_id FROM pod_members WHERE user_id = $1", [viewerId])
+        : { rows: [] as Array<{ pod_id: number }> };
       const blocked = new Set(blocks.rows.map((row) => row.blocked_id));
+      const joinedPodIds = new Set(podMemberships.rows.map((row) => Number(row.pod_id)));
       const visible = posts.filter((post) => {
         if (blocked.has(post.authorId)) return false;
         if (post.visibility === "public") return true;
         if (!viewerId) return false;
         if (post.visibility === "members") return true;
-        return post.visibility === "private" && post.authorId === viewerId;
+        if (post.visibility === "private") return post.authorId === viewerId;
+        return post.visibility === "pod" &&
+          (post.authorId === viewerId || (post.podId != null && joinedPodIds.has(post.podId)));
       });
       res.json(visible);
     } catch (error) {
@@ -14433,16 +14462,26 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       if (post.visibility === "private" && post.authorId !== viewerId) {
         return res.status(404).json({ message: "Post not found" });
       }
+      if (post.visibility === "members" && !viewerId) {
+        return res.status(404).json({ message: "Post not found" });
+      }
       if (post.visibility === "pod") {
-        if (!viewerId) return res.status(404).json({ message: "Post not found" });
-        const { db: activityDb } = await import("./db");
-        const { podMembers } = await import("../shared/schema");
-        const { and, eq } = await import("drizzle-orm");
-        const [membership] = await activityDb.select().from(podMembers).where(and(
-          eq(podMembers.podId, post.podId as number),
-          eq(podMembers.userId, viewerId),
-        )).limit(1);
-        if (!membership) return res.status(404).json({ message: "Post not found" });
+        if (!viewerId || post.authorId !== viewerId && !post.podId) {
+          return res.status(404).json({ message: "Post not found" });
+        }
+        if (post.authorId === viewerId) {
+          // Authors can always read their own post, even if a pod membership
+          // was removed after the post was created.
+        } else {
+          const { db: activityDb } = await import("./db");
+          const { podMembers } = await import("../shared/schema");
+          const { and, eq } = await import("drizzle-orm");
+          const [membership] = await activityDb.select().from(podMembers).where(and(
+            eq(podMembers.podId, post.podId as number),
+            eq(podMembers.userId, viewerId),
+          )).limit(1);
+          if (!membership) return res.status(404).json({ message: "Post not found" });
+        }
       }
       await ensureCommunitySafetyTables();
       const { pool: activityPool } = await import("./db");

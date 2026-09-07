@@ -126,7 +126,12 @@ export default function SurvivorIntake() {
   const [stepIdx, setStepIdx] = useState(0);
   const [draft, setDraft] = useState<Draft>({});
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [navigationWarning, setNavigationWarning] = useState<string | null>(null);
   const initialized = useRef(false);
+  const draftRevision = useRef(0);
+  const lastSavedRevision = useRef(0);
+  const latestSave = useRef<Draft | null>(null);
 
   // Hydrate draft + resume from saved currentIntakeStep
   useEffect(() => {
@@ -149,15 +154,50 @@ export default function SurvivorIntake() {
 
   // Debounced save-as-you-go
   const debounceRef = useRef<number | null>(null);
+  const persistDraft = (next: Draft, revision: number) => {
+    latestSave.current = next;
+    setSaveState("saving");
+    setSaveError(null);
+    const { id, userId, intakeCompletedAt, intakeComplete, updatedAt, ...patchable } = next as any;
+    patch({ ...patchable, profileSource: "survivor_intake" })
+      .then(() => {
+        if (revision === draftRevision.current) {
+          lastSavedRevision.current = revision;
+          setSaveState("saved");
+          setSaveError(null);
+          setNavigationWarning(null);
+        }
+      })
+      .catch((error: unknown) => {
+        if (revision === draftRevision.current) {
+          setSaveState("error");
+          setSaveError(error instanceof Error ? error.message : "Your answers could not be saved. Please try again.");
+        }
+      });
+  };
+
   const queueSave = (next: Draft) => {
+    const revision = ++draftRevision.current;
+    const waitingForRetry = !!saveError;
+    latestSave.current = next;
+    setSaveState("saving");
+    if (!saveError) setSaveError(null);
     if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    if (waitingForRetry) return;
     debounceRef.current = window.setTimeout(() => {
-      setSaveState("saving");
-      const { id, userId, intakeCompletedAt, intakeComplete, updatedAt, ...patchable } = next as any;
-       patch({ ...patchable, profileSource: "survivor_intake" })
-         .then(() => setSaveState("saved"))
-         .catch(() => setSaveState("error"));
+      debounceRef.current = null;
+      persistDraft(next, revision);
     }, 700);
+  };
+
+  const retrySave = () => {
+    if (debounceRef.current) {
+      window.clearTimeout(debounceRef.current);
+      debounceRef.current = null;
+    }
+    if (latestSave.current) {
+      persistDraft(latestSave.current, draftRevision.current);
+    }
   };
 
   const update = <K extends keyof Draft>(key: K, value: Draft[K]) => {
@@ -201,9 +241,22 @@ export default function SurvivorIntake() {
     }
     const next = Math.min(stepIdx + 1, TOTAL_STEPS - 1);
     const { id, userId, intakeCompletedAt, intakeComplete, updatedAt, ...patchable } = draft as any;
+    const revision = draftRevision.current;
+    setSaveState("saving");
+    setSaveError(null);
+    latestSave.current = { ...draft, currentIntakeStep: next };
     try {
        await patch({ ...patchable, currentIntakeStep: next, profileSource: "survivor_intake" });
+       if (revision === draftRevision.current) {
+         lastSavedRevision.current = revision;
+         setSaveState("saved");
+         setNavigationWarning(null);
+       }
     } catch (e: any) {
+      if (revision === draftRevision.current) {
+        setSaveState("error");
+        setSaveError(e?.message || "Your answers could not be saved. Please try again.");
+      }
       toast({
         title: "Couldn't save your last step",
         description: e?.message || "Please try again.",
@@ -218,6 +271,40 @@ export default function SurvivorIntake() {
   const goBack = () => {
     setStepIdx((s) => Math.max(0, s - 1));
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const hasUnsavedChanges = draftRevision.current > lastSavedRevision.current || saveState === "saving" || saveState === "error";
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+    const warnBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    const warnBeforeNavigation = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const anchor = target.closest("a");
+      if (!anchor || !anchor.href.startsWith(window.location.origin)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      setNavigationWarning("Your latest answers are not saved yet. Retry the save before leaving this page.");
+    };
+    window.addEventListener("beforeunload", warnBeforeUnload);
+    document.addEventListener("click", warnBeforeNavigation, true);
+    return () => {
+      window.removeEventListener("beforeunload", warnBeforeUnload);
+      document.removeEventListener("click", warnBeforeNavigation, true);
+    };
+  }, [hasUnsavedChanges]);
+
+  const leaveIntake = (event?: React.MouseEvent<HTMLButtonElement>) => {
+    if (hasUnsavedChanges) {
+      event?.preventDefault();
+      setNavigationWarning("Your latest answers are not saved yet. Retry the save before leaving this page.");
+      return;
+    }
+    navigate("/recovery/dashboard");
   };
 
   const handleComplete = async () => {
@@ -256,7 +343,7 @@ export default function SurvivorIntake() {
           </div>
           <button
             type="button"
-            onClick={() => navigate("/recovery/dashboard")}
+            onClick={() => leaveIntake()}
             className="text-xs text-gray-500 hover:text-gray-300 underline-offset-2 hover:underline"
             data-testid="link-skip-intake"
           >
@@ -280,6 +367,24 @@ export default function SurvivorIntake() {
              </span>
           </div>
         </div>
+
+        {saveError && (
+          <div
+            role="alert"
+            data-testid="intake-save-error"
+            className="mb-4 flex items-center justify-between gap-3 rounded-md border border-red-900/60 bg-red-950/30 px-3 py-2 text-sm text-red-300"
+          >
+            <span>Your latest answers were not saved. {saveError}</span>
+            <Button type="button" size="sm" variant="outline" onClick={retrySave} data-testid="button-retry-intake-save">
+              Retry save
+            </Button>
+          </div>
+        )}
+        {navigationWarning && (
+          <div role="alert" data-testid="intake-navigation-warning" className="mb-4 rounded-md border border-[#E2741B]/50 bg-[#E2741B]/10 px-3 py-2 text-sm text-[#F2B37A]">
+            {navigationWarning}
+          </div>
+        )}
 
         <Card className="bg-[#1a1a1a] border-[#333]">
           <CardContent className="p-6 sm:p-8">

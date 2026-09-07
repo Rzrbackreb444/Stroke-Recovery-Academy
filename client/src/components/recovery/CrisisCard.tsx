@@ -83,7 +83,7 @@ export default function CrisisCard({ message, resources }: CrisisCardProps) {
       </ul>
 
       <p className="text-[11px] text-gray-500 leading-relaxed pt-1 border-t border-red-500/15">
-        This card replaced the AI coach's reply because what you shared deserves a real person, not a chatbot. The AI will resume normal conversation on your next message — but please reach out first.
+        This card replaced the AI coach's reply because what you shared deserves a real person, not a chatbot. Please contact human help or your healthcare team before sending another Coach message.
       </p>
     </div>
   );

@@ -406,7 +406,7 @@ export const recoveryAcademySchemas = {
     alternateName: "Sasquatch Recovery Academy",
     url: `${BASE_URL}/recovery`,
     logo: `${BASE_URL}/recovery-logo.png`,
-    description: "Survivor-led stroke recovery education, reflection tools, community support, and the Sasquatch Doctrine methodology.",
+    description: "Stroke recovery education built from therapist lessons, books, research, and Nick Kremers' lived application, experimentation, documentation, and adaptation.",
     areaServed: { "@type": "Country", name: "Worldwide" },
     sameAs: ["https://twitter.com/strokerecovery"],
     slogan: "Never Zero. Always Forward.",
@@ -532,7 +532,9 @@ export function createSupportGroupSchema(group: {
 
 export const EEATSignals = {
   expertise: [
-    "Survivor-led recovery education",
+    "Founder expertise by experience",
+    "Therapist- and research-informed recovery education",
+    "Documented self-experimentation and iteration",
     "AI-assisted reflection and planning",
     "Plain-language recovery resources",
   ],
@@ -543,7 +545,8 @@ export const EEATSignals = {
     "Years of collective recovery experience",
   ],
   authoritativeness: [
-    "Founder lived experience",
+    "Founder lived knowledge",
+    "Clear distinction between lived expertise and clinical care",
     "Transparent content provenance",
     "Clear non-clinical boundaries",
   ],

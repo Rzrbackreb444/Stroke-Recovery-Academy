@@ -116,8 +116,8 @@ export default function RecoveryBlog() {
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <RecoveryHeader />
       <RecoverySEO
-        title="Stroke Recovery Blog — Survivor-Led Guides & Stories"
-        description="Survivor-led stroke recovery education by Nick Kremers, with practical guides, lived experience, and questions to take to your care team."
+        title="Stroke Recovery Blog — Lived-Recovery Guides & Stories"
+        description="Stroke recovery education by Nick Kremers, combining therapist-informed research with lived application, practical guides, and questions to take to your care team."
         canonical="/recovery/blog"
         keywords={[
           "stroke recovery blog", "stroke survivor stories", "stroke rehab tips", "neuroplasticity after stroke",
@@ -142,7 +142,7 @@ export default function RecoveryBlog() {
             Recovery Blog
           </h1>
           <p className="text-gray-400 text-base sm:text-lg">
-             Survivor-led recovery education, practical guides, and stories from Nick Kremers
+             Lived-recovery education, practical guides, and stories from Nick Kremers
           </p>
           <Link href="/recovery">
             <Button className="mt-4 bg-[#E2741B] text-black font-semibold hover:bg-[#F08A2E]">
@@ -397,7 +397,7 @@ export default function RecoveryBlog() {
           <h2 className="text-xl sm:text-2xl font-bold mb-3">Want to Share Your Recovery Story?</h2>
           <p className="text-gray-300 mb-6 max-w-2xl mx-auto text-sm sm:text-base">
              Your journey may help another survivor feel less alone. Share what you are comfortable sharing
-             and help grow a practical, survivor-led recovery community.
+             and help grow a practical recovery community grounded in lived knowledge.
           </p>
           <Link href="/recovery/community">
             <Button className="bg-[#E2741B] text-black font-semibold">

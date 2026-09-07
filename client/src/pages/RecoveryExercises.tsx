@@ -108,9 +108,10 @@ export default function RecoveryExercises() {
             Real exercises. Real progressions.
           </h1>
           <p className="text-sm text-gray-400 max-w-2xl">
-            Survivor-informed stroke recovery exercises with seated and standing variations,
-            three catalog levels, and clear pacing notes. Authored by Nick Kremers for
-            education and care-team conversations, not as a prescription.
+            Nick Kremers' lived-recovery exercises with seated and standing variations,
+            three catalog levels, and clear pacing notes. Built from study, therapist
+            lessons, experimentation, and personal application for education and care-team
+            conversations, not as a prescription.
           </p>
         </div>
 

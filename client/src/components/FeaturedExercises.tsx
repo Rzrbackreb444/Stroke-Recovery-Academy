@@ -58,7 +58,8 @@ export default function FeaturedExercises() {
             The Recovery Arsenal
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto" data-testid="text-exercises-subtitle">
-            Survivor-informed practice ideas drawn from Nick's personal 0%-to-90% story.
+            Practice ideas drawn from Nick's personal 0%-to-90% story and refined through
+            study, experimentation, repetition, and documentation.
             Every technique refined over {yearsSinceStroke()} years of real recovery.
           </p>
         </div>

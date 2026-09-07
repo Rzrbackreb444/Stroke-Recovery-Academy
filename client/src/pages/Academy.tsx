@@ -52,7 +52,7 @@ const books = [
     title: "The Ultimate Stroke Recovery Revolution",
     subtitle: "Nick's personal 0% to 90%+ story",
     author: "Nick Kremers",
-    description: "A survivor-led learning path for meeting recovery's uncertainty with reflection, pacing, and practical experiments. 33 chapters and 9 appendices cover neuroplasticity as a topic, the 66-Day Tracker, personal routines, and the S.A.S.C.H. Formula.",
+    description: "Nick's lived-recovery system for meeting uncertainty with study, experimentation, pacing, repetition, and documentation. 33 chapters and 9 appendices cover neuroplasticity, the 66-Day Tracker, personal routines, and the S.A.S.C.H. Formula.",
     topics: ["The S.A.S.C.H. Formula", "Neuroplasticity Revolution", "Baseball Bat & Mirror Therapy", "The 66-Day Transformation"],
     gradient: "from-primary via-orange-500 to-red-600",
     chapters: 33,
@@ -134,8 +134,8 @@ const sasquatchFormula = [
 const benefits = [
   {
     icon: Brain,
-    title: "Survivor-Led Ideas",
-    description: "Practical routines drawn from Nick's lived experience, with room to adapt to your situation.",
+    title: "Expertise in Practice",
+    description: "Therapist- and research-informed ideas absorbed, tested, repeated, and adapted through Nick's own recovery.",
   },
   {
     icon: Target,
@@ -338,7 +338,7 @@ export default function Academy() {
 
     updateOrCreateMeta(
       "description",
-      "Explore survivor-led stroke recovery courses from Nick Kremers, including his personal 0% to 90% recovery story and practical routines."
+      "Explore Nick Kremers' lived-recovery courses, built from therapist lessons, books, research, experimentation, repetition, documentation, and his personal 0% to 90% recovery story."
     );
 
     updateOrCreateLink("canonical", "https://strokerecoveryacademy.com/academy");
@@ -350,7 +350,7 @@ export default function Academy() {
     );
     updateOrCreateMeta(
       "og:description",
-      "Survivor-led stroke recovery courses from The Stroked Out Sasquatch, with practical exercises and mindset ideas drawn from Nick's personal experience.",
+      "Lived-recovery courses from The Stroked Out Sasquatch, with practical exercises and mindset ideas drawn from Nick's study, experimentation, and personal application.",
       true
     );
     updateOrCreateMeta("og:type", "website", true);
@@ -401,7 +401,7 @@ export default function Academy() {
           }),
           createRecoveryCourseSchema({
             name: "The Ultimate Stroke Recovery Revolution",
-            description: "A survivor-led blueprint: 33 chapters covering the S.A.S.C.H. Formula, neuroplasticity as a topic, personal routines, reflection, and the 66-Day Transformation.",
+            description: "A lived-recovery blueprint: 33 chapters covering the S.A.S.C.H. Formula, neuroplasticity, personal routines, reflection, experimentation, and the 66-Day Transformation.",
             url: "/recovery/academy",
             numberOfLessons: 33,
             durationHours: 14,
@@ -412,9 +412,9 @@ export default function Academy() {
           { "@context": "https://schema.org", ...STROKE_CONDITION_SCHEMA },
         ]}
         faq={[
-          { question: "What is the Stroke Recovery Academy?", answer: "Stroke Recovery Academy is a survivor-led online platform created by Nick Kremers. It offers courses about his personal recovery story, practical routines, AI coaching, and a community of survivors. It is educational and non-clinical; results vary." },
+          { question: "What is the Stroke Recovery Academy?", answer: "Stroke Recovery Academy is an online platform created by Nick Kremers, a stroke survivor and recovery educator by experience. He learned from therapists, books, and research, then applied and refined that knowledge through his own recovery. The Academy teaches his lived-recovery system, practical routines, AI coaching, and survivor community. It is educational and non-clinical; results vary." },
           { question: "What is mirror therapy for stroke recovery?", answer: "Mirror therapy is a stroke rehabilitation technique where you place a mirror along your body's midline. You watch your unaffected arm/hand perform movements in the mirror, creating the visual illusion that your affected arm is moving normally. This visual feedback activates mirror neurons in the brain and stimulates neuroplasticity, helping to restore motor function in the affected limb. Research shows 20-30 minutes of mirror therapy daily significantly improves arm and hand function after stroke." },
-          { question: "What is baseball bat therapy for stroke?", answer: "Baseball bat therapy, pioneered by Nick Kremers, uses the weight and grip of a baseball bat to provide progressive resistance training for stroke-affected arms and hands. The familiar shape promotes neural re-engagement and the weight challenges weakened muscles in a functional, task-specific way. Nick used this as part of his daily rehabilitation routine as he recovered from 0% to 90% function." },
+          { question: "What is baseball bat therapy for stroke?", answer: "Baseball bat therapy is the name Nick gives to one of the practice approaches he developed through his own recovery. He used the familiar shape and weight as a way to explore grip, reach, and controlled repetition. It is his lived method, not a clinically validated treatment or a guarantee; review any equipment or movement with your care team." },
           { question: "How do I get started with the Stroke Recovery Academy?", answer: "To get started, create a free account on Stroke Recovery Academy, explore the Recovery University 33-chapter curriculum (available to all members), access the exercise database with 34 therapeutic exercises, and connect with the Sasquatch Coach (AI powered by Nick's methodology). Upgrade to a paid tier for full course access, live coaching, and premium protocol content." }
         ]}
       />
@@ -445,8 +445,9 @@ export default function Academy() {
               </h1>
               
               <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-8">
-                Explore practical, survivor-led courses developed by Nick Kremers — The Stroked Out Sasquatch.
-                His 0% to 90% recovery is his personal experience, not a promise of what anyone else will experience.
+                Explore practical, lived-recovery courses developed by Nick Kremers — The Stroked Out Sasquatch.
+                His 0% to 90% recovery reflects knowledge he lived, tested, documented, and refined,
+                not a promise of what anyone else will experience.
               </p>
               
               <div className="flex flex-wrap justify-center gap-4 mb-12">

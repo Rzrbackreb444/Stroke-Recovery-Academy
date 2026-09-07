@@ -13,26 +13,26 @@ const credentials = [
   },
   {
     icon: FileCheck,
-    title: "Survivor-Led",
-    description: "Practical ideas from lived experience",
+    title: "Expert by Experience",
+    description: "Knowledge absorbed and lived through recovery",
   },
   {
     icon: GraduationCap,
-    title: "Plain-Language Support",
-    description: "Non-clinical tools and encouragement",
+    title: "Therapist- and Research-Informed",
+    description: "Professional lessons applied in real life",
   },
   {
     icon: Award,
-    title: "Practical Tools",
-    description: "Simple routines to discuss with your care team",
+    title: "Documented Practice",
+    description: "Small goals, repetition, adaptation, and accountability",
   },
 ];
 
 const medicalPartners = [
-  "Survivor experiences",
-  "Personal routines",
-  "Peer connection",
-  "Progress tracking",
+  "Therapist lessons",
+  "Books and research",
+  "Personal experimentation",
+  "Documented repetition",
 ];
 
 export function MedicalCredentialsBanner() {
@@ -42,7 +42,7 @@ export function MedicalCredentialsBanner() {
         <div className="flex items-center justify-center gap-2 mb-4">
           <Stethoscope className="h-5 w-5 text-[#E2741B]" />
           <span className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
-            Survivor-Led Recovery Platform
+            Expert-by-Experience Recovery Platform
           </span>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -72,11 +72,11 @@ export function MedicalTrustBadges() {
       <Badge className="bg-green-500/10 text-green-400 border-green-500/30 gap-1">
         <CheckCircle className="h-3 w-3" /> Privacy-minded
       </Badge>
-      <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/30 gap-1">
-        <Brain className="h-3 w-3" /> Neuroplasticity Based
+       <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/30 gap-1">
+         <Brain className="h-3 w-3" /> Neuroplasticity Education
       </Badge>
       <Badge className="bg-purple-500/10 text-purple-400 border-purple-500/30 gap-1">
-        <Award className="h-3 w-3" /> Survivor-led
+         <Award className="h-3 w-3" /> Expert by Experience
       </Badge>
       <Badge className="bg-[#E2741B]/10 text-[#E2741B] border-[#E2741B]/30 gap-1">
         <Heart className="h-3 w-3" /> Survivor Approved
@@ -109,7 +109,7 @@ export function ResearchBased() {
     <div className="bg-[#0D0D0D] border border-[#333] rounded-lg p-6">
       <div className="flex items-center gap-2 mb-4">
         <FileCheck className="h-5 w-5 text-[#E2741B]" />
-        <h3 className="font-bold text-white">Survivor-Led Approach</h3>
+         <h3 className="font-bold text-white">Lived Knowledge in Practice</h3>
       </div>
       <div className="grid grid-cols-2 gap-3">
         {medicalPartners.map((partner) => (

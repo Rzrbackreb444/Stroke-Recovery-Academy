@@ -49,13 +49,15 @@ test("anonymous Today requests redirect to login with the exact requested URL", 
   );
 });
 
-test("legacy recovery dashboard and routine URLs resolve to canonical Today", () => {
-  for (const alias of ["/recovery/dashboard", "/recovery/routine"]) {
-    const route = new RegExp(
-      `<Route path="${alias.replaceAll("/", "\\/")}">\\s*<RecoveryRouteRedirect to="\\/recovery\\/today"`,
-    );
-    assert.match(clientApp, route, `${alias} should redirect in the SPA`);
-  }
+test("legacy recovery dashboard redirects while the checklist routine remains protected", () => {
+  assert.match(
+    clientApp,
+    /<Route path="\/recovery\/dashboard">\s*<RecoveryRouteRedirect to="\/recovery\/today"/,
+  );
+  assert.match(
+    clientApp,
+    /<Route path="\/recovery\/routine">\s*<ProtectedRoute loginReturnPath="\/recovery\/routine">\s*<DailyRoutine \/>/,
+  );
 
   const guard = sourceBetween(
     serverApp,
@@ -64,7 +66,7 @@ test("legacy recovery dashboard and routine URLs resolve to canonical Today", ()
   );
   assert.match(
     guard,
-    /const isLegacyTodayAlias =\s*requestedPath === "\/recovery\/dashboard" \|\| requestedPath === "\/recovery\/routine"/,
+    /const isLegacyTodayAlias = requestedPath === "\/recovery\/dashboard";/,
   );
   assert.match(
     guard,
