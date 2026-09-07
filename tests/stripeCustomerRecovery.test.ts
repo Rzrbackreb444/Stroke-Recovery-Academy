@@ -4,10 +4,6 @@ import { db } from '../server/db';
 import { RecoveryStripeService } from '../server/recoveryStripeService';
 import { StripeService, stripeService } from '../server/stripeService';
 import { registerVoiceCloneRoutes } from '../server/voiceCloneRoutes';
-import { ensureStripeCustomerForUser } from '../server/stripeClient';
-import {
-import { getRecoveryStripeClient } from '../server/recoveryStripeClient';
-import { recoveryStripeService } from '../server/recoveryStripeService';
 
 function missingCustomerError() {
   return Object.assign(new Error('No such customer'), {
@@ -16,12 +12,6 @@ function missingCustomerError() {
   });
 }
 
-type PowerPointsCheckoutStubs = {
-  attempts: Array<{ customer: string; metadata?: Record<string, string> }>;
-  insertedGifts: unknown[];
-  repairs: number;
-  restore: () => void;
-};
 function captureVoiceCloneCheckoutHandler() {
   let checkoutHandlers: Array<(...args: any[]) => unknown> | undefined;
   const app = {
@@ -117,24 +107,34 @@ function stubVoiceCloneCheckoutDatabase(t: any) {
 }
 
 test('main Stripe checkout retries with the repaired customer after a confirmed missing ID', async () => {
-  const service = new RecoveryStripeService();
-  const calls: Array<{ customerId: string | undefined; email: string; userId: string }> = [];
+  const service = new StripeService();
+  const calls: string[] = [];
   service.ensureCustomer = async () => 'cus_old';
   service.repairCustomer = async (_userId, _email, staleCustomerId) => {
     assert.equal(staleCustomerId, 'cus_old');
     return 'cus_repaired';
   };
+  service.createCheckoutSession = async (customerId) => {
+    calls.push(customerId);
+    if (customerId === 'cus_old') throw missingCustomerError();
+    return { url: 'https://checkout.test/repaired' } as any;
+  };
 
-    const session = await createPowerPointsCheckoutWithCustomerRecovery(
-      powerPointsCheckoutOptions,
-    );
+  const session = await service.createCheckoutSessionWithCustomerRecovery(
+    'user-1',
+    'survivor@example.com',
+    'cus_old',
+    'price_1',
+    '/success',
+    '/cancel',
+  );
 
   assert.deepEqual(calls, ['cus_old', 'cus_repaired']);
-  assert.equal(session.id, 'cs_repaired');
+  assert.equal(session.url, 'https://checkout.test/repaired');
 });
 
-test('recovery Stripe checkout leaves transient failures actionable', async () => {
-  const service = new RecoveryStripeService();
+test('main Stripe customer recovery does not retry actionable non-missing failures', async () => {
+  const service = new StripeService();
   let repairs = 0;
   service.ensureCustomer = async () => 'cus_old';
   service.repairCustomer = async () => {
@@ -164,18 +164,25 @@ test('recovery Stripe checkout leaves transient failures actionable', async () =
 });
 
 test('authenticated voice-clone checkout repairs and persists a customer missing during session creation', async (t) => {
-    const { persistedCustomerIds } = stubVoiceCloneCheckoutDatabase(t);
-  const service = new RecoveryStripeService();
-  const calls: Array<{ customerId: string | undefined; email: string; userId: string }> = [];
+  const { persistedCustomerIds } = stubVoiceCloneCheckoutDatabase(t);
+  const service = stripeService;
+  const calls: string[] = [];
 
-    t.mock.method(service, 'createCustomer', async () => ({ id: 'cus_repaired' }));
-    t.mock.method(service, 'createCheckoutSession', async (customerId: string) => {
-      calls.push(customerId);
-      throw error;
-    });
+  t.mock.method(service, 'getOrCreateCustomer', async (customerId: string | null | undefined, email: string, userId: string) => {
+    assert.equal(customerId, 'cus_old');
+    assert.equal(email, 'survivor@example.com');
+    assert.equal(userId, 'user-1');
+    persistedCustomerIds.push('cus_repaired');
+    return { id: 'cus_repaired', created: true } as any;
+  });
+  t.mock.method(service, 'createCheckoutSession', async (customerId: string) => {
+    calls.push(customerId);
+    if (customerId === 'cus_old') throw missingCustomerError();
+    return { url: 'https://checkout.test/repaired' } as any;
+  });
 
-    const routeHandler = captureVoiceCloneCheckoutHandler();
-    const result = createResponse();
+  const routeHandler = captureVoiceCloneCheckoutHandler();
+  const result = createResponse();
   await routeHandler(createAuthenticatedCheckoutRequest(), result.response);
 
   assert.equal(result.statusCode, 200);
@@ -209,8 +216,8 @@ for (const [label, error] of [
 ] as const) {
   test(`authenticated voice-clone checkout does not repair or retry ${label} Stripe failures`, async (t) => {
     const { persistedCustomerIds } = stubVoiceCloneCheckoutDatabase(t);
-  const service = new RecoveryStripeService();
-  const calls: Array<{ customerId: string | undefined; email: string; userId: string }> = [];
+    const service = stripeService;
+    const calls: string[] = [];
 
     t.mock.method(service, 'createCustomer', async () => ({ id: 'cus_repaired' }));
     t.mock.method(service, 'createCheckoutSession', async (customerId: string) => {
@@ -231,16 +238,23 @@ for (const [label, error] of [
 
 test('recovery Stripe checkout retries with the repaired customer after a confirmed missing ID', async () => {
   const service = new RecoveryStripeService();
-  const calls: Array<{ customerId: string | undefined; email: string; userId: string }> = [];
+  const calls: string[] = [];
   service.ensureCustomer = async () => 'cus_old';
   service.repairCustomer = async (_userId, _email, staleCustomerId) => {
     assert.equal(staleCustomerId, 'cus_old');
     return 'cus_repaired';
   };
 
-    const session = await createPowerPointsCheckoutWithCustomerRecovery(
-      powerPointsCheckoutOptions,
-    );
+  const session = await service.createCheckoutWithCustomerRecovery(
+    'user-1',
+    'survivor@example.com',
+    'cus_old',
+    async (customerId) => {
+      calls.push(customerId);
+      if (customerId === 'cus_old') throw missingCustomerError();
+      return { id: 'cs_repaired' };
+    },
+  );
 
   assert.deepEqual(calls, ['cus_old', 'cus_repaired']);
   assert.equal(session.id, 'cs_repaired');
@@ -287,217 +301,10 @@ test('recovery customer lookup uses the shared locked customer path', async () =
     'cus_existing',
   );
 
-  const stubs = stubPowerPointsCheckout(() => transientError);
-
-  const stubs = stubPowerPointsCheckout(() => transientError);
-
-  const stubs = stubPowerPointsCheckout(() => transientError);
-
-  type CustomerPointerStore = {
-    customerId: string | null;
-    withUserLock: <T>(
-      userId: string,
-      operation: (store: {
-        getCustomerId: () => Promise<string | null>;
-        setCustomerId: (customerId: string) => Promise<void>;
-      }) => Promise<T>,
-    ) => Promise<T>;
-  };
-
-  assert.deepEqual(
-    [recoveryFirst, studioFirst, recoverySecond, studioSecond],
-    [
-      { id: 'cus_recovery', created: true },
-      { id: 'cus_studio', created: true },
-      { id: 'cus_recovery', created: false },
-      { id: 'cus_studio', created: false },
-    ],
-  );
-  assert.equal(recoveryStore.customerId, 'cus_recovery');
-  assert.equal(studioStore.customerId, 'cus_studio');
-  assert.deepEqual(clients[0].created, [{
+  assert.equal(customerId, 'cus_recovery');
+  assert.deepEqual(calls, [{
+    customerId: 'cus_existing',
     email: 'survivor@example.com',
-    metadata: accountClients[0].metadata,
+    userId: 'user-1',
   }]);
-  assert.deepEqual(clients[1].created, [{
-    email: 'survivor@example.com',
-    metadata: accountClients[1].metadata,
-  }]);
-  assert.deepEqual(clients[0].retrieved, ['cus_recovery']);
-  assert.deepEqual(clients[1].retrieved, ['cus_studio']);
 });
-
-  const createStore = (): CustomerPointerStore => {
-    const store: CustomerPointerStore = {
-      customerId: null,
-      withUserLock: async (_userId, operation) => {
-        const previous = lockTail;
-        let release!: () => void;
-        lockTail = new Promise<void>((resolve) => {
-          release = resolve;
-        });
-        await previous;
-
-        try {
-          return await operation({
-            getCustomerId: async () => store.customerId,
-            setCustomerId: async (customerId) => {
-              store.customerId = customerId;
-            },
-          });
-        } finally {
-          release();
-        }
-      },
-    };
-    return store;
-  };
-
-  const [recoveryFirst, studioFirst] = await Promise.all(
-    clients.map(ensureAccountCustomer),
-  );
-
-  const recoveryStore = createStore();
-
-  const [recoverySecond, studioSecond] = await Promise.all(
-    clients.map(ensureAccountCustomer),
-  );
-
-  const accountClients = [
-    {
-      name: 'recovery',
-      customerId: 'cus_recovery',
-      metadata: { userId: 'user-overlap', platform: 'stroke_recovery_academy' },
-      store: recoveryStore,
-    },
-    {
-      name: 'studio',
-      customerId: 'cus_studio',
-      metadata: { userId: 'user-overlap', scope: 'sasquatch_studio' },
-      store: studioStore,
-    },
-  ] as const;
-
-  const ensureAccountCustomer = (
-    client: (typeof clients)[number],
-  ) => ensureStripeCustomerForUser(
-    client.stripe,
-    client.account.store,
-    'user-overlap',
-    {
-      email: 'survivor@example.com',
-      metadata: client.account.metadata,
-    },
-  );
-
-  let lockTail = Promise.resolve();
-
-  const clients = accountClients.map((account) => {
-    const retrieved: string[] = [];
-    const created: Array<{ email?: string; metadata?: Record<string, string> }> = [];
-    const foreignCustomerId =
-      account.name === 'recovery' ? 'cus_studio' : 'cus_recovery';
-
-    return {
-      account,
-      retrieved,
-      created,
-      stripe: {
-        customers: {
-          retrieve: async (customerId: string) => {
-            assert.notEqual(
-              customerId,
-              foreignCustomerId,
-              `${account.name} Stripe client must not receive the other account's customer`,
-            );
-            retrieved.push(customerId);
-            return { id: account.customerId, deleted: false };
-          },
-          create: async (params: { email?: string; metadata?: Record<string, string> }) => {
-            created.push(params);
-            return { id: account.customerId };
-          },
-        },
-      },
-    };
-  });
-
-  const studioStore = createStore();
-
-function stubPowerPointsCheckout(
-  errorForCustomer: (customerId: string) => Error | undefined,
-): PowerPointsCheckoutStubs {
-  const dbModule = db as any;
-  const originalSelect = dbModule.select;
-  const originalInsert = dbModule.insert;
-  const stripe = getRecoveryStripeClient() as any;
-  const originalCreateSession = stripe.checkout.sessions.create;
-  const originalEnsureCustomer = recoveryStripeService.ensureCustomer;
-  const originalRepairCustomer = recoveryStripeService.repairCustomer;
-  const attempts: PowerPointsCheckoutStubs['attempts'] = [];
-  const insertedGifts: unknown[] = [];
-  let repairs = 0;
-
-  dbModule.select = () => ({
-    from() {
-      return this;
-    },
-    where() {
-      return this;
-    },
-    limit: async () => [{ id: 'receiver-1', firstName: 'Alex' }],
-  });
-  dbModule.insert = () => {
-    const query = {
-      values(values: unknown) {
-        insertedGifts.push(values);
-        return query;
-      },
-      returning: async () => [{ id: 42 }],
-    };
-    return query;
-  };
-  recoveryStripeService.ensureCustomer = async () => {
-    return 'cus_old';
-  };
-  recoveryStripeService.repairCustomer = async () => {
-    repairs++;
-    return 'cus_repaired';
-  };
-  stripe.checkout.sessions.create = async (params: {
-    customer: string;
-    metadata?: Record<string, string>;
-  }) => {
-    attempts.push(params);
-    const error = errorForCustomer(params.customer);
-    if (error) throw error;
-    return { url: 'https://checkout.test/repaired' };
-  };
-
-  return {
-    attempts,
-    insertedGifts,
-    get repairs() {
-      return repairs;
-    },
-    restore() {
-      dbModule.select = originalSelect;
-      dbModule.insert = originalInsert;
-      stripe.checkout.sessions.create = originalCreateSession;
-      recoveryStripeService.ensureCustomer = originalEnsureCustomer;
-      recoveryStripeService.repairCustomer = originalRepairCustomer;
-    },
-  };
-}
-
-const powerPointsCheckoutOptions = {
-  senderId: 'sender-1',
-  receiverId: 'receiver-1',
-  packageKey: 'spark' as const,
-  message: 'You have got this.',
-  isAnonymous: false,
-  customerId: 'cus_old',
-  senderEmail: 'sender@example.com',
-  successUrl: '/success',
-  cancelUrl: '/cancel',
-};

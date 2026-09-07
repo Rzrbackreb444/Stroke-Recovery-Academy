@@ -472,11 +472,11 @@ export class StripeService {
    * Create a replacement customer after Stripe confirms that the stored
    * customer no longer exists. The shared customer store holds the
    * transaction-scoped lock and uses a deterministic Stripe idempotency key,
-   * so a database rollback after Stripe succeeds is safe to retry.
+   * so concurrent checkout retries converge on one replacement and a
+   * database rollback after Stripe succeeds is safe to retry.
    */
   async repairCustomer(userId: string, email: string, staleCustomerId?: string): Promise<string> {
-    const customer = await this.getOrCreateCustomer(staleCustomerId, email, userId);
-    return customer.id;
+    return (await this.getOrCreateCustomer(staleCustomerId, email, userId)).id;
   }
 
   async ensureCustomer(userId: string, email: string, customerId?: string): Promise<string> {
