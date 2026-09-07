@@ -1598,7 +1598,24 @@ Last updated: ${new Date().toISOString().split('T')[0]}
          LEFT JOIN users u ON u.id = ap.author_id
          LEFT JOIN user_settings us ON us.user_id = ap.author_id
          LEFT JOIN user_personas up ON up.user_id = ap.author_id
-         WHERE (ap.visibility = 'public' OR (ap.visibility = 'members' AND $3::text IS NOT NULL))
+         WHERE (
+             ap.visibility = 'public'
+             OR (ap.visibility = 'members' AND $3::text IS NOT NULL)
+             OR (ap.visibility = 'private' AND ap.author_id = $3)
+             OR (
+               ap.visibility = 'pod'
+               AND $3::text IS NOT NULL
+               AND (
+                 ap.author_id = $3
+                 OR EXISTS (
+                   SELECT 1
+                   FROM pod_members pm
+                   WHERE pm.pod_id = ap.pod_id
+                     AND pm.user_id = $3
+                 )
+               )
+             )
+           )
            AND NOT EXISTS (
              SELECT 1 FROM user_blocks ub
              WHERE ub.blocker_id = $3 AND ub.blocked_id = ap.author_id
@@ -1621,7 +1638,7 @@ Last updated: ${new Date().toISOString().split('T')[0]}
       await ensureCommunitySafetyTables();
       const viewerId = getUserId(req as any) || (req as any).session?.userId || null;
       const postAccess = await dbPool.query(
-        "SELECT visibility, author_id FROM activity_posts WHERE id = $1 LIMIT 1",
+        "SELECT visibility, author_id, pod_id FROM activity_posts WHERE id = $1 LIMIT 1",
         [req.params.id],
       );
       const postRow = postAccess.rows[0];
@@ -1631,6 +1648,13 @@ Last updated: ${new Date().toISOString().split('T')[0]}
       }
       if (postRow.visibility === "private" && postRow.author_id !== viewerId) {
         return res.status(404).json({ message: "Post not found" });
+      }
+      if (postRow.visibility === "pod" && postRow.author_id !== viewerId) {
+        const membership = await dbPool.query(
+          "SELECT 1 FROM pod_members WHERE pod_id = $1 AND user_id = $2 LIMIT 1",
+          [postRow.pod_id, viewerId],
+        );
+        if (!membership.rowCount) return res.status(404).json({ message: "Post not found" });
       }
       const comments = await dbPool.query(
         `SELECT ac.*, u.first_name, u.last_name, u.profile_image_url,
@@ -14408,13 +14432,19 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       const blocks = viewerId
         ? await activityPool.query("SELECT blocked_id FROM user_blocks WHERE blocker_id = $1", [viewerId])
         : { rows: [] as Array<{ blocked_id: string }> };
+      const podMemberships = viewerId
+        ? await activityPool.query("SELECT pod_id FROM pod_members WHERE user_id = $1", [viewerId])
+        : { rows: [] as Array<{ pod_id: number }> };
       const blocked = new Set(blocks.rows.map((row) => row.blocked_id));
+      const joinedPodIds = new Set(podMemberships.rows.map((row) => Number(row.pod_id)));
       const visible = posts.filter((post) => {
         if (blocked.has(post.authorId)) return false;
         if (post.visibility === "public") return true;
         if (!viewerId) return false;
         if (post.visibility === "members") return true;
-        return post.visibility === "private" && post.authorId === viewerId;
+        if (post.visibility === "private") return post.authorId === viewerId;
+        return post.visibility === "pod" &&
+          (post.authorId === viewerId || (post.podId != null && joinedPodIds.has(post.podId)));
       });
       res.json(visible);
     } catch (error) {
@@ -14433,16 +14463,26 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       if (post.visibility === "private" && post.authorId !== viewerId) {
         return res.status(404).json({ message: "Post not found" });
       }
+      if (post.visibility === "members" && !viewerId) {
+        return res.status(404).json({ message: "Post not found" });
+      }
       if (post.visibility === "pod") {
-        if (!viewerId) return res.status(404).json({ message: "Post not found" });
-        const { db: activityDb } = await import("./db");
-        const { podMembers } = await import("../shared/schema");
-        const { and, eq } = await import("drizzle-orm");
-        const [membership] = await activityDb.select().from(podMembers).where(and(
-          eq(podMembers.podId, post.podId as number),
-          eq(podMembers.userId, viewerId),
-        )).limit(1);
-        if (!membership) return res.status(404).json({ message: "Post not found" });
+        if (!viewerId || post.authorId !== viewerId && !post.podId) {
+          return res.status(404).json({ message: "Post not found" });
+        }
+        if (post.authorId === viewerId) {
+          // Authors can always read their own post, even if a pod membership
+          // was removed after the post was created.
+        } else {
+          const { db: activityDb } = await import("./db");
+          const { podMembers } = await import("../shared/schema");
+          const { and, eq } = await import("drizzle-orm");
+          const [membership] = await activityDb.select().from(podMembers).where(and(
+            eq(podMembers.podId, post.podId as number),
+            eq(podMembers.userId, viewerId),
+          )).limit(1);
+          if (!membership) return res.status(404).json({ message: "Post not found" });
+        }
       }
       await ensureCommunitySafetyTables();
       const { pool: activityPool } = await import("./db");
