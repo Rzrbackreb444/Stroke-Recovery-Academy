@@ -6,7 +6,7 @@ export default function ExerciseCardExample() {
     <div className="max-w-sm">
       <ExerciseCard
         title="Baseball Bat Therapy"
-        description="My secret weapon that outperformed $15,000 clinical equipment. Progressive challenge protocols for strength and balance."
+        description="A personal practice prop, not a secret weapon or replacement for clinical equipment. Use progressive strength and balance activities only with appropriate guidance."
         difficulty="Intermediate"
         bodyArea={["Arm", "Balance", "Proprioception"]}
         duration="15-20 min"

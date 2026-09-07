@@ -56,7 +56,7 @@ const FEATURE_MATRIX = [
   { label: "Recovery Center Finder", free: true, warrior: true },
   { label: "Brain Gym (3 sessions/day)", free: true, warrior: true },
   { label: "Public protocol library (limited)", free: true, warrior: true },
-  { label: "Sasquatch Coach", free: "3 msg/day", warrior: "Unlimited 24/7" },
+   { label: "Sasquatch Coach", free: "3 msg/day", warrior: "Unlimited access" },
   { label: "66-Day Challenge", free: "Read-only", warrior: "Daily missions" },
   { label: "Daily Routine System (5 levels)", free: false, warrior: true },
   { label: "Full exercise library (20+ programs)", free: false, warrior: true },
@@ -75,12 +75,12 @@ const WHAT_YOU_GET = [
   {
     icon: Target,
     title: "66-Day Challenge",
-    desc: "The most structured stroke recovery program available. Daily missions, phase tracking, and a clear path from Survival to Optimization.",
+     desc: "A structured daily practice with missions, phase tracking, and room to adapt from Survival to Optimization at your own pace.",
   },
   {
     icon: MessageCircle,
     title: "Sasquatch Coach (Unlimited)",
-    desc: "Nick's AI accountability coach available 24/7. Raspy, honest, and relentless — exactly when you need a push and exactly when you need truth.",
+     desc: "Nick's AI accountability coach for reflection, questions, and a manageable next step — with clear reminders that it is not clinical care.",
   },
   {
     icon: Sun,
@@ -90,7 +90,7 @@ const WHAT_YOU_GET = [
   {
     icon: Activity,
     title: "Protocol Library (20+)",
-    desc: "Evidence-based recovery programs for upper extremity, gait, cognitive, and speech — built for real survivors, not textbook patients.",
+     desc: "Survivor-informed recovery tools for upper extremity, gait, cognitive, and speech practice — built for real lives, not a one-size-fits-all prescription.",
   },
   {
     icon: Users,
@@ -146,7 +146,7 @@ const WHO_ITS_FOR = [
       "Daily Routine System adapts to any clinical discharge level",
       "Exercise library with progression markers for home programs",
       "Community accountability fills the gap between OT/PT appointments",
-      "Evidence-based, neuroplasticity-driven framework",
+      "Survivor-informed, neuroplasticity-aware framework",
     ],
   },
 ];
@@ -544,7 +544,7 @@ export default function RecoveryPricing() {
                     "Everything in Free — no exceptions",
                     "Daily Routine System (all 5 levels)",
                     "66-Day Challenge with daily missions",
-                    "Unlimited Sasquatch Coach (24/7 AI)",
+                    "Unlimited Sasquatch Coach access",
                     "Full protocol library (20+ programs)",
                     "Daily accountability check-ins",
                     "Habit tracking & 66-day streak tracker",
@@ -839,7 +839,7 @@ export default function RecoveryPricing() {
         <div className="max-w-3xl mx-auto text-center">
           <Badge className="mb-6 bg-[#E2741B]/20 text-[#E2741B] border-[#E2741B]/30">
             <Flame className="w-3.5 h-3.5 mr-1.5" />
-            7 days free. No excuses.
+            7 days free. Start gently and pause whenever you need to.
           </Badge>
           <h2 className="text-4xl md:text-5xl font-black mb-6 leading-tight">
             You already survived<br /> the hardest part.

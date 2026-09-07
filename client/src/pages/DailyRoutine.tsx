@@ -27,6 +27,7 @@ export default function DailyRoutine() {
   const [openBlocks, setOpenBlocks] = useState<Set<string>>(new Set(["morning"]));
   const [showBadDayModal, setShowBadDayModal] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // Load today's saved routine
   const { data: todayData } = useQuery<{
@@ -53,7 +54,12 @@ export default function DailyRoutine() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/recovery/routine/today"] });
       setSaved(true);
+      setSaveError(null);
       setTimeout(() => setSaved(false), 2000);
+    },
+    onError: (error: unknown) => {
+      setSaved(false);
+      setSaveError(error instanceof Error ? error.message : "Your routine could not be saved. Please try again.");
     },
   });
 
@@ -166,6 +172,8 @@ export default function DailyRoutine() {
                   key={l.id}
                   data-testid={`level-${l.id}`}
                   onClick={() => setLevel(l.id)}
+                  aria-pressed={active}
+                  aria-label={`Intensity level ${l.name}`}
                   className={`flex flex-col items-center gap-1.5 p-3 rounded-lg border transition-all duration-200 ${
                     active
                       ? `${l.accent} bg-[#111]`
@@ -212,6 +220,8 @@ export default function DailyRoutine() {
                 <button
                   data-testid={`block-toggle-${block.id}`}
                   onClick={() => toggleBlock(block.id)}
+                  aria-expanded={isOpen}
+                  aria-controls={`routine-block-${block.id}`}
                   className="w-full flex items-center gap-3 p-4 text-left"
                 >
                   <BlockIcon className="h-4 w-4 text-[#E2741B] shrink-0" />
@@ -246,7 +256,7 @@ export default function DailyRoutine() {
 
                 {/* Task list */}
                 {isOpen && (
-                  <div className="px-4 pb-4 space-y-2">
+                  <div id={`routine-block-${block.id}`} className="px-4 pb-4 space-y-2">
                     <div className="border-t border-[#1a1a1a] mb-3" />
                     {tasks.map(task => {
                       const done = completed.has(task.id);
@@ -257,6 +267,8 @@ export default function DailyRoutine() {
                           key={task.id}
                           data-testid={`task-${task.id}`}
                           onClick={() => toggleTask(task.id)}
+                          aria-pressed={done}
+                          aria-label={`${done ? "Mark incomplete" : "Mark complete"}: ${task.text}`}
                           className={`w-full flex items-start gap-3 p-3 rounded-lg border text-left transition-all duration-150 ${
                             done
                               ? "bg-[#0a1a0a] border-green-900/40"
@@ -291,8 +303,9 @@ export default function DailyRoutine() {
 
         {/* Notes */}
         <div className="mb-8">
-          <label className="block text-xs text-gray-600 uppercase tracking-widest mb-2">Notes for today (optional)</label>
+          <label htmlFor="routine-notes" className="block text-xs text-gray-600 uppercase tracking-widest mb-2">Notes for today (optional)</label>
           <Textarea
+            id="routine-notes"
             data-testid="input-routine-notes"
             value={notes}
             onChange={e => setNotes(e.target.value)}
@@ -308,6 +321,8 @@ export default function DailyRoutine() {
               <span className="text-green-500 text-xs flex items-center gap-1">
                 <CheckCircle className="h-3 w-3" /> Saved
               </span>
+            ) : saveError ? (
+              <span role="alert" className="text-red-400 text-xs">{saveError}</span>
             ) : (
               <span className="text-gray-700 text-xs">Auto-saves as you check off</span>
             )}

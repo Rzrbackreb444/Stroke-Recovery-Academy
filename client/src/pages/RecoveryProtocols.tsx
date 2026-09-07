@@ -180,8 +180,8 @@ export default function RecoveryProtocols() {
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <RecoverySEO
-        title="Evidence-Based Stroke Recovery Protocols — Upper Extremity, Gait, Speech & Cognition"
-        description="Proven stroke recovery protocols developed by Nick Kremers from personal 0%-to-90% recovery experience. Covers upper extremity rehab, gait & balance training, cognitive recovery, and speech therapy. Always consult your healthcare team."
+        title="Stroke Recovery Practice Guides — Upper Extremity, Gait, Speech & Cognition"
+        description="Survivor-informed stroke recovery practice guides developed by Nick Kremers from personal 0%-to-90% recovery experience. Covers upper extremity, gait and balance, cognitive practice, and speech topics. Always consult your healthcare team."
         canonical="/recovery/protocols"
         pageType="medical"
         keywords={[
@@ -195,8 +195,8 @@ export default function RecoveryProtocols() {
         faq={[
           { question: "What is the best protocol for recovering arm function after stroke?", answer: "The most evidence-backed protocols for arm recovery after stroke are: (1) Mirror Therapy — place a mirror along your midline and watch your unaffected arm while moving your affected arm, 20-30 min daily; (2) Constraint-Induced Movement Therapy (CIMT) — restrain the good arm to force use of the affected arm 6 hours/day; (3) Task-specific repetitive training with 400+ reps per session. These stimulate the strongest neuroplastic response for motor recovery." },
           { question: "How do I start walking again after a stroke?", answer: "Walking recovery starts with supervised gait training using parallel bars, progresses to walking with a therapist, then independent walking with an assistive device if needed. Key exercises: standing balance practice, weight shifting, step practice, and stair training. Drop foot (foot that doesn't lift properly) is common — an ankle foot orthosis (AFO) can help. High repetition practice is critical — aim for 2,000+ steps per day building up slowly." },
-          { question: "How long should I do stroke recovery exercises each day?", answer: "Research shows more practice produces better outcomes. Aim for 45-90 minutes of targeted exercises per day, split into sessions if needed. Short, frequent sessions (15-20 min, 4-6x daily) are often more sustainable than one long session and may drive stronger neuroplastic gains. Never do zero — the 'Never Zero' principle means doing at least 5 minutes every single day without exception." },
-          { question: "Can speech therapy help after a stroke?", answer: "Yes — speech therapy is highly effective for aphasia (language difficulty) and dysarthria (speech motor difficulty). Evidence-based techniques include melodic intonation therapy, constraint-induced aphasia therapy (CIAT), and high-repetition word and sentence drills. Work with a speech-language pathologist (SLP) and supplement with daily practice apps. Recovery is possible even years post-stroke due to neuroplasticity." },
+          { question: "How long should I do stroke recovery exercises each day?", answer: "There is no universal safe amount for every survivor. Your clinician or therapist can help set a duration based on your symptoms, fatigue, medications, and goals. Short, comfortable sessions with rest may be easier to sustain than one long session; stop for concerning symptoms and pause or skip practice when your body needs recovery." },
+          { question: "Can speech therapy help after a stroke?", answer: "A speech-language pathologist can assess aphasia or dysarthria and recommend individualized practice. Approaches such as melodic intonation therapy, constraint-induced aphasia therapy, and repeated word or sentence practice may be discussed with an SLP; this page is educational and not a substitute for that assessment." },
           { question: "What are the cognitive effects of stroke and how are they treated?", answer: "Stroke can cause cognitive challenges including memory problems, attention deficits, executive function impairment, and processing speed reduction. Treatment includes cognitive rehabilitation therapy with a neuropsychologist, memory strategy training, attention training exercises, and brain training apps. Regular aerobic exercise also promotes neuroplasticity and cognitive recovery. The brain can rewire significantly with consistent targeted practice." }
         ]}
       />
@@ -208,7 +208,7 @@ export default function RecoveryProtocols() {
             Recovery Protocols
           </h1>
           <p className="text-gray-400 text-lg">
-            Evidence-based rehabilitation programs designed by Nick Kremers
+            Survivor-informed practice guides authored by Nick Kremers
           </p>
         </div>
 

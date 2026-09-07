@@ -108,8 +108,9 @@ export default function RecoveryExercises() {
             Real exercises. Real progressions.
           </h1>
           <p className="text-sm text-gray-400 max-w-2xl">
-            Evidence-based stroke recovery exercises with seated and standing variations,
-            three difficulty levels, and clear progression rules. Authored by Nick Kremers.
+            Survivor-informed stroke recovery exercises with seated and standing variations,
+            three catalog levels, and clear pacing notes. Authored by Nick Kremers for
+            education and care-team conversations, not as a prescription.
           </p>
         </div>
 
@@ -126,6 +127,8 @@ export default function RecoveryExercises() {
                 <button
                   key={c.key}
                   onClick={() => setCategory(c.key)}
+                  type="button"
+                  aria-pressed={isActive}
                   data-testid={`filter-category-${c.key}`}
                   className={[
                     "rounded-lg border p-3 text-left transition-all hover-elevate",
@@ -152,19 +155,20 @@ export default function RecoveryExercises() {
               </p>
               <div className="flex gap-1 flex-wrap">
                 {POSITIONS.map((p) => (
-                  <Badge
+                  <button
                     key={p}
-                    variant={position === p ? "default" : "outline"}
+                    type="button"
                     onClick={() => setPosition(p)}
-                    className={
+                    aria-pressed={position === p}
+                    className={`rounded-md border px-2.5 py-1.5 text-xs capitalize min-h-9 ${
                       position === p
-                        ? "cursor-pointer bg-[#E2741B] text-black hover:bg-[#E2741B]"
-                        : "cursor-pointer"
-                    }
+                        ? "bg-[#E2741B] text-black border-[#E2741B] hover:bg-[#E2741B]"
+                        : "border-[#333] text-gray-300 hover-elevate"
+                    }`}
                     data-testid={`filter-position-${p}`}
                   >
-                    {p}
-                  </Badge>
+                    {p === "all" ? "All" : p}
+                  </button>
                 ))}
               </div>
             </div>
@@ -174,19 +178,20 @@ export default function RecoveryExercises() {
               </p>
               <div className="flex gap-1 flex-wrap">
                 {LEVELS.map((l) => (
-                  <Badge
+                  <button
                     key={l}
-                    variant={level === l ? "default" : "outline"}
+                    type="button"
                     onClick={() => setLevel(l)}
-                    className={
+                    aria-pressed={level === l}
+                    className={`rounded-md border px-2.5 py-1.5 text-xs capitalize min-h-9 ${
                       level === l
-                        ? "cursor-pointer bg-[#E2741B] text-black hover:bg-[#E2741B]"
-                        : "cursor-pointer"
-                    }
+                        ? "bg-[#E2741B] text-black border-[#E2741B] hover:bg-[#E2741B]"
+                        : "border-[#333] text-gray-300 hover-elevate"
+                    }`}
                     data-testid={`filter-level-${l}`}
                   >
                     {l}
-                  </Badge>
+                  </button>
                 ))}
               </div>
             </div>
@@ -197,6 +202,7 @@ export default function RecoveryExercises() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
                 <Input
+                  aria-label="Search exercises"
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   placeholder="drop foot, grip, balance…"

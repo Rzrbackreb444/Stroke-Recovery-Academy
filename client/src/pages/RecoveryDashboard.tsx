@@ -64,7 +64,7 @@ const motivationalQuotes = [
   "Every day you show up, you win. Every rep you complete, you rewire.",
   "I took what the stroke gave me and turned it into rocket fuel.",
   "You are not your diagnosis. You are your determination.",
-  "0% to 90% wasn't luck. It was relentless action, every single day.",
+  "Nick's 0% to 90% story is his experience, not a measure or promise for anyone else.",
   "When doctors said 'never,' I heard 'prove them wrong.'",
   "The comeback is always stronger than the setback.",
   "Your recovery is personal. Pause when you need to, use a saved routine, or contact your care team.",
@@ -249,14 +249,14 @@ export default function RecoveryDashboard() {
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <SEO
         title="Recovery Dashboard | Stroke Recovery Academy"
-        description="Track your stroke recovery progress with comprehensive metrics, daily check-ins, habit tracking, and personalized recovery programs designed by medical professionals."
+        description="Track your stroke recovery progress with daily check-ins, habit tracking, reflections, and educational recovery support to discuss with your care team."
         canonical="/recovery/dashboard"
         keywords="stroke recovery tracking, recovery progress dashboard, rehabilitation progress, stroke survivor tools"
         author="Stroke Recovery Academy"
         type="website"
-        expertise={["Stroke recovery protocols", "Neuroplasticity-based rehabilitation", "Medical oversight"]}
+        expertise={["Stroke survivor education", "Daily recovery reflection", "Care-team conversation support"]}
         experience="Supporting stroke survivors since 2024"
-        trustSignals={["Evidence-based recovery programs", "Trusted by healthcare professionals", "Medical expert-reviewed content"]}
+        trustSignals={["Survivor-led education", "Private reflection tools", "Care-team conversation support"]}
         breadcrumbs={[{ name: "Home", url: "/" }, { name: "Recovery Dashboard", url: "/recovery/dashboard" }]}
       />
 
@@ -541,7 +541,7 @@ export default function RecoveryDashboard() {
                 </div>
                 <div>
                   <h2 className="text-xl font-black text-white">66-Day Challenge Command Center</h2>
-                  <p className="text-xs text-gray-400">Your daily mission — no excuses, no exceptions.</p>
+                   <p className="text-xs text-gray-400">A daily invitation to check in, choose a manageable step, and pause when needed.</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">

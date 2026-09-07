@@ -14478,10 +14478,11 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       if (!textContent && submittedMedia.length === 0) {
         return res.status(400).json({ message: "Write something before posting." });
       }
-      if (!["public", "members", "pod", "private"].includes(visibility || "public")) {
+      const postVisibility = visibility || "private";
+      if (!["public", "members", "pod", "private"].includes(postVisibility)) {
         return res.status(400).json({ message: "Choose a supported visibility." });
       }
-      if (visibility === "pod" && !podId) {
+      if (postVisibility === "pod" && !podId) {
         return res.status(400).json({ message: "Choose a pod for pod-only posts." });
       }
       
@@ -14491,7 +14492,7 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
           ? "Shared a recovery video."
           : "Shared a recovery photo."),
         postType: postType || 'update',
-        visibility: visibility || 'public',
+        visibility: postVisibility,
         podId,
       });
       

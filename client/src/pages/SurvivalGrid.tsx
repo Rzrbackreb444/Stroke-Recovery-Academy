@@ -102,7 +102,7 @@ const exercises: Exercise[] = [
   {
     id: 5,
     name: "Drop Foot Protocol",
-    description: "Nick's proven system to overcome drop foot. Targeted ankle exercises, AFO usage guides, and gait pattern retraining.",
+    description: "Nick's personal approach to working on drop foot: targeted ankle exercises, AFO usage guides, and gait-pattern questions to discuss with your care team.",
     category: "lower-body",
     difficulty: "All Levels",
     duration: "30-45 min",
@@ -114,7 +114,7 @@ const exercises: Exercise[] = [
   {
     id: 6,
     name: "Walking Exercises",
-    description: "From first steps with a walker to independent walking. Progressive walking protocols with distance and speed targets.",
+    description: "Supported walking activities for people working from first steps with a walker toward more independence. Use only with clinician-approved support and pacing.",
     category: "lower-body",
     difficulty: "Beginner",
     duration: "20-40 min",
@@ -246,10 +246,10 @@ const categories = [
 ];
 
 const stats = [
-  { label: "Battle-Tested Protocols", value: "16+", icon: Target },
+  { label: "Recovery Tools", value: "16+", icon: Target },
   { label: "Categories Covered", value: "4", icon: Grid3X3 },
   { label: "Years of Experience", value: "6+", icon: Award },
-  { label: "Recovery Rate", value: "90%", icon: Zap },
+  { label: "Nick's Recovery Story", value: "1", icon: Zap },
 ];
 
 function getDifficultyColor(difficulty: Difficulty): string {
@@ -422,19 +422,19 @@ export default function SurvivalGrid() {
 
     updateOrCreateMeta(
       "description",
-      "Access battle-tested stroke recovery exercises and protocols from Nick Kremers. Upper body, lower body, cognitive, and daily living skills training - your complete survival kit for stroke recovery."
+      "Explore survivor-informed stroke recovery exercises and practical tools from Nick Kremers. Upper body, lower body, cognitive, and daily living activities to discuss with your care team."
     );
 
     updateOrCreateLink("canonical", "https://strokerecoveryacademy.com/survival-grid");
 
     updateOrCreateMeta(
       "og:title",
-      "Survival Grid - Battle-Tested Recovery Protocols | Stroke Recovery OS",
+      "Survival Grid - Survivor-Informed Recovery Tools | Stroke Recovery Academy",
       true
     );
     updateOrCreateMeta(
       "og:description",
-      "Your arsenal of recovery tools. Access proven exercises for upper body, lower body, cognitive function, and daily living skills from The Stroked Out Sasquatch.",
+      "A library of survivor-informed recovery tools for upper body, lower body, cognitive function, and daily living practice.",
       true
     );
     updateOrCreateMeta("og:type", "website", true);
@@ -448,7 +448,7 @@ export default function SurvivalGrid() {
     );
     updateOrCreateMeta(
       "twitter:description",
-      "Battle-tested stroke recovery protocols covering upper body, lower body, cognitive function, and daily living skills."
+      "Survivor-informed stroke recovery tools covering upper body, lower body, cognitive function, and daily living practice."
     );
 
     updateOrCreateMeta(
@@ -486,9 +486,8 @@ export default function SurvivalGrid() {
               </h1>
               
               <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-8">
-                Your Arsenal of Recovery Tools — Battle-tested exercises and protocols 
-                that took Nick from wheelchair to walking. Every technique proven in the 
-                trenches of real recovery.
+                Your recovery tool library — activities shaped by Nick's lived experience
+                and presented for reflection, pacing, and discussion with your care team.
               </p>
               
               <div className="flex flex-wrap justify-center gap-4 mb-12">

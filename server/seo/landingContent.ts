@@ -64,7 +64,7 @@ export const PAGE_FOR_SURVIVORS: SsrPageConfig = {
         'Recovery University — 7 parts, 33 chapters. The doctrine.',
         'Daily Routine system — 5 levels, automatically calibrated to where you are.',
         '66-Day Challenge — the transformation arc that turns a survivor into a Sasquatch.',
-        'Sasquatch Coach — a 24/7 AI companion built on Nick\'s voice.',
+        'Sasquatch Coach — an AI reflection and accountability companion built on Nick\'s lived experience.',
         'Survivor community — real survivors. Not a Facebook group full of well-meaning relatives.',
         'Recovery Center Finder — to bridge the gap when you need real human help.',
       ],

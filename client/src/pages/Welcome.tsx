@@ -35,7 +35,7 @@ const PILLARS = [
     icon: Mic,
     title: "Sasquatch Coach",
     description:
-      "A 24/7 AI accountability partner trained on Nick's lived recovery — not medical advice, but the push you need at 5am.",
+      "An AI accountability partner shaped by Nick's lived recovery — not medical advice, offering reflection and a manageable next step when you need it.",
     cta: "Meet the coach",
     href: "/recovery/sasquatch-coach",
   },

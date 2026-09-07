@@ -111,6 +111,17 @@ function hasSafetyNotes(exercise: RecoveryPlanCatalogExercise): boolean {
   return typeof exercise.safetyNotes === "string" && exercise.safetyNotes.trim().length > 0;
 }
 
+function safetyNotesForPosition(exercise: RecoveryPlanCatalogExercise): string {
+  const notes = exercise.safetyNotes!.trim();
+  // Position is catalog metadata, not an inference about a survivor's ability.
+  // Keep the catalog selection unchanged while making the support preflight
+  // impossible to miss when a plan contains an upright activity.
+  if (/standing|walking/i.test(exercise.position)) {
+    return `${notes} Standing/walking preflight: use this only after clinician approval, with the caregiver, trained spotter, therapist, stable support, or assistive device your care team requires. Pause or skip if that support is unavailable or you feel unwell.`;
+  }
+  return notes;
+}
+
 function uniqueSlugs(slugs: string[]): string[] {
   return [...new Set(slugs)];
 }
@@ -197,7 +208,7 @@ export function buildSafeRecoveryPlan(args: {
       name: exercise.name,
       domain: exercise.domain as RecoveryPlan["focusDomains"][number],
       description: exercise.description,
-      safetyNotes: exercise.safetyNotes!.trim(),
+      safetyNotes: safetyNotesForPosition(exercise),
       clinicianReviewRequired: true as const,
     };
   });

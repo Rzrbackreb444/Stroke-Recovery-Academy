@@ -11,7 +11,7 @@ export default function BookCardExample() {
         chapterCount={28}
         readingTime="8-10 hours"
         coverImage={bookCoverImage}
-        preview="The ONLY stroke recovery book written by someone who went from 0% to 90% function using methods that don't exist in medical textbooks. Battle-tested techniques, brutal honesty, and proof that comeback can exceed setback."
+        preview="A survivor-led stroke recovery book drawn from Nick's reported 0%-to-90% personal story. Honest reflection and practical ideas, not a clinical protocol or proof of a promised outcome."
         onClick={() => console.log("Read book clicked")}
       />
     </div>

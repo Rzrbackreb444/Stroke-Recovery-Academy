@@ -125,6 +125,7 @@ export default function SurvivorIntake() {
   const { toast } = useToast();
   const [stepIdx, setStepIdx] = useState(0);
   const [draft, setDraft] = useState<Draft>({});
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const initialized = useRef(false);
 
   // Hydrate draft + resume from saved currentIntakeStep
@@ -151,8 +152,11 @@ export default function SurvivorIntake() {
   const queueSave = (next: Draft) => {
     if (debounceRef.current) window.clearTimeout(debounceRef.current);
     debounceRef.current = window.setTimeout(() => {
+      setSaveState("saving");
       const { id, userId, intakeCompletedAt, intakeComplete, updatedAt, ...patchable } = next as any;
-       patch({ ...patchable, profileSource: "survivor_intake" }).catch(() => {});
+       patch({ ...patchable, profileSource: "survivor_intake" })
+         .then(() => setSaveState("saved"))
+         .catch(() => setSaveState("error"));
     }, 700);
   };
 
@@ -271,7 +275,9 @@ export default function SurvivorIntake() {
           </div>
           <div className="flex items-center justify-between mt-2 text-[11px] uppercase tracking-wide text-gray-500">
             <span data-testid="text-step-counter">Step {stepIdx + 1} of {TOTAL_STEPS}</span>
-            <span>Auto-saving</span>
+             <span role="status" aria-live="polite">
+               {saveState === "saving" ? "Saving…" : saveState === "saved" ? "Saved" : saveState === "error" ? "Couldn't save — try again" : "Auto-saving"}
+             </span>
           </div>
         </div>
 
@@ -445,6 +451,7 @@ function IdentityStep({
           value={preferredName ?? ""}
           onChange={(e) => onChange("preferredName", e.target.value)}
           placeholder="Nick"
+           autoComplete="nickname"
           className="bg-[#0D0D0D] border-[#333]"
           data-testid="input-preferred-name"
         />
@@ -456,6 +463,7 @@ function IdentityStep({
           value={pronouns ?? ""}
           onChange={(e) => onChange("pronouns", e.target.value)}
           placeholder="he/him, she/her, they/them"
+           autoComplete="off"
           className="bg-[#0D0D0D] border-[#333]"
           data-testid="input-pronouns"
         />
@@ -487,6 +495,7 @@ function StrokeStep({
               key={t.value}
               type="button"
               onClick={() => onChange("strokeType", t.value)}
+              aria-pressed={strokeType === t.value}
               className={`text-left rounded-md border p-3 hover-elevate transition-colors ${
                 strokeType === t.value
                   ? "border-[#E2741B] bg-[#E2741B]/10"
@@ -509,6 +518,7 @@ function StrokeStep({
           value={dateValue}
           max={new Date().toISOString().slice(0, 10)}
           onChange={(e) => onChange("strokeDate", e.target.value || null)}
+          autoComplete="bday"
           className="bg-[#0D0D0D] border-[#333]"
           data-testid="input-stroke-date"
         />
@@ -522,6 +532,7 @@ function StrokeStep({
               key={s.value}
               type="button"
               onClick={() => onChange("affectedSide", s.value)}
+              aria-pressed={affectedSide === s.value}
               className={`rounded-md border px-3 py-1.5 text-sm hover-elevate transition-colors ${
                 affectedSide === s.value
                   ? "border-[#E2741B] bg-[#E2741B]/10 text-white"
@@ -570,6 +581,8 @@ function DeficitsStep({
                 min={0}
                 max={4}
                 step={1}
+                aria-label={label}
+                aria-valuetext={SEVERITY_LABEL[v]}
                 onValueChange={(arr) => onChange(key, arr[0] ?? 0)}
                 data-testid={`slider-deficit-${key}`}
               />
@@ -612,6 +625,7 @@ function GoalsStep({
           value={customGoal ?? ""}
           onChange={(e) => onCustomChange(e.target.value)}
           placeholder="e.g. Hold my granddaughter on my left arm again"
+          autoComplete="off"
           className="bg-[#0D0D0D] border-[#333]"
           data-testid="input-custom-goal"
         />
@@ -691,6 +705,8 @@ function DailyLifeStep({
           min={5}
           max={120}
           step={5}
+          aria-label="Minutes per day for recovery"
+          aria-valuetext={`${minutes} minutes`}
           onValueChange={(arr) => onMinutes(arr[0] ?? 20)}
           data-testid="slider-time-budget"
         />
@@ -753,6 +769,7 @@ function CaregiverStep({
           <div className="text-xs text-gray-500">Spouse, family, friend, or pro</div>
         </div>
         <Switch
+          aria-label="Someone helps me with recovery"
           checked={hasCaregiver}
           onCheckedChange={onHas}
           data-testid="switch-has-caregiver"
@@ -768,6 +785,7 @@ function CaregiverStep({
               value={email ?? ""}
               onChange={(e) => onEmail(e.target.value)}
               placeholder="caregiver@email.com"
+              autoComplete="email"
               className="bg-[#1a1a1a] border-[#333]"
               data-testid="input-caregiver-email"
             />
@@ -783,6 +801,7 @@ function CaregiverStep({
                   key={r.value}
                   type="button"
                   onClick={() => onRelationship(r.value)}
+                  aria-pressed={relationship === r.value}
                   className={`rounded-md border px-3 py-1.5 text-xs hover-elevate ${
                     relationship === r.value
                       ? "border-[#E2741B] bg-[#E2741B]/10 text-white"
@@ -881,6 +900,7 @@ function StoryStep({
       <div className="relative">
         <Textarea
           value={story ?? ""}
+          aria-label="Your story"
           onChange={(e) => onChange(e.target.value)}
           placeholder="Where you were when it happened, what you've fought through, what you hope for…"
           className="bg-[#0D0D0D] border-[#333] min-h-[160px] pr-12"
@@ -896,6 +916,7 @@ function StoryStep({
                 : "border-[#333] bg-[#1a1a1a] text-gray-400"
             }`}
             aria-label={listening ? "Stop dictation" : "Start dictation"}
+            aria-pressed={listening}
             data-testid="button-mic-story"
           >
             {listening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
@@ -1007,7 +1028,8 @@ function ChipGroup({
             key={opt}
             type="button"
             onClick={() => onToggle(opt)}
-            className={`rounded-md border px-3 py-1.5 text-sm hover-elevate transition-colors ${
+            aria-pressed={isOn}
+            className={`rounded-md border px-3 py-2 min-h-10 text-sm hover-elevate transition-colors ${
               isOn
                 ? "border-[#E2741B] bg-[#E2741B]/10 text-white"
                 : "border-[#333] bg-[#0D0D0D] text-gray-300"
@@ -1042,7 +1064,7 @@ function ToggleRow({
         <div className="text-sm font-semibold">{label}</div>
         {hint && <div className="text-xs text-gray-500 mt-0.5">{hint}</div>}
       </div>
-      <Switch checked={checked} onCheckedChange={onCheckedChange} data-testid={testId} />
+      <Switch aria-label={label} checked={checked} onCheckedChange={onCheckedChange} data-testid={testId} />
     </div>
   );
 }

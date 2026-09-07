@@ -23,7 +23,7 @@ const offerings = [
     icon: Brain,
     title: "Sasquatch Coach",
     description:
-      "Your 24/7 AI recovery companion — trained on Nick's methodology, accountability-focused, and available whenever you need it. Think of it as having Nick in your corner every day.",
+      "Your AI recovery accountability companion — shaped by Nick's lived experience and available for reflection whenever you need a manageable next step. It is not clinical care.",
     cta: "Meet Your Coach",
     href: "/recovery/sasquatch-coach",
   },

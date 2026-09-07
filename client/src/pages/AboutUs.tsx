@@ -64,7 +64,7 @@ export default function AboutUs() {
     {
       year: "2024",
       title: "Stroke Recovery Academy",
-      description: "Nick founded Stroke Recovery Academy to share his battle-tested methods with survivors worldwide."
+      description: "Nick founded Stroke Recovery Academy to share lessons from his personal recovery and practical tools with survivors worldwide."
     },
     {
       year: "2025",
@@ -74,7 +74,7 @@ export default function AboutUs() {
   ];
 
   const stats = [
-    { value: "90%", label: "Nick's Recovery Rate" },
+    { value: "90%", label: "Nick's reported recovery" },
     { value: "50K+", label: "Community Members" },
     { value: "18", label: "Recovery Modules" },
     { value: "66", label: "Day Habit System" }
@@ -268,7 +268,7 @@ export default function AboutUs() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon: Brain, title: "Recovery University", desc: "18 modules of battle-tested recovery protocols across three tiers." },
+              { icon: Brain, title: "Recovery University", desc: "18 modules of survivor-led recovery education across three tiers." },
               { icon: Target, title: "66-Day Habit Tracker", desc: "Build lasting recovery habits with visual progress tracking." },
               { icon: Users, title: "Accountability Pods", desc: "Small group support with fellow warriors on the same journey." },
               { icon: Award, title: "Achievement System", desc: "Celebrate milestones with badges and shareable recovery cards." },

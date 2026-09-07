@@ -202,7 +202,7 @@ export default function CoursePlayer() {
           userId: "instructor",
           userName: "Nick Kremers",
           userAvatar: "",
-          content: "So glad it helped, Sarah! Keep pushing forward!",
+          content: "So glad it helped, Sarah! Keep choosing what feels manageable and take breaks when you need them.",
           timestamp: 0,
           likes: 8,
           replies: [],

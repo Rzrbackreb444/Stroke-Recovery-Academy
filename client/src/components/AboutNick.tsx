@@ -5,7 +5,7 @@ import nickPhoto from "@assets/Untitled_design_1781030529179.png";
 
 const achievements = [
   "Survived a massive hemorrhagic stroke with 50 staples in his skull",
-  "Went from 0% left-side function to 90% full recovery",
+  "Reports moving from 0% left-side function toward 90% recovery",
   "Created breakthrough methods not found in any medical textbook",
   "Built a thriving recovery business while still recovering",
   "Helped 50,000+ stroke survivors worldwide",

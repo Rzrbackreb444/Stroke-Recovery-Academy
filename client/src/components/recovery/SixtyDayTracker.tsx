@@ -50,7 +50,7 @@ const MOTIVATIONAL_MESSAGES: Record<string, string[]> = {
     "The momentum is building. Feel that power!",
     "You've proven you can show up. Now it's time to level up.",
     "Breakthrough territory — old limits no longer apply.",
-    "This is where warriors are forged. Keep pushing!",
+    "This is a place to notice what is helping. Pause, rest, or adapt when needed.",
   ],
   "OPTIMIZATION PHASE": [
     "Mastery mode activated. You're becoming unstoppable.",

@@ -122,6 +122,8 @@ export default function RecoveryExerciseDetail() {
     );
   }
 
+  const isStandingOrWalking = /standing|walking/i.test(ex.position);
+
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8">
@@ -163,7 +165,7 @@ export default function RecoveryExerciseDetail() {
         <div className="grid lg:grid-cols-3 gap-6">
           {/* LEFT: Description + progressions */}
           <div className="lg:col-span-2 space-y-5">
-            <Card className="bg-[#1a1a1a] border-[#333] p-5">
+             <Card className="bg-[#1a1a1a] border-[#333] p-5">
               <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-2">
                 How to perform
               </p>
@@ -172,11 +174,31 @@ export default function RecoveryExerciseDetail() {
               </p>
             </Card>
 
+            {isStandingOrWalking && (
+              <Card className="bg-amber-950/30 border-amber-700/60 p-5" data-testid="card-standing-preflight">
+                <div className="flex items-start gap-3">
+                  <ShieldCheck className="h-5 w-5 text-amber-300 flex-shrink-0 mt-0.5" />
+                  <div className="text-sm text-amber-100/90 leading-relaxed">
+                    <p className="font-semibold text-amber-200 mb-1">
+                      Preflight before standing or walking
+                    </p>
+                    <p>
+                      This is education, not a prescription or a promise that you will progress.
+                      Do this activity only if your clinician has cleared it. Have the caregiver,
+                      trained spotter, therapist, stable support, or assistive device required by
+                      your care team ready before you begin. Pause or skip if that support is
+                      unavailable, balance feels different, or you feel unwell.
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            )}
+
             <Card className="bg-[#1a1a1a] border-[#333] p-5">
               <div className="flex items-center gap-2 mb-3">
                 <TrendingUp className="h-4 w-4 text-[#E2741B]" />
                 <p className="text-xs uppercase tracking-widest text-gray-300 font-semibold">
-                  Three Progression Levels
+                   Available activity levels
                 </p>
               </div>
               <div className="grid sm:grid-cols-3 gap-3">
@@ -210,7 +232,7 @@ export default function RecoveryExerciseDetail() {
               </div>
               {ex.progressionRule && (
                 <p className="text-xs text-gray-400 mt-4 leading-relaxed">
-                  <span className="text-[#E2741B] font-semibold">When to advance: </span>
+                   <span className="text-[#E2741B] font-semibold">Catalog progression note (not a guarantee): </span>
                   {ex.progressionRule}
                 </p>
               )}
@@ -379,7 +401,7 @@ function Progression({
           )}
         </>
       ) : (
-        <p className="text-xs text-gray-500">Not prescribed</p>
+       <p className="text-xs text-gray-500">No catalog level listed</p>
       )}
     </button>
   );

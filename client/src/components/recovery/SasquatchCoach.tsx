@@ -182,7 +182,7 @@ export default function SasquatchCoach() {
         {
           id: Date.now().toString(),
           role: "coach",
-          content: "Sorry warrior, I hit a bump. Try again - we don't give up that easy!",
+          content: "I hit a bump. You can try again, pause for now, or use a saved routine when you are ready.",
         },
       ]);
     },

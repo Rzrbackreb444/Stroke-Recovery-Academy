@@ -42,7 +42,7 @@ export default function ProgressTimeline() {
             The Impossible Journey
           </p>
           <h2 className="text-4xl sm:text-5xl font-black text-white mb-4" data-testid="text-timeline-title">
-            From 0% to 90% Recovery
+            Nick's reported 0%-to-90% story
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto" data-testid="text-timeline-subtitle">
             Every breakthrough moment documented. Proof that recovery never stops with the right approach.

@@ -52,7 +52,7 @@ const books = [
     title: "The Ultimate Stroke Recovery Revolution",
     subtitle: "Nick's personal 0% to 90%+ story",
     author: "Nick Kremers",
-    description: "The battle-tested blueprint for defying every 'never.' 33 chapters and 9 appendices covering neuroplasticity, the 66-Day Tracker, Baseball Bat Therapy, Mirror Therapy, Drop Foot Destruction, the S.A.S.C.H. Formula (Seize→Absorb→Swing→Combine→Hammer), and the complete Sasquatch Doctrine. This is the methodology behind the movement.",
+    description: "A survivor-led learning path for meeting recovery's uncertainty with reflection, pacing, and practical experiments. 33 chapters and 9 appendices cover neuroplasticity as a topic, the 66-Day Tracker, personal routines, and the S.A.S.C.H. Formula.",
     topics: ["The S.A.S.C.H. Formula", "Neuroplasticity Revolution", "Baseball Bat & Mirror Therapy", "The 66-Day Transformation"],
     gradient: "from-primary via-orange-500 to-red-600",
     chapters: 33,
@@ -401,7 +401,7 @@ export default function Academy() {
           }),
           createRecoveryCourseSchema({
             name: "The Ultimate Stroke Recovery Revolution",
-            description: "The battle-tested blueprint: 33 chapters covering the S.A.S.C.H. Formula (Seize, Absorb, Swing, Combine, Hammer), neuroplasticity, mirror therapy, baseball bat therapy, drop foot protocols, the 66-Day Transformation, and the complete Sasquatch Doctrine.",
+            description: "A survivor-led blueprint: 33 chapters covering the S.A.S.C.H. Formula, neuroplasticity as a topic, personal routines, reflection, and the 66-Day Transformation.",
             url: "/recovery/academy",
             numberOfLessons: 33,
             durationHours: 14,
@@ -754,7 +754,7 @@ export default function Academy() {
                 Why Choose Our Academy
               </h2>
               <p className="text-gray-400 max-w-2xl mx-auto">
-                Built by a stroke survivor, for stroke survivors. Every lesson is battle-tested 
+                Built by a stroke survivor, for stroke survivors. Every lesson is grounded in lived experience
                 and designed for real-world recovery success.
               </p>
             </div>

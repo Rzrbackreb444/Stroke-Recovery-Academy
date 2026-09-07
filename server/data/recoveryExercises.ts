@@ -1,6 +1,6 @@
 import type { InsertRecoveryExercise } from "../../shared/schema";
 
-// Real evidence-based stroke recovery exercises authored by Nick Kremers,
+// Survivor-informed stroke recovery exercises authored by Nick Kremers,
 // drawn from common AHA/PT/OT guidelines. Reps/sets reflect repetition-based
 // neuroplasticity protocols. Each entry powers /recovery/exercises and the
 // AI plan generator's catalog.

@@ -47,7 +47,7 @@ interface SasquatchChatWidgetProps {
 const WELCOME_MESSAGE: Message = {
   id: "welcome",
   role: "coach",
-  content: "Hey there, warrior! I'm Nick - your Sasquatch Coach. You're here because you're serious about your comeback, and I respect that. Let's talk exercises, celebrate wins, or work through tough days. What did you work on today?",
+  content: "Hey there — I'm Nick, your Sasquatch Coach. You can talk through exercises, celebrate a small win, or work through a tough day. What feels manageable today?",
 };
 
 export default function SasquatchChatWidget({ defaultOpen = false }: SasquatchChatWidgetProps) {

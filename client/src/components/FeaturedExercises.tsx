@@ -11,7 +11,7 @@ const exercises = [
   {
     title: "Baseball Bat Therapy",
     description:
-      "Nick's signature technique that outperformed $15,000 clinical equipment. A $5 Walmart bat and relentless repetition — the secret weapon for arm and balance recovery.",
+      "Nick's personal technique using an inexpensive bat as a practice prop. Adapt it only with appropriate support and clinician guidance; it is not a secret weapon or guaranteed recovery method.",
     difficulty: "Intermediate" as const,
     bodyArea: ["Arm", "Balance", "Proprioception"],
     duration: "15–20 min",
@@ -58,7 +58,7 @@ export default function FeaturedExercises() {
             The Recovery Arsenal
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto" data-testid="text-exercises-subtitle">
-            Battle-tested methods that took Nick from 0% to 90% function.
+            Survivor-informed practice ideas drawn from Nick's personal 0%-to-90% story.
             Every technique refined over {yearsSinceStroke()} years of real recovery.
           </p>
         </div>
