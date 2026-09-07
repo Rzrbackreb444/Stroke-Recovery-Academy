@@ -68,7 +68,9 @@ function Hero() {
             </h1>
 
             <p className="text-lg text-white/50 mb-8 leading-relaxed">
-              Nick Kremers built the Sasquatch Method from his own recovery — a survivor-built system for finding your next practical rep.
+              Nick Kremers built the Sasquatch Method by absorbing lessons from therapists,
+              books, and research, then applying, repeating, documenting, and adapting them
+              through his own recovery. This is lived knowledge turned into a practical system.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-5">
@@ -91,7 +93,7 @@ function Hero() {
               </Button>
             </div>
 
-            <p className="text-sm text-white/35 mb-10">Survivor-built guidance. Free to begin.</p>
+            <p className="text-sm text-white/35 mb-10">Lived-recovery guidance from Nick's tested system. Free to begin.</p>
 
             <div className="grid grid-cols-4 gap-4 border-t border-white/10 pt-8">
               {stats.map((stat) => (
@@ -181,7 +183,7 @@ function BookSpotlight() {
               The Ultimate<br />Stroke Recovery Revolution
             </h2>
             <p className="max-w-3xl text-lg text-white/70 leading-relaxed mb-8">
-              A 314-page survivor-built field manual for the days after discharge: practical drills,
+              A 314-page lived-recovery field manual for the days after discharge: practical drills,
               mindset, equipment guidance, real recovery stories, and a 90-day framework to help you
               turn “I should” into today’s next rep.
             </p>
@@ -337,8 +339,11 @@ function SasquatchArt() {
               <h2 className="font-display text-white text-4xl md:text-5xl lg:text-6xl mb-6 leading-[0.95]">
                 "As long as that meat in your chest is still thumpin' — your life is still pumpin'."
               </h2>
-              <p className="text-white/50 text-lg leading-relaxed mb-10">
-                Nick Kremers. December 3, 2018. They said he'd never walk again. He reports reaching 90% and is still climbing. That's his story — your recovery will be personal to you.
+               <p className="text-white/50 text-lg leading-relaxed mb-10">
+                 Nick Kremers. December 3, 2018. He began with a Hoyer lift and one-sided
+                 paralysis. He reports reaching 90% and is still climbing. The Method came
+                 from learning, experimenting, repeating, documenting, and adapting in his
+                 own body. That's his story — your recovery will be personal to you.
               </p>
               <button
                 onClick={goToOnboarding}
@@ -366,7 +371,7 @@ function Books() {
   const books = [
     {
       title: "The Ultimate Stroke Recovery Revolution",
-      subtitle: "The complete 314-page survivor-led recovery guide",
+      subtitle: "The complete 314-page lived-recovery guide",
       description:
         "Nick's full recovery manual: daily protocols, the 90-Day Breakthrough Program, survivor case studies, and the mindset to keep rebuilding when the system says you're done.",
       image: "/book/cover.jpg",
@@ -696,7 +701,7 @@ export default function Landing() {
     <div className="min-h-screen bg-black overflow-x-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
       <RecoverySEO
         title="Stroke Recovery Academy — Practical Stroke Recovery Support by Nick Kremers"
-        description="A survivor-built stroke recovery platform from Nick Kremers, with practical methods, guided support, private reflection, and a community for rebuilding at your own pace."
+        description="A stroke recovery platform from Nick Kremers, built from therapist lessons, research, experimentation, and lived application, with practical methods, guided support, private reflection, and community."
         canonical="/"
         pageType="website"
         keywords={[
@@ -722,7 +727,7 @@ export default function Landing() {
           {
             question: "What is Stroke Recovery Academy?",
             answer:
-              "Stroke Recovery Academy is a survivor-built stroke recovery platform founded by Nick Kremers, with practical methods, guided support, private reflection, and community.",
+              "Stroke Recovery Academy is a stroke recovery platform founded by Nick Kremers, whose practical methods come from therapist lessons, research, experimentation, documentation, and lived application.",
           },
           {
             question: "Can a stroke survivor really go from 0% to 90% recovery?",

@@ -273,7 +273,7 @@ export default function RecoveryUniversity() {
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <RecoverySEO
         title="Recovery University — 7-Part, 33-Chapter Complete Stroke Recovery Curriculum"
-        description="The Ultimate Stroke Recovery Revolution: 7 parts, 33 chapters, and 16+ hours of survivor-led education by Nick Kremers. Covers mindset, physical and cognitive practice, life integration, prevention questions, and legacy building. Nick's 0%-to-90% result is his personal story, not a promised outcome."
+        description="The Ultimate Stroke Recovery Revolution: 7 parts, 33 chapters, and 16+ hours of lived-recovery education by Nick Kremers. Covers mindset, physical and cognitive practice, life integration, prevention questions, and legacy building. Nick's 0%-to-90% result is his personal story, not a promised outcome."
         canonical="/recovery/university"
         pageType="course"
         keywords={[
@@ -338,7 +338,7 @@ export default function RecoveryUniversity() {
                 The Ultimate Stroke Recovery <span className="text-[#E2741B]">Bible</span>
               </h1>
               <p className="text-xl text-gray-400 mb-6" data-testid="text-university-subtitle">
-                7 Parts. 33 Chapters. Nick's personal 0%-to-90% story, shared as survivor-led education.
+                7 Parts. 33 Chapters. Nick's personal 0%-to-90% story, shared as lived-recovery education.
               </p>
               <div className="flex flex-wrap gap-4 text-sm text-gray-400">
                 <div className="flex items-center gap-2" data-testid="stat-chapters">
@@ -403,7 +403,7 @@ export default function RecoveryUniversity() {
               Nick Kremers' <span className="text-[#E2741B]">66-Day Recovery Revolution</span>
             </h2>
             <p className="text-gray-400">
-              Follow the survivor-led three-phase learning system from "The Ultimate Stroke Recovery Revolution"
+              Follow the three-phase lived-recovery learning system from "The Ultimate Stroke Recovery Revolution"
             </p>
           </div>
           

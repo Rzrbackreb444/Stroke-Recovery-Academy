@@ -52,13 +52,13 @@ export const PAGE_FOR_SURVIVORS: SsrPageConfig = {
       paragraphs: [
         'Most stroke survivors get told the same lie in slightly different words: "this is your new normal." It is not your new normal. It is your worst day. There is a giant difference between those two sentences.',
         'You had a brain attack. Cells in one zone died. The hospital saved your life — they are good at that. What they are bad at is the next 5 years. Insurance pays for somewhere around 30 days of inpatient rehab and then the door closes. After that, you are the head of your own recovery program. Whether you knew you signed up for that job or not.',
-        "Stroke Recovery Academy exists because Nick Kremers wanted to share what he learned after his stroke. Seven years and thousands of hours of self-directed practice later, he reports reaching 90% recovery on his left side. That is his personal experience, not a promise of the same outcome for anyone else.",
+        "Stroke Recovery Academy exists because Nick Kremers wanted to share what he learned after his stroke. He absorbed lessons from therapists, books, and research, then applied, repeated, documented, and adapted them through seven years and thousands of hours of his own recovery practice. He reports reaching 90% recovery on his left side. That is lived knowledge from his experience, not a promise of the same outcome for anyone else.",
       ],
     },
     {
       h2: 'What you actually get when you sign up',
       paragraphs: [
-        'This is not a content library. It is an operating system. The second you create an account you get a personalized daily routine, an AI recovery coach trained on Nick\'s playbook, and a streak tracker that does not care what your therapist said in 2023. It cares what you did today.',
+        'This is not just a content library. It is a lived-recovery system. The second you create an account you get a personalized daily routine, an AI recovery coach trained on Nick\'s playbook, and a tracker that helps you apply small goals, document practice, and learn from what happens today.',
       ],
       bullets: [
         'Recovery University — 7 parts, 33 chapters. The doctrine.',
@@ -72,7 +72,7 @@ export const PAGE_FOR_SURVIVORS: SsrPageConfig = {
     {
       h2: 'Who this is for, and who it is not for',
       paragraphs: [
-        'This is a survivor-led resource for people at many points after stroke, with routines that can be discussed with a care team and adapted to energy and ability.',
+        'This is a lived-recovery resource for people at many points after stroke. Nick teaches the knowledge he absorbed and applied in his own recovery, with routines that can be discussed with a care team and adapted to energy and ability.',
         'There is no single right pace. Some days call for practice; other days call for rest. If practical, non-clinical support sounds useful, the door is open.',
       ],
     },
@@ -80,14 +80,14 @@ export const PAGE_FOR_SURVIVORS: SsrPageConfig = {
       h2: 'What "doing the work" actually looks like',
       paragraphs: [
         'The work is not heroic. It is small, daily, and embarrassing. It is the same finger-curl 80 times in a row while you watch the news. It is saying the same word out loud 100 times because the speech pathologist said so. It is putting weight on a leg that does not want it. It is the third walk of the day when you would rather sit down forever.',
-        'The Sasquatch Method shares routines Nick found useful during his recovery. Repetition and practice may be part of a care plan, but pace and outcomes vary; rest and professional guidance matter too.',
+        'The Sasquatch Method shares the process Nick used during his recovery: learn, choose a small goal, test, repeat, document, adapt, and stack the lessons. Pace and outcomes vary; rest and professional guidance matter too.',
       ],
     },
     {
       h2: 'Cost, time, and what makes this different',
       paragraphs: [
         'The free tier gets you the daily routine, the streak tracker, the first week of the 66-day challenge, and the AI coach with daily limits. That is enough to know whether this is for you. The Champion tier unlocks the full curriculum, unlimited AI, and the survivor community. There are also caregiver seats, scholarship seats for survivors who cannot pay, and a translation system covering 19 languages.',
-        'What makes this different from every other stroke resource on the internet is that it was built by someone who actually had the stroke. Not a doctor with a content team. Not a hospital marketing department. A guy who spent two years thinking he was going to die in a wheelchair and then decided he was not.',
+        'What makes this different is that it was built by someone who actually had the stroke and then lived the application of what he learned. Nick did not stop at reading or hearing advice: he tested ideas through repetition, documented failures and wins, and built a system from the lessons his own recovery gave him.',
       ],
     },
   ],
@@ -296,7 +296,7 @@ export const PAGE_FOR_THERAPISTS: SsrPageConfig = {
     eyebrow: 'For clinicians',
     subhead: 'You write the home exercise plan. They go home and do 14% of it. Stroke Recovery Academy is the operating system that closes the gap.',
     ctaPrimary: { href: '/api/login', label: 'Create clinician account' },
-    ctaSecondary: { href: '/programs/sasquatch-method', label: 'See the survivor-led framework' },
+    ctaSecondary: { href: '/programs/sasquatch-method', label: 'See the lived-recovery system' },
   },
   keywords: ['stroke rehabilitation therapist', 'home exercise program stroke', 'stroke patient compliance', 'PT OT SLP stroke'],
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'For therapists', href: '/for/therapists' }],
@@ -413,7 +413,7 @@ export const PAGE_66_DAY: SsrPageConfig = {
 export const PAGE_METHOD: SsrPageConfig = {
   url: '/programs/sasquatch-method',
   title: 'The Sasquatch Method | Stroke Recovery Doctrine by Nick Kremers',
-  description: "The survivor-led Sasquatch Method — four pillars Nick Kremers used during his personal recovery journey.",
+  description: "The lived-recovery Sasquatch Method — four pillars Nick Kremers built by studying, testing, documenting, and adapting ideas during his personal recovery journey.",
   h1: 'The Sasquatch Method.',
   hero: {
     eyebrow: 'Doctrine',
@@ -460,7 +460,7 @@ export const PAGE_METHOD: SsrPageConfig = {
     },
   ],
   faqs: [
-    { q: 'Is the Sasquatch Method clinically validated?', a: "It is a survivor-led framework based on Nick's lived experience, not a clinically validated treatment. Discuss any exercise ideas with your care team." },
+    { q: 'Is the Sasquatch Method clinically validated?', a: "It is Nick's lived-recovery system, informed by therapist lessons, books, and research, then tested and adapted through his own practice. It is not a clinically validated treatment. Discuss any exercise ideas with your care team." },
     { q: 'Why "Sasquatch"?', a: 'Slow, patient, deliberate, hard to kill, leaves a footprint. That is what surviving and recovering from a stroke takes.' },
     { q: 'Can I do it without the platform?', a: 'You could in theory, but the daily structure, AI coach, and community are what make it stick. Most survivors who tried to "just read the doctrine" never installed the habits.' },
     { q: 'What makes it different from PT?', a: 'PT is a clinical service for one hour a week. The Sasquatch Method is a 24/7 operating system for the other 167 hours.' },

@@ -422,19 +422,19 @@ export default function SurvivalGrid() {
 
     updateOrCreateMeta(
       "description",
-      "Explore survivor-informed stroke recovery exercises and practical tools from Nick Kremers. Upper body, lower body, cognitive, and daily living activities to discuss with your care team."
+      "Explore Nick Kremers' lived-recovery exercises and practical tools, shaped by therapist lessons, research, experimentation, and years of personal application. Discuss activities with your care team."
     );
 
     updateOrCreateLink("canonical", "https://strokerecoveryacademy.com/survival-grid");
 
     updateOrCreateMeta(
       "og:title",
-      "Survival Grid - Survivor-Informed Recovery Tools | Stroke Recovery Academy",
+      "Survival Grid - Nick's Lived-Recovery Tools | Stroke Recovery Academy",
       true
     );
     updateOrCreateMeta(
       "og:description",
-      "A library of survivor-informed recovery tools for upper body, lower body, cognitive function, and daily living practice.",
+      "A library of Nick's lived-recovery tools for upper body, lower body, cognitive function, and daily living practice.",
       true
     );
     updateOrCreateMeta("og:type", "website", true);
@@ -448,7 +448,7 @@ export default function SurvivalGrid() {
     );
     updateOrCreateMeta(
       "twitter:description",
-      "Survivor-informed stroke recovery tools covering upper body, lower body, cognitive function, and daily living practice."
+      "Nick's lived-recovery tools covering upper body, lower body, cognitive function, and daily living practice."
     );
 
     updateOrCreateMeta(
