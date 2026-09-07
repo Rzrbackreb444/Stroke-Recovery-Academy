@@ -10,6 +10,11 @@ import { readFile } from "node:fs/promises";
 import { createServer, type Server } from "node:http";
 import express from "express";
 import test from "node:test";
+import {
+  cleanupDisposableAccounts,
+  loginWithSession,
+  requestJson as jsonRequest,
+} from "./authenticatedTestHelpers";
 
 const canRun = Boolean(process.env.DATABASE_URL);
 
@@ -18,69 +23,6 @@ type FunnelTotals = Record<
   number
 >;
 
-function getCookie(response: Response): string {
-  const getSetCookie = (response.headers as Headers & { getSetCookie?: () => string[] }).getSetCookie;
-  const setCookies =
-    typeof getSetCookie === "function"
-      ? getSetCookie.call(response.headers)
-      : [response.headers.get("set-cookie") || ""];
-  const setCookie = setCookies.find((cookie) => cookie.startsWith("connect.sid=")) || setCookies[0];
-  assert.ok(setCookie, "login response did not set a session cookie");
-  return setCookie.split(";", 1)[0];
-}
-
-async function jsonRequest(
-  baseUrl: string,
-  path: string,
-  init: RequestInit = {},
-  cookie?: string,
-): Promise<{ response: Response; body: any }> {
-  const headers = new Headers(init.headers);
-  headers.set("Content-Type", "application/json");
-  // The production session cookie is Secure because Replit terminates TLS at
-  // the proxy. Tell Express this local request has already crossed that proxy.
-  headers.set("X-Forwarded-Proto", "https");
-  if (cookie) headers.set("Cookie", cookie);
-  const response = await fetch(`${baseUrl}${path}`, { ...init, headers });
-  const text = await response.text();
-  let body: any = null;
-  if (text) {
-    try {
-      body = JSON.parse(text);
-    } catch {
-      body = text;
-    }
-  }
-  return { response, body };
-}
-
-async function login(baseUrl: string, email: string, password: string): Promise<string> {
-  const { response, body } = await jsonRequest(baseUrl, "/api/auth/login", {
-    method: "POST",
-    body: JSON.stringify({ email, password }),
-  });
-  assert.equal(response.status, 200, `login failed: ${JSON.stringify(body)}`);
-  return getCookie(response);
-}
-
-async function cleanupDisposableAccount(
-  baseUrl: string,
-  email: string,
-  cookie: string,
-): Promise<void> {
-  const { response, body } = await jsonRequest(
-    baseUrl,
-    "/api/account/delete",
-    {
-      method: "POST",
-      body: JSON.stringify({ confirmEmail: email }),
-    },
-    cookie,
-  );
-  if (response.status !== 200 || body?.ok !== true) {
-    throw new Error(`disposable account cleanup failed (HTTP ${response.status})`);
-  }
-}
 async function readFunnel(baseUrl: string, adminCookie: string): Promise<FunnelTotals> {
   const { response, body } = await jsonRequest(baseUrl, "/api/admin/recovery-funnel?days=30", {}, adminCookie);
   assert.equal(response.status, 200, `admin funnel report failed: ${JSON.stringify(body)}`);
@@ -322,8 +264,8 @@ test(
       assert.ok(appAddress && typeof appAddress !== "string");
       baseUrl = `http://127.0.0.1:${appAddress.port}`;
 
-      survivorCookie = await login(baseUrl, survivorEmail, password);
-      adminCookie = await login(baseUrl, adminEmail, password);
+      survivorCookie = await loginWithSession(baseUrl, survivorEmail, password);
+      adminCookie = await loginWithSession(baseUrl, adminEmail, password);
 
       const emptyProfile = await jsonRequest(
         baseUrl,
@@ -1088,21 +1030,12 @@ test(
         "later non-skipped feedback did not create exactly one first-rep milestone",
       );
     } finally {
-      const cleanupFailures: string[] = [];
-      const cleanupAccount = async (label: string, email: string, cookie: string) => {
-        if (!baseUrl || !cookie) {
-          cleanupFailures.push(`${label} account (authenticated session unavailable)`);
-          return;
-        }
-        try {
-          await cleanupDisposableAccount(baseUrl, email, cookie);
-        } catch {
-          cleanupFailures.push(`${label} account`);
-        }
-      };
+      let cleanupFailures: string[] = [];
       if (usersInserted) {
-        await cleanupAccount("survivor", survivorEmail, survivorCookie);
-        await cleanupAccount("admin", adminEmail, adminCookie);
+        cleanupFailures = await cleanupDisposableAccounts(baseUrl, [
+          { label: "survivor", email: survivorEmail, cookie: survivorCookie },
+          { label: "admin", email: adminEmail, cookie: adminCookie },
+        ]);
       }
 
       if (appServer) await new Promise<void>((resolve) => appServer!.close(() => resolve()));
