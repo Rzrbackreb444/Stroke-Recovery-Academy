@@ -78,6 +78,7 @@ export default function SasquatchCoach() {
   const [messages, setMessages] = useState<Message[]>([
     { id: "coach-welcome", role: "coach", content: buildWelcome("warrior") },
   ]);
+  const safetyPaused = messages.some((message) => message.crisis === true);
 
   // When persona resolves after first paint, swap the welcome line in-place
   // (only if the user hasn't started chatting yet).
@@ -332,7 +333,7 @@ export default function SasquatchCoach() {
 
   const handleSend = () => {
     const text = input.trim();
-    if (!text || chatMutation.isPending) return;
+    if (!text || chatMutation.isPending || safetyPaused) return;
     setMessages((prev) => [...prev, { id: nextMessageId(), role: "user", content: text }]);
     setInput("");
     chatMutation.mutate(text);
@@ -346,6 +347,7 @@ export default function SasquatchCoach() {
   };
 
   const handleStarter = (prompt: string) => {
+    if (safetyPaused) return;
     setMessages((prev) => [...prev, { id: nextMessageId(), role: "user", content: prompt }]);
     chatMutation.mutate(prompt);
   };
@@ -354,7 +356,7 @@ export default function SasquatchCoach() {
   // the composer for review and editing before the survivor sends it.
   // All STT runs on-device via the browser's SpeechRecognition.
   const startListening = () => {
-    if (micUnsupported || isListening || chatMutation.isPending) return;
+    if (micUnsupported || isListening || chatMutation.isPending || safetyPaused) return;
     if (!user && anonQuota && anonQuota.used >= anonQuota.limit) return;
     const SR =
       (window as any).SpeechRecognition ||
@@ -817,7 +819,7 @@ export default function SasquatchCoach() {
         </div>
 
         {/* Quick actions + starter prompts — only shown before first user message */}
-        {messages.filter((m) => m.role === "user").length === 0 && (
+        {messages.filter((m) => m.role === "user").length === 0 && !safetyPaused && (
           <>
             <div className="mb-3">
               <p className="text-[10px] uppercase tracking-[0.2em] text-[#E2741B] mb-2">Jump straight to action</p>
@@ -887,6 +889,9 @@ export default function SasquatchCoach() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKey}
             placeholder={
+              safetyPaused
+                ? "Coach paused — please contact human help or your healthcare team first."
+                :
               !user && anonQuota && anonQuota.used >= anonQuota.limit
                 ? "Sign in to keep talking with Sasquatch..."
                 : isListening
@@ -895,13 +900,14 @@ export default function SasquatchCoach() {
             }
             className="resize-none bg-[#111] border-[#1e1e1e] text-white placeholder:text-gray-600 focus-visible:ring-[#E2741B]/30 focus-visible:border-[#E2741B]/40 min-h-[52px] max-h-32"
             rows={1}
-            disabled={chatMutation.isPending || (!user && !!anonQuota && anonQuota.used >= anonQuota.limit)}
+            disabled={safetyPaused || chatMutation.isPending || (!user && !!anonQuota && anonQuota.used >= anonQuota.limit)}
             data-testid="input-chat-message"
           />
           {!micUnsupported && (
             <Button
               onClick={isListening ? stopListening : startListening}
               disabled={
+                safetyPaused ||
                 chatMutation.isPending ||
                 (!user && !!anonQuota && anonQuota.used >= anonQuota.limit)
               }
@@ -923,7 +929,7 @@ export default function SasquatchCoach() {
           )}
           <Button
             onClick={handleSend}
-            disabled={!input.trim() || chatMutation.isPending || (!user && !!anonQuota && anonQuota.used >= anonQuota.limit)}
+            disabled={safetyPaused || !input.trim() || chatMutation.isPending || (!user && !!anonQuota && anonQuota.used >= anonQuota.limit)}
             className="bg-[#E2741B] text-black hover:bg-[#b8841a] flex-shrink-0"
             data-testid="button-send-message"
           >

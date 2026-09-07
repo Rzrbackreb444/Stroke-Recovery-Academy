@@ -54,7 +54,7 @@ import luluRoutes from "./luluRoutes";
 import puzzleRoutes from "./puzzleRoutes";
 import survivorProfileRoutes from "./survivorProfileRoutes";
 import accountRoutes from "./routes/accountRoutes";
-import { detectCrisis, buildCrisisResponse } from "./services/crisisDetection";
+import { detectCrisis, detectSafetyRisk, buildCrisisResponse, buildSafetyResponse } from "./services/crisisDetection";
 import { stripeService } from "./stripeService";
 import {
   getStripeSync,
@@ -9924,7 +9924,7 @@ One-liner: "S.A.S.C.H. it every day: Seize → Absorb → Swing → Combine → 
 THE S.O.S. DAILY RESET — for hard days, overwhelm, or "I don't know where to start":
 S – SURVIVE: You're still here. Breathe. Anchor your why. That's the win.
 O – ORGANIZE: Stack small wins. Pick one thing. Build structure from that one thing.
-S – STRIVE: Push. Experiment. Never zero. One rep saves your streak.
+S – STRIVE: Choose a safe, clinician-approved next step only when your body is not giving you a reason to pause. Intentional rest counts; never push through symptoms.
 Use this when someone's overwhelmed, lost, or just needs to get through today.
 
 THE C.O.M.P.A.S.S. — the advanced 7-pillar navigation system for builders:
@@ -9960,10 +9960,10 @@ RESPONSE STYLE:
 
       SAFETY & AUTONOMY BOUNDARY:
       - You are an education, reflection, and accountability companion — not a clinician, therapist, diagnostician, triage service, or emergency monitor.
-      - Never diagnose, predict outcomes, or tell someone that a symptom is safe. New, worsening, or concerning symptoms belong with their healthcare team or emergency services.
+      - Never diagnose, predict outcomes, or tell someone that a symptom is safe. New, worsening, painful, dizzy, weak, breathing, or otherwise concerning symptoms override the routine: tell the survivor to pause and contact their healthcare team; sudden or severe symptoms require local emergency services.
       - Never tell someone to start, stop, skip, double, or change medication, supplements, therapy, or treatment.
       - Never prescribe exercise dosage, intensity, progression, or nutrition targets. Do not invent exercises. For movement questions, offer to open the survivor's guided Today session or approved Academy library and let them choose.
-      - Treat a missed rep, intentional rest, or a declined suggestion as valid information — never shame, guilt, or pressure the survivor.
+      - Treat a missed rep, intentional rest, or a declined suggestion as valid information — never shame, guilt, pressure, or tell the survivor to push through symptoms.
       - Do not claim that effort guarantees healing, rewiring, myelination, or a particular recovery outcome. Hope must not become a promise.
       - Before creating a reminder, changing a plan, sharing information, or taking an action outside this conversation, ask for clear confirmation.
 
@@ -9996,23 +9996,22 @@ NEVER: Provide medical advice. Always encourage working with their healthcare te
       // first-text by the full TTS latency (~2-3s) for the survivor.
       const wantAudioInline = skipAudio !== true;
 
-      // CRISIS GATE — runs BEFORE the LLM. If the user expresses suicidal
-      // ideation, self-harm, violence, or abuse, we short-circuit to a
-      // structured crisis response and skip Gemini + ElevenLabs entirely.
-      // Crisis path also bypasses the anonymous + daily caps on purpose —
-      // we never block a crisis message.
-      const crisis = detectCrisis(message);
-      if (crisis.detected && crisis.category) {
+      // SAFETY GATE — runs BEFORE the LLM. Crisis intent and acute or
+      // concerning symptom disclosures get a deterministic response so the
+      // model cannot encourage a survivor to push through symptoms.
+      // Safety responses also bypass anonymous/daily caps on purpose.
+      const safety = detectSafetyRisk(message);
+      if (safety.detected && safety.category) {
         const userId = req.user?.claims?.sub ?? null;
         console.warn(JSON.stringify({
           level: 'warn',
           ts: new Date().toISOString(),
-          msg: 'coach_crisis_intercept',
+          msg: 'coach_safety_intercept',
           userId,
-          category: crisis.category,
-          matched: crisis.matchedPhrase,
+          category: safety.category,
+          matched: safety.matchedPhrase,
         }));
-        const crisisPayload = buildCrisisResponse(crisis.category);
+        const crisisPayload = buildSafetyResponse(safety.category);
         const crisisUserId = getUserId(req);
         if (crisisUserId) {
           const { persistChatTurn } = await import('./sasquatchHistoryService');
