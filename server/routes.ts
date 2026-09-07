@@ -1667,6 +1667,18 @@ Last updated: ${new Date().toISOString().split('T')[0]}
     console.warn("[startup] STUCK product seed skipped:", err?.message ?? err);
   }
 
+  // Keep fixed subscription products and prices aligned with the checkout
+  // paths. Metadata keys make this safe across restarts and across stale
+  // stripe-replit-sync rows from an older Stripe account.
+  try {
+    const catalog = await stripeService.getCanonicalCatalog();
+    console.log(
+      `[startup] canonical Stripe catalog ready (${catalog.creator.monthlyPriceId}, ${catalog.warrior.monthlyPriceId})`,
+    );
+  } catch (err: any) {
+    console.warn("[startup] canonical Stripe catalog skipped:", err?.message ?? err);
+  }
+
   // Seed creator tool categories (non-fatal — app continues even if DB unavailable)
   try {
     await seedCreatorToolCategories();
@@ -2672,6 +2684,20 @@ Return STRICT JSON only (no markdown code fences) matching this exact shape:
     } catch (error) {
       console.error("Error getting publishable key:", error);
       res.status(500).json({ message: "Failed to get publishable key" });
+    }
+  });
+
+  app.get('/api/stripe/catalog', async (_req, res) => {
+    try {
+      const catalog = await stripeService.getCanonicalCatalog();
+      res.json({
+        creator: catalog.creator,
+        pro: catalog.pro,
+        enterprise: catalog.enterprise,
+      });
+    } catch (error) {
+      console.error("Error loading canonical Stripe catalog:", error);
+      res.status(503).json({ message: "Stripe catalog is temporarily unavailable" });
     }
   });
 

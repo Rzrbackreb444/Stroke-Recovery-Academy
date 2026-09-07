@@ -7,6 +7,7 @@ import {
 } from './stripeClient';
 import { eq, sql } from 'drizzle-orm';
 import { isStripeResourceMissingError } from './stripeClient';
+import { ensureCanonicalStripeCatalog } from './stripeCatalog';
 
 const PLATFORM_FEE_PERCENT = 15;
 const CREATOR_SHARE_PERCENT = 85;
@@ -130,14 +131,15 @@ export class RecoveryStripeService {
   ) {
     const stripe = getRecoveryStripeClient();
 
-    // Warrior tiers use inline price_data so no env var pre-configuration needed.
-    // Survivor/Creator still fall back to env-var price IDs for backward compat.
+    // Warrior tiers use fixed, metadata-keyed prices so recurring checkouts do
+    // not create a new Stripe Price on every checkout. Survivor/Creator still
+    // fall back to env-var price IDs for backward compatibility.
     const inlinePriceMap: Record<string, { amount: number; interval: 'month' | 'year'; name: string }> = {
       warrior_monthly: { amount: 4700, interval: 'month', name: 'Warrior Monthly Membership — Stroke Recovery Academy' },
       warrior_annual:  { amount: 39700, interval: 'year',  name: 'Warrior Annual Membership — Stroke Recovery Academy' },
     };
 
-    const isInline = tier in inlinePriceMap;
+    const isWarrior = tier in inlinePriceMap;
 
     const sessionParams: any = {
       payment_method_types: ['card'],
@@ -154,15 +156,14 @@ export class RecoveryStripeService {
 
     if (customerId) sessionParams.customer = customerId;
 
-    if (isInline) {
-      const cfg = inlinePriceMap[tier];
+    if (isWarrior) {
+      const catalog = await ensureCanonicalStripeCatalog(stripe);
+      const priceId =
+        tier === 'warrior_annual'
+          ? catalog.warrior.annualPriceId
+          : catalog.warrior.monthlyPriceId;
       sessionParams.line_items = [{
-        price_data: {
-          currency: 'usd',
-          product_data: { name: cfg.name },
-          unit_amount: cfg.amount,
-          recurring: { interval: cfg.interval },
-        },
+        price: priceId,
         quantity: 1,
       }];
       if (withTrial) {

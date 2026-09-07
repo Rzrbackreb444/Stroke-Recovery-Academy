@@ -6,7 +6,7 @@
  * The stripe-replit-sync will automatically sync these to the database
  */
 
-import { getUncachableStripeClient } from './stripeClient';
+import { ensureCanonicalStripeCatalog } from './stripeCatalog';
 
 interface ProductConfig {
   name: string;
@@ -329,61 +329,9 @@ const PUBLISHING_PRODUCTS: ProductConfig[] = [
 ];
 
 async function createProducts() {
-  const stripe = await getUncachableStripeClient();
-  
-  const allProducts = [
-    ...KREAITE_PRODUCTS,
-    ...RECOVERY_ACADEMY_PRODUCTS,
-    ...CREDIT_PACKS,
-    ...PUBLISHING_PRODUCTS,
-  ];
-  
-  console.log(`Creating ${allProducts.length} products...`);
-  
-  for (const productConfig of allProducts) {
-    try {
-      // Check if product already exists
-      const existingProducts = await stripe.products.search({
-        query: `name:'${productConfig.name}'`,
-      });
-      
-      if (existingProducts.data.length > 0) {
-        console.log(`Product "${productConfig.name}" already exists, skipping...`);
-        continue;
-      }
-      
-      // Create product
-      const product = await stripe.products.create({
-        name: productConfig.name,
-        description: productConfig.description,
-        metadata: productConfig.metadata,
-      });
-      
-      console.log(`Created product: ${product.name} (${product.id})`);
-      
-      // Create prices for the product
-      for (const priceConfig of productConfig.prices) {
-        const priceData: any = {
-          product: product.id,
-          nickname: priceConfig.nickname,
-          unit_amount: priceConfig.unitAmount,
-          currency: priceConfig.currency,
-          metadata: priceConfig.metadata || {},
-        };
-        
-        if (priceConfig.interval) {
-          priceData.recurring = { interval: priceConfig.interval };
-        }
-        
-        const price = await stripe.prices.create(priceData);
-        console.log(`  Created price: ${price.nickname} - $${(price.unit_amount! / 100).toFixed(2)} (${price.id})`);
-      }
-    } catch (error: any) {
-      console.error(`Error creating product "${productConfig.name}":`, error.message);
-    }
-  }
-  
-  console.log('\nProduct seeding complete!');
+  const catalog = await ensureCanonicalStripeCatalog();
+  console.log('Canonical Stripe catalog ready:', catalog);
+  return catalog;
 }
 
 // Export for manual execution

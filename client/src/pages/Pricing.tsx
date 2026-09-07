@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import GlobalHeader from "@/components/GlobalHeader";
@@ -108,8 +108,8 @@ const creatorTiers = [
     ],
     cta: "Start Creating",
     ctaVariant: "default" as const,
-    stripePriceIdMonthly: "price_1SiIdw51DeNrqHX5O9dDMqEj",
-    stripePriceIdAnnual: "price_1SiIdw51DeNrqHX5Xv7VpaxJ",
+    stripePriceIdMonthly: null,
+    stripePriceIdAnnual: null,
     credits: 2500,
   },
   {
@@ -136,8 +136,8 @@ const creatorTiers = [
     ],
     cta: "Go Pro",
     ctaVariant: "default" as const,
-    stripePriceIdMonthly: "price_1SiIdx51DeNrqHX5WmiJLsLR",
-    stripePriceIdAnnual: "price_1SiIdx51DeNrqHX5xxkqYYXX",
+    stripePriceIdMonthly: null,
+    stripePriceIdAnnual: null,
     credits: 10000,
   },
   {
@@ -164,8 +164,8 @@ const creatorTiers = [
     ],
     cta: "Contact Sales",
     ctaVariant: "outline" as const,
-    stripePriceIdMonthly: "price_1SiIdx51DeNrqHX5vc05QWXf",
-    stripePriceIdAnnual: "price_1SiIdy51DeNrqHX5iP3aGHDP",
+    stripePriceIdMonthly: null,
+    stripePriceIdAnnual: null,
     credits: 50000,
   },
 ];
@@ -298,6 +298,14 @@ export default function Pricing() {
   const platform = usePlatform();
   const isRecovery = platform === "recovery";
   const Header = isRecovery ? RecoveryHeader : GlobalHeader;
+  const { data: stripeCatalog } = useQuery<{
+    creator: { monthlyPriceId: string; annualPriceId: string };
+    pro: { monthlyPriceId: string; annualPriceId: string };
+    enterprise: { monthlyPriceId: string; annualPriceId: string };
+  }>({
+    queryKey: ["/api/stripe/catalog"],
+    enabled: !isRecovery,
+  });
 
   const checkoutMutation = useMutation({
     mutationFn: async (priceId: string) => {
@@ -334,8 +342,18 @@ export default function Pricing() {
   };
 
   const handleSelectPlan = (tier: typeof creatorTiers[0]) => {
-    const priceId = isAnnual ? tier.stripePriceIdAnnual : tier.stripePriceIdMonthly;
+    const livePrices = stripeCatalog?.[tier.name as "creator" | "pro" | "enterprise"];
+    const priceId = isAnnual
+      ? livePrices?.annualPriceId
+      : livePrices?.monthlyPriceId;
     if (!priceId) {
+      if (tier.name !== "free" && stripeCatalog === undefined) {
+        toast({
+          title: "Pricing is loading",
+          description: "Please wait a moment and try again.",
+        });
+        return;
+      }
       window.location.href = '/api/login';
       return;
     }
