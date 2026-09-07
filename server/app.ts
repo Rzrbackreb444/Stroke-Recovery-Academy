@@ -145,8 +145,7 @@ export default async function runApp(
 
     const requestedPath = req.path;
     const isToday = requestedPath === "/recovery/today";
-    const isLegacyTodayAlias =
-      requestedPath === "/recovery/dashboard" || requestedPath === "/recovery/routine";
+    const isLegacyTodayAlias = requestedPath === "/recovery/dashboard";
     if (!isToday && !isLegacyTodayAlias) return next();
 
     const authenticated = typeof req.isAuthenticated === "function" && req.isAuthenticated();

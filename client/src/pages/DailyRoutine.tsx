@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { queryClient, apiRequest } from "@/lib/queryClient";
+import { useState, useEffect, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import { Card } from "@/components/ui/card";
@@ -28,9 +28,18 @@ export default function DailyRoutine() {
   const [showBadDayModal, setShowBadDayModal] = useState(false);
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [navigationWarning, setNavigationWarning] = useState<string | null>(null);
+  const saveTimerRef = useRef<number | null>(null);
+  const saveInFlightRef = useRef(false);
+  const pendingPayloadRef = useRef<{ level: number; completedTasks: string[]; notes: string } | null>(null);
+  const latestPayloadRef = useRef<{ level: number; completedTasks: string[]; notes: string } | null>(null);
+  const saveRevisionRef = useRef(0);
+  const lastSavedRevisionRef = useRef(0);
+  const hydratedRef = useRef(false);
 
   // Load today's saved routine
-  const { data: todayData } = useQuery<{
+  const { data: todayData, isFetched: todayDataFetched } = useQuery<{
     level: number;
     completedTasks: string[];
     notes: string | null;
@@ -46,31 +55,118 @@ export default function DailyRoutine() {
       setCompleted(new Set(todayData.completedTasks ?? []));
       setNotes(todayData.notes ?? "");
     }
-  }, [todayData]);
+    if (todayDataFetched) hydratedRef.current = true;
+  }, [todayData, todayDataFetched]);
 
-  const saveMutation = useMutation({
-    mutationFn: (payload: { level: number; completedTasks: string[]; notes: string }) =>
-      apiRequest("PUT", "/api/recovery/routine/today", payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/recovery/routine/today"] });
-      setSaved(true);
-      setSaveError(null);
-      setTimeout(() => setSaved(false), 2000);
-    },
-    onError: (error: unknown) => {
-      setSaved(false);
-      setSaveError(error instanceof Error ? error.message : "Your routine could not be saved. Please try again.");
-    },
-  });
+  const flushRoutineSave = async () => {
+    if (saveInFlightRef.current || !pendingPayloadRef.current) return;
+    const payload = pendingPayloadRef.current;
+    pendingPayloadRef.current = null;
+    const revision = saveRevisionRef.current;
+    saveInFlightRef.current = true;
+    setSaveStatus("saving");
+    setSaved(false);
+    let failed = false;
+
+    try {
+      await apiRequest("PUT", "/api/recovery/routine/today", payload);
+      if (revision === saveRevisionRef.current && !pendingPayloadRef.current) {
+        lastSavedRevisionRef.current = revision;
+        setSaveStatus("saved");
+        setSaved(true);
+        setSaveError(null);
+        setNavigationWarning(null);
+        window.setTimeout(() => {
+          if (revision === saveRevisionRef.current) setSaved(false);
+        }, 2000);
+      }
+    } catch (error: unknown) {
+      failed = true;
+      if (revision === saveRevisionRef.current && !pendingPayloadRef.current) {
+        pendingPayloadRef.current = payload;
+        setSaveStatus("error");
+        setSaved(false);
+        setSaveError(error instanceof Error ? error.message : "Your routine could not be saved. Please try again.");
+      }
+    } finally {
+      saveInFlightRef.current = false;
+      if (pendingPayloadRef.current && (!failed || revision !== saveRevisionRef.current)) {
+        void flushRoutineSave();
+      }
+    }
+  };
+
+  const queueRoutineSave = (payload: { level: number; completedTasks: string[]; notes: string }) => {
+    saveRevisionRef.current += 1;
+    const waitingForRetry = !!saveError;
+    latestPayloadRef.current = payload;
+    pendingPayloadRef.current = payload;
+    setSaveStatus("saving");
+    setSaved(false);
+    if (!saveError) setSaveError(null);
+    if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
+    if (waitingForRetry) return;
+    saveTimerRef.current = window.setTimeout(() => {
+      saveTimerRef.current = null;
+      void flushRoutineSave();
+    }, 800);
+  };
+
+  const retryRoutineSave = () => {
+    const payload = latestPayloadRef.current;
+    if (!payload) return;
+    if (saveTimerRef.current) {
+      window.clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = null;
+    }
+    pendingPayloadRef.current = payload;
+    setSaveStatus("saving");
+    setSaveError(null);
+    void flushRoutineSave();
+  };
 
   // Auto-save whenever anything changes (debounced)
   useEffect(() => {
-    if (!user) return;
-    const timer = setTimeout(() => {
-      saveMutation.mutate({ level, completedTasks: Array.from(completed), notes });
-    }, 800);
-    return () => clearTimeout(timer);
+    if (!user || !hydratedRef.current) return;
+    queueRoutineSave({ level, completedTasks: Array.from(completed), notes });
+    return () => {
+      if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
+    };
   }, [level, completed, notes, user]);
+
+  const hasUnsavedChanges = saveRevisionRef.current > lastSavedRevisionRef.current
+    || saveStatus === "saving"
+    || saveStatus === "error";
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+    const warnBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    const warnBeforeNavigation = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const anchor = target.closest("a");
+      if (!anchor || !anchor.href.startsWith(window.location.origin)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      setNavigationWarning("Your routine changes are not saved yet. Retry the save before leaving this page.");
+    };
+    window.addEventListener("beforeunload", warnBeforeUnload);
+    document.addEventListener("click", warnBeforeNavigation, true);
+    return () => {
+      window.removeEventListener("beforeunload", warnBeforeUnload);
+      document.removeEventListener("click", warnBeforeNavigation, true);
+    };
+  }, [hasUnsavedChanges]);
+
+  const guardedNavigate = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (hasUnsavedChanges) {
+      event.preventDefault();
+      setNavigationWarning("Your routine changes are not saved yet. Retry the save before leaving this page.");
+    }
+  };
 
   // Compute all tasks for current level
   const allTaskIds = BLOCKS.flatMap(b => getTasksForLevel(b.tasks, level).map(t => t.id));
@@ -317,12 +413,19 @@ export default function DailyRoutine() {
         {/* Save status */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div className="flex items-center gap-2">
-            {saved ? (
+            {saveError ? (
+              <span role="alert" data-testid="routine-save-error" className="flex items-center gap-2 text-red-400 text-xs">
+                <span>Your routine was not saved. {saveError}</span>
+                <Button type="button" size="sm" variant="outline" onClick={retryRoutineSave} data-testid="button-retry-routine-save">
+                  Retry save
+                </Button>
+              </span>
+            ) : saveStatus === "saving" ? (
+              <span role="status" className="text-gray-400 text-xs">Saving…</span>
+            ) : saved ? (
               <span className="text-green-500 text-xs flex items-center gap-1">
                 <CheckCircle className="h-3 w-3" /> Saved
               </span>
-            ) : saveError ? (
-              <span role="alert" className="text-red-400 text-xs">{saveError}</span>
             ) : (
               <span className="text-gray-700 text-xs">Auto-saves as you check off</span>
             )}
@@ -333,11 +436,17 @@ export default function DailyRoutine() {
             </Badge>
           )}
         </div>
+        {navigationWarning && (
+          <div role="alert" data-testid="routine-navigation-warning" className="mb-6 rounded-md border border-[#E2741B]/50 bg-[#E2741B]/10 px-3 py-2 text-sm text-[#F2B37A]">
+            {navigationWarning}
+          </div>
+        )}
 
         {/* Quick links */}
         <div className="grid grid-cols-2 gap-3 mb-10">
-          <a
+            <a
             href="/recovery/exercises"
+              onClick={guardedNavigate}
             data-testid="link-exercises"
             className="flex items-center gap-2 p-3 rounded-lg bg-[#0f0f0f] border border-[#1e1e1e] hover:border-[#333] transition-colors"
           >
@@ -347,6 +456,7 @@ export default function DailyRoutine() {
           </a>
           <a
             href="/recovery/brain-gym"
+            onClick={guardedNavigate}
             data-testid="link-braingym"
             className="flex items-center gap-2 p-3 rounded-lg bg-[#0f0f0f] border border-[#1e1e1e] hover:border-[#333] transition-colors"
           >
@@ -356,6 +466,7 @@ export default function DailyRoutine() {
           </a>
           <a
             href="/recovery/community"
+            onClick={guardedNavigate}
             data-testid="link-community"
             className="flex items-center gap-2 p-3 rounded-lg bg-[#0f0f0f] border border-[#1e1e1e] hover:border-[#333] transition-colors"
           >
@@ -365,6 +476,7 @@ export default function DailyRoutine() {
           </a>
           <a
             href="/recovery/journal"
+            onClick={guardedNavigate}
             data-testid="link-journal"
             className="flex items-center gap-2 p-3 rounded-lg bg-[#0f0f0f] border border-[#1e1e1e] hover:border-[#333] transition-colors"
           >

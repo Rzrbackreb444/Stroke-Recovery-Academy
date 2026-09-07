@@ -713,7 +713,9 @@ function Router() {
       <Route path="/recovery/onboarding" component={RecoveryOnboarding} />
       <Route path="/recovery/me" component={RecoveryMe} />
       <Route path="/recovery/routine">
-        <RecoveryRouteRedirect to="/recovery/today" />
+        <ProtectedRoute loginReturnPath="/recovery/routine">
+          <DailyRoutine />
+        </ProtectedRoute>
       </Route>
       <Route path="/recovery/today">
         <ProtectedRoute loginReturnPath="/recovery/today">
