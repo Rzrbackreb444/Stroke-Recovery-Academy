@@ -2089,6 +2089,8 @@ export const recoveryStories = pgTable("recovery_stories", {
   visibility: text("visibility").notNull().default("public"), // public, subscribers, private
   isPremium: boolean("is_premium").notNull().default(false), // Premium/paywalled content
   premiumPrice: integer("premium_price"), // One-time price in cents
+  stripeProductId: text("stripe_product_id"),
+  stripePriceId: text("stripe_price_id"),
   
   // Engagement
   viewCount: integer("view_count").notNull().default(0),
@@ -3413,6 +3415,7 @@ export const marketplaceListings = pgTable("marketplace_listings", {
   genre: text("genre").notNull(),
   tags: text("tags").array(),
   status: text("status").notNull().default("draft"), // draft, pending_review, approved, published, suspended
+  stripeProductId: text("stripe_product_id"),
   isFeatured: boolean("is_featured").notNull().default(false),
   isDigitalOnly: boolean("is_digital_only").notNull().default(false),
   totalSales: integer("total_sales").notNull().default(0),
@@ -3460,6 +3463,7 @@ export const bookEditions = pgTable("book_editions", {
   // Pricing
   price: integer("price").notNull(), // in cents
   currency: text("currency").notNull().default("USD"),
+  stripePriceId: text("stripe_price_id"),
   printCost: integer("print_cost"), // Lulu print cost in cents (null for digital)
   authorRoyalty: integer("author_royalty").notNull(), // author's cut in cents
   // Print specs (for physical books)

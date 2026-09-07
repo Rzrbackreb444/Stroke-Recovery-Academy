@@ -1,5 +1,10 @@
 import { db } from './db';
-import { users, recoveryCreatorTips, recoveryPremiumPurchases } from '@shared/schema';
+import {
+  users,
+  recoveryCreatorTips,
+  recoveryPremiumPurchases,
+  recoveryStories,
+} from '@shared/schema';
 import { getRecoveryStripeClient, isRecoveryStripeConfigured } from './recoveryStripeClient';
 import {
   createStripeCustomerStore,
@@ -7,10 +12,54 @@ import {
 } from './stripeClient';
 import { eq, sql } from 'drizzle-orm';
 import { isStripeResourceMissingError } from './stripeClient';
-import { ensureCanonicalStripeCatalog } from './stripeCatalog';
+import {
+  ensureCanonicalFixedPrice,
+  ensureCanonicalStripeCatalog,
+  FIXED_SRA_PRICE_CONFIGS,
+} from './stripeCatalog';
 
 const PLATFORM_FEE_PERCENT = 15;
 const CREATOR_SHARE_PERCENT = 85;
+
+export async function ensurePremiumStoryStripePrice(storyId: number): Promise<string> {
+  const [story] = await db
+    .select({
+      id: recoveryStories.id,
+      title: recoveryStories.title,
+      premiumPrice: recoveryStories.premiumPrice,
+      stripePriceId: recoveryStories.stripePriceId,
+    })
+    .from(recoveryStories)
+    .where(eq(recoveryStories.id, storyId));
+  if (!story || !story.premiumPrice || story.premiumPrice <= 0) {
+    throw new Error('Premium story must have a positive price before publishing');
+  }
+
+  const stripe = getRecoveryStripeClient();
+  const priceId = await ensureCanonicalFixedPrice({
+    key: `premium_story_${story.id}`,
+    name: `Premium Content: ${story.title}`,
+    description: 'Access to premium recovery content',
+    unitAmount: story.premiumPrice,
+  }, stripe);
+
+  if (story.stripePriceId && story.stripePriceId !== priceId) {
+    try {
+      await stripe.prices.update(story.stripePriceId, { active: false });
+    } catch (error: any) {
+      if (error?.code !== 'resource_missing') throw error;
+    }
+  }
+  const price = await stripe.prices.retrieve(priceId);
+  await db.update(recoveryStories)
+    .set({
+      stripeProductId: typeof price.product === 'string' ? price.product : price.product.id,
+      stripePriceId: priceId,
+      updatedAt: new Date(),
+    })
+    .where(eq(recoveryStories.id, story.id));
+  return priceId;
+}
 
 export class RecoveryStripeService {
   async isConfigured(): Promise<boolean> {
@@ -93,19 +142,20 @@ export class RecoveryStripeService {
     buyerId?: string
   ) {
     const stripe = getRecoveryStripeClient();
+    const [story] = await db
+      .select({ stripePriceId: recoveryStories.stripePriceId })
+      .from(recoveryStories)
+      .where(eq(recoveryStories.id, storyId));
+    if (!story?.stripePriceId) {
+      throw new Error('This premium story is still being prepared for purchase');
+    }
+    const priceId = story.stripePriceId;
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ['card'],
       line_items: [{
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: `Premium Content: ${title}`,
-            description: 'Access to premium recovery content',
-          },
-          unit_amount: price,
-        },
+        price: priceId,
         quantity: 1,
       }],
       mode: 'payment',
@@ -190,25 +240,16 @@ export class RecoveryStripeService {
   ) {
     const stripe = getRecoveryStripeClient();
 
-    const priceMap = {
-      single: { amount: 9900, name: 'Single Coaching Session (30 min)' },
-      package: { amount: 34900, name: 'Coaching Package (4 sessions)' },
-    };
-
-    const config = priceMap[coachingType];
+    const config = coachingType === 'single'
+      ? FIXED_SRA_PRICE_CONFIGS.coachingSingle
+      : FIXED_SRA_PRICE_CONFIGS.coachingPackage;
+    const priceId = await ensureCanonicalFixedPrice(config, stripe);
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ['card'],
       line_items: [{
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: config.name,
-            description: '1-on-1 coaching with Nick',
-          },
-          unit_amount: config.amount,
-        },
+        price: priceId,
         quantity: 1,
       }],
       mode: 'payment',

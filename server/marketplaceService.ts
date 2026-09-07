@@ -11,6 +11,7 @@ import {
 } from "@shared/schema";
 import { eq, and, desc, sql, gte, lte, ilike, or } from "drizzle-orm";
 import Stripe from "stripe";
+import { ensureCanonicalFixedPrice } from "./stripeCatalog";
 
 const PLATFORM_FEE_PERCENT = 15;
 const CREATOR_SHARE_PERCENT = 85;
@@ -198,6 +199,12 @@ export async function updateListing(listingId: number, authorId: string, data: P
     .where(eq(marketplaceListings.id, listingId))
     .returning();
 
+  if (updated.status === "published") {
+    const editions = await db.select({ id: bookEditions.id })
+      .from(bookEditions)
+      .where(eq(bookEditions.listingId, listingId));
+    await Promise.all(editions.map((edition) => ensureMarketplaceEditionStripePrice(edition.id)));
+  }
   return updated;
 }
 
@@ -226,6 +233,7 @@ export async function publishListing(listingId: number, authorId: string) {
     .where(eq(marketplaceListings.id, listingId))
     .returning();
 
+  await Promise.all(editions.map((edition) => ensureMarketplaceEditionStripePrice(edition.id)));
   return updated;
 }
 
@@ -240,6 +248,13 @@ export async function createEdition(data: CreateEditionData) {
     })
     .returning();
 
+  const [listing] = await db
+    .select({ status: marketplaceListings.status })
+    .from(marketplaceListings)
+    .where(eq(marketplaceListings.id, data.listingId));
+  if (listing?.status === "published") {
+    await ensureMarketplaceEditionStripePrice(edition.id);
+  }
   return edition;
 }
 
@@ -256,7 +271,60 @@ export async function updateEdition(editionId: number, listingId: number, data: 
     .where(and(eq(bookEditions.id, editionId), eq(bookEditions.listingId, listingId)))
     .returning();
 
+  const [listing] = await db
+    .select({ status: marketplaceListings.status })
+    .from(marketplaceListings)
+    .where(eq(marketplaceListings.id, listingId));
+  if (listing?.status === "published") {
+    await ensureMarketplaceEditionStripePrice(updated.id);
+  }
   return updated;
+}
+
+export async function ensureMarketplaceEditionStripePrice(
+  editionId: number,
+): Promise<string> {
+  const [edition] = await db
+    .select()
+    .from(bookEditions)
+    .where(eq(bookEditions.id, editionId));
+  if (!edition) throw new Error("Edition not found");
+
+  const [listing] = await db
+    .select()
+    .from(marketplaceListings)
+    .where(eq(marketplaceListings.id, edition.listingId));
+  if (!listing) throw new Error("Listing not found");
+
+  const priceId = await ensureCanonicalFixedPrice({
+    key: `marketplace_edition_${edition.id}`,
+    name: listing.title,
+    description: `${edition.editionType.replace("_", " ").toUpperCase()}`,
+    unitAmount: edition.price,
+    currency: edition.currency,
+  }, stripe);
+
+  if (edition.stripePriceId && edition.stripePriceId !== priceId) {
+    try {
+      await stripe.prices.update(edition.stripePriceId, { active: false });
+    } catch (error: any) {
+      if (error?.code !== "resource_missing") throw error;
+    }
+  }
+
+  const price = await stripe.prices.retrieve(priceId);
+  await db
+    .update(bookEditions)
+    .set({ stripePriceId: priceId, updatedAt: new Date() })
+    .where(eq(bookEditions.id, edition.id));
+  await db
+    .update(marketplaceListings)
+    .set({
+      stripeProductId: typeof price.product === "string" ? price.product : price.product.id,
+      updatedAt: new Date(),
+    })
+    .where(eq(marketplaceListings.id, listing.id));
+  return priceId;
 }
 
 export async function getEditionsByListing(listingId: number) {
@@ -285,19 +353,15 @@ export async function createCheckoutSession(
     throw new Error("Listing not found");
   }
 
+  if (!edition.stripePriceId) {
+    throw new Error("This edition is not ready for purchase");
+  }
+  const priceId = edition.stripePriceId;
   const sessionParams: any = {
     payment_method_types: ["card"],
     line_items: [
       {
-        price_data: {
-          currency: edition.currency.toLowerCase(),
-          product_data: {
-            name: listing.title,
-            description: `${edition.editionType.replace("_", " ").toUpperCase()}`,
-            images: listing.coverImageUrl ? [listing.coverImageUrl] : [],
-          },
-          unit_amount: edition.price,
-        },
+        price: priceId,
         quantity: 1,
       },
     ],

@@ -4,6 +4,7 @@ import { and, desc, eq, sql } from 'drizzle-orm';
 import { addCreditsInTransaction } from './creditService';
 import { getRecoveryStripeClient } from './recoveryStripeClient';
 import { recoveryStripeService } from './recoveryStripeService';
+import { ensureCanonicalFixedPrice, FIXED_SRA_PRICE_CONFIGS } from './stripeCatalog';
 
 export type PowerPointPackageKey = 'cheer' | 'spark' | 'boost' | 'surge' | 'beast';
 
@@ -84,18 +85,13 @@ async function createPowerPointsCheckoutSession(
   preparedGift: PreparedPowerPointsGift,
 ) {
   const stripe = getRecoveryStripeClient();
+  const priceKey = `powerPoints${opts.packageKey[0].toUpperCase()}${opts.packageKey.slice(1)}` as keyof typeof FIXED_SRA_PRICE_CONFIGS;
+  const priceId = await ensureCanonicalFixedPrice(FIXED_SRA_PRICE_CONFIGS[priceKey], stripe);
   const session = await stripe.checkout.sessions.create({
     customer: opts.customerId,
     payment_method_types: ['card'],
     line_items: [{
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: `Power Points — ${POWER_POINT_PACKAGES[opts.packageKey].label} for ${preparedGift.recipientName}`,
-          description: `${POWER_POINT_PACKAGES[opts.packageKey].points.toLocaleString()} Power Points delivered with your message.`,
-        },
-        unit_amount: POWER_POINT_PACKAGES[opts.packageKey].amountCents,
-      },
+      price: priceId,
       quantity: 1,
     }],
     mode: 'payment',
