@@ -33,7 +33,7 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import kreaiteLogo from "@assets/KreAIte1_1766574083851.png";
+import sraLogo from "@assets/academy_logo.png";
 
 const studios = [
   { href: "/book-studio", label: "Book Studio", icon: BookOpen, description: "Write & publish books with AI", badge: null, enabled: true },
@@ -69,7 +69,7 @@ export default function CreatorHeader() {
           <Link href="/" data-testid="link-home">
             <div className="flex items-center gap-2 hover-elevate active-elevate-2 px-2 py-1 rounded-md cursor-pointer">
               <img 
-                src={kreaiteLogo} 
+                src={sraLogo}
                 alt="Stroke Recovery Academy" 
                 className="h-10 w-auto"
                 data-testid="img-logo"

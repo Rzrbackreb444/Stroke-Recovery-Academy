@@ -13,13 +13,13 @@ export default function About() {
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
       <SEO
-        title="About Stroke Recovery Academy - The Shopify for KreAItion"
-        description="Stroke Recovery Academy is the ultimate creator platform - a social network and marketplace where creators build, publish, and monetize in the Marketplace. 85% creator earnings, 7 professional studios, and AI-powered tools for books, music, video, courses, and more."
+        title="About Stroke Recovery Academy - Survivor-led recovery and creation"
+        description="Stroke Recovery Academy is a survivor-led recovery platform and marketplace where people build, publish, and share useful recovery resources, stories, books, music, courses, and more."
         keywords="about stroke recovery academy, stroke recovery platform, survivor-led recovery, neuroplasticity exercises, 66-day stroke challenge, stroke survivor community, stroke recovery coach, post-stroke rehabilitation"
         canonical="/about"
         type="website"
         faq={[
-          { question: "What is Stroke Recovery Academy?", answer: "Stroke Recovery Academy is the Shopify for KreAItion - a social network and marketplace where creators build, publish, and monetize content using AI-powered studios for books, music, video, courses, images, and websites." },
+          { question: "What is Stroke Recovery Academy?", answer: "Stroke Recovery Academy is a survivor-led recovery platform, community, and marketplace where people build, publish, and share useful resources using accessible AI-powered studios." },
           { question: "How much do creators earn?", answer: "Creators keep 85% of every sale in the Marketplace marketplace. The 15% platform fee covers payment processing, hosting, and platform maintenance." },
           { question: "What is the Marketplace?", answer: "The Marketplace is our creator marketplace where you can sell books, courses, music, templates, and digital products to a global audience of buyers." },
           { question: "Who founded Stroke Recovery Academy?", answer: "Stroke Recovery Academy was founded by Nick Kremers, whose personal journey inspired both the creator platform and the Stroke Recovery Academy." }
@@ -35,7 +35,7 @@ export default function About() {
           "@context": "https://schema.org",
           "@type": "Organization",
           "name": "Stroke Recovery Academy",
-          "alternateName": "The Shopify for KreAItion",
+          "alternateName": "SRA",
           "url": "https://strokerecoveryacademy.com",
           "description": "AI-powered creator platform and marketplace",
           "foundingDate": "2024"

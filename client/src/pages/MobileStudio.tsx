@@ -24,6 +24,9 @@ import {
 } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 
+const PROJECT_STORAGE_KEY = "sra_currentProject";
+const LEGACY_PROJECT_STORAGE_KEY = "kreAIte_currentProject";
+
 interface Chapter {
   id: string;
   title: string;
@@ -99,7 +102,9 @@ export default function MobileStudio() {
   const recognitionRef = useRef<any>(null);
 
   const [project, setProject] = useState<Project>(() => {
-    const saved = localStorage.getItem("kreAIte_currentProject");
+    const saved =
+      localStorage.getItem(PROJECT_STORAGE_KEY) ??
+      localStorage.getItem(LEGACY_PROJECT_STORAGE_KEY);
     return saved ? JSON.parse(saved) : defaultProject;
   });
 
@@ -217,7 +222,9 @@ export default function MobileStudio() {
         };
 
         // Merge with localStorage (prefer cloud for brain, local for chapters if newer)
-        const localData = localStorage.getItem("kreAIte_currentProject");
+        const localData =
+          localStorage.getItem(PROJECT_STORAGE_KEY) ??
+          localStorage.getItem(LEGACY_PROJECT_STORAGE_KEY);
         if (localData) {
           const local = JSON.parse(localData);
           setProject(prev => ({
@@ -281,7 +288,7 @@ export default function MobileStudio() {
   };
 
   const saveToLocalStorage = useCallback(() => {
-    localStorage.setItem("kreAIte_currentProject", JSON.stringify({
+    localStorage.setItem(PROJECT_STORAGE_KEY, JSON.stringify({
       ...project,
       lastSaved: new Date()
     }));

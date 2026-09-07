@@ -136,7 +136,8 @@ export const whiteLabelConfigs = pgTable("white_label_configs", {
   cloudflareApiKey: text("cloudflare_api_key"),
   
   // White Label Settings
-  hideKreaiteBranding: boolean("hide_kreaite_branding").default(false),
+  // Keep the legacy SQL column for backwards-compatible production data.
+  hideSraBranding: boolean("hide_kreaite_branding").default(false),
   customFooterText: text("custom_footer_text"),
   customTermsUrl: text("custom_terms_url"),
   customPrivacyUrl: text("custom_privacy_url"),
@@ -3733,8 +3734,8 @@ export const workflowTemplates = pgTable("workflow_templates", {
   // Pricing & licensing
   price: integer("price").notNull().default(0), // In cents (0 = free)
   currency: text("currency").notNull().default("USD"),
-  kreaiteCanUse: boolean("kreaite_can_use").notNull().default(true), // Stroke Recovery Academy gets perpetual license
-  kreaiteFeatureLevel: text("kreaite_feature_level").default("standard"), // standard, featured, premium
+  sraCanUse: boolean("kreaite_can_use").notNull().default(true), // Stroke Recovery Academy gets perpetual license
+  sraFeatureLevel: text("kreaite_feature_level").default("standard"), // standard, featured, premium
   
   // Stats
   totalSales: integer("total_sales").notNull().default(0),
@@ -3746,7 +3747,7 @@ export const workflowTemplates = pgTable("workflow_templates", {
   // Status
   status: text("status").notNull().default("draft"), // draft, pending_review, published, suspended
   isFeatured: boolean("is_featured").notNull().default(false),
-  isKreaiteOfficial: boolean("is_kreaite_official").notNull().default(false), // Stroke Recovery Academy's own workflows
+  isSraOfficial: boolean("is_kreaite_official").notNull().default(false), // Stroke Recovery Academy's own workflows
   publishedAt: timestamp("published_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

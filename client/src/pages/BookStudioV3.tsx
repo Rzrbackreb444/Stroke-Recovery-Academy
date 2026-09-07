@@ -3,7 +3,7 @@ import RecoveryHeader from "@/components/RecoveryHeader";
 import { usePlatform } from "@/lib/hooks/usePlatform";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
-import KreAIteStudio from "@/components/book-studio/KreAIteStudio";
+import SraStudio from "@/components/book-studio/KreAIteStudio";
 import { BookStudioProvider } from "@/lib/contexts/BookStudioContext";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2, LogIn } from "lucide-react";
 
 function BookStudioContent() {
-  return <KreAIteStudio />;
+  return <SraStudio />;
 }
 
 function LoadingState() {

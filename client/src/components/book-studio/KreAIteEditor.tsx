@@ -44,7 +44,7 @@ import {
 } from "lucide-react";
 import type { PolishProgress } from "@/lib/contexts/BookStudioContext";
 
-interface KreAIteEditorProps {
+interface SraEditorProps {
   content: string;
   onContentChange: (content: string) => void;
   chapterTitle?: string;
@@ -59,7 +59,7 @@ interface KreAIteEditorProps {
   theme?: 'stone' | 'ink';
 }
 
-export default function KreAIteEditor({
+export default function SraEditor({
   content,
   onContentChange,
   chapterTitle = "Untitled Chapter",
@@ -72,7 +72,7 @@ export default function KreAIteEditor({
   polishProgress,
   minimal = false,
   theme = 'stone',
-}: KreAIteEditorProps) {
+}: SraEditorProps) {
   const isDark = theme === 'ink';
   
   const editor = useEditor({
@@ -205,7 +205,7 @@ export default function KreAIteEditor({
                 "[&_.is-editor-empty:first-child::before]:pointer-events-none",
                 "[&_.is-editor-empty:first-child::before]:italic"
               )}
-              data-testid="kreaite-editor-content"
+              data-testid="sra-editor-content"
             />
           </div>
         </ScrollArea>
@@ -535,7 +535,7 @@ export default function KreAIteEditor({
               "[&_.is-editor-empty:first-child::before]:font-['Source_Serif_4',_serif]",
               "[&_::selection]:bg-blue-200 dark:[&_::selection]:bg-blue-800"
             )}
-            data-testid="kreaite-editor-content"
+            data-testid="sra-editor-content"
           />
         </div>
         

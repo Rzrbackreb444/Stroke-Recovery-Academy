@@ -1,4 +1,4 @@
-# KreAIte.xyz - Design Guidelines
+# Stroke Recovery Academy - Design Guidelines
 **Literary AI-Powered Book Publishing Platform**
 
 ---

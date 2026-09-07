@@ -4792,7 +4792,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
       const { 
         query, category, studioType, difficulty, 
         priceMin, priceMax, sortBy = 'popularity',
-        includeKreaiteOfficial = 'true',
+        includeSraOfficial = req.query.includeKreaiteOfficial ?? 'true',
         page = '1', limit = '20'
       } = req.query as Record<string, string>;
 
@@ -4855,7 +4855,7 @@ Only include genuinely new information. Return empty arrays if nothing new was l
         averageRating: workflowTemplates.averageRating,
         reviewCount: workflowTemplates.reviewCount,
         isFeatured: workflowTemplates.isFeatured,
-        isKreaiteOfficial: workflowTemplates.isKreaiteOfficial,
+        isSraOfficial: workflowTemplates.isSraOfficial,
         creatorId: workflowTemplates.creatorId,
       })
         .from(workflowTemplates)
@@ -9417,6 +9417,9 @@ Respond in JSON format:
         perplexityApiKey: config.perplexityApiKey ? '••••••••' + config.perplexityApiKey.slice(-4) : null,
         stabilityApiKey: config.stabilityApiKey ? '••••••••' + config.stabilityApiKey.slice(-4) : null,
         removeBgApiKey: config.removeBgApiKey ? '••••••••' + config.removeBgApiKey.slice(-4) : null,
+        hideSraBranding: Boolean(
+          config.hide_sra_branding ?? config.hide_kreaite_branding ?? config.hideSraBranding ?? false
+        ),
       };
 
       res.json(maskedConfig);
@@ -9445,6 +9448,7 @@ Respond in JSON format:
         perplexityApiKey,
         stabilityApiKey,
         removeBgApiKey,
+        hideSraBranding,
         hideKreaiteBranding,
         customFooterText,
         customTermsUrl,
@@ -9471,7 +9475,7 @@ Respond in JSON format:
         perplexityApiKey: perplexityApiKey?.startsWith('••••') ? existingConfig?.perplexityApiKey : perplexityApiKey,
         stabilityApiKey: stabilityApiKey?.startsWith('••••') ? existingConfig?.stabilityApiKey : stabilityApiKey,
         removeBgApiKey: removeBgApiKey?.startsWith('••••') ? existingConfig?.removeBgApiKey : removeBgApiKey,
-        hideKreaiteBranding: hideKreaiteBranding || false,
+        hideSraBranding: hideSraBranding ?? hideKreaiteBranding ?? false,
         customFooterText,
         customTermsUrl,
         customPrivacyUrl,
@@ -15391,30 +15395,38 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
   });
 
   // ----------------------------------------------------------------------------
-  // STRIPE KREAITE PRODUCTS
+  // STRIPE SRA PRODUCTS
   // ----------------------------------------------------------------------------
 
-  app.post('/api/admin/stripe/create-kreaite-products', isAuthenticated, requireAdmin, async (req: any, res) => {
+  const createSraProducts = async (req: any, res: any) => {
     try {
       console.log('Creating Stroke Recovery Academy products in Stripe...');
-      const products = await stripeService.createKreAIteProducts();
+      const products = await stripeService.createSraProducts();
       console.log('Created products:', products);
       res.json({ success: true, products });
     } catch (error) {
       console.error("Error creating Stroke Recovery Academy products:", error);
       res.status(500).json({ message: "Failed to create products", error: String(error) });
     }
-  });
+  };
 
-  app.get('/api/stripe/kreaite-products', async (req, res) => {
+  app.post('/api/admin/stripe/create-sra-products', isAuthenticated, requireAdmin, createSraProducts);
+  // Backward-compatible alias for older admin clients.
+  app.post('/api/admin/stripe/create-kreaite-products', isAuthenticated, requireAdmin, createSraProducts);
+
+  const getSraProducts = async (req: any, res: any) => {
     try {
-      const products = await stripeService.getKreAIteProducts();
+      const products = await stripeService.getSraProducts();
       res.json(products);
     } catch (error) {
       console.error("Error fetching Stroke Recovery Academy products:", error);
       res.status(500).json({ message: "Failed to fetch products" });
     }
-  });
+  };
+
+  app.get('/api/stripe/sra-products', getSraProducts);
+  // Backward-compatible alias for older clients.
+  app.get('/api/stripe/kreaite-products', getSraProducts);
 
   // POST /api/admin/stripe/sync - Manually trigger Stripe sync
   app.post('/api/admin/stripe/sync', isAuthenticated, requireAdmin, async (req: any, res) => {

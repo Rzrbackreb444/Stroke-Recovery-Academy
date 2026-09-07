@@ -5,6 +5,7 @@ export type CanonicalBillingInterval = "month" | "year";
 
 type CatalogPriceConfig = {
   key: string;
+  legacyKeys?: string[];
   billing: "monthly" | "annual";
   interval: CanonicalBillingInterval;
   unitAmount: number;
@@ -13,6 +14,7 @@ type CatalogPriceConfig = {
 
 type CatalogProductConfig = {
   key: string;
+  legacyKeys?: string[];
   name: string;
   description: string;
   platform: string;
@@ -30,22 +32,25 @@ export type CanonicalStripeCatalog = {
 
 const CATALOG_PRODUCTS: CatalogProductConfig[] = [
   {
-    key: "kreaite_creator",
-    name: "KreAIte Creator",
+    key: "sra_creator",
+    legacyKeys: ["kreaite_creator"],
+    name: "Stroke Recovery Academy Creator",
     description:
-      "For serious content creators: full creator studios, 2,500 monthly credits, and commercial licensing.",
-    platform: "kreaite",
+      "For survivors, caregivers, and recovery creators: full Stroke Recovery Academy tools, 2,500 monthly credits, and commercial licensing.",
+    platform: "stroke_recovery_academy",
     tier: "creator",
     prices: [
       {
-        key: "kreaite_creator_monthly",
+        key: "sra_creator_monthly",
+        legacyKeys: ["kreaite_creator_monthly"],
         billing: "monthly",
         interval: "month",
         unitAmount: 2900,
         nickname: "Creator Monthly",
       },
       {
-        key: "kreaite_creator_annual",
+        key: "sra_creator_annual",
+        legacyKeys: ["kreaite_creator_annual"],
         billing: "annual",
         interval: "year",
         unitAmount: 24900,
@@ -54,22 +59,25 @@ const CATALOG_PRODUCTS: CatalogProductConfig[] = [
     ],
   },
   {
-    key: "kreaite_pro",
-    name: "KreAIte Pro",
+    key: "sra_pro",
+    legacyKeys: ["kreaite_pro"],
+    name: "Stroke Recovery Academy Pro",
     description:
-      "Unlimited creator-platform access with priority generation, advanced studios, and commercial licensing.",
-    platform: "kreaite",
+      "Unlimited Stroke Recovery Academy access with priority generation, advanced tools, and commercial licensing.",
+    platform: "stroke_recovery_academy",
     tier: "pro",
     prices: [
       {
-        key: "kreaite_pro_monthly",
+        key: "sra_pro_monthly",
+        legacyKeys: ["kreaite_pro_monthly"],
         billing: "monthly",
         interval: "month",
         unitAmount: 7900,
         nickname: "Pro Monthly",
       },
       {
-        key: "kreaite_pro_annual",
+        key: "sra_pro_annual",
+        legacyKeys: ["kreaite_pro_annual"],
         billing: "annual",
         interval: "year",
         unitAmount: 69900,
@@ -78,22 +86,25 @@ const CATALOG_PRODUCTS: CatalogProductConfig[] = [
     ],
   },
   {
-    key: "kreaite_enterprise",
-    name: "KreAIte Enterprise",
+    key: "sra_enterprise",
+    legacyKeys: ["kreaite_enterprise"],
+    name: "Stroke Recovery Academy Enterprise",
     description:
-      "Team and agency access with seats, API access, white-label options, and dedicated support.",
-    platform: "kreaite",
+      "Team access to Stroke Recovery Academy with seats, API access, white-label options, and dedicated support.",
+    platform: "stroke_recovery_academy",
     tier: "enterprise",
     prices: [
       {
-        key: "kreaite_enterprise_monthly",
+        key: "sra_enterprise_monthly",
+        legacyKeys: ["kreaite_enterprise_monthly"],
         billing: "monthly",
         interval: "month",
         unitAmount: 29900,
         nickname: "Enterprise Monthly",
       },
       {
-        key: "kreaite_enterprise_annual",
+        key: "sra_enterprise_annual",
+        legacyKeys: ["kreaite_enterprise_annual"],
         billing: "annual",
         interval: "year",
         unitAmount: 249900,
@@ -181,27 +192,44 @@ async function findOrCreateProduct(
   stripe: Stripe,
   config: CatalogProductConfig,
 ): Promise<Stripe.Product> {
-  const search = await stripe.products.search({
-    query: `metadata['catalog_key']:'${config.key}'`,
-    limit: 100,
-  });
-  const matching = search.data
-    .filter((product) => metadataMatches(product.metadata, config.key))
+  const catalogKeys = [config.key, ...(config.legacyKeys ?? [])];
+  const searchResults = await Promise.all(
+    catalogKeys.map((key) =>
+      stripe.products.search({
+        query: `metadata['catalog_key']:'${key}'`,
+        limit: 100,
+      }),
+    ),
+  );
+  const matching = searchResults
+    .flatMap((result) => result.data)
+    .filter((product, index, products) =>
+      products.findIndex((candidate) => candidate.id === product.id) === index &&
+      catalogKeys.some((key) => metadataMatches(product.metadata, key)),
+    )
     .sort((a, b) => a.created - b.created);
   const existing = matching.find((product) => product.active) ?? matching[0];
 
   if (existing) {
-    if (!existing.active) {
+    const metadata = {
+      ...existing.metadata,
+      catalog_key: config.key,
+      platform: config.platform,
+      tier: config.tier,
+    };
+    if (
+      !existing.active ||
+      existing.name !== config.name ||
+      existing.description !== config.description ||
+      existing.metadata?.catalog_key !== config.key ||
+      existing.metadata?.platform !== config.platform ||
+      existing.metadata?.tier !== config.tier
+    ) {
       return stripe.products.update(existing.id, {
         active: true,
         name: config.name,
         description: config.description,
-        metadata: {
-          ...existing.metadata,
-          catalog_key: config.key,
-          platform: config.platform,
-          tier: config.tier,
-        },
+        metadata,
       });
     }
     return existing;
@@ -232,14 +260,38 @@ async function findOrCreatePrice(
     active: true,
     limit: 100,
   });
+  const priceKeys = [config.key, ...(config.legacyKeys ?? [])];
   const existing = prices.data.find(
     (price) =>
-      price.metadata?.catalog_key === config.key &&
+      priceKeys.includes(price.metadata?.catalog_key ?? "") &&
       price.unit_amount === config.unitAmount &&
       price.currency === "usd" &&
       recurringInterval(price) === config.interval,
   );
-  if (existing) return existing;
+  if (existing) {
+    const metadata = {
+      ...existing.metadata,
+      catalog_key: config.key,
+      product_key: productConfig.key,
+      platform: productConfig.platform,
+      tier: productConfig.tier,
+      billing: config.billing,
+      ...(productConfig.key === "sasquatch_premium"
+        ? { feature: "sasquatch_premium" }
+        : {}),
+    };
+    if (
+      existing.nickname !== config.nickname ||
+      existing.metadata?.catalog_key !== config.key ||
+      existing.metadata?.product_key !== productConfig.key ||
+      existing.metadata?.platform !== productConfig.platform ||
+      existing.metadata?.tier !== productConfig.tier ||
+      existing.metadata?.billing !== config.billing
+    ) {
+      return stripe.prices.update(existing.id, { nickname: config.nickname, metadata });
+    }
+    return existing;
+  }
 
   return stripe.prices.create({
     product: product.id,
@@ -291,9 +343,9 @@ function toCatalog(
   };
 
   return {
-    creator: get("kreaite_creator"),
-    pro: get("kreaite_pro"),
-    enterprise: get("kreaite_enterprise"),
+    creator: get("sra_creator"),
+    pro: get("sra_pro"),
+    enterprise: get("sra_enterprise"),
     warrior: get("stroke_recovery_academy_warrior"),
     sasquatchPremium: get("sasquatch_premium"),
   };

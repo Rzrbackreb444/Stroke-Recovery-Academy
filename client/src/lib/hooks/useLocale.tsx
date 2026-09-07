@@ -104,13 +104,13 @@ export function LocaleProvider({ children }: LocaleProviderProps) {
   useEffect(() => {
     // Force English as default - always reset to English on load
     setLocaleState('en');
-    localStorage.setItem('kreaite_locale', 'en');
+    localStorage.setItem('sra_locale', 'en');
     setIsInitialized(true);
   }, []);
 
   const setLocale = (newLocale: string) => {
     setLocaleState(newLocale);
-    localStorage.setItem('kreaite_locale', newLocale);
+    localStorage.setItem('sra_locale', newLocale);
   };
 
   const t = (key: string): string => {

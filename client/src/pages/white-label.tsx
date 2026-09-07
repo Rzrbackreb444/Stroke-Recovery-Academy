@@ -103,7 +103,7 @@ export default function WhiteLabelPage() {
     awsAccessKey: "",
     awsSecretKey: "",
     cloudflareApiKey: "",
-    hideKreaiteBranding: false,
+    hideSraBranding: false,
     customFooterText: "",
     customTermsUrl: "",
     customPrivacyUrl: "",
@@ -360,8 +360,8 @@ export default function WhiteLabelPage() {
                       </p>
                     </div>
                     <Switch
-                      checked={config.hideKreaiteBranding}
-                      onCheckedChange={(checked) => setConfig(prev => ({ ...prev, hideKreaiteBranding: checked }))}
+                      checked={config.hideSraBranding}
+                      onCheckedChange={(checked) => setConfig(prev => ({ ...prev, hideSraBranding: checked }))}
                       data-testid="switch-hide-branding"
                     />
                   </div>

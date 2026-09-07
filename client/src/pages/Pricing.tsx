@@ -367,9 +367,9 @@ export default function Pricing() {
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <SEO
-        title="Pricing Plans - AI Creator Platform Subscriptions"
-        description="Explore Stroke Recovery Academy's flexible pricing plans. Free tier to get started, Creator plan for serious creators, Pro for unlimited AI generation, and Enterprise for teams. All plans include Book Studio, Music Studio, and more. Keep 85% of every sale on our marketplace."
-        keywords="pricing, subscription, AI creator tools, free tier, creator plan, pro plan, enterprise pricing, AI content creation, subscription cost, AI platform pricing"
+        title="Stroke Recovery Academy Pricing Plans"
+        description="Explore Stroke Recovery Academy's flexible plans for recovery, creation, publishing, and community. Start free, then choose Creator, Pro, or Enterprise access as your work grows."
+        keywords="Stroke Recovery Academy pricing, recovery platform plans, creator plan, pro plan, enterprise pricing, AI recovery tools, subscription cost"
         canonical="/pricing"
         type="website"
         breadcrumbs={[
