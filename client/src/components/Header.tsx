@@ -49,7 +49,7 @@ export default function GlobalHeader() {
         {/* Primary nav (desktop) */}
         <div className="hidden lg:flex items-center gap-6 text-[11px] uppercase tracking-[0.18em] font-bold text-black/70">
           <Link
-            href="/recovery/dashboard"
+            href="/recovery/today"
             className="flex items-center gap-2 hover:text-[#E2741B] transition-colors"
             data-testid="link-nav-dashboard"
           >
@@ -65,7 +65,7 @@ export default function GlobalHeader() {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-white border-[#E2741B]/20 shadow-2xl p-2 w-60">
               <DropdownMenuItem className="cursor-pointer text-[11px] font-bold uppercase py-3" onClick={() => navigate('/recovery/academy')}>
-                Recovery Academy
+                Academy
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer text-[11px] font-bold uppercase py-3" onClick={() => navigate('/recovery/exercises')}>
                 Exercises
@@ -146,10 +146,10 @@ export default function GlobalHeader() {
           variant="default"
           size="sm"
           className="hidden sm:inline-flex bg-[#E2741B] text-black font-bold uppercase tracking-wider text-[11px] hover:bg-[#E2741B]/90"
-          onClick={() => navigate('/recovery/dashboard')}
+          onClick={() => navigate('/recovery/today')}
           data-testid="button-start-recovery"
         >
-          Start Recovery
+          Start free
         </Button>
 
         {/* Mobile menu */}
@@ -166,8 +166,8 @@ export default function GlobalHeader() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white border-[#E2741B]/20 shadow-2xl p-2 w-56">
-            <DropdownMenuItem className="cursor-pointer font-semibold py-3" onClick={() => navigate('/recovery/dashboard')}>Dashboard</DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer font-semibold py-3" onClick={() => navigate('/recovery/academy')}>Recovery Academy</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer font-semibold py-3" onClick={() => navigate('/recovery/today')}>Today</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer font-semibold py-3" onClick={() => navigate('/recovery/academy')}>Academy</DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer font-semibold py-3" onClick={() => navigate('/recovery/exercises')}>Exercises</DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer font-semibold py-3" onClick={() => navigate('/recovery/center-finder')}>Center Finder</DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer font-semibold py-3" onClick={() => navigate('/programs/66-day-challenge')}>66-Day Challenge</DropdownMenuItem>

@@ -404,6 +404,8 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
   const qc = useQueryClient();
   const [content, setContent] = useState("");
   const [postType, setPostType] = useState<string>("update");
+  // Private by default; send the chosen audience explicitly to the API.
+  const [visibility, setVisibility] = useState<"private" | "members" | "pod" | "public">("private");
   const [media, setMedia] = useState<Array<{ url: string; mediaType: string; name: string }>>([]);
   const [uploading, setUploading] = useState(false);
   const [failedFiles, setFailedFiles] = useState<File[]>([]);
@@ -468,7 +470,7 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
       const response = await apiRequest("POST", "/api/activity", {
         postType,
         content: content.trim(),
-        visibility: "public",
+        visibility,
         media: media.map(({ url, mediaType }) => ({ mediaUrl: url, mediaType })),
       });
       return response.json();
@@ -481,6 +483,7 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
       setUploadError("");
       setPostError("");
       setPostType("update");
+      setVisibility("private");
       setExpanded(false);
       toast({
         title: post?.crisis ? "Posted — please reach out for support" : "Posted to the community!",
@@ -562,6 +565,25 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
                   data-testid="textarea-post-content"
                 />
 
+                 <div className="rounded-md border border-[#E2741B]/40 bg-[#E2741B]/10 px-3 py-2 text-xs text-gray-300" role="note">
+                   <strong className="text-[#E2741B]">Privacy and safety:</strong> Community posts may contain sensitive health information. Choose who can see this post below. Community replies are peer support, not medical advice.
+                 </div>
+                 <label className="flex items-center gap-2 text-sm text-gray-300">
+                   <span className="text-xs uppercase tracking-wide text-gray-500">Audience</span>
+                   <select
+                     value={visibility}
+                     onChange={(e) => setVisibility(e.target.value as typeof visibility)}
+                     className="rounded-md border border-[#333] bg-[#111] px-2 py-1.5 text-sm text-white"
+                     aria-label="Choose who can see this post"
+                     data-testid="select-post-visibility"
+                   >
+                     <option value="private">Only me (private)</option>
+                     <option value="members">Community members</option>
+                     <option value="pod">My pod</option>
+                     <option value="public">Anyone (public)</option>
+                   </select>
+                 </label>
+
                 {media.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {media.map((m, i) => (
@@ -628,7 +650,7 @@ function PostComposer({ user, settings }: { user: any; settings: any }) {
                   </div>
 
                   <div className="flex gap-2">
-                    <Button size="sm" variant="ghost" className="text-gray-400" onClick={() => { setExpanded(false); setContent(""); setMedia([]); setFailedFiles([]); setUploadError(""); setPostError(""); }}>
+                    <Button size="sm" variant="ghost" className="text-gray-400" onClick={() => { setExpanded(false); setContent(""); setMedia([]); setFailedFiles([]); setUploadError(""); setPostError(""); setVisibility("private"); }}>
                       Cancel
                     </Button>
                     <Button
@@ -1137,6 +1159,9 @@ function FeedTab({ user, settings }: { user: any; settings: any }) {
       </div>
 
       <div className="lg:col-span-3 space-y-4">
+        <div className="rounded-lg border border-[#E2741B]/40 bg-[#E2741B]/10 px-4 py-3 text-xs text-gray-300" role="note" data-testid="community-privacy-warning">
+          <strong className="text-[#E2741B]">Before you post:</strong> Community posts may contain sensitive health information. Posts are private by default; choose an audience deliberately. Community replies are peer support, not medical advice.
+        </div>
         {user ? <PostComposer user={user} settings={settings} /> : (
           <Card className="bg-[#1a1a1a] border-[#E2741B]/30">
             <CardContent className="p-4 flex items-center justify-between gap-3">

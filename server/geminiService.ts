@@ -214,14 +214,14 @@ export async function generateCoachResponse(
     });
 
     return {
-      response: response.text || "Keep pushing, survivor! Your comeback story is being written right now.",
+      response: response.text || "I don't have a response right now. Pause, use a saved routine if helpful, or contact your care team for guidance.",
       quote: randomQuote,
     };
   } catch (error) {
     console.error("Gemini API error:", error);
     const fallbackQuote = SASQUATCH_QUOTES[Math.floor(Math.random() * SASQUATCH_QUOTES.length)];
     return {
-      response: `I'm having a technical moment, but remember: "${fallbackQuote}" Keep pushing forward!`,
+      response: `I'm having a technical moment. You can pause, use a saved routine if helpful, or contact your care team. For now: "${fallbackQuote}"`,
       quote: fallbackQuote,
     };
   }

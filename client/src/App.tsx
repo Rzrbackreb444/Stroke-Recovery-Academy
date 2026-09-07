@@ -566,6 +566,10 @@ function Router() {
       <Route path="/recovery/dashboard">
         <RecoveryRouteRedirect to="/recovery/today" />
       </Route>
+      {/* Short legacy link; keep the canonical learning URL under /recovery. */}
+      <Route path="/academy">
+        <RecoveryRouteRedirect to="/recovery/academy" />
+      </Route>
       <Route path="/recovery/academy" component={Academy} />
       <Route path="/recovery/sasch" component={SaschLanding} />
       <Route path="/recovery/builder" component={Builder} />

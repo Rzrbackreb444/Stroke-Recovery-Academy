@@ -8,31 +8,31 @@ import {
 const credentials = [
   {
     icon: Shield,
-    title: "HIPAA Compliant",
-    description: "Your health data is protected",
+    title: "Privacy-Minded",
+    description: "We aim to handle information carefully",
   },
   {
     icon: FileCheck,
-    title: "Evidence-Based",
-    description: "Protocols backed by research",
+    title: "Survivor-Led",
+    description: "Practical ideas from lived experience",
   },
   {
     icon: GraduationCap,
-    title: "Expert Reviewed",
-    description: "Medical professionals on board",
+    title: "Plain-Language Support",
+    description: "Non-clinical tools and encouragement",
   },
   {
     icon: Award,
-    title: "Certified Methods",
-    description: "Proven rehabilitation techniques",
+    title: "Practical Tools",
+    description: "Simple routines to discuss with your care team",
   },
 ];
 
 const medicalPartners = [
-  "American Stroke Association Guidelines",
-  "Neuroplasticity Research Institute",
-  "Constraint-Induced Movement Therapy",
-  "Motor Learning Principles",
+  "Survivor experiences",
+  "Personal routines",
+  "Peer connection",
+  "Progress tracking",
 ];
 
 export function MedicalCredentialsBanner() {
@@ -42,7 +42,7 @@ export function MedicalCredentialsBanner() {
         <div className="flex items-center justify-center gap-2 mb-4">
           <Stethoscope className="h-5 w-5 text-[#E2741B]" />
           <span className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
-            Medical-Grade Recovery Platform
+            Survivor-Led Recovery Platform
           </span>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -70,13 +70,13 @@ export function MedicalTrustBadges() {
   return (
     <div className="flex flex-wrap justify-center gap-3 py-4">
       <Badge className="bg-green-500/10 text-green-400 border-green-500/30 gap-1">
-        <CheckCircle className="h-3 w-3" /> HIPAA Compliant
+        <CheckCircle className="h-3 w-3" /> Privacy-minded
       </Badge>
       <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/30 gap-1">
         <Brain className="h-3 w-3" /> Neuroplasticity Based
       </Badge>
       <Badge className="bg-purple-500/10 text-purple-400 border-purple-500/30 gap-1">
-        <Award className="h-3 w-3" /> Expert Reviewed
+        <Award className="h-3 w-3" /> Survivor-led
       </Badge>
       <Badge className="bg-[#E2741B]/10 text-[#E2741B] border-[#E2741B]/30 gap-1">
         <Heart className="h-3 w-3" /> Survivor Approved
@@ -109,7 +109,7 @@ export function ResearchBased() {
     <div className="bg-[#0D0D0D] border border-[#333] rounded-lg p-6">
       <div className="flex items-center gap-2 mb-4">
         <FileCheck className="h-5 w-5 text-[#E2741B]" />
-        <h3 className="font-bold text-white">Research-Based Methodology</h3>
+        <h3 className="font-bold text-white">Survivor-Led Approach</h3>
       </div>
       <div className="grid grid-cols-2 gap-3">
         {medicalPartners.map((partner) => (

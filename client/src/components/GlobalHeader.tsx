@@ -75,7 +75,7 @@ const quickTools = [
 const navLinks = [
   { href: "/marketplace", label: "Marketplace", icon: Store },
   { href: "/community", label: "Community", icon: Users },
-  { href: "/academy", label: "Recovery Academy", icon: BookMarked, isHighlight: true },
+  { href: "/recovery/academy", label: "Academy", icon: BookMarked, isHighlight: true },
   { href: "/pricing", label: "Pricing", icon: Crown },
 ];
 
