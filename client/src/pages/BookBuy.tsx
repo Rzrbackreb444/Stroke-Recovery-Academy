@@ -50,7 +50,7 @@ const FAQ = [
   },
   {
     q: "Who wrote it?",
-    a: "Nick Kremers — 7-year stroke survivor. Recovered from 0% to 90%+ functional ability. Built the academy from the same methods. Not a clinician; a builder.",
+    a: "Nick Kremers — 7-year stroke survivor. He reports reaching 0% to 90%+ functional ability. He built the academy from his lived experience. Not a clinician; a builder.",
   },
   {
     q: "Is it medical advice?",
@@ -168,7 +168,7 @@ export default function BookBuy() {
     <div className="min-h-screen bg-background flex flex-col">
       <RecoverySEO
         title="Buy The Ultimate Stroke Recovery Revolution — $19 Digital / $29 Print"
-        description="Nick Kremers' 314-page battle-tested stroke recovery manual. Memoir-manual hybrid: 30 chapters, 17 appendices, 9 case studies, full 90-Day Breakthrough Program. Forged by a 7-year survivor."
+        description="Nick Kremers' 314-page survivor-led stroke recovery manual. Memoir-manual hybrid: 30 chapters, 17 appendices, 9 case studies, and a full 90-Day Breakthrough Program. Written by a 7-year survivor."
         canonical="/book/buy"
         pageType="product"
         image={coverAbs}

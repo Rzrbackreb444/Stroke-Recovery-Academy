@@ -291,7 +291,7 @@ export default function RecoveryStore() {
         founder: {
           "@type": "Person",
           name: "Nick Kremers",
-          description: "Stroke survivor who recovered from 0% to 90% function. Expert in stroke recovery methodology.",
+          description: "Stroke survivor who reports reaching 0% to 90% function. Shares lived-experience recovery education.",
           url: "https://strokerecoveryacademy.com/recovery/about-nick",
           knowsAbout: ["Stroke Recovery", "Neuroplasticity", "Physical Therapy", "Cognitive Rehabilitation", "Adaptive Equipment"],
         },

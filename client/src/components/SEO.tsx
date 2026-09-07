@@ -401,37 +401,34 @@ export function createArticleSchema(article: {
 
 export const recoveryAcademySchemas = {
   organization: {
-    "@type": "MedicalOrganization",
+    "@type": "Organization",
     name: "Stroke Recovery Academy",
     alternateName: "Sasquatch Recovery Academy",
     url: `${BASE_URL}/recovery`,
     logo: `${BASE_URL}/recovery-logo.png`,
-    description: "Evidence-based stroke recovery platform with AI-powered rehabilitation exercises, community support, and the Sasquatch Doctrine methodology.",
-    medicalSpecialty: ["Neurology", "Physical Medicine and Rehabilitation", "Occupational Therapy"],
+    description: "Survivor-led stroke recovery education, reflection tools, community support, and the Sasquatch Doctrine methodology.",
     areaServed: { "@type": "Country", name: "Worldwide" },
     sameAs: ["https://twitter.com/strokerecovery"],
     slogan: "Never Zero. Always Forward.",
   },
   compassMethod: {
-    "@type": "MedicalTherapy",
+    "@type": "CreativeWork",
     name: "C.O.M.P.A.S.S. Recovery Method",
     alternateName: "Control · Own · Mutate · Patience · Anger · Small Wins · Stack",
     description: "The Builder's Full Navigation System for stroke recovery. Seven pillars: Control what you can, Own your pace, Mutate and adapt, Patience plus nutrition as fuel, Anger channeled as fuel, Small wins are sacred, Stack failures into success. Used alongside the S.A.S.C.H. Formula as an advanced recovery operating system.",
-    relevantSpecialty: ["Neurology", "Physical Medicine and Rehabilitation"],
-    procedureType: "Therapeutic",
+    about: { "@type": "Thing", name: "Stroke recovery education and reflection" },
     followup: "Daily pillar check-ins and progress tracking",
   },
   flickerLog: {
-    "@type": "MedicalObservationalStudy",
+    "@type": "CreativeWork",
     name: "Flicker Log",
     description: "Daily tracking system for micro-movements and recovery wins. Document every flicker of progress in your stroke recovery journey.",
-    healthCondition: { "@type": "MedicalCondition", name: "Stroke" },
-    studySubject: { "@type": "MedicalEntity", name: "Motor Recovery" },
+    about: { "@type": "Thing", name: "Stroke recovery self-tracking" },
   },
   neverZero: {
     "@type": "CreativeWork",
     name: "Never Zero Streak System",
-    description: "Gamified consistency tracking ensuring survivors maintain daily recovery activities. Every day counts, no zero days allowed.",
+    description: "Gamified consistency tracking for optional daily recovery activities, with room to pause, rest, and adapt.",
     genre: "Health & Wellness",
     about: { "@type": "MedicalCondition", name: "Stroke Recovery" },
   },
@@ -453,7 +450,7 @@ export function createRecoveryStorySchema(story: {
   recoveryMilestones?: string[];
 }) {
   return {
-    "@type": ["Article", "MedicalWebPage"],
+    "@type": "Article",
     headline: story.title,
     description: story.description,
     author: {
@@ -535,10 +532,9 @@ export function createSupportGroupSchema(group: {
 
 export const EEATSignals = {
   expertise: [
-    "Evidence-based rehabilitation protocols",
-    "AI-powered personalized recovery plans",
-    "Professional medical content review",
-    "Collaboration with rehabilitation specialists",
+    "Survivor-led recovery education",
+    "AI-assisted reflection and planning",
+    "Plain-language recovery resources",
   ],
   experience: [
     "Platform built by stroke survivors for stroke survivors",
@@ -547,16 +543,14 @@ export const EEATSignals = {
     "Years of collective recovery experience",
   ],
   authoritativeness: [
-    "Referenced by rehabilitation professionals",
-    "Featured in medical publications",
-    "Partnerships with stroke foundations",
-    "Verified medical information sources",
+    "Founder lived experience",
+    "Transparent content provenance",
+    "Clear non-clinical boundaries",
   ],
   trustworthiness: [
-    "HIPAA-compliant data handling",
     "Transparent privacy policies",
-    "Regular content audits",
-    "Medical disclaimer and professional guidance",
-    "Secure user data encryption",
+    "Visible medical disclaimers",
+    "Care-team conversation prompts",
+    "Secure user data practices",
   ],
 };

@@ -61,6 +61,13 @@ export function MedicalDisclaimerCard({ variant = "compact", extraContext }: Med
               medication, or routine. If a movement causes pain, dizziness, weakness, vision change,
               slurred speech, or numbness — stop immediately.
             </p>
+            <p className="mb-2">
+              Standing or walking activities are optional, not a goal or promise of progression.
+              Only do them if your clinician has cleared them and the activity's required support
+              is available. Use a caregiver, trained spotter, or therapist when your care team says
+              one is needed; keep a stable surface within reach and skip the activity if it is not
+              safe today.
+            </p>
             <p className="flex items-center gap-2 text-red-300 font-semibold">
               <Phone className="h-3.5 w-3.5" />
               If you suspect a new stroke, call 911 (or your local emergency number) right now.
@@ -85,6 +92,8 @@ export function MedicalDisclaimerCard({ variant = "compact", extraContext }: Med
       <ShieldAlert className="h-3.5 w-3.5 text-red-400/80 shrink-0 mt-0.5" />
       <span>
         Survivor-built — not medical advice. Clear new exercises with your therapist.
+        Standing or walking? Use only clinician-approved activities with the required caregiver,
+        therapist, or spotter support; pause or skip if that support is not available.
         Suspect a new stroke?{" "}
         <span className="text-red-300 font-semibold">Call 911.</span>
         {extraContext && (

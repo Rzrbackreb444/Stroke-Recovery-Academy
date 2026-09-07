@@ -12,7 +12,7 @@ export default function RecoveryBooks() {
       readingTime: "8-10 hours",
       coverImage: bookCoverImage,
       preview:
-        "The ONLY stroke recovery book written by someone who went from 0% to 90% function using methods that don't exist in medical textbooks.",
+        "A survivor-led stroke recovery book drawn from Nick's reported 0%-to-90% personal story. It offers lived-experience ideas, not a clinical protocol.",
     },
     {
       title: "The Ultimate Stroke Recovery Guide",
@@ -22,7 +22,7 @@ export default function RecoveryBooks() {
       readingTime: "12-15 hours",
       coverImage: bookCoverImage,
       preview:
-        "The comprehensive technical manual for stroke survivors who refuse to accept limitations. Complete protocols from wheelchair to walking.",
+        "A practical survivor-led guide for people rebuilding after stroke. Use the ideas as conversation starters and adapt them with your care team.",
     },
     {
       title: "The Ultimate Stroke Recovery Revolution",
@@ -32,7 +32,7 @@ export default function RecoveryBooks() {
       readingTime: "20+ hours",
       coverImage: bookCoverImage,
       preview:
-        "72-month recovery arsenal combining street-tested methods with 2025's breakthrough neuroscience. Brain-computer interfaces, stem cell therapy, and advanced protocols.",
+        "A longer-form look at recovery, experimentation, and emerging ideas. The material is educational and should not replace individualized clinical guidance.",
     },
   ];
 

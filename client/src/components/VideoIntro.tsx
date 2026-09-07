@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Play, ExternalLink, Brain, Activity, Clock, Award } from "lucide-react";
 
 const methodologyPoints = [
-  { icon: Brain, title: "Neuroplasticity", desc: "Evidence-based brain rewiring" },
+  { icon: Brain, title: "Neuroplasticity", desc: "Plain-language brain adaptation education" },
   { icon: Activity, title: "Progressive Overload", desc: "Systematic intensity scaling" },
   { icon: Clock, title: "Repetition Dosing", desc: "Optimal practice frequency" },
   { icon: Award, title: "Task-Specific", desc: "Functional movement training" },

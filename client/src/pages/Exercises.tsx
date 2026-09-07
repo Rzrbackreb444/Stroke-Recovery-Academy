@@ -148,7 +148,7 @@ export default function Exercises() {
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <RecoverySEO
         title="Stroke Recovery Exercises — Therapeutic Games for Arm, Speech & Cognitive Rehab"
-        description="34 evidence-based stroke recovery exercises designed by Nick Kremers — gamified therapeutic exercises for upper extremity rehab, speech recovery, and cognitive rehabilitation. Track your progress, build streaks, and rewire your brain."
+        description="34 survivor-informed stroke recovery exercises designed by Nick Kremers — educational practice ideas for upper extremity, speech, and cognitive goals. Track your progress and discuss changes with your care team."
         canonical="/recovery/exercises"
         pageType="medical"
         keywords={[

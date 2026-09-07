@@ -6917,7 +6917,7 @@ export const POST_BROOKS_SURVIVOR_REVIEW = makeBlogPost({
     {
       h2: 'The before — and the after',
       paragraphs: [
-        'December 3, 2018. I was 36. One minute I was at the gym, the next I was on the floor. A left-hemispheric stroke. I lost my right side — arm, leg, speech, dignity. I could not walk. I could not stand. I could not put on a shoe.',
+        'December 3, 2018. I was 36. One minute I was at the gym, the next I was on the floor. A left-hemispheric stroke. I lost my left side — arm, leg, speech, dignity. I could not walk. I could not stand. I could not put on a shoe.',
         'The photos on this page show what that looked like. The purple walker. The wheelchair. The therapist holding me up while I learned to trust my right leg again. That was me. That is the person who writes this.',
       ],
       image: {

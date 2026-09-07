@@ -13,7 +13,7 @@ const programs = [
     icon: Hand,
     title: "Upper Extremity Protocol",
     subtitle: "Arm & Hand Recovery",
-    description: "Evidence-based constraint-induced movement therapy (CIMT) combined with task-specific training to restore arm and hand function.",
+    description: "Educational discussion of constraint-induced movement therapy (CIMT) and task-specific practice for arm and hand goals. Review suitability with a clinician.",
     duration: "12-16 weeks",
     sessions: "5x/week",
     level: "All Levels",
@@ -75,7 +75,7 @@ export default function RecoveryPrograms() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <Badge className="bg-[#E2741B]/10 text-[#E2741B] border-[#E2741B]/30 mb-4">
-            Evidence-Based Protocols
+            Survivor-Informed Practice Guides
           </Badge>
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
             Structured Recovery Programs

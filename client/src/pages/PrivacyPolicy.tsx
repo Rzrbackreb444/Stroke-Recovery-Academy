@@ -34,9 +34,9 @@ export default function PrivacyPolicy() {
         keywords={["privacy policy", "data protection", "personal information", "data security", "GDPR"]}
         author="Stroke Recovery Academy"
         expertise="Data privacy and protection standards"
-        experience="Platform established 2024 with HIPAA-compliant data handling"
-        authoritativeness="Transparent and verified privacy practices"
-        trustworthiness="Secure encryption and GDPR compliant"
+        experience="Platform established 2024 with published privacy practices"
+        authoritativeness="Transparent data-use disclosures"
+        trustworthiness="Security practices and user controls described in this policy"
         breadcrumbs={[{ name: "Home", url: "/" }, { name: "Privacy Policy", url: "/privacy-policy" }]}
       />
       <GlobalHeader />

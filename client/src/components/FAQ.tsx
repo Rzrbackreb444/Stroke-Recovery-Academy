@@ -22,12 +22,12 @@ const faqs = [
   {
     question: "What makes the Sasquatch Method unique?",
     answer:
-      `Nick is the only person teaching stroke recovery who personally went from 0% to 90% function. Every technique has been battle-tested for ${years} years. The Method runs on three integrated systems — S.A.S.C.H. (daily formula: Seize, Absorb, Swing, Combine, Hammer), S.O.S. (daily reset: Survive, Organize, Strive), and C.O.M.P.A.S.S. (7-pillar long-game navigation) — paired with Baseball Bat Therapy, Enhanced Mirror Therapy, and plateau-busting strategies that don't exist anywhere else. This isn't theory — it's lived experience.`,
+      `Nick's personal story includes a reported change from 0% to 90% function over ${years} years. The Method is his lived-experience framework: S.A.S.C.H. (daily formula), S.O.S. (daily reset), and C.O.M.P.A.S.S. (long-game navigation). It is education and reflection, not a guarantee, prescription, or replacement for individualized care.`,
   },
   {
     question: "Do I need expensive equipment?",
     answer:
-      "No. Nick's baseball bat method uses a $5 Walmart bat and outperformed $15,000 clinical equipment. Many breakthrough techniques use household items. He shows you exactly what's worth investing in and what you can do yourself. Recovery shouldn't bankrupt you.",
+      "No. Nick describes using an inexpensive baseball bat as a practice prop. Many people adapt routines with household items, but equipment and activities should be reviewed for safety with your care team. Recovery support should not require unnecessary spending.",
   },
   {
     question: "How does this work alongside my current therapy?",

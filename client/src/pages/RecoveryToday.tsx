@@ -221,6 +221,11 @@ export default function RecoveryToday() {
               <p className="text-sm text-gray-300 leading-relaxed border-t border-[#222] pt-3" data-testid="text-rec-reason">
                 {rec?.reason}
               </p>
+               <p className="text-xs text-gray-500 mt-3">
+                 This recommendation is only a conservative starting point from the app, not a
+                 prescription, diagnosis, or guaranteed progression. You choose whether to begin,
+                 pause, or skip.
+               </p>
 
                {/* The recommendation is the default. Keep the full selector available,
                    but don't make a new survivor choose from five options first. */}
@@ -360,6 +365,20 @@ export default function RecoveryToday() {
                   {current.goalReason || "Your goal"}
                 </Badge>
               )}
+               {chosenLevel !== null && chosenLevel >= 3 && (
+                 <div
+                   className="mb-5 rounded-md border border-amber-700/60 bg-amber-950/30 p-3 text-left text-xs text-amber-100/90"
+                   data-testid="banner-standing-preflight"
+                 >
+                   <p className="font-semibold text-amber-200 mb-1">Preflight before standing or walking</p>
+                   <p>
+                     This assisted activity is optional and is not a prescription or a promise of
+                     progression. Continue only with clinician approval and the caregiver, trained
+                     spotter, therapist, stable support, or device your care team requires. Sit
+                     down and stop if you feel unwell. You can skip it below.
+                   </p>
+                 </div>
+               )}
               <div className="h-14 w-14 mx-auto mb-5 rounded-full bg-[#E2741B]/15 border border-[#E2741B]/40 flex items-center justify-center">
                 <Icon className="h-7 w-7 text-[#E2741B]" />
               </div>
@@ -405,7 +424,7 @@ export default function RecoveryToday() {
                 className="text-xs text-gray-500 hover:text-gray-300 underline-offset-2 hover:underline"
                 data-testid="button-skip-task"
               >
-                Skip this one
+                 Pause / skip this one
               </button>
             </div>
           </div>
@@ -431,9 +450,15 @@ export default function RecoveryToday() {
           <Card className="bg-[#111] border-[#222] p-8 max-w-md w-full text-center">
             <Footprints className="h-10 w-10 text-[#E2741B] mx-auto mb-4" />
             <h2 className="text-white font-bold text-2xl mb-2">Time for the cooldown walk</h2>
-            <p className="text-gray-400 text-sm mb-6">
-              Open the supervised walking module to log your distance and how it felt.
+             <p className="text-gray-400 text-sm mb-4">
+               Walking is optional, not a prescription or guaranteed next step. Open the module
+               only if your clinician has cleared it and your required caregiver, therapist, or
+               trained spotter and stable support are present.
             </p>
+             <p className="text-xs text-amber-200/90 mb-6">
+               Stop and sit down immediately for dizziness, weakness, pain, shortness of breath,
+               or any new or worsening symptom. You can skip without penalty.
+             </p>
             <Button
               size="lg"
               onClick={() => setShowWalkModal(true)}

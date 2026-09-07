@@ -402,8 +402,8 @@ export default function SasquatchCoach() {
   return (
     <div className="min-h-screen bg-[#0D0D0D] flex flex-col">
       <RecoverySEO
-        title="Sasquatch Coach — Your 24/7 AI Stroke Recovery Companion | Stroke Recovery Academy"
-        description="Meet Sasquatch — a 24/7 AI recovery coach trained on Nick Kremers' method. Accountability-focused, always available, built for stroke warriors who refuse to quit."
+        title="Sasquatch Coach — AI Stroke Recovery Accountability Companion | Stroke Recovery Academy"
+        description="Meet Sasquatch — an AI recovery accountability companion shaped by Nick Kremers' lived experience. Use it for reflection and a manageable next step; it is not clinical care."
         canonical="/recovery/sasquatch-coach"
         pageType="website"
         keywords={["sasquatch coach", "stroke recovery AI coach", "recovery accountability coach", "stroke rehab support"]}

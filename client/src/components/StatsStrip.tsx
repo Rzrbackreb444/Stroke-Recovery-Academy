@@ -1,7 +1,7 @@
 const stats = [
   { value: "90,000+", label: "Community reach" },
   { value: "0→90%", label: "Nick's documented recovery" },
-  { value: "6+ years", label: "Of proven methods" },
+  { value: "6+ years", label: "Of lived experience" },
 ];
 
 export default function StatsStrip() {

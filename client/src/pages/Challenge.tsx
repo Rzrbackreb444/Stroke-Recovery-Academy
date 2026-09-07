@@ -89,7 +89,7 @@ const WHATS_INCLUDED = [
   {
     icon: Brain,
     title: "The Complete Sasquatch Formula",
-    description: "The exact battle-tested system Nick used: S.A.S.C.H. — Seize, Absorb, Swing, Combine, Hammer. The 5-step daily operating system that drives real neuroplasticity, not just symptom management.",
+    description: "The personal system Nick used: S.A.S.C.H. — Seize, Absorb, Swing, Combine, Hammer. A five-step daily reflection framework, not a clinical treatment or outcome guarantee.",
   },
   {
     icon: Calendar,
@@ -114,7 +114,7 @@ const WHATS_INCLUDED = [
   {
     icon: MessageCircle,
     title: "Sasquatch Coach (AI Companion)",
-    description: "24/7 AI coach powered by Nick's knowledge. Ask anything. Get coached at 3am when you can't sleep. Never feel alone in your recovery again.",
+    description: "An AI accountability companion powered by Nick's lived experience. Ask questions, reflect, and choose a manageable next step; it is not clinical care.",
   },
 ];
 
@@ -123,7 +123,7 @@ const BONUSES = [
     icon: Trophy,
     title: "90-Day Breakthrough Program",
     value: "$297 value",
-    description: "The extended program for survivors who want to keep pushing past Day 66 into long-term optimization.",
+    description: "The extended program for survivors who want to continue reflecting and adapting past Day 66 into long-term practice.",
   },
   {
     icon: Dumbbell,

@@ -115,7 +115,7 @@ export default function RecoveryResources() {
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       <RecoverySEO
         title="Stroke Recovery Resources — Guides, Videos, Podcasts & Community Tools"
-        description="Comprehensive stroke recovery resource library curated by Nick Kremers: evidence-based guides, rehabilitation videos, expert podcasts, caregiver tools, and peer support community. Everything a stroke survivor needs in one place."
+        description="A stroke recovery resource library curated by Nick Kremers: survivor-led guides, rehabilitation education, caregiver tools, and peer support. Use it as a starting point for questions with your care team."
         canonical="/recovery/resources"
         keywords={[
           "stroke recovery resources", "stroke rehabilitation guides", "stroke survivor videos", "stroke recovery podcast",

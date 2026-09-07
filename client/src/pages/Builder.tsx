@@ -449,7 +449,7 @@ function ResultsSection({ formData, enrollmentData }: { formData: FormData; enro
     if (formData.goals.includes("walking") || formData.goals.includes("strength")) {
       exercises.push({
         name: "Drop Foot Recovery Protocol",
-        description: "Nick's proven method for restoring ankle function",
+        description: "Nick's personal approach to working on ankle function",
         duration: "20-30 min",
         difficulty: "Intermediate",
       });
@@ -814,7 +814,7 @@ export default function Builder() {
 
     updateOrCreateMeta(
       "description",
-      "Create your personalized stroke recovery plan with Nick Kremers' proven methods. Answer a few questions and get customized exercises, equipment recommendations, and an estimated timeline for your recovery journey."
+      "Create a personalized stroke recovery education draft based on your goals, available time, and selected catalog options. Review activities with your care team before trying them."
     );
 
     updateOrCreateLink("canonical", "https://strokerecoveryacademy.com/builder");
@@ -826,7 +826,7 @@ export default function Builder() {
     );
     updateOrCreateMeta(
       "og:description",
-      "Get a personalized stroke recovery protocol based on your specific situation, goals, and available time. Built on Nick Kremers' journey from 0% to 90% recovery.",
+      "Get a personalized stroke recovery education draft based on your situation, goals, and available time. Inspired by Nick Kremers' personal recovery journey, not a promise of the same outcome.",
       true
     );
     updateOrCreateMeta("og:type", "website", true);
@@ -909,7 +909,7 @@ export default function Builder() {
               </h1>
               <p className="text-lg text-gray-400 max-w-2xl mx-auto">
                 Answer a few questions about your situation and goals. 
-                We'll create a personalized protocol based on Nick Kremers' proven recovery methods.
+                We'll create a personalized education draft from your goals and selected catalog options. Discuss any activity changes with your care team.
               </p>
             </div>
 

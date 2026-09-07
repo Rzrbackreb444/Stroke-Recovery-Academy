@@ -30,7 +30,7 @@ export default function CTASection() {
             >
               Stop accepting limitations. Join 50,000+ survivors proving that extraordinary
               recovery is possible. Access the complete Sasquatch Method — the techniques
-              that took Nick from 0% to 90%.
+              drawn from Nick's personal 0%-to-90% story.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

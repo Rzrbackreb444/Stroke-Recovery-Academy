@@ -366,7 +366,7 @@ function Books() {
   const books = [
     {
       title: "The Ultimate Stroke Recovery Revolution",
-      subtitle: "The complete 314-page battle-tested blueprint",
+      subtitle: "The complete 314-page survivor-led recovery guide",
       description:
         "Nick's full recovery manual: daily protocols, the 90-Day Breakthrough Program, survivor case studies, and the mindset to keep rebuilding when the system says you're done.",
       image: "/book/cover.jpg",
@@ -497,7 +497,7 @@ function Proof() {
               "They said I'd never walk again. I said — watch me."
             </h2>
             <p className="text-white/60 text-lg mb-8 leading-relaxed">
-              Nick Kremers had a massive hemorrhagic stroke at 36 that left him paralyzed on his right side. Seven years later, he reports regaining about 90% of his function. These are ideas drawn from his experience, not a promise or universal outcome.
+              Nick Kremers had a massive hemorrhagic stroke at 36 that left him paralyzed on his left side. Seven years later, he reports regaining about 90% of his function. These are ideas drawn from his experience, not a promise or universal outcome.
             </p>
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gold/40">
