@@ -23,26 +23,24 @@ import sraEmblem from "@assets/sra-emblem.png";
 // and GlobalHeader both), so legacy per-page header mounts are suppressed.
 import { siteHeaderRegistry } from "./siteHeaderRegistry";
 
-// Keep the first choice set focused: Today is the starting point, while
-// Community, Journal, Coach, and live sessions are the places survivors
-// return to most often.
+// Keep the first choice set focused around the survivor's next step.
 const primaryNav: { href: string; label: string; icon?: typeof Flame }[] = [
   { href: "/recovery/today", label: "Today", icon: CalendarDays },
-  { href: "/recovery/community", label: "Community", icon: MessageCircle },
   { href: "/recovery/journal", label: "Journal", icon: PenLine },
   { href: "/recovery/sasquatch-coach", label: "Coach" },
-  { href: "/recovery/video", label: "Live Video", icon: Video },
+  { href: "/recovery/community", label: "Community", icon: MessageCircle },
 ];
 
 // Keep specialist tools available without making them part of the first
-// decision. The full directory remains available from the last item.
+// decision. Academy is the learning landing page; University is its
+// curriculum, rather than a competing learning destination.
 const resourcesGroups: { title: string; items: { href: string; label: string; pro?: boolean }[] }[] = [
   {
-    title: "Learn",
+    title: "Learning",
     items: [
-      { href: "/recovery/academy", label: "Learn" },
+      { href: "/recovery/academy", label: "Academy" },
       { href: "/recovery/exercises", label: "Exercises" },
-      { href: "/recovery/university", label: "Recovery University" },
+      { href: "/recovery/university", label: "University curriculum" },
       { href: "/blog", label: "Blog" },
     ],
   },
@@ -130,7 +128,7 @@ export default function RecoveryHeader() {
             </div>
           </Link>
 
-          {/* Desktop nav — focused primary links + More megamenu */}
+          {/* Desktop nav — focused primary links + Learn & Tools menu */}
           <nav className="hidden xl:flex items-center gap-0.5 shrink-0" aria-label="Main navigation">
             {primaryNav.map((link) => {
               const Icon = link.icon;
@@ -151,14 +149,14 @@ export default function RecoveryHeader() {
               );
             })}
 
-            {/* Resources megamenu — Practice / Connect / Music / Earn */}
+            {/* Learn & Tools menu — learning, connection, and recovery tools */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
                   className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-400 hover:text-white rounded-lg transition-colors"
                   data-testid="nav-resources"
                 >
-                  More <ChevronDown className="h-3.5 w-3.5" />
+                  Learn &amp; Tools <ChevronDown className="h-3.5 w-3.5" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="bg-[#111] border-[#222] p-3 w-[520px]">
@@ -268,7 +266,7 @@ export default function RecoveryHeader() {
                   onClick={() => (window.location.href = signUpHref)}
                   data-testid="button-join"
                 >
-                  Start Free
+                  Start free
                 </Button>
               </>
             )}
@@ -318,7 +316,7 @@ export default function RecoveryHeader() {
                 onClick={() => setResourcesOpen((v) => !v)}
                 data-testid="mobile-nav-resources"
               >
-                More
+                Learn &amp; Tools
                 <ChevronDown className={`h-3.5 w-3.5 transition-transform ${resourcesOpen ? "rotate-180" : ""}`} />
               </button>
               {resourcesOpen && (
@@ -386,7 +384,7 @@ export default function RecoveryHeader() {
                   onClick={() => (window.location.href = signUpHref)}
                   data-testid="mobile-button-join"
                 >
-                  Start Free
+                  Start free
                 </Button>
               )}
             </div>

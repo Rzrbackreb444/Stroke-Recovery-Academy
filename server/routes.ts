@@ -13296,17 +13296,16 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
       }
       
       const stripe = getRecoveryStripeClient();
+      const { ensureCanonicalFixedPrice, FIXED_SRA_PRICE_CONFIGS } = await import('./stripeCatalog');
+      const scholarshipPriceKey = `coaching${tierId[0].toUpperCase()}${tierId.slice(1)}` as keyof typeof FIXED_SRA_PRICE_CONFIGS;
+      const priceId = await ensureCanonicalFixedPrice(
+        FIXED_SRA_PRICE_CONFIGS[scholarshipPriceKey],
+        stripe,
+      );
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         line_items: [{
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: scholarship.name,
-              description: scholarship.description,
-            },
-            unit_amount: scholarship.amount,
-          },
+          price: priceId,
           quantity: 1,
         }],
         mode: 'payment',
@@ -13346,33 +13345,12 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
         return res.status(503).json({ message: 'Payment processing not configured' });
       }
       
-      const coachingPackages: Record<string, { amount: number; name: string; description: string; mode: 'payment' | 'subscription'; interval?: 'month' | 'year' }> = {
-        'accountability-monthly': { 
-          amount: 19700, 
-          name: 'Monthly Accountability', 
-          description: 'Weekly check-ins to keep you on track',
-          mode: 'subscription',
-          interval: 'month'
-        },
-        'recovery-intensive': { 
-          amount: 49700, 
-          name: 'Recovery Intensive', 
-          description: 'Deep dive strategy session with Nick',
-          mode: 'payment'
-        },
-        'transformation': { 
-          amount: 199700, 
-          name: '66-Day Transformation', 
-          description: 'Complete guided transformation program',
-          mode: 'payment'
-        },
-        'elite-annual': { 
-          amount: 499700, 
-          name: 'Elite Annual Coaching', 
-          description: 'Year-long transformation with Nick',
-          mode: 'subscription',
-          interval: 'year'
-        },
+      const { ensureCanonicalFixedPrice, FIXED_SRA_PRICE_CONFIGS } = await import('./stripeCatalog');
+      const coachingPackages: Record<string, { catalogKey: keyof typeof FIXED_SRA_PRICE_CONFIGS; mode: 'payment' | 'subscription' }> = {
+        'accountability-monthly': { catalogKey: 'coachingAccountabilityMonthly', mode: 'subscription' },
+        'recovery-intensive': { catalogKey: 'coachingRecoveryIntensive', mode: 'payment' },
+        'transformation': { catalogKey: 'coachingTransformation', mode: 'payment' },
+        'elite-annual': { catalogKey: 'coachingEliteAnnual', mode: 'subscription' },
       };
       
       const pkg = coachingPackages[packageId];
@@ -13383,21 +13361,15 @@ Never output names, descriptions, notes, sets, reps, hold time, minutes, dosage,
       const stripe = getRecoveryStripeClient();
       const userId = getUserId(req)!;
       const user = await storage.getUser(userId);
+      const priceId = await ensureCanonicalFixedPrice(
+        FIXED_SRA_PRICE_CONFIGS[pkg.catalogKey],
+        stripe,
+      );
       
       const sessionParams: any = {
         payment_method_types: ['card'],
         line_items: [{
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: pkg.name,
-              description: pkg.description,
-            },
-            unit_amount: pkg.amount,
-            ...(pkg.mode === 'subscription' && pkg.interval && {
-              recurring: { interval: pkg.interval },
-            }),
-          },
+          price: priceId,
           quantity: 1,
         }],
         mode: pkg.mode,
@@ -16252,10 +16224,50 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
         listingId,
         ...req.body
       });
+      if (listing.status === 'published') {
+        const { ensureMarketplaceEditionStripePrice } = await import('./marketplaceService');
+        await ensureMarketplaceEditionStripePrice(edition.id);
+      }
       res.json(edition);
     } catch (error) {
       console.error("Error adding edition:", error);
       res.status(500).json({ message: "Failed to add edition" });
+    }
+  });
+
+  app.patch('/api/marketplace/books/:id/editions/:editionId', isAuthenticated, async (req: any, res) => {
+    try {
+      const authorId = getUserId(req)!;
+      const listingId = parseInt(req.params.id);
+      const editionId = parseInt(req.params.editionId);
+      const listing = await storage.getMarketplaceListing(listingId);
+      if (!listing || listing.authorId !== authorId) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      const [edition] = await db.select().from(bookEditions)
+        .where(and(eq(bookEditions.id, editionId), eq(bookEditions.listingId, listingId)));
+      if (!edition) return res.status(404).json({ message: "Edition not found" });
+
+      const updates = { ...req.body, updatedAt: new Date() } as any;
+      delete updates.id;
+      delete updates.listingId;
+      delete updates.createdAt;
+      if (updates.price !== undefined) {
+        updates.authorRoyalty = Math.floor(Number(updates.price) * 0.85);
+        updates.stripePriceId = null;
+      }
+      const [updated] = await db.update(bookEditions)
+        .set(updates)
+        .where(eq(bookEditions.id, editionId))
+        .returning();
+      if (listing.status === 'published') {
+        const { ensureMarketplaceEditionStripePrice } = await import('./marketplaceService');
+        await ensureMarketplaceEditionStripePrice(editionId);
+      }
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating edition:", error);
+      res.status(500).json({ message: "Failed to update edition" });
     }
   });
 
@@ -16394,32 +16406,27 @@ Sitemap: https://strokerecoveryacademy.com/sitemap.xml
         return res.status(500).json({ message: "Payment not configured" });
       }
 
-      const lineItems = await Promise.all(orderItems.map(async (item) => {
-        const listing = await storage.getMarketplaceListing(item.listingId);
+      const { ensureCanonicalFixedPrice } = await import('./stripeCatalog');
+      const lineItems: Array<{ price: string; quantity: number }> = await Promise.all(orderItems.map(async (item) => {
         const edition = await storage.getBookEdition(item.editionId);
+        if (!edition?.stripePriceId) {
+          throw new Error("This edition is not ready for purchase");
+        }
         return {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: listing?.title || 'Book',
-              description: edition?.editionType || 'Edition',
-            },
-            unit_amount: item.unitPrice,
-          },
+          price: edition.stripePriceId,
           quantity: item.quantity,
         };
       }));
 
       if (shippingCost > 0) {
+        const shippingPrice = await ensureCanonicalFixedPrice({
+          key: `marketplace_shipping_${shippingCost}`,
+          name: 'Shipping',
+          description: 'Ground shipping',
+          unitAmount: shippingCost,
+        }, stripe);
         lineItems.push({
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: 'Shipping',
-              description: 'Ground shipping',
-            },
-            unit_amount: shippingCost,
-          },
+          price: shippingPrice,
           quantity: 1,
         });
       }
@@ -21734,6 +21741,13 @@ Provide a JSON response with track suggestions for each chapter/section.`;
         .where(eq(marketplaceListings.id, listingId))
         .returning();
 
+      if (updated?.status === 'published') {
+        const { ensureMarketplaceEditionStripePrice } = await import('./marketplaceService');
+        const editions = await db.select({ id: bookEditions.id })
+          .from(bookEditions)
+          .where(eq(bookEditions.listingId, listingId));
+        await Promise.all(editions.map((edition) => ensureMarketplaceEditionStripePrice(edition.id)));
+      }
       res.json(updated);
     } catch (error: any) {
       console.error("Error updating listing:", error);
@@ -21835,7 +21849,7 @@ Provide a JSON response with track suggestions for each chapter/section.`;
 
   // POST /api/marketplace/checkout - Cart-style checkout for book editions
   // Accepts { items: [{ editionId, quantity }] } and routes to the marketplace
-  // service which uses dynamic price_data (no pre-existing Stripe Price IDs needed).
+  // service which uses the catalog Price IDs prepared at publish/reprice time.
   app.post('/api/marketplace/checkout', isAuthenticated, async (req: any, res) => {
     try {
       const userId = getUserId(req)!;

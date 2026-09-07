@@ -50,7 +50,7 @@ const STEPS = [
     letter: "H",
     word: "Hammer",
     icon: Hammer,
-    body: "Apply it relentlessly every single day. No zero days. Hammer when you're tired, when progress feels invisible, when motivation is gone. Consistency builds empires.",
+    body: "Practice when your energy allows, then pause for rest and recovery. Adjust the pace to your body, care plan, and day.",
   },
 ];
 
@@ -79,12 +79,12 @@ export default function SaschLanding() {
         <title>The S.A.S.C.H. Formula — Free Stroke Recovery Cheat Sheet | Stroke Recovery Academy</title>
         <meta
           name="description"
-          content="Download the free S.A.S.C.H. Formula PDF — the daily 5-step recovery operating system Nick Kremers used to go from 0% to 90%+ after a massive stroke. Seize, Absorb, Swing, Combine, Hammer."
+          content="Download the free S.A.S.C.H. Formula PDF — the 5-step personal framework Nick Kremers used during his own 0% to 90%+ recovery story. Seize, Absorb, Swing, Combine, Hammer."
         />
         <meta property="og:title" content="The S.A.S.C.H. Formula — Free Stroke Recovery Cheat Sheet" />
         <meta
           property="og:description"
-          content="The 5-step daily blueprint a stroke survivor used to rebuild from 0% to 90%+. Download the free PDF and get the 67-day Sasquatch Dispatch nurture series."
+          content="The 5-step personal blueprint Nick used during his 0% to 90%+ recovery story. Download the free PDF and get the 67-day Sasquatch Dispatch series."
         />
         <meta property="og:type" content="website" />
         <link rel="canonical" href="https://strokerecoveryacademy.com/recovery/sasch" />
@@ -114,7 +114,7 @@ export default function SaschLanding() {
               className="text-lg md:text-xl max-w-2xl mx-auto mb-4 leading-relaxed"
               style={{ color: "#E5E5E5" }}
             >
-              The exact 5-step daily system Nick Kremers used to go from{" "}
+              The 5-step personal system Nick Kremers used during his own journey from{" "}
               <span style={{ color: "#E2741B", fontWeight: 700 }}>0% function</span> after a massive stroke
               to <span style={{ color: "#E2741B", fontWeight: 700 }}>90%+ recovery — and still rising.</span>
             </p>
@@ -316,15 +316,15 @@ export default function SaschLanding() {
                   </p>
                   <p>
                     Every stroke is different. Every brain is different. Every recovery is different. The
-                    S.A.S.C.H. Formula is a blueprint — built from Nick's real journey from 0% to 90%+ and
-                    still rising.
+                    S.A.S.C.H. Formula is a blueprint built from Nick's personal journey from 0% to 90%+
+                    and still rising; it is not a universal outcome.
                   </p>
                   <p>
-                    The blueprint doesn't do the work for you. You still have to seize, absorb, swing,
-                    combine, and hammer — day after day.
+                    The blueprint is optional. Try what feels appropriate, pause for rest, and discuss
+                    any exercise changes with your care team.
                   </p>
                   <p style={{ color: "#FFF", fontWeight: 600 }}>
-                    Nick is living proof it's possible. You become your own proof when you do the work.
+                    Nick's experience shows what was possible for him. Your recovery will be your own.
                   </p>
                 </div>
               </CardContent>

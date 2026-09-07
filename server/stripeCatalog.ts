@@ -3,6 +3,16 @@ import { getUncachableStripeClient } from "./stripeClient";
 
 export type CanonicalBillingInterval = "month" | "year";
 
+export type FixedStripePriceConfig = {
+  key: string;
+  name: string;
+  description: string;
+  unitAmount: number;
+  currency?: string;
+  legacyKeys?: string[];
+  recurringInterval?: CanonicalBillingInterval;
+};
+
 type CatalogPriceConfig = {
   key: string;
   legacyKeys?: string[];
@@ -390,3 +400,246 @@ export async function ensureCanonicalStripeCatalog(
 export function clearCanonicalStripeCatalogCache(): void {
   catalogPromise = null;
 }
+
+const fixedPricePromises = new WeakMap<object, Map<string, Promise<string>>>();
+const fixedPriceConfigs = new Map<string, FixedStripePriceConfig>();
+
+function fixedPriceMetadata(config: FixedStripePriceConfig, productKey: string) {
+  return {
+    catalog_key: config.key,
+    product_key: productKey,
+    platform: "stroke_recovery_academy",
+    billing: "one_time",
+  };
+}
+
+/**
+ * Resolve a stable one-time Stripe Price. Stripe Prices are immutable, so a
+ * changed amount must use a new price under the same product; callers persist
+ * the returned id on their own catalog row and checkout only references it.
+ */
+export async function ensureCanonicalFixedPrice(
+  config: FixedStripePriceConfig,
+  stripe?: Stripe,
+): Promise<string> {
+  const client = stripe ?? (await getUncachableStripeClient());
+  let clientPrices = fixedPricePromises.get(client as object);
+  if (!clientPrices) {
+    clientPrices = new Map();
+    fixedPricePromises.set(client as object, clientPrices);
+  }
+  const existingPromise = clientPrices.get(config.key);
+  if (existingPromise) return existingPromise;
+
+  const promise = (async () => {
+    fixedPriceConfigs.set(config.key, config);
+    const currency = (config.currency ?? "usd").toLowerCase();
+    const productKey = `sra_${config.key}`;
+    const products = await client.products.list({ active: true, limit: 100 });
+    let product = products.data.find(
+      (candidate) =>
+        candidate.metadata?.product_key === productKey ||
+        candidate.metadata?.catalog_key === config.key ||
+        [config.key, ...(config.legacyKeys ?? [])].includes(
+          candidate.metadata?.catalog_key ?? "",
+        ),
+    );
+    if (!product) {
+      product = await client.products.create({
+        name: config.name,
+        description: config.description,
+        metadata: fixedPriceMetadata(config, productKey),
+      });
+    } else if (
+      product.name !== config.name ||
+      product.description !== config.description ||
+      product.metadata?.catalog_key !== config.key ||
+      product.metadata?.product_key !== productKey
+    ) {
+      product = await client.products.update(product.id, {
+        name: config.name,
+        description: config.description,
+        metadata: {
+          ...product.metadata,
+          ...fixedPriceMetadata(config, productKey),
+        },
+      });
+    }
+
+    const prices = await client.prices.list({
+      product: product.id,
+      active: true,
+      limit: 100,
+    });
+    const keys = [config.key, ...(config.legacyKeys ?? [])];
+    const price = prices.data.find(
+      (candidate) =>
+        keys.includes(candidate.metadata?.catalog_key ?? "") &&
+        candidate.unit_amount === config.unitAmount &&
+        candidate.currency === currency &&
+        (config.recurringInterval
+          ? candidate.recurring?.interval === config.recurringInterval
+          : !candidate.recurring),
+    );
+    if (price) {
+      if (
+        price.metadata?.catalog_key !== config.key ||
+        price.metadata?.product_key !== productKey
+      ) {
+        return (
+          await client.prices.update(price.id, {
+            nickname: config.name,
+            metadata: {
+              ...price.metadata,
+              ...fixedPriceMetadata(config, productKey),
+            },
+          })
+        ).id;
+      }
+      return price.id;
+    }
+
+    return (
+      await client.prices.create({
+        product: product.id,
+        nickname: config.name,
+        unit_amount: config.unitAmount,
+        currency,
+        ...(config.recurringInterval
+          ? { recurring: { interval: config.recurringInterval } }
+          : {}),
+        metadata: fixedPriceMetadata(config, productKey),
+      })
+    ).id;
+  })().catch((error) => {
+    clientPrices!.delete(config.key);
+    throw error;
+  });
+  clientPrices.set(config.key, promise);
+  return promise;
+}
+
+export const FIXED_SRA_PRICE_CONFIGS = {
+  creditCheer: {
+    key: "sra_credit_cheer",
+    name: "Cheer Pack",
+    description: "25 AI Credits for content creation",
+    unitAmount: 100,
+  },
+  creditSpark: {
+    key: "sra_credit_spark",
+    name: "Spark Pack",
+    description: "100 AI Credits for content creation",
+    unitAmount: 500,
+  },
+  creditBoost: {
+    key: "sra_credit_boost",
+    name: "Boost Pack",
+    description: "250 AI Credits for content creation",
+    unitAmount: 1000,
+  },
+  creditSurge: {
+    key: "sra_credit_surge",
+    name: "Surge Pack",
+    description: "600 AI Credits for content creation",
+    unitAmount: 2000,
+  },
+  creditBeast: {
+    key: "sra_credit_beast",
+    name: "Beast Pack",
+    description: "1,500 AI Credits for content creation",
+    unitAmount: 4000,
+  },
+  creditLegend: {
+    key: "sra_credit_legend",
+    name: "Legend Pack",
+    description: "4,000 AI Credits for content creation",
+    unitAmount: 10000,
+  },
+  powerPointsCheer: {
+    key: "sra_power_points_cheer",
+    name: "Power Points — Cheer",
+    description: "25 Power Points",
+    unitAmount: 100,
+  },
+  powerPointsSpark: {
+    key: "sra_power_points_spark",
+    name: "Power Points — Spark",
+    description: "100 Power Points",
+    unitAmount: 500,
+  },
+  powerPointsBoost: {
+    key: "sra_power_points_boost",
+    name: "Power Points — Boost",
+    description: "250 Power Points",
+    unitAmount: 1000,
+  },
+  powerPointsSurge: {
+    key: "sra_power_points_surge",
+    name: "Power Points — Surge",
+    description: "600 Power Points",
+    unitAmount: 2000,
+  },
+  powerPointsBeast: {
+    key: "sra_power_points_beast",
+    name: "Power Points — Beast Mode",
+    description: "1,500 Power Points",
+    unitAmount: 4000,
+  },
+  coachingSingle: {
+    key: "sra_coaching_single",
+    name: "Single Coaching Session (30 min)",
+    description: "1-on-1 coaching with Nick",
+    unitAmount: 9900,
+  },
+  coachingPackage: {
+    key: "sra_coaching_package",
+    name: "Coaching Package (4 sessions)",
+    description: "1-on-1 coaching with Nick",
+    unitAmount: 34900,
+  },
+  coachingBasic: {
+    key: "sra_coaching_basic",
+    name: "Gift: 1 Month Warrior Access",
+    description: "One month of full Warrior membership",
+    unitAmount: 4700,
+  },
+  coachingMentored: {
+    key: "sra_coaching_mentored",
+    name: "Gift: 3 Month Warrior Access",
+    description: "3 months of Warrior membership",
+    unitAmount: 14100,
+  },
+  coachingElite: {
+    key: "sra_coaching_elite",
+    name: "Gift: Full Year Warrior Access",
+    description: "A full year of Warrior membership",
+    unitAmount: 39700,
+  },
+  coachingAccountabilityMonthly: {
+    key: "sra_coaching_accountability_monthly",
+    name: "Monthly Accountability",
+    description: "Weekly check-ins to keep you on track",
+    unitAmount: 19700,
+    recurringInterval: "month",
+  },
+  coachingRecoveryIntensive: {
+    key: "sra_coaching_recovery_intensive",
+    name: "Recovery Intensive",
+    description: "Deep dive strategy session with Nick",
+    unitAmount: 49700,
+  },
+  coachingTransformation: {
+    key: "sra_coaching_transformation",
+    name: "66-Day Transformation",
+    description: "Complete guided transformation program",
+    unitAmount: 199700,
+  },
+  coachingEliteAnnual: {
+    key: "sra_coaching_elite_annual",
+    name: "Elite Annual Coaching",
+    description: "Year-long transformation with Nick",
+    unitAmount: 499700,
+    recurringInterval: "year",
+  },
+} satisfies Record<string, FixedStripePriceConfig>;

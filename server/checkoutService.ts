@@ -5,6 +5,7 @@ import {
   getUncachableStripeClient,
 } from './stripeClient';
 import { getLocaleConfig, detectLocation } from './geolocationService';
+import { ensureCanonicalFixedPrice, FIXED_SRA_PRICE_CONFIGS } from './stripeCatalog';
 import { addCredits, initializeWallet } from './creditService';
 import { fulfillOrder, calculateRevenueSplit } from './fulfillmentService';
 import { 
@@ -87,6 +88,10 @@ export async function createCheckoutSession(
     
     const countryCode = locale.split('-')[1]?.toUpperCase() || locale.toUpperCase() || 'US';
     const localeConfig = getLocaleConfig(countryCode);
+    const priceId = edition.stripePriceId;
+    if (!priceId) {
+      return { success: false, error: 'This listing is still being prepared for purchase' };
+    }
     
     const platformFee = Math.round(edition.price * PLATFORM_FEE_PERCENT / 100);
     const creatorShare = edition.price - platformFee;
@@ -110,15 +115,7 @@ export async function createCheckoutSession(
       automatic_tax: { enabled: true },
       payment_method_types: ['card'],
       line_items: [{
-        price_data: {
-          currency: localeConfig.currency.toLowerCase(),
-          product_data: {
-            name: listing.title,
-            description: listing.subtitle || listing.description.substring(0, 500),
-            images: listing.coverImageUrl ? [listing.coverImageUrl] : undefined,
-          },
-          unit_amount: edition.price,
-        },
+        price: priceId,
         quantity: 1,
       }],
       success_url: `${baseUrl}/marketplace/purchase-success?session_id={CHECKOUT_SESSION_ID}`,
@@ -328,9 +325,6 @@ export async function createCreditPurchaseSession(
       return { success: false, error: 'User not found' };
     }
     
-    const countryCode = locale.split('-')[1]?.toUpperCase() || locale.toUpperCase() || 'US';
-    const localeConfig = getLocaleConfig(countryCode);
-    
     const customer = await ensureStripeCustomerForUser(
       stripe,
       createStripeCustomerStore(),
@@ -344,20 +338,15 @@ export async function createCreditPurchaseSession(
       ? `https://${process.env.REPLIT_DEV_DOMAIN}`
       : 'http://localhost:5000';
     
+    const priceKey = `credit${creditPackage[0].toUpperCase()}${creditPackage.slice(1)}` as keyof typeof FIXED_SRA_PRICE_CONFIGS;
+    const priceId = await ensureCanonicalFixedPrice(FIXED_SRA_PRICE_CONFIGS[priceKey], stripe);
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       mode: 'payment',
       automatic_tax: { enabled: true },
       payment_method_types: ['card'],
       line_items: [{
-        price_data: {
-          currency: localeConfig.currency.toLowerCase(),
-          product_data: {
-            name: packageDetails.name,
-            description: `${packageDetails.credits} AI Credits for content creation`,
-          },
-          unit_amount: packageDetails.priceUsd,
-        },
+        price: priceId,
         quantity: 1,
       }],
       success_url: `${baseUrl}/credits/purchase-success?session_id={CHECKOUT_SESSION_ID}`,

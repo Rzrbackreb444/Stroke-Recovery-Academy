@@ -53,13 +53,13 @@ export default function About() {
                 The Story Behind the System
               </Badge>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6" data-testid="text-about-title">
-                From 0% Function to{" "}
-                <span className="text-[#E2741B]">90% Recovery</span>
+                Nick's Personal 0% to{" "}
+                <span className="text-[#E2741B]">90% Story</span>
               </h1>
               <p className="text-xl text-gray-400 max-w-2xl mx-auto">
                 When doctors said "never," Nick Kremers said "watch me." 
-                This is the story of how one man's refusal to accept limitations 
-                became a system that's helping stroke survivors everywhere.
+                 This is the story of one survivor's experience, shared as practical,
+                 non-clinical ideas for other people to adapt with support.
               </p>
             </div>
           </div>
@@ -95,10 +95,9 @@ export default function About() {
                     data-testid="img-nick-today"
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                    <Badge className="mb-2 bg-primary text-[#E2741B]-foreground">Today - 90% Recovery</Badge>
+                    <Badge className="mb-2 bg-primary text-[#E2741B]-foreground">Today - Nick reports 90%</Badge>
                     <p className="text-foreground text-sm">
-                      Living proof that your greatest comeback 
-                      starts with your greatest setback.
+                       Nick's experience is not a promise of the same outcome for anyone else.
                     </p>
                   </div>
                 </div>
@@ -150,7 +149,7 @@ export default function About() {
                   <div>
                     <h3 className="text-xl font-semibold mb-2 text-foreground">The System</h3>
                     <p className="text-gray-400">
-                      Through years of therapy, experimentation, and relentless consistency, 
+                       Through years of therapy, experimentation, and consistent practice with time to rest,
                       I developed the S.A.S.C.H. Formula: Seize your reality + Absorb every lesson + 
                       Swing and experiment + Combine what works + Hammer it daily. 
                       This became the foundation of the Stroke Recovery OS.
@@ -165,9 +164,8 @@ export default function About() {
                   <div>
                     <h3 className="text-xl font-semibold mb-2 text-foreground">The Recovery</h3>
                     <p className="text-gray-400">
-                      Today, I've recovered approximately 90% of my function. I'm living proof 
-                      that the brain's neuroplasticity is real, that consistency compounds, 
-                      and that small victories build extraordinary comebacks. Now I'm sharing 
+                       Today, I've recovered approximately 90% of my function. This is my personal
+                       experience, not a universal result. I share what I learned so others can
                       everything I learned so others can write their own comeback stories.
                     </p>
                   </div>
@@ -203,7 +201,7 @@ export default function About() {
                   </div>
                   <h3 className="font-semibold mb-2 text-foreground">Neuroplasticity</h3>
                   <p className="text-sm text-gray-400">
-                    Your brain can rewire itself. Consistent practice creates new neural pathways.
+                     Practice may support change over time; pace and outcomes differ for each person.
                   </p>
                 </CardContent>
               </Card>

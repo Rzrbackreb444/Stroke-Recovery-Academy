@@ -30,8 +30,8 @@ export default function AboutUs() {
     },
     {
       icon: Target,
-      title: "Evidence-Based",
-      description: "Our protocols combine personal recovery experience with modern neuroscience research."
+      title: "Survivor-Led",
+      description: "Our ideas begin with personal recovery experience and are shared in plain language."
     },
     {
       icon: Users,
@@ -40,8 +40,8 @@ export default function AboutUs() {
     },
     {
       icon: Zap,
-      title: "Relentless Progress",
-      description: "Small wins compound. We celebrate every step forward on your recovery journey."
+      title: "Sustainable Progress",
+      description: "Small wins matter, and rest is part of a recovery journey."
     }
   ];
 
@@ -54,12 +54,12 @@ export default function AboutUs() {
     {
       year: "2020",
       title: "The Fight Begins",
-      description: "Beginning with 0% mobility, Nick developed unconventional recovery protocols that defied medical expectations."
+      description: "Beginning with 0% mobility, Nick developed personal routines that became the foundation for his survivor-led work."
     },
     {
       year: "2022",
-      title: "90% Recovery",
-      description: "Through relentless dedication, Nick achieved 90% recovery - proving that the impossible is possible."
+      title: "Nick's Personal Recovery",
+      description: "Nick reports reaching 90% recovery; his outcome is personal and not a promise for others."
     },
     {
       year: "2024",
@@ -95,12 +95,13 @@ export default function AboutUs() {
                 Meet Nick <span className="text-[#E2741B]">"The Stroked Out Sasquatch"</span> Kremers
               </h1>
               <p className="text-xl text-gray-400 mb-6 leading-relaxed" data-testid="text-intro">
-                When doctors said I'd never walk again, I didn't just prove them wrong - 
-                I created a system to help thousands of stroke survivors reclaim their lives.
+                When doctors said I'd never walk again, I kept working at my recovery —
+                and began sharing what I learned with other survivors.
               </p>
               <p className="text-gray-400 mb-8 leading-relaxed">
-                From 0% to 90% recovery. From wheelchair to warrior. Now I'm sharing every 
-                protocol, every exercise, every mindset shift that made my "impossible" recovery possible.
+                My personal journey went from 0% to 90% recovery. Now I'm sharing the
+                routines, exercises, and mindset shifts that helped me, without promising the
+                same outcome for anyone else.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/dashboard">
@@ -165,10 +166,10 @@ export default function AboutUs() {
               The Journey
             </Badge>
             <h2 className="text-3xl md:text-4xl font-black mb-4" data-testid="heading-timeline">
-              From <span className="text-[#E2741B]">0% to 90%</span> Recovery
+              Nick's <span className="text-[#E2741B]">0% to 90%</span> Story
             </h2>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              A timeline of defying the impossible and building something that changes lives.
+              A timeline of one survivor's experience and the platform it inspired.
             </p>
           </div>
 
@@ -232,8 +233,8 @@ export default function AboutUs() {
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
               Stroke Recovery Academy exists for one purpose: to prove that your stroke is not your ending - 
-              it's your beginning. We combine cutting-edge neuroscience with battle-tested recovery protocols 
-              to help survivors exceed every limitation placed upon them.
+              it's your beginning. We share lived experience, practical routines, and peer support
+              while encouraging survivors to work with their own care teams.
             </p>
           </div>
 

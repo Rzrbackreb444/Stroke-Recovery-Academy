@@ -350,10 +350,9 @@ export default function SasquatchCoach() {
     chatMutation.mutate(prompt);
   };
 
-  // Push-to-talk: tap to start, tap again to stop. On `result` we drop
-  // the transcript into the input box and auto-send so the survivor
-  // doesn't have to reach for the keyboard. All STT runs on-device via
-  // the browser's SpeechRecognition — no audio leaves the laptop.
+  // Push-to-talk: tap to start, tap again to stop. Dictation is placed in
+  // the composer for review and editing before the survivor sends it.
+  // All STT runs on-device via the browser's SpeechRecognition.
   const startListening = () => {
     if (micUnsupported || isListening || chatMutation.isPending) return;
     if (!user && anonQuota && anonQuota.used >= anonQuota.limit) return;
@@ -382,11 +381,7 @@ export default function SasquatchCoach() {
     recognition.onend = () => {
       setIsListening(false);
       const text = finalTranscript.trim();
-      if (text) {
-        setMessages((prev) => [...prev, { id: nextMessageId(), role: "user", content: text }]);
-        setInput("");
-        chatMutation.mutate(text);
-      }
+      if (text) setInput(text);
     };
     recognitionRef.current = recognition;
     setIsListening(true);
@@ -939,6 +934,11 @@ export default function SasquatchCoach() {
             )}
           </Button>
         </div>
+        {!micUnsupported && (
+          <p className="text-[11px] text-gray-500 mt-2">
+            Dictation stays in the message box so you can review and edit it before sending.
+          </p>
+        )}
         {!user && anonQuota && anonQuota.used < anonQuota.limit && (
           <p
             className="text-xs text-center text-[#E2741B]/70 mt-2"

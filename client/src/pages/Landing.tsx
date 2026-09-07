@@ -28,8 +28,8 @@ const goToOnboarding = () => {
 function Hero() {
   const stats = [
     { value: "50", label: "Staples in his skull" },
-    { value: "0%", label: "Starting function" },
-    { value: "90%", label: "Recovery achieved" },
+    { value: "0%", label: "Nick's starting point" },
+    { value: "90%", label: "Nick's reported recovery" },
     { value: "7", label: "Years of proof" },
   ];
   return (
@@ -62,8 +62,8 @@ function Hero() {
               className="font-display text-5xl sm:text-6xl lg:text-7xl text-white leading-[0.92] tracking-tight mb-8"
               data-testid="text-hero-main"
             >
-              From <span className="text-gold">0%</span><br />
-              to <span className="text-gold">90%</span>.<br />
+              Nick's <span className="text-gold">0%</span><br />
+              to <span className="text-gold">90%</span> story.<br />
               7 years of reps.
             </h1>
 
@@ -120,7 +120,7 @@ function Hero() {
                   Nick Kremers — Founder
                 </p>
                 <p className="text-white text-sm font-medium leading-snug">
-                  "If the Sasquatch can do it — so can you."
+                  "This is my experience — your path will be your own."
                 </p>
               </div>
             </div>
@@ -239,7 +239,7 @@ function Method() {
     {
       code: "S.A.S.C.H.",
       label: "The Daily Formula",
-      payoff: "Run this every day. No exceptions.",
+      payoff: "Use it when it fits. Make room for rest.",
       color: "bg-gold",
       textColor: "text-black",
       borderColor: "border-gold/30",
@@ -249,7 +249,7 @@ function Method() {
         { l: "A", w: "Absorb", d: "Take in what your brain needs to wire." },
         { l: "S", w: "Swing", d: "Put in the physical reps — move something." },
         { l: "C", w: "Combine", d: "Stack movement with mental rehearsal." },
-        { l: "H", w: "Hammer", d: "Finish strong. One last rep. Never zero." },
+        { l: "H", w: "Hammer", d: "Practice when you can, then rest and recover." },
       ],
     },
     {
@@ -292,7 +292,7 @@ function Method() {
         <div className="text-center max-w-3xl mx-auto mb-20">
           <p className="text-sm font-bold tracking-widest uppercase text-gold mb-5">The Sasquatch Method</p>
           <h2 className="font-display text-white text-4xl md:text-6xl mb-6 leading-[0.95]">
-            Three systems.<br />One relentless outcome.
+            Three systems.<br />Practical support for your own pace.
           </h2>
           <p className="text-lg text-white/60 leading-relaxed">
             The hospital sends you home when you're "stable." The Method picks it up from there — a daily formula, a panic reset for the dark days, and a 7-pillar compass for the long game.
@@ -338,7 +338,7 @@ function SasquatchArt() {
                 "As long as that meat in your chest is still thumpin' — your life is still pumpin'."
               </h2>
               <p className="text-white/50 text-lg leading-relaxed mb-10">
-                Nick Kremers. December 3, 2018. They said he'd never walk again. He's 90% and still climbing. That's what the Method is for — the ones who refuse to accept a ceiling.
+                Nick Kremers. December 3, 2018. They said he'd never walk again. He reports reaching 90% and is still climbing. That's his story — your recovery will be personal to you.
               </p>
               <button
                 onClick={goToOnboarding}
@@ -497,7 +497,7 @@ function Proof() {
               "They said I'd never walk again. I said — watch me."
             </h2>
             <p className="text-white/60 text-lg mb-8 leading-relaxed">
-              Nick Kremers had a massive hemorrhagic stroke at 36 that left him paralyzed on his right side. Seven years later — through the exact methods taught in this academy — he's regained 90% of his function. If the Sasquatch can do it, so can you.
+              Nick Kremers had a massive hemorrhagic stroke at 36 that left him paralyzed on his right side. Seven years later, he reports regaining about 90% of his function. These are ideas drawn from his experience, not a promise or universal outcome.
             </p>
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gold/40">
@@ -556,7 +556,7 @@ function Features() {
             <div className="w-12 h-12 rounded-lg bg-gold/10 text-gold flex items-center justify-center mb-6"><BrainCircuit className="w-6 h-6" /></div>
             <h3 className="text-2xl font-bold text-neutral-900 mb-4">AI Recovery Coach</h3>
             <p className="text-neutral-600 text-lg leading-relaxed">
-              A personalized companion trained on the Sasquatch Method. It builds your daily protocols, adjusts to how you're doing, and keeps you on track — encouraging, never preachy.
+              A personalized companion inspired by the Sasquatch Method. It helps you plan practical routines, adjust to how you're doing, and stay encouraged without replacing clinical care.
             </p>
           </div>
         </div>
@@ -566,7 +566,7 @@ function Features() {
             <div className="w-12 h-12 rounded-lg bg-neutral-900 text-white flex items-center justify-center mb-6"><CalendarDays className="w-6 h-6" /></div>
             <h3 className="text-2xl font-bold text-neutral-900 mb-4">Daily Routines & Protocols</h3>
             <p className="text-neutral-600 text-lg leading-relaxed">
-              Stop guessing what to do. Get structured daily regimens that target neuroplasticity — from mirror therapy to mental rehearsal — scaled to your level and delivered when you need them.
+              Find structured routines — from mirror therapy to mental rehearsal — that you can discuss with your care team, scale to your level, and pause for rest when needed.
             </p>
           </div>
           <div className="rounded-2xl overflow-hidden border border-neutral-200 bg-neutral-50 p-8">
@@ -727,7 +727,7 @@ export default function Landing() {
           {
             question: "Can a stroke survivor really go from 0% to 90% recovery?",
             answer:
-              "Yes — Nick Kremers is living proof. After suffering a stroke that left him with 0% function on one side, he achieved 90% recovery through relentless daily rehabilitation using the techniques now taught in Stroke Recovery Academy.",
+              "Nick Kremers reports moving from 0% function on one side to about 90% recovery. That is his personal experience, not a prediction for other survivors; every recovery is different.",
           },
         ]}
       />

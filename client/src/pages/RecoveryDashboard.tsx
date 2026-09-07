@@ -67,7 +67,7 @@ const motivationalQuotes = [
   "0% to 90% wasn't luck. It was relentless action, every single day.",
   "When doctors said 'never,' I heard 'prove them wrong.'",
   "The comeback is always stronger than the setback.",
-  "Your recovery is your superpower. Keep pushing.",
+  "Your recovery is personal. Pause when you need to, use a saved routine, or contact your care team.",
 ];
 
 export default function RecoveryDashboard() {
@@ -363,7 +363,7 @@ export default function RecoveryDashboard() {
                   <div>
                     <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B]">Survivor OS</p>
                     <p className="text-base font-bold text-white">Open your personal recovery plan</p>
-                    <p className="text-xs text-gray-500">Sasquatch Scale, AI plan, today's prescription</p>
+                    <p className="text-xs text-gray-500">Sasquatch Scale and educational AI guidance for today — not a prescription</p>
                   </div>
                 </div>
                 <span className="text-xs text-[#E2741B] font-semibold uppercase tracking-widest">Open →</span>
@@ -1622,6 +1622,7 @@ function BonfireHeroCard() {
               <p className="text-[10px] uppercase tracking-[0.3em] text-[#E2741B] font-bold mb-1">
                 Today's Session · The Bonfire
               </p>
+              <p className="text-[11px] text-gray-500 mb-2">Educational guidance to discuss with your care team, not medical advice or a prescription.</p>
               <h2
                 className="text-2xl sm:text-3xl font-black text-white leading-tight mb-2"
                 style={{ fontFamily: "Playfair Display, Georgia, serif" }}
@@ -1637,7 +1638,7 @@ function BonfireHeroCard() {
               ) : (
                 <div className="mb-3" data-testid="preview-today-recommendation">
                   <p className="text-sm text-gray-300 leading-relaxed mb-2">
-                    Today's plan: <span className="text-white font-semibold" data-testid="text-today-level">{level?.name ?? `Level ${rec.level}`}</span>
+                    Today's educational guidance: <span className="text-white font-semibold" data-testid="text-today-level">{level?.name ?? `Level ${rec.level}`}</span>
                     <span className="text-gray-400"> · </span>
                     <span className="text-gray-400">{rec.reason}</span>
                   </p>

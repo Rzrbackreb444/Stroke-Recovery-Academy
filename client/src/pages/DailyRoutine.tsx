@@ -120,7 +120,7 @@ export default function DailyRoutine() {
               {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
             </p>
             <h1 className="text-2xl font-black text-white">Your Daily Routine</h1>
-            <p className="text-gray-500 text-sm mt-1">Never Zero. Every rep counts.</p>
+            <p className="text-gray-500 text-sm mt-1">Educational routine support — pause when needed and check changes with your care team.</p>
           </div>
           <div className="flex items-center gap-3">
             {streak > 0 && (
@@ -378,8 +378,8 @@ export default function DailyRoutine() {
               <li className="flex items-start gap-2"><span className="text-[#E2741B] shrink-0 mt-0.5">→</span> One glass of water. That's recovery.</li>
               <li className="flex items-start gap-2"><span className="text-[#E2741B] shrink-0 mt-0.5">→</span> One thing you're grateful for. That's a win.</li>
             </ul>
-            <p className="text-xs text-gray-600 mb-6 italic">
-              "The day you do nothing is the day the stroke wins. One rep. Always one rep." — Nick
+            <p className="text-xs text-gray-500 mb-6 italic">
+              A hard day is a reason to pause, use a saved routine, or contact your care team — not a reason to push through.
             </p>
             <div className="flex gap-3">
               <Button

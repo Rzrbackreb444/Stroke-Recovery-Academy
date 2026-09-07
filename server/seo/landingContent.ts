@@ -22,7 +22,7 @@ const RELATED_LINKS = {
   timeline: { href: '/learn/stroke-recovery-timeline', label: 'Recovery timeline', blurb: 'What to expect, month by month.' },
   centers: { href: '/recovery/center-finder', label: 'Find a recovery center', blurb: 'Centers near you with real reviews.' },
   university: { href: '/recovery/university', label: 'Recovery University', blurb: '7 parts, 33 chapters.' },
-  about: { href: '/recovery/about-nick', label: 'About Nick', blurb: 'The 0-to-90% story.' },
+   about: { href: '/recovery/about-nick', label: 'About Nick', blurb: "Nick's personal 0-to-90% story." },
 };
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -52,7 +52,7 @@ export const PAGE_FOR_SURVIVORS: SsrPageConfig = {
       paragraphs: [
         'Most stroke survivors get told the same lie in slightly different words: "this is your new normal." It is not your new normal. It is your worst day. There is a giant difference between those two sentences.',
         'You had a brain attack. Cells in one zone died. The hospital saved your life — they are good at that. What they are bad at is the next 5 years. Insurance pays for somewhere around 30 days of inpatient rehab and then the door closes. After that, you are the head of your own recovery program. Whether you knew you signed up for that job or not.',
-        'Stroke Recovery Academy exists because Nick Kremers had the same stroke you had and refused to accept the binder. Seven years and three thousand hours of self-directed training later, he is at 90% recovery on what doctors thought would be a wheelchair-permanent left side. Same brain attack. Different decision.',
+        "Stroke Recovery Academy exists because Nick Kremers wanted to share what he learned after his stroke. Seven years and thousands of hours of self-directed practice later, he reports reaching 90% recovery on his left side. That is his personal experience, not a promise of the same outcome for anyone else.",
       ],
     },
     {
@@ -72,15 +72,15 @@ export const PAGE_FOR_SURVIVORS: SsrPageConfig = {
     {
       h2: 'Who this is for, and who it is not for',
       paragraphs: [
-        'This works for ischemic survivors, hemorrhagic survivors, TIA survivors, brainstem stroke survivors, and post-CABG stroke survivors. It works at month 1 and at year 30. The decision is whether you are willing to put in 30-90 minutes a day on average.',
-        'This is not for people who want pity. There are entire forums for that and they are free. This is for people who want their life back and are willing to do the boring, repetitive, sometimes humiliating work it takes to rewire a brain. If that is you, the door is open.',
+        'This is a survivor-led resource for people at many points after stroke, with routines that can be discussed with a care team and adapted to energy and ability.',
+        'There is no single right pace. Some days call for practice; other days call for rest. If practical, non-clinical support sounds useful, the door is open.',
       ],
     },
     {
       h2: 'What "doing the work" actually looks like',
       paragraphs: [
         'The work is not heroic. It is small, daily, and embarrassing. It is the same finger-curl 80 times in a row while you watch the news. It is saying the same word out loud 100 times because the speech pathologist said so. It is putting weight on a leg that does not want it. It is the third walk of the day when you would rather sit down forever.',
-        'Neuroplasticity is the science behind why this works. Repetition + intensity + specificity creates new neural pathways around the dead zone. The brain does not need the dead tissue back. It needs new wiring through the live tissue you still have. The Sasquatch Method gives you the protocol; you supply the reps.',
+        'The Sasquatch Method shares routines Nick found useful during his recovery. Repetition and practice may be part of a care plan, but pace and outcomes vary; rest and professional guidance matter too.',
       ],
     },
     {
@@ -92,9 +92,9 @@ export const PAGE_FOR_SURVIVORS: SsrPageConfig = {
     },
   ],
   faqs: [
-    { q: 'Is this safe if I just had a stroke?', a: 'Talk to your medical team before adding any program. Stroke Recovery Academy is an educational and motivational platform, not medical care. The exercises and protocols are widely recognized but should be cleared by your physiatrist or therapist first.' },
+    { q: 'Is this safe if I just had a stroke?', a: 'Talk to your medical team before adding any program. Stroke Recovery Academy is an educational and motivational platform, not medical care. Discuss any exercises with your physiatrist or therapist first.' },
     { q: 'How long until I see progress?', a: 'Most survivors who follow the daily routine 5+ days a week report measurable improvement in 4-8 weeks — usually in grip strength, gait, or speech endurance. Major motor gains often take 3-6 months. Recovery is non-linear; expect setbacks.' },
-    { q: 'I am 5+ years post-stroke. Is it too late?', a: 'No. Neuroplasticity works at any age and any time post-stroke. The plateau most survivors hit is a stimulus plateau, not a brain plateau. Change the stimulus, the brain responds.' },
+    { q: 'I am 5+ years post-stroke. Is it too late?', a: 'Recovery paths differ, and some people continue working toward meaningful changes years after stroke. Talk with your care team about goals and a pace that fits you.' },
     { q: 'Do I need any equipment?', a: 'No. The base routine uses only your body, a chair, and a wall. Optional add-ons (resistance bands, a small ball, a TENS unit) help but are not required.' },
     { q: 'I cannot afford it. Can I still join?', a: 'Yes. The free tier covers the essentials. We also run a Survivor Scholarship program funded by donors so any survivor who needs full access can request it.' },
   ],
@@ -296,7 +296,7 @@ export const PAGE_FOR_THERAPISTS: SsrPageConfig = {
     eyebrow: 'For clinicians',
     subhead: 'You write the home exercise plan. They go home and do 14% of it. Stroke Recovery Academy is the operating system that closes the gap.',
     ctaPrimary: { href: '/api/login', label: 'Create clinician account' },
-    ctaSecondary: { href: '/programs/sasquatch-method', label: 'See the clinical protocol' },
+    ctaSecondary: { href: '/programs/sasquatch-method', label: 'See the survivor-led framework' },
   },
   keywords: ['stroke rehabilitation therapist', 'home exercise program stroke', 'stroke patient compliance', 'PT OT SLP stroke'],
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'For therapists', href: '/for/therapists' }],
@@ -318,7 +318,7 @@ export const PAGE_FOR_THERAPISTS: SsrPageConfig = {
     {
       h2: 'The behavioral architecture',
       paragraphs: [
-        'Compliance is a behavior problem, not an information problem. Most home programs fail because they are a printed PDF with no feedback loop. The platform installs three behavioral hooks proven to increase adherence: a daily streak (loss aversion), a community check-in (accountability), and a coach voice that survivors recognize as one of their own (peer authority).',
+        'Follow-through can be hard when a home program is only a printed PDF. The platform offers optional supports: a daily streak, a community check-in, and a coach voice survivors may recognize as one of their own.',
       ],
     },
     {
@@ -330,7 +330,7 @@ export const PAGE_FOR_THERAPISTS: SsrPageConfig = {
     {
       h2: 'Cost, privacy, and clinician accounts',
       paragraphs: [
-        'A clinician account is free. Patients sign up under their own free account; you do not see their data unless they share it. Survivor Scholarship covers patients who cannot afford the paid tier. The platform is HIPAA-aware: it does not store PHI, does not function as a medical record, and is positioned as patient education and motivation, not care.',
+        'A clinician account is free. Patients sign up under their own free account; you do not see their data unless they share it. Survivor Scholarship covers patients who cannot afford the paid tier. The platform is positioned as patient education and motivation, not care or a medical record.',
       ],
     },
   ],
@@ -338,7 +338,7 @@ export const PAGE_FOR_THERAPISTS: SsrPageConfig = {
     { q: 'Is this a CPT-billable resource?', a: 'No. It is a between-session education and adherence platform, not a billable service. It supports your billable services.' },
     { q: 'Can I customize the routine for my patient?', a: 'Patients can customize. Direct clinician overrides are on the roadmap. For now, you can recommend specific exercises by linking to them.' },
     { q: 'Does it replace therapy?', a: 'No. It is built to extend therapy, not replace it. Every page surfaces the Center Finder so patients can locate clinical care.' },
-    { q: 'Who built it?', a: 'Nick Kremers, a 7-year stroke survivor at 90% recovery. The Sasquatch Method draws on his lived experience plus the established rehabilitation literature. It is not a substitute for clinical judgment.' },
+    { q: 'Who built it?', a: 'Nick Kremers, a stroke survivor who reports reaching 90% recovery. The Sasquatch Method draws on his lived experience and is not a substitute for clinical judgment.' },
     { q: 'How do I sign up?', a: 'Create a free account at the link above and email support to request the clinician flag. We are still building out clinic dashboards; reach out if you want early access.' },
   ],
   related: [RELATED_LINKS.method, RELATED_LINKS.exercises, RELATED_LINKS.hemi, RELATED_LINKS.aphasia, RELATED_LINKS.timeline, RELATED_LINKS.centers],
@@ -413,11 +413,11 @@ export const PAGE_66_DAY: SsrPageConfig = {
 export const PAGE_METHOD: SsrPageConfig = {
   url: '/programs/sasquatch-method',
   title: 'The Sasquatch Method | Stroke Recovery Doctrine by Nick Kremers',
-  description: 'The full doctrine of the Sasquatch Method — the four pillars Nick Kremers used to go from complete paralysis to 90% recovery in seven years.',
+  description: "The survivor-led Sasquatch Method — four pillars Nick Kremers used during his personal recovery journey.",
   h1: 'The Sasquatch Method.',
   hero: {
     eyebrow: 'Doctrine',
-    subhead: 'The four pillars Nick used to recover 90% from a stroke that left him paralyzed on his left side. Built in the trenches. No fluff.',
+    subhead: "The four pillars Nick used during his personal recovery from a stroke that left him paralyzed on his left side. Built in the trenches. No universal promise.",
     ctaPrimary: { href: '/api/login', label: 'Try the Method free' },
     ctaSecondary: { href: '/programs/66-day-challenge', label: 'See the 66-day challenge' },
   },
@@ -425,10 +425,10 @@ export const PAGE_METHOD: SsrPageConfig = {
   breadcrumbs: [{ name: 'Home', href: '/' }, { name: 'Programs', href: '/programs/sasquatch-method' }],
   sections: [
     {
-      h2: 'Pillar 1 — Never Zero',
+      h2: 'Pillar 1 — Keep a Gentle Rhythm',
       paragraphs: [
-        'Never Zero means you never log a day with zero reps. Bad day? One rep. Sick? One rep. Brain fog? One rep. The point is not the rep, it is the chain. The chain is what builds the identity. The identity is what builds the recovery.',
-        'Most stroke survivors quit because they think missing a day is failure. Missing a day is normal. Missing seven in a row is the start of the slide. Never Zero blocks day two of any slide before it gets traction.',
+        'A gentle rhythm means noticing what you can do today without treating rest as failure. On a good day, try a manageable step; on a hard day, rest, reflect, or ask for support.',
+        'Missing a day is normal. The goal is a sustainable routine that respects energy, safety, and guidance from your care team.',
       ],
     },
     {
@@ -460,7 +460,7 @@ export const PAGE_METHOD: SsrPageConfig = {
     },
   ],
   faqs: [
-    { q: 'Is the Sasquatch Method evidence-based?', a: 'It draws heavily on established stroke rehabilitation principles — task-specific training, neuroplasticity, constraint-induced therapy, intensity progression. The framing and voice are Nick\'s. The principles are well-supported in the literature.' },
+    { q: 'Is the Sasquatch Method clinically validated?', a: "It is a survivor-led framework based on Nick's lived experience, not a clinically validated treatment. Discuss any exercise ideas with your care team." },
     { q: 'Why "Sasquatch"?', a: 'Slow, patient, deliberate, hard to kill, leaves a footprint. That is what surviving and recovering from a stroke takes.' },
     { q: 'Can I do it without the platform?', a: 'You could in theory, but the daily structure, AI coach, and community are what make it stick. Most survivors who tried to "just read the doctrine" never installed the habits.' },
     { q: 'What makes it different from PT?', a: 'PT is a clinical service for one hour a week. The Sasquatch Method is a 24/7 operating system for the other 167 hours.' },
@@ -584,7 +584,7 @@ export const PAGE_NEUROPLASTICITY: SsrPageConfig = {
     {
       h2: 'Protocols that actually drive plasticity',
       paragraphs: [
-        'The protocols with the strongest evidence base are constraint-induced movement therapy, task-specific repetitive training, mirror therapy, mental practice, and bilateral arm training. The Sasquatch Method daily routine integrates all five at appropriate levels.',
+        "Some rehabilitation approaches have published research behind them, but this platform does not independently verify or prescribe them. Nick's daily routine shares practical ideas that should be adapted with a care team.",
         'Aerobic exercise is also a plasticity driver — it increases brain-derived neurotrophic factor (BDNF), the molecule that fertilizes new connections. Walking 20-30 minutes a day at a moderate pace is one of the most underrated stroke recovery interventions.',
       ],
     },
@@ -696,7 +696,7 @@ export const PAGE_HOME_EXERCISES: SsrPageConfig = {
       h2: 'Before you start: the rules',
       paragraphs: [
         'Talk to your therapist or physiatrist before adding any program. The exercises below are conventional and widely used but the order, dose, and intensity should be cleared by someone who can see you in person.',
-        'Three universal rules: stop if anything sharp hurts, build slowly (10% increase in any variable per week), and prioritize quality over speed. Sloppy reps install sloppy patterns.',
+        'Three practical reminders: stop if anything sharp hurts, build gradually with professional guidance, and prioritize quality over speed. Rest when your body needs it.',
       ],
     },
     {
