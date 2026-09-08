@@ -181,6 +181,7 @@ export interface IStorage {
   // Accountability Pods
   getAccountabilityPod(podId: number): Promise<AccountabilityPod | null>;
   getUserPod(userId: string): Promise<AccountabilityPod | null>;
+  isUserPodMember(userId: string, podId: number): Promise<boolean>;
   getPodMembers(podId: number): Promise<any[]>;
   createPod(pod: InsertAccountabilityPod): Promise<AccountabilityPod>;
   joinPod(userId: string, podId: number): Promise<PodMember>;
@@ -1092,6 +1093,17 @@ export class DatabaseStorage implements IStorage {
       .innerJoin(accountabilityPods, eq(podMembers.podId, accountabilityPods.id))
       .where(eq(podMembers.userId, userId));
     return membership?.pod || null;
+  }
+
+  async isUserPodMember(userId: string, podId: number): Promise<boolean> {
+    const [membership] = await db.select({ id: podMembers.id })
+      .from(podMembers)
+      .where(and(
+        eq(podMembers.podId, podId),
+        eq(podMembers.userId, userId),
+      ))
+      .limit(1);
+    return Boolean(membership);
   }
 
   async getPodMembers(podId: number): Promise<any[]> {

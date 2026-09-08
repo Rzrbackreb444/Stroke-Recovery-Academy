@@ -14590,6 +14590,10 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       if (post.visibility === "private" && post.authorId !== userId) {
         return res.status(403).json({ message: "You can't react to this post." });
       }
+      if (post.visibility === "pod" && post.authorId !== userId &&
+          (!post.podId || !(await storage.isUserPodMember(userId, post.podId)))) {
+        return res.status(404).json({ message: "Post not found" });
+      }
       await ensureCommunitySafetyTables();
       const { pool: reactionPool } = await import("./db");
       const blocked = await reactionPool.query(
@@ -14612,6 +14616,10 @@ Voice: Nick Kremers, 7-year survivor. Direct. Honest. Never sycophantic. Never "
       if (!post) return res.status(404).json({ message: "Post not found" });
       if (post.visibility === "private" && post.authorId !== userId) {
         return res.status(403).json({ message: "You can't comment on this post." });
+      }
+      if (post.visibility === "pod" && post.authorId !== userId &&
+          (!post.podId || !(await storage.isUserPodMember(userId, post.podId)))) {
+        return res.status(404).json({ message: "Post not found" });
       }
       await ensureCommunitySafetyTables();
       const { pool: commentPool } = await import("./db");
