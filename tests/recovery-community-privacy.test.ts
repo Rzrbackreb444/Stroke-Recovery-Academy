@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const routes = readFileSync("server/routes.ts", "utf8");
+const storage = readFileSync("server/storage.ts", "utf8");
 const community = readFileSync("client/src/pages/RecoveryCommunity.tsx", "utf8");
 
 test("community posts define all four audience levels and keep legacy creates private", () => {
@@ -60,12 +61,25 @@ test("private posts are protected across detail, comments, reactions, and media"
   )?.[0];
   assert.ok(reaction, "reaction route should exist");
   assert.match(reaction, /post\.visibility === "private" && post\.authorId !== userId/);
+  assert.match(
+    reaction,
+    /post\.visibility === "pod" && post\.authorId !== userId[\s\S]*?storage\.isUserPodMember\(userId, post\.podId\)/,
+  );
 
   const commentWrite = routes.match(
     /app\.post\('\/api\/activity\/:id\/comment'[\s\S]*?res\.json\(comment\);/,
   )?.[0];
   assert.ok(commentWrite, "comment write route should exist");
   assert.match(commentWrite, /post\.visibility === "private" && post\.authorId !== userId/);
+  assert.match(
+    commentWrite,
+    /post\.visibility === "pod" && post\.authorId !== userId[\s\S]*?storage\.isUserPodMember\(userId, post\.podId\)/,
+  );
+
+  assert.match(
+    storage,
+    /async isUserPodMember\(userId: string, podId: number\): Promise<boolean>[\s\S]*?eq\(podMembers\.podId, podId\)[\s\S]*?eq\(podMembers\.userId, userId\)/,
+  );
 
   const dedicatedMedia = routes.match(
     /app\.get\('\/uploads\/community\/:filename'[\s\S]*?return res\.sendFile/,
@@ -73,4 +87,15 @@ test("private posts are protected across detail, comments, reactions, and media"
   assert.ok(dedicatedMedia, "dedicated community media route should exist");
   assert.match(dedicatedMedia, /media\.visibility === 'private' && media\.authorId !== viewerId/);
   assert.match(dedicatedMedia, /media\.visibility === 'pod'/);
+
+  const legacyMedia = routes.match(
+    /app\.use\('\/uploads', async[\s\S]*?app\.use\('\/uploads', express\.static/,
+  )?.[0];
+  assert.ok(legacyMedia, "legacy uploads privacy middleware should exist");
+  assert.match(legacyMedia, /if \(!media\) return next\(\);/);
+  assert.match(
+    legacyMedia,
+    /catch \{[\s\S]*?return res\.status\(404\)\.end\(\);/,
+    "activity-media lookup failures must not fall through to public static uploads",
+  );
 });
