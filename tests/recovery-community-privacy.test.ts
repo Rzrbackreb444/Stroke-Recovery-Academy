@@ -73,4 +73,15 @@ test("private posts are protected across detail, comments, reactions, and media"
   assert.ok(dedicatedMedia, "dedicated community media route should exist");
   assert.match(dedicatedMedia, /media\.visibility === 'private' && media\.authorId !== viewerId/);
   assert.match(dedicatedMedia, /media\.visibility === 'pod'/);
+
+  const legacyMedia = routes.match(
+    /app\.use\('\/uploads', async[\s\S]*?app\.use\('\/uploads', express\.static/,
+  )?.[0];
+  assert.ok(legacyMedia, "legacy uploads privacy middleware should exist");
+  assert.match(legacyMedia, /if \(!media\) return next\(\);/);
+  assert.match(
+    legacyMedia,
+    /catch \{[\s\S]*?return res\.status\(404\)\.end\(\);/,
+    "activity-media lookup failures must not fall through to public static uploads",
+  );
 });

@@ -1322,9 +1322,9 @@ Last updated: ${new Date().toISOString().split('T')[0]}
       }
       return next();
     } catch {
-      // If this is not an activity-media row, preserve the legacy static
-      // behavior. The dedicated community route above remains fail-closed.
-      return next();
+      // A lookup failure must not fall through to the public static handler:
+      // this URL may belong to a private legacy community attachment.
+      return res.status(404).end();
     }
   });
   app.use('/uploads', express.static(uploadsDir));
